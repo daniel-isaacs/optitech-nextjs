@@ -12,6 +12,8 @@ import type { QuoteBlockProps } from "@/components/blocks/QuoteBlock";
 import ImageBlock from "@/components/blocks/ImageBlock";
 import type { ImageBlockProps } from "@/components/blocks/ImageBlock";
 import CardBlock from "@/components/blocks/CardBlock";
+import VideoBlock from "@/components/blocks/VideoBlock";
+import type { VideoBlockProps } from "@/components/blocks/VideoBlock";
 import Button from "@/components/ui/Button";
 import { ArrowRight, Zap, ChevronRight } from "lucide-react";
 
@@ -419,6 +421,59 @@ const IMAGE_SHADOWS: Array<{ label: string; note: string; props: ImageBlockProps
     label: "Shadow + Glow + Overlay",
     note: "Full atmospheric stack — wash, edge glow, and bloom all in the same teal register",
     props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, frame: "glow", overlay: true } },
+  },
+];
+
+// ─── VideoBlock data ──────────────────────────────────────────────────────────
+
+const VIDEO_SRC_YT   = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+const VIDEO_SRC_VM   = "https://vimeo.com/148751763";
+const VIDEO_TITLE_YT = "OptiTech Platform Overview";
+const VIDEO_TITLE_VM = "OptiTech Case Study: Meridian Engineering";
+
+const VIDEO_TREATMENTS: Array<{ label: string; note: string; props: VideoBlockProps }> = [
+  {
+    label: "Clean",
+    note: "No treatments — baseline",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9" } },
+  },
+  {
+    label: "Frame: offset",
+    note: "Bold teal backing block — 12px mounting-board strip on right and bottom",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "offset" } },
+  },
+  {
+    label: "Frame: glow",
+    note: "Inset teal ring + outer ambient bloom — poster appears backlit",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "glow" } },
+  },
+  {
+    label: "Overlay",
+    note: "Brand teal at 40% opacity, multiply blend — tints thumbnail in the brand palette",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", overlay: true } },
+  },
+  {
+    label: "Glow + Overlay",
+    note: "Atmospheric — teal wash unifies thumbnail tone, glow defines the edge",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "glow", overlay: true } },
+  },
+  {
+    label: "Offset + Overlay",
+    note: "Bold — teal backing anchors the frame; wash pulls the palette through the thumbnail",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "offset", overlay: true } },
+  },
+];
+
+const VIDEO_SHADOWS: Array<{ label: string; note: string; props: VideoBlockProps }> = [
+  {
+    label: "Shadow only",
+    note: "Teal left, signal green right — chromatic halo",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", shadow: true } },
+  },
+  {
+    label: "Shadow + Glow",
+    note: "Inset glow defines the boundary; shadow bloom radiates below — two depths, one surface",
+    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", shadow: true, frame: "glow" } },
   },
 ];
 
@@ -972,6 +1027,133 @@ export default function ShowcaseBlocksPage() {
             caption="OptiTech. Precision at every layer."
             styleOptions={{ ratio: "16:9", animate: true, frame: "offset", captionPosition: "inset" }}
           />
+        </div>
+
+      </section>
+
+      <section id="video-block" className="border-t border-fg/5">
+        <div className="px-md pt-xl pb-lg lg:px-lg">
+          <SectionLabel index="06 · Media" title="VideoBlock" />
+          <p className="text-body leading-body text-fg-muted max-w-[65ch]">
+            YouTube and Vimeo embeds with a branded poster state. Platform thumbnails are auto-fetched;
+            a teal play button replaces the iframe until clicked. Mirrors ImageBlock&apos;s full style
+            API: frame treatments, overlay, shadow bloom, and caption.
+          </p>
+        </div>
+
+        {/* Platform support */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Platform support · YouTube and Vimeo · auto-fetched thumbnails
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Platform is detected from the URL. YouTube thumbnails are served from YouTube&apos;s CDN;
+            Vimeo thumbnails are fetched client-side from the oEmbed API with a shimmer while loading.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+            <div>
+              <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                <span className="text-label tracking-label uppercase text-brand font-semibold">YouTube</span>
+                <span className="text-label text-fg-muted/60">Platform thumbnail + branded play button</span>
+              </div>
+              <VideoBlock
+                src={VIDEO_SRC_YT}
+                title={VIDEO_TITLE_YT}
+                styleOptions={{ ratio: "16:9" }}
+              />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                <span className="text-label tracking-label uppercase text-brand font-semibold">Vimeo</span>
+                <span className="text-label text-fg-muted/60">oEmbed thumbnail fetched on mount — shimmer while loading</span>
+              </div>
+              <VideoBlock
+                src={VIDEO_SRC_VM}
+                title={VIDEO_TITLE_VM}
+                styleOptions={{ ratio: "16:9" }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Treatments */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Treatments</p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Same frame options as ImageBlock — all treatments apply to the poster and the live embed equally.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+            {VIDEO_TREATMENTS.map((item) => (
+              <div key={item.label}>
+                <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                  <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
+                  <span className="text-label text-fg-muted/60">{item.note}</span>
+                </div>
+                <VideoBlock {...item.props} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Shadow */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Shadow · chromatic bloom
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Dual radial gradient: brand teal pools bottom-left, signal green bottom-right.
+            52px blur diffuses into a halo that bleeds past the video edge.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+            {VIDEO_SHADOWS.map((item) => (
+              <div key={item.label}>
+                <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                  <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
+                  <span className="text-label text-fg-muted/60">{item.note}</span>
+                </div>
+                <VideoBlock {...item.props} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Captions */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Captions</p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+            <div>
+              <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                <span className="text-label tracking-label uppercase text-brand font-semibold">Inset</span>
+                <span className="text-label text-fg-muted/60">Badge floats over bottom-left corner of the poster</span>
+              </div>
+              <VideoBlock
+                src={VIDEO_SRC_YT}
+                title={VIDEO_TITLE_YT}
+                caption="OptiTech. Precision at every layer."
+                styleOptions={{ ratio: "16:9", captionPosition: "inset" }}
+              />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                <span className="text-label tracking-label uppercase text-brand font-semibold">Below</span>
+                <span className="text-label text-fg-muted/60">Label-scale text beneath the video</span>
+              </div>
+              <VideoBlock
+                src={VIDEO_SRC_YT}
+                title={VIDEO_TITLE_YT}
+                caption="OptiTech. Precision at every layer."
+                styleOptions={{ ratio: "16:9", captionPosition: "below" }}
+              />
+            </div>
+          </div>
         </div>
 
       </section>

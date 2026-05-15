@@ -39,20 +39,20 @@ const figureCva = cva("", {
 });
 
 /**
- * Large Poppins 800 quotation mark — a structural accent, not an icon.
- * On dark surfaces: full brand teal (committed, visible).
- * On brand surface: light ghost at 20% opacity (present but subordinate to copy).
+ * Two geometric diamonds — solid at the top, fading to transparent via CSS mask.
+ * On dark surfaces: brand teal at full strength.
+ * On brand surface: white at 40% opacity so the fade starts more subtly.
  */
-const quoteMarkCva = cva("block leading-none select-none font-extrabold", {
+const quoteMarkSvgCva = cva("block w-auto pointer-events-none select-none", {
   variants: {
     color: {
-      brand:   "text-fg-on-brand/20",
+      brand:   "text-fg-on-brand opacity-40",
       canvas:  "text-brand",
       surface: "text-brand",
     },
     size: {
-      large: "text-[6rem] lg:text-[9rem]",
-      small: "text-[3.5rem] lg:text-[5.5rem]",
+      large: "h-24 lg:h-32",
+      small: "h-16 lg:h-24",
     },
   },
   defaultVariants: { color: "canvas", size: "large" },
@@ -117,9 +117,20 @@ export default function QuoteBlock({
   return (
     <section className={sectionCva({ color, size })}>
       <figure className={figureCva({ alignment })}>
-        <span aria-hidden="true" className={quoteMarkCva({ color, size })}>
-          &ldquo;
-        </span>
+        {/* Two elongated diamonds — solid at the apex, fade to transparent below */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 56 40"
+          fill="currentColor"
+          className={quoteMarkSvgCva({ color, size })}
+          style={{
+            WebkitMaskImage: "linear-gradient(to bottom, black 15%, transparent 92%)",
+            maskImage:        "linear-gradient(to bottom, black 15%, transparent 92%)",
+          }}
+        >
+          <polygon points="12,0 24,20 12,40 0,20" />
+          <polygon points="44,0 56,20 44,40 32,20" />
+        </svg>
         <blockquote className="mt-sm">
           <p className={quoteTextCva({ color, size })}>{quote}</p>
         </blockquote>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import PrimaryTextBlock from "@/components/blocks/PrimaryTextBlock";
 import type { PrimaryTextBlockProps } from "@/components/blocks/PrimaryTextBlock";
+import QuoteBlock from "@/components/blocks/QuoteBlock";
+import type { QuoteBlockProps } from "@/components/blocks/QuoteBlock";
 
 export const metadata: Metadata = {
   title: "Design System Showcase — OptiTech",
@@ -260,6 +262,7 @@ const NAV_SECTIONS = [
   { href: "#spacing",    label: "Spacing"          },
   { href: "#motion",     label: "Motion"           },
   { href: "#blocks",     label: "Blocks"           },
+  { href: "#quote-block", label: "QuoteBlock"      },
 ];
 
 // ── Block component demos ────────────────────────────────────────────────────
@@ -324,6 +327,52 @@ const PRIMARY_TEXT_GRADIENTS: PrimaryTextBlockProps[] = [
     eyebrow: "Ember",
     headline: "Burn bright.",
     styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "ember" },
+  },
+];
+
+// ── QuoteBlock demos ─────────────────────────────────────────────────────────
+
+const QUOTE_COLOR_SCHEMES: QuoteBlockProps[] = [
+  {
+    quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.",
+    attribution: { name: "Sarah Chen", title: "VP Engineering, Meridian" },
+    styleOptions: { color: "brand", alignment: "left", size: "large" },
+  },
+  {
+    quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.",
+    attribution: { name: "Sarah Chen", title: "VP Engineering, Meridian" },
+    styleOptions: { color: "canvas", alignment: "left", size: "large" },
+  },
+  {
+    quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.",
+    attribution: { name: "Sarah Chen", title: "VP Engineering, Meridian" },
+    styleOptions: { color: "surface", alignment: "left", size: "large" },
+  },
+];
+
+const QUOTE_SIZES: QuoteBlockProps[] = [
+  {
+    quote: "We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.",
+    attribution: { name: "Marcus Reid", title: "CTO, Folio" },
+    styleOptions: { size: "large", color: "canvas", alignment: "left" },
+  },
+  {
+    quote: "We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.",
+    attribution: { name: "Marcus Reid", title: "CTO, Folio" },
+    styleOptions: { size: "small", color: "canvas", alignment: "left" },
+  },
+];
+
+const QUOTE_ALIGNMENTS: QuoteBlockProps[] = [
+  {
+    quote: "The only platform that keeps up with how fast we move.",
+    attribution: { name: "Priya Nair", title: "Head of Product, Vertex" },
+    styleOptions: { alignment: "left", color: "canvas", size: "large" },
+  },
+  {
+    quote: "The only platform that keeps up with how fast we move.",
+    attribution: { name: "Priya Nair", title: "Head of Product, Vertex" },
+    styleOptions: { alignment: "center", color: "canvas", size: "large" },
   },
 ];
 
@@ -950,6 +999,73 @@ export default function ShowcasePage() {
                   </span>
                 </div>
                 <PrimaryTextBlock {...props} />
+              </div>
+            ))}
+
+            <div className="pb-xl" />
+          </section>
+
+          {/* ── 08 QuoteBlock ── */}
+          <section id="quote-block">
+
+            <div className="px-md pt-xl pb-lg lg:px-lg">
+              <SectionLabel index="08 · Components" title="QuoteBlock" />
+              <p className="text-body leading-body text-fg-muted max-w-[65ch]">
+                Full-width testimonial section delivering customer social proof as a typographic
+                anchor moment. The large quotation mark is a Poppins 800 letterform, not an icon.
+                Quote text and attribution only; no imagery. All style options map 1:1 to CMS
+                content properties.
+              </p>
+            </div>
+
+            {/* ── Color schemes ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Color Schemes · large · left · same copy
+              </p>
+            </div>
+            {QUOTE_COLOR_SCHEMES.map((props, i) => (
+              <div key={i} className="border-t border-fg/5">
+                <div className="px-md pt-sm pb-xs lg:px-lg">
+                  <span className="font-mono text-label text-fg-muted/50">
+                    color: &ldquo;{props.styleOptions?.color}&rdquo;
+                  </span>
+                </div>
+                <QuoteBlock {...props} />
+              </div>
+            ))}
+
+            {/* ── Sizes ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Sizes · canvas · left · same copy
+              </p>
+            </div>
+            {QUOTE_SIZES.map((props, i) => (
+              <div key={i} className="border-t border-fg/5">
+                <div className="px-md pt-sm pb-xs lg:px-lg">
+                  <span className="font-mono text-label text-fg-muted/50">
+                    size: &ldquo;{props.styleOptions?.size}&rdquo;
+                  </span>
+                </div>
+                <QuoteBlock {...props} />
+              </div>
+            ))}
+
+            {/* ── Alignment ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Alignment · canvas · large · same copy
+              </p>
+            </div>
+            {QUOTE_ALIGNMENTS.map((props, i) => (
+              <div key={i} className="border-t border-fg/5">
+                <div className="px-md pt-sm pb-xs lg:px-lg">
+                  <span className="font-mono text-label text-fg-muted/50">
+                    alignment: &ldquo;{props.styleOptions?.alignment}&rdquo;
+                  </span>
+                </div>
+                <QuoteBlock {...props} />
               </div>
             ))}
 

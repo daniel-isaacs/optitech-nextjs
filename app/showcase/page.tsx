@@ -666,45 +666,47 @@ export default function ShowcasePage() {
                   Display Gradients
                 </p>
                 <span className="font-mono text-label text-fg-muted/50">
-                  text-display · 4 palette variants · dark canvas only
+                  text-display · 4 palette variants · adapts to active theme
                 </span>
               </div>
               <p className="text-label text-fg-muted leading-body mb-lg max-w-[60ch]">
-                Gradient fills for display-sized type. Best at large scale where
-                the sweep is visible. Use once per composition.
+                Gradient fills for display-sized type. Stops are defined as CSS custom
+                properties and flip automatically between dark and light mode. Use once per composition.
               </p>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
+              <div className="flex flex-col gap-lg">
                 {DISPLAY_GRADIENTS.map((g) => (
-                  <div
-                    key={g.label}
-                    className="p-lg flex flex-col gap-md"
-                    style={{ background: "oklch(12% 0.012 195)" }}
-                  >
-                    <p
-                      className={`text-display font-extrabold leading-display tracking-display ${g.cssClass}`}
-                    >
-                      OptiTech.
-                    </p>
-                    <div>
-                      <p
-                        className="text-label tracking-label uppercase font-semibold mb-xs"
-                        style={{ color: "oklch(68% 0.06 195)" }}
+                  <div key={g.label}>
+                    <div className="grid grid-cols-2 gap-xs mb-sm">
+                      {/* Dark */}
+                      <div
+                        className="p-lg"
+                        style={{ background: "oklch(12% 0.012 195)" }}
                       >
+                        <p className="text-label tracking-label uppercase font-semibold mb-sm"
+                           style={{ color: "oklch(68% 0.06 195)" }}>Dark</p>
+                        <p className={`text-display font-extrabold leading-display tracking-display ${g.cssClass}`}>
+                          OptiTech.
+                        </p>
+                      </div>
+                      {/* Light — data-theme scopes the gradient token overrides */}
+                      <div
+                        data-theme="light"
+                        className="p-lg"
+                        style={{ background: "oklch(97% 0.005 195)" }}
+                      >
+                        <p className="text-label tracking-label uppercase font-semibold mb-sm"
+                           style={{ color: "oklch(38% 0.05 195)" }}>Light</p>
+                        <p className={`text-display font-extrabold leading-display tracking-display ${g.cssClass}`}>
+                          OptiTech.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-baseline gap-x-md gap-y-xs">
+                      <p className="text-label tracking-label uppercase font-semibold text-fg-muted">
                         {g.label}
                       </p>
-                      <p
-                        className="text-label leading-body"
-                        style={{ color: "oklch(68% 0.06 195)" }}
-                      >
-                        {g.usage}
-                      </p>
-                      <code
-                        className="inline-block font-mono text-label mt-sm px-sm py-xs"
-                        style={{
-                          background: "oklch(20% 0.022 195)",
-                          color: "oklch(68% 0.06 195)",
-                        }}
-                      >
+                      <p className="text-label text-fg-muted/70 flex-1 min-w-0">{g.usage}</p>
+                      <code className="inline-block font-mono text-label px-sm py-xs bg-surface text-fg-muted">
                         .{g.cssClass}
                       </code>
                     </div>

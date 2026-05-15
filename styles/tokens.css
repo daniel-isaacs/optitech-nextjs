@@ -92,17 +92,32 @@
    * Apply via font-weight CSS property or fontVariationSettings "'wght' 450".
    * ──────────────────────────────────────────────────────────────────────── */
   --ot-weight-syne: 450;
+
+  /* ── Display gradients — dark-mode stops ────────────────────────────────────
+   * background-clip: text applied by .display-gradient-* in globals.css.
+   * Overridden for light surfaces in [data-theme="light"] below.
+   * ──────────────────────────────────────────────────────────────────────────── */
+  --ot-gradient-brand:    linear-gradient(135deg, oklch(72% 0.20 195) 0%, oklch(38% 0.14 195) 100%);
+  --ot-gradient-signal:   linear-gradient(135deg, oklch(82% 0.19 145) 0%, oklch(55% 0.18 195) 100%);
+  --ot-gradient-luminous: linear-gradient(135deg, oklch(96% 0.004 195) 0%, oklch(55% 0.18 195) 100%);
+  --ot-gradient-electric: linear-gradient(135deg, oklch(86% 0.22 145) 0%, oklch(55% 0.16 145) 100%);
 }
 
 /* ── Light override ──────────────────────────────────────────────────────────
- * :root[data-theme="light"] has specificity 0-1-1, beating :root at 0-1-0,
- * so these values always win when light mode is active.
- * Only canvas, surface, fg, and fg-muted flip — brand stays constant.
+ * Using [data-theme="light"] (not :root[data-theme="light"]) so the selector
+ * can scope to any element — enabling the showcase to demonstrate both modes
+ * side by side. Source order beats :root at equal 0-1-0 specificity.
  * ─────────────────────────────────────────────────────────────────────────── */
-:root[data-theme="light"] {
+[data-theme="light"] {
   --ot-canvas:   oklch(97% 0.005 195); /* light mode page background — near-white, teal-tinted */
   --ot-surface:  oklch(93% 0.008 195); /* light mode component panels — slightly off-canvas     */
   --ot-fg:       oklch(12% 0.012 195); /* light mode primary text — dark on light bg            */
   --ot-fg-muted: oklch(38% 0.05  195); /* light mode secondary text — dark muted teal           */
   /* fg-on-brand stays light — brand teal needs light foreground in both modes */
+
+  /* Gradient stops — deeper colours, readable on near-white canvas */
+  --ot-gradient-brand:    linear-gradient(135deg, oklch(42% 0.18 195) 0%, oklch(22% 0.12 195) 100%);
+  --ot-gradient-signal:   linear-gradient(135deg, oklch(48% 0.20 145) 0%, oklch(30% 0.16 195) 100%);
+  --ot-gradient-luminous: linear-gradient(135deg, oklch(28% 0.14 195) 0%, oklch(52% 0.18 195) 100%);
+  --ot-gradient-electric: linear-gradient(135deg, oklch(36% 0.18 145) 0%, oklch(56% 0.17 145) 100%);
 }

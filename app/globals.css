@@ -87,30 +87,31 @@ body {
   color: transparent;
 }
 
-/* Display gradient fills — use once per composition, dark canvas only */
+/* Display gradient fills — use once per composition, display scale only.
+   Stops are defined in tokens.css and adapt to the active theme. */
 .display-gradient-brand {
-  background: linear-gradient(135deg, oklch(72% 0.20 195) 0%, oklch(38% 0.14 195) 100%);
+  background: var(--ot-gradient-brand);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .display-gradient-warm {
-  background: linear-gradient(135deg, oklch(82% 0.19 145) 0%, oklch(55% 0.18 195) 100%);
+  background: var(--ot-gradient-signal);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .display-gradient-luminous {
-  background: linear-gradient(135deg, oklch(96% 0.004 195) 0%, oklch(55% 0.18 195) 100%);
+  background: var(--ot-gradient-luminous);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .display-gradient-ember {
-  background: linear-gradient(135deg, oklch(86% 0.22 145) 0%, oklch(55% 0.16 145) 100%);
+  background: var(--ot-gradient-electric);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

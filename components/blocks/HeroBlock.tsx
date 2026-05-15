@@ -1,9 +1,139 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cva } from "class-variance-authority";
 
-export type HeroColorScheme = "brand" | "canvas" | "surface";
-export type HeroOrientation = "left" | "right";
+// ─── Style option types (map 1:1 to CMS content properties) ─────────────────
+
+export type HeroStyleOptions = {
+  /** Which side the text panel appears on at desktop widths */
+  layout?: "imageRight" | "imageLeft";
+  /** Background color of the text panel */
+  color?: "brand" | "canvas" | "surface";
+  /**
+   * Entrance animation for the section.
+   * "parallax" degrades to fade until a client enhancer is added.
+   */
+  animation?: "none" | "fade" | "slide" | "parallax";
+};
+
+// ─── CVA variant configs ─────────────────────────────────────────────────────
+
+const sectionCva = cva("flex flex-col", {
+  variants: {
+    layout: {
+      imageRight: "lg:flex-row",
+      imageLeft:  "lg:flex-row-reverse",
+    },
+    animation: {
+      none:     "",
+      fade:     "motion-safe:animate-fade-in",
+      slide:    "motion-safe:animate-slide-up",
+      parallax: "motion-safe:animate-fade-in",
+    },
+  },
+  defaultVariants: { layout: "imageRight", animation: "none" },
+});
+
+const textPanelCva = cva(
+  "px-md py-xl lg:px-lg lg:py-2xl flex flex-col lg:w-[55%]",
+  {
+    variants: {
+      color: {
+        brand:   "bg-brand",
+        canvas:  "bg-canvas",
+        surface: "bg-surface",
+      },
+    },
+    defaultVariants: { color: "brand" },
+  }
+);
+
+const eyebrowCva = cva("text-label tracking-label uppercase font-semibold", {
+  variants: {
+    color: {
+      brand:   "text-fg-on-brand/60",
+      canvas:  "text-fg-muted",
+      surface: "text-fg-muted",
+    },
+  },
+  defaultVariants: { color: "brand" },
+});
+
+const headlineCva = cva(
+  "text-display font-extrabold leading-display tracking-display",
+  {
+    variants: {
+      color: {
+        brand:   "text-fg-on-brand",
+        canvas:  "text-fg",
+        surface: "text-fg",
+      },
+    },
+    defaultVariants: { color: "brand" },
+  }
+);
+
+const bodyCva = cva("text-body leading-body max-w-[52ch]", {
+  variants: {
+    color: {
+      brand:   "text-fg-on-brand/80",
+      canvas:  "text-fg-muted",
+      surface: "text-fg-muted",
+    },
+  },
+  defaultVariants: { color: "brand" },
+});
+
+const primaryCtaCva = cva(
+  "inline-block hover:-translate-y-0.5 text-label font-semibold tracking-label uppercase px-12 py-4 transition duration-150 ease-quick focus-visible:outline-2 focus-visible:outline-offset-[3px]",
+  {
+    variants: {
+      color: {
+        brand:
+          "bg-brand-hover hover:bg-canvas text-fg-on-brand focus-visible:outline-fg-on-brand",
+        canvas:
+          "bg-brand hover:bg-brand-hover text-fg-on-brand focus-visible:outline-brand",
+        surface:
+          "bg-brand hover:bg-brand-hover text-fg-on-brand focus-visible:outline-brand",
+      },
+    },
+    defaultVariants: { color: "brand" },
+  }
+);
+
+const secondaryCtaCva = cva(
+  "inline-block border text-label font-semibold tracking-label uppercase px-12 py-4 transition duration-150 ease-quick focus-visible:outline-2 focus-visible:outline-offset-[3px]",
+  {
+    variants: {
+      color: {
+        brand:
+          "border-fg-on-brand/40 hover:border-fg-on-brand/70 hover:bg-fg-on-brand/8 text-fg-on-brand focus-visible:outline-fg-on-brand",
+        canvas:
+          "border-fg/40 hover:border-fg/70 hover:bg-fg/8 text-fg focus-visible:outline-fg",
+        surface:
+          "border-fg/40 hover:border-fg/70 hover:bg-fg/8 text-fg focus-visible:outline-fg",
+      },
+    },
+    defaultVariants: { color: "brand" },
+  }
+);
+
+const visualPanelCva = cva(
+  "relative overflow-hidden aspect-video lg:aspect-auto lg:flex-1",
+  {
+    variants: {
+      color: {
+        brand:   "bg-canvas",
+        canvas:  "bg-surface",
+        surface: "bg-canvas",
+      },
+    },
+    defaultVariants: { color: "brand" },
+  }
+);
+
+// ─── Component ───────────────────────────────────────────────────────────────
 
 export type HeroBlockProps = {
   eyebrow?: string;
@@ -16,57 +146,7 @@ export type HeroBlockProps = {
   visualAlt?: string;
   /** Non-image override — SVG, code sample, illustration, etc. Takes precedence over visualSrc */
   visual?: ReactNode;
-  /** Which side the text panel appears on at desktop widths. Default: "left" */
-  orientation?: HeroOrientation;
-  /** Background color of the text panel. Default: "brand" */
-  colorScheme?: HeroColorScheme;
-};
-
-const SCHEMES: Record<
-  HeroColorScheme,
-  {
-    panel: string;
-    eyebrow: string;
-    headline: string;
-    body: string;
-    primaryCta: string;
-    secondaryCta: string;
-    visualBg: string;
-  }
-> = {
-  brand: {
-    panel:       "bg-brand",
-    eyebrow:     "text-fg-on-brand/60",
-    headline:    "text-fg-on-brand",
-    body:        "text-fg-on-brand/80",
-    primaryCta:
-      "bg-brand-hover hover:bg-canvas text-fg-on-brand focus-visible:outline-fg-on-brand",
-    secondaryCta:
-      "border border-fg-on-brand/40 hover:border-fg-on-brand/70 hover:bg-fg-on-brand/8 text-fg-on-brand focus-visible:outline-fg-on-brand",
-    visualBg: "bg-canvas",
-  },
-  canvas: {
-    panel:    "bg-canvas",
-    eyebrow:  "text-fg-muted",
-    headline: "text-fg",
-    body:     "text-fg-muted",
-    primaryCta:
-      "bg-brand hover:bg-brand-hover text-fg-on-brand focus-visible:outline-brand",
-    secondaryCta:
-      "border border-fg/40 hover:border-fg/70 hover:bg-fg/8 text-fg focus-visible:outline-fg",
-    visualBg: "bg-surface",
-  },
-  surface: {
-    panel:    "bg-surface",
-    eyebrow:  "text-fg-muted",
-    headline: "text-fg",
-    body:     "text-fg-muted",
-    primaryCta:
-      "bg-brand hover:bg-brand-hover text-fg-on-brand focus-visible:outline-brand",
-    secondaryCta:
-      "border border-fg/40 hover:border-fg/70 hover:bg-fg/8 text-fg focus-visible:outline-fg",
-    visualBg: "bg-canvas",
-  },
+  styleOptions?: HeroStyleOptions;
 };
 
 export default function HeroBlock({
@@ -78,60 +158,34 @@ export default function HeroBlock({
   visualSrc,
   visualAlt = "",
   visual,
-  orientation = "left",
-  colorScheme = "brand",
+  styleOptions = {},
 }: HeroBlockProps) {
-  const s = SCHEMES[colorScheme];
+  const { layout = "imageRight", color = "brand", animation = "none" } = styleOptions;
 
   return (
-    <section
-      className={`flex flex-col ${orientation === "right" ? "lg:flex-row-reverse" : "lg:flex-row"}`}
-      aria-label="Hero"
-    >
+    <section className={sectionCva({ layout, animation })} aria-label="Hero">
 
       {/* ── Text panel ── */}
-      <div className={`${s.panel} px-md py-xl lg:px-lg lg:py-2xl flex flex-col lg:w-[55%]`}>
+      <div className={textPanelCva({ color })}>
         <div className="flex flex-col gap-lg">
           {eyebrow && (
-            <p className={`text-label tracking-label uppercase font-semibold ${s.eyebrow}`}>
-              {eyebrow}
-            </p>
+            <p className={eyebrowCva({ color })}>{eyebrow}</p>
           )}
-          <h1 className={`text-display font-extrabold leading-display tracking-display ${s.headline}`}>
-            {headline}
-          </h1>
+          <h1 className={headlineCva({ color })}>{headline}</h1>
           {body && (
-            <p className={`text-body leading-body max-w-[52ch] ${s.body}`}>
-              {body}
-            </p>
+            <p className={bodyCva({ color })}>{body}</p>
           )}
         </div>
 
         {(primaryCta || secondaryCta) && (
           <div className="mt-xl flex flex-wrap gap-sm">
             {primaryCta && (
-              <Link
-                href={primaryCta.href}
-                className={`inline-block hover:-translate-y-0.5
-                           text-label font-semibold tracking-label uppercase
-                           px-12 py-4
-                           transition duration-150 ease-quick
-                           focus-visible:outline-2 focus-visible:outline-offset-[3px]
-                           ${s.primaryCta}`}
-              >
+              <Link href={primaryCta.href} className={primaryCtaCva({ color })}>
                 {primaryCta.label}
               </Link>
             )}
             {secondaryCta && (
-              <Link
-                href={secondaryCta.href}
-                className={`inline-block
-                           text-label font-semibold tracking-label uppercase
-                           px-12 py-4
-                           transition duration-150 ease-quick
-                           focus-visible:outline-2 focus-visible:outline-offset-[3px]
-                           ${s.secondaryCta}`}
-              >
+              <Link href={secondaryCta.href} className={secondaryCtaCva({ color })}>
                 {secondaryCta.label}
               </Link>
             )}
@@ -140,7 +194,7 @@ export default function HeroBlock({
       </div>
 
       {/* ── Visual panel ── */}
-      <div className={`relative overflow-hidden aspect-video lg:aspect-auto lg:flex-1 ${s.visualBg}`}>
+      <div className={visualPanelCva({ color })}>
         {visual ?? (
           visualSrc ? (
             <Image

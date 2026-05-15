@@ -41,6 +41,16 @@ Path alias `@/*` maps to the project root (e.g. `@/app/...`, `@/lib/...`).
 
 Tailwind v4 note: there is no `tailwind.config.ts`. Customizations go in `globals.css` using `@theme`.
 
+## Block Components & Showcase
+
+Every new block component added to `components/blocks/` must also get a static demonstration section on the showcase page (`app/showcase/page.tsx`) in the same task. The showcase section should:
+
+- Show the block in all meaningful `styleOptions` combinations (color schemes, sizes, orientation variants, etc.)
+- Use realistic placeholder copy consistent with the OptiTech brand voice
+- Be added as a clearly labelled section following the existing showcase page conventions
+
+This is a standing requirement — do not wait to be asked.
+
 ## Design Context
 
 Full design specs live in [PRODUCT.md](PRODUCT.md) and [DESIGN.md](DESIGN.md). Read both before any UI work.

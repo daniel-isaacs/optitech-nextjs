@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import PrimaryTextBlock from "@/components/blocks/PrimaryTextBlock";
+import type { PrimaryTextBlockProps } from "@/components/blocks/PrimaryTextBlock";
 
 export const metadata: Metadata = {
   title: "Design System Showcase — OptiTech",
@@ -251,12 +253,78 @@ const MOTION = [
 ] as const;
 
 const NAV_SECTIONS = [
-  { href: "#colors",     label: "Colors"        },
-  { href: "#typography", label: "Typography"    },
-  { href: "#buttons",    label: "Buttons"       },
-  { href: "#inputs",     label: "Form Elements" },
-  { href: "#spacing",    label: "Spacing"       },
-  { href: "#motion",     label: "Motion"        },
+  { href: "#colors",     label: "Colors"           },
+  { href: "#typography", label: "Typography"       },
+  { href: "#buttons",    label: "Buttons"          },
+  { href: "#inputs",     label: "Form Elements"    },
+  { href: "#spacing",    label: "Spacing"          },
+  { href: "#motion",     label: "Motion"           },
+  { href: "#blocks",     label: "Blocks"           },
+];
+
+// ── Block component demos ────────────────────────────────────────────────────
+
+const PRIMARY_TEXT_SIZES: PrimaryTextBlockProps[] = [
+  {
+    eyebrow: "The platform",
+    headline: "Speed that compounds.",
+    styleOptions: { size: "display", color: "canvas", alignment: "left" },
+  },
+  {
+    eyebrow: "Integrations",
+    headline: "Connect everything you already use.",
+    styleOptions: { size: "headline", color: "canvas", alignment: "left" },
+  },
+  {
+    eyebrow: "Customers",
+    headline: "Trusted by teams who ship fast.",
+    styleOptions: { size: "title", color: "canvas", alignment: "left" },
+  },
+  {
+    headline: "Section tag · Supporting context",
+    styleOptions: { size: "label", color: "canvas", alignment: "left" },
+  },
+];
+
+const PRIMARY_TEXT_COLORS: PrimaryTextBlockProps[] = [
+  {
+    eyebrow: "The method",
+    headline: "Precision at every layer.",
+    styleOptions: { size: "headline", color: "brand", alignment: "left" },
+  },
+  {
+    eyebrow: "The method",
+    headline: "Precision at every layer.",
+    styleOptions: { size: "headline", color: "canvas", alignment: "left" },
+  },
+  {
+    eyebrow: "The method",
+    headline: "Precision at every layer.",
+    styleOptions: { size: "headline", color: "surface", alignment: "left" },
+  },
+];
+
+const PRIMARY_TEXT_GRADIENTS: PrimaryTextBlockProps[] = [
+  {
+    eyebrow: "Brand Sweep",
+    headline: "Kinetic by design.",
+    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "brand" },
+  },
+  {
+    eyebrow: "Warm to Cool",
+    headline: "Heat meets precision.",
+    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "warm" },
+  },
+  {
+    eyebrow: "Luminous",
+    headline: "Lit from within.",
+    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "luminous" },
+  },
+  {
+    eyebrow: "Ember",
+    headline: "Burn bright.",
+    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "ember" },
+  },
 ];
 
 // ── Primitives ────────────────────────────────────────────────────────────────
@@ -816,6 +884,76 @@ export default function ShowcasePage() {
                 <code className="font-mono text-fg">@media (prefers-reduced-motion: no-preference)</code>.
               </p>
             </div>
+          </section>
+
+          {/* ── 07 Blocks ── */}
+          <section id="blocks">
+
+            {/* Section header */}
+            <div className="px-md pt-xl pb-lg lg:px-lg">
+              <SectionLabel index="07 · Components" title="PrimaryTextBlock" />
+              <p className="text-body leading-body text-fg-muted max-w-[65ch]">
+                Typographic accent block for section openers, pacing moments, and statement callouts.
+                Eyebrow label and headline only — Poppins throughout. All style options map 1:1 to CMS
+                content properties and are resolved through CVA.
+              </p>
+            </div>
+
+            {/* ── Sizes ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Sizes · canvas · left
+              </p>
+            </div>
+            {PRIMARY_TEXT_SIZES.map((props, i) => (
+              <div key={i} className="border-t border-fg/5">
+                <div className="px-md pt-sm pb-xs lg:px-lg">
+                  <span className="font-mono text-label text-fg-muted/50">
+                    size: &ldquo;{props.styleOptions?.size}&rdquo;
+                  </span>
+                </div>
+                <PrimaryTextBlock {...props} />
+              </div>
+            ))}
+
+            {/* ── Color schemes ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Color Schemes · headline · left · same copy
+              </p>
+            </div>
+            {PRIMARY_TEXT_COLORS.map((props, i) => (
+              <div key={i} className="border-t border-fg/5">
+                <div className="px-md pt-sm pb-xs lg:px-lg">
+                  <span className="font-mono text-label text-fg-muted/50">
+                    color: &ldquo;{props.styleOptions?.color}&rdquo;
+                  </span>
+                </div>
+                <PrimaryTextBlock {...props} />
+              </div>
+            ))}
+
+            {/* ── Display gradients ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Display Gradients · display · center · canvas
+              </p>
+              <p className="text-label text-fg-muted/60 mt-xs">
+                Gradient fires only when size is &ldquo;display&rdquo; — enforced by CVA compound variant.
+              </p>
+            </div>
+            {PRIMARY_TEXT_GRADIENTS.map((props, i) => (
+              <div key={i} className="border-t border-fg/5">
+                <div className="px-md pt-sm pb-xs lg:px-lg">
+                  <span className="font-mono text-label text-fg-muted/50">
+                    gradient: &ldquo;{props.styleOptions?.gradient}&rdquo;
+                  </span>
+                </div>
+                <PrimaryTextBlock {...props} />
+              </div>
+            ))}
+
+            <div className="pb-xl" />
           </section>
 
         </div>

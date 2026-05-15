@@ -3,6 +3,8 @@ import PrimaryTextBlock from "@/components/blocks/PrimaryTextBlock";
 import type { PrimaryTextBlockProps } from "@/components/blocks/PrimaryTextBlock";
 import QuoteBlock from "@/components/blocks/QuoteBlock";
 import type { QuoteBlockProps } from "@/components/blocks/QuoteBlock";
+import ImageBlock from "@/components/blocks/ImageBlock";
+import type { ImageBlockProps } from "@/components/blocks/ImageBlock";
 
 export const metadata: Metadata = {
   title: "Design System Showcase — OptiTech",
@@ -262,7 +264,8 @@ const NAV_SECTIONS = [
   { href: "#spacing",    label: "Spacing"          },
   { href: "#motion",     label: "Motion"           },
   { href: "#blocks",     label: "Blocks"           },
-  { href: "#quote-block", label: "QuoteBlock"      },
+  { href: "#quote-block",  label: "QuoteBlock"      },
+  { href: "#image-block",  label: "ImageBlock"      },
 ];
 
 // ── Block component demos ────────────────────────────────────────────────────
@@ -373,6 +376,99 @@ const QUOTE_ALIGNMENTS: QuoteBlockProps[] = [
     quote: "The only platform that keeps up with how fast we move.",
     attribution: { name: "Priya Nair", title: "Head of Product, Vertex" },
     styleOptions: { alignment: "center", color: "canvas", size: "large" },
+  },
+];
+
+// ── ImageBlock demos ─────────────────────────────────────────────────────────
+
+const IMAGE_SRC = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80&fit=crop";
+const IMAGE_ALT = "Business professionals walking past glass skyscrapers in a modern city financial district";
+
+const IMAGE_TREATMENTS: Array<{ label: string; note: string; props: ImageBlockProps }> = [
+  {
+    label: "Clean",
+    note: "No treatments — baseline",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9" } },
+  },
+  {
+    label: "Frame",
+    note: "1px teal border, 6px inset gap",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", frame: true } },
+  },
+  {
+    label: "Overlay",
+    note: "Brand teal at 40% opacity, multiply blend",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", overlay: true } },
+  },
+  {
+    label: "Frame + Overlay",
+    note: "Combined — frame holds, teal washes",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", frame: true, overlay: true } },
+  },
+];
+
+const IMAGE_CAPTIONS: Array<{ label: string; note: string; props: ImageBlockProps }> = [
+  {
+    label: "Caption inset",
+    note: "Badge floats over bottom-left corner",
+    props: {
+      src: IMAGE_SRC,
+      alt: IMAGE_ALT,
+      caption: "Precision-manufactured circuit board — OptiTech hardware layer.",
+      styleOptions: { ratio: "16:9", captionPosition: "inset" },
+    },
+  },
+  {
+    label: "Caption below",
+    note: "Label-scale text beneath the image",
+    props: {
+      src: IMAGE_SRC,
+      alt: IMAGE_ALT,
+      caption: "Precision-manufactured circuit board — OptiTech hardware layer.",
+      styleOptions: { ratio: "16:9", captionPosition: "below" },
+    },
+  },
+];
+
+const IMAGE_RATIOS: Array<{ label: string; props: ImageBlockProps }> = [
+  {
+    label: "16:9",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9" } },
+  },
+  {
+    label: "4:3",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "4:3" } },
+  },
+  {
+    label: "3:2",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "3:2" } },
+  },
+  {
+    label: "1:1",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "1:1" } },
+  },
+];
+
+const IMAGE_SHADOWS: Array<{ label: string; note: string; props: ImageBlockProps }> = [
+  {
+    label: "Shadow only",
+    note: "Teal left, signal green right — chromatic halo",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true } },
+  },
+  {
+    label: "Shadow + Frame",
+    note: "Hairline border holds the image, bloom escapes below",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, frame: true } },
+  },
+  {
+    label: "Shadow + Overlay",
+    note: "Teal wash unifies image tone; shadow amplifies it",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, overlay: true } },
+  },
+  {
+    label: "Shadow + Frame + Overlay",
+    note: "Full treatment stack",
+    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, frame: true, overlay: true } },
   },
 ];
 
@@ -1072,6 +1168,135 @@ export default function ShowcasePage() {
             ))}
 
             <div className="pb-xl" />
+          </section>
+
+          {/* ── 09 ImageBlock ── */}
+          <section id="image-block">
+
+            <div className="px-md pt-xl pb-lg lg:px-lg">
+              <SectionLabel index="09 · Components" title="ImageBlock" />
+              <p className="text-body leading-body text-fg-muted max-w-[65ch]">
+                Flexible image block for editorial, product, and illustrative imagery.
+                Contained within the column. Supports a teal brand overlay, hairline frame,
+                inset or below caption, and a scroll-triggered wipe reveal. All options map
+                1:1 to CMS content properties.
+              </p>
+            </div>
+
+            {/* ── Treatments ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Treatments
+              </p>
+            </div>
+            <div className="px-md pb-xl lg:px-lg">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                {IMAGE_TREATMENTS.map((item) => (
+                  <div key={item.label}>
+                    <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                      <span className="text-label tracking-label uppercase text-brand font-semibold">
+                        {item.label}
+                      </span>
+                      <span className="text-label text-fg-muted/60">{item.note}</span>
+                    </div>
+                    <ImageBlock {...item.props} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Captions ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Captions
+              </p>
+            </div>
+            <div className="px-md pb-xl lg:px-lg">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                {IMAGE_CAPTIONS.map((item) => (
+                  <div key={item.label}>
+                    <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                      <span className="text-label tracking-label uppercase text-brand font-semibold">
+                        {item.label}
+                      </span>
+                      <span className="text-label text-fg-muted/60">{item.note}</span>
+                    </div>
+                    <ImageBlock {...item.props} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Aspect Ratios ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Aspect Ratios
+              </p>
+            </div>
+            <div className="px-md pb-xl lg:px-lg">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-md">
+                {IMAGE_RATIOS.map((item) => (
+                  <div key={item.label}>
+                    <p className="text-label tracking-label uppercase text-brand font-semibold mb-sm">
+                      {item.label}
+                    </p>
+                    <ImageBlock {...item.props} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Shadow ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Shadow · chromatic bloom
+              </p>
+              <p className="text-label text-fg-muted/60 mt-xs">
+                Dual radial gradient — brand teal pools bottom-left, signal green bottom-right.
+                52px blur diffuses into a halo that bleeds past the image edge.
+                Works with frame and overlay.
+              </p>
+            </div>
+            <div className="px-md pb-xl lg:px-lg">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+                {IMAGE_SHADOWS.map((item) => (
+                  <div key={item.label}>
+                    <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
+                      <span className="text-label tracking-label uppercase text-brand font-semibold">
+                        {item.label}
+                      </span>
+                      <span className="text-label text-fg-muted/60">{item.note}</span>
+                    </div>
+                    <ImageBlock {...item.props} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Animate ── */}
+            <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Animate · scroll-triggered wipe reveal
+              </p>
+              <p className="text-label text-fg-muted/60 mt-xs">
+                Teal bar sweeps right; image follows on its heels via clip-path.
+                Fires once on IntersectionObserver entry. Respects prefers-reduced-motion.
+              </p>
+            </div>
+            <div className="px-md pb-xl lg:px-lg">
+              <ImageBlock
+                src={IMAGE_SRC}
+                alt={IMAGE_ALT}
+                caption="OptiTech. Precision at every layer."
+                styleOptions={{
+                  ratio: "16:9",
+                  animate: true,
+                  frame: true,
+                  captionPosition: "inset",
+                }}
+              />
+            </div>
+
           </section>
 
         </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const FOOTER_LINKS = [
   { label: "Product", href: "#" },
@@ -14,13 +15,19 @@ export default function Footer() {
 
         <div className="flex flex-col gap-lg lg:flex-row lg:items-start lg:justify-between">
 
-          {/* Wordmark */}
+          {/* Logo */}
           <Link
             href="/"
-            className="text-sm font-extrabold tracking-[0.12em] uppercase text-fg
-                       hover:text-fg-muted transition-colors duration-150 ease-quick"
+            aria-label="OptiTech — Home"
+            className="opacity-100 hover:opacity-80 transition-opacity duration-150 ease-quick"
           >
-            OptiTech
+            <Image
+              src="/brand/logo/OT.png"
+              alt="OptiTech"
+              width={160}
+              height={40}
+              className="h-7 w-auto"
+            />
           </Link>
 
           {/* Nav links */}

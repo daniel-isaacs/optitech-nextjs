@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import Button from "@/components/ui/Button";
 
@@ -20,12 +21,16 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-canvas/80 backdrop-blur-md border-b border-fg/5">
         <div className="flex items-center justify-between px-md py-md lg:px-lg">
 
-          {/* Wordmark */}
-          <Link
-            href="/"
-            className="text-sm font-extrabold tracking-[0.12em] uppercase text-fg"
-          >
-            OptiTech
+          {/* Logo */}
+          <Link href="/" aria-label="OptiTech — Home">
+            <Image
+              src="/brand/logo/OT.png"
+              alt="OptiTech"
+              width={160}
+              height={40}
+              className="h-7 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop nav */}

@@ -135,16 +135,41 @@ Geometric variable font used sparingly as an accent layer above the Poppins syst
 
 **The Weight Ladder Rule.** Adjacent hierarchy levels must differ by at least 100 in font weight. Display (800) to Headline (700) to Title (600) to Body (400). Never two adjacent levels at the same weight; the jump from 600 to 400 between Title and Body is intentional and creates the clearest separation in the scale.
 
-## 4. Elevation
+## 4. Elevation and Depth
 
-Flat at rest. Depth appears in motion.
+Depth is a design signal — it communicates hierarchy, surface material, and where the user's attention should go. OptiTech uses three depth instruments, applied selectively and always in the teal-mineral register.
 
-This system does not use shadow to communicate static layering. Three surface tones (Press Room, Editorial Black, and Oxidized Teal) create depth through color alone — no shadows stack on top. Shadows appear only as state responses: a teal-tinted glow on hover for primary interactive elements, and during the brief window of an animated entrance (elements arriving from an offset into rest position).
+### 1. Color Depth
 
-**The Flat Resting Rule.** No component carries a drop shadow in its default state. A resting shadow signals the surface doesn't know where it belongs. A hover shadow says "this responds to you." Only interactive surfaces that benefit from that signal should use hover shadows.
+The mineral palette creates inherent depth without additional treatment. Press Room over Editorial Black reads as a raised surface. Oxidized Teal commands presence by saturation contrast alone. This is the baseline — always available.
 
-### Shadow Vocabulary
-- **Hover Lift** (`0 8px 32px oklch(55% 0.18 195 / 0.25)`): Teal-tinted ambient glow on hover for teal primary buttons and prominent interactive elements. Appears on hover; does not persist at rest.
+### 2. Glass Surfaces
+
+`backdrop-filter: blur()` blurs the layer below into the element's surface, creating a sense of material depth and floating. OptiTech's glass register is dark and tinted, never light and frosted. White frosted glass reads as generic consumer SaaS; OptiTech's glass reads as architectural — darkened, teal-hued, structural.
+
+**Dark glass** — sticky nav, floating panels, cards over imagery:
+`bg-canvas/75 backdrop-blur-md` with `border border-fg/10`
+
+**Teal glass** — panels over teal surfaces or teal-tinted section backgrounds:
+`bg-brand/15 backdrop-blur-md` with `border border-brand/20`
+
+Glass is appropriate when there is something visually interesting beneath — an image, a teal fill, a multi-layer section. Glass over a flat solid same-color surface is a non-effect. Sticky navigation glass is always appropriate: it reinforces the persistent elevated position above scrolling content.
+
+### 3. Shadows
+
+Shadows communicate hierarchy and can be used at rest when they serve a clear purpose. All shadows must be tinted to the teal hue — neutral grey shadows flatten the system into generic UI patterns and break the mineral palette's coherence.
+
+**Ambient resting shadow** — for cards or panels elevated above the surrounding field:
+`box-shadow: 0 4px 24px oklch(55% 0.18 195 / 0.2)`
+
+**Hover shadow** — intensified depth on interaction:
+`box-shadow: 0 8px 32px oklch(55% 0.18 195 / 0.3)`
+
+### The Earned Depth Rule
+
+Depth must serve the hierarchy. A glass card earns its blur when it floats over imagery or a teal surface — the blur has something to reveal. A resting shadow earns its presence when it lifts a prominent element above the field — the shadow has a clear target to separate from.
+
+Depth applied uniformly is noise; applied selectively it is signal. Before adding glass or shadow, ask: "What is this surface floating above?" If the answer is unclear, the depth treatment doesn't belong.
 
 ## 5. Components
 
@@ -162,7 +187,7 @@ Sharp corners define the entire button system. No border-radius; no pill shapes.
 
 Typographic, minimal, sticky.
 
-- **Background:** Editorial Black.
+- **Background:** Dark glass — `bg-canvas/80 backdrop-blur-md` with a hairline bottom border `border-b border-fg/5`. The blur communicates persistent elevation above scrolling content without a hard line.
 - **Logo:** Poppins 800, 0.875rem, tracking +0.12em, uppercase, Press White.
 - **Links at rest:** Poppins 400, 0.875rem, Blueprint color.
 - **Links on hover:** Transition to Press White (0.15s ease-out-quart).
@@ -189,11 +214,14 @@ Typographic, minimal, sticky.
 - **Do** choreograph entrances with `cubic-bezier(0.16, 1, 0.3, 1)` (expo ease-out). Elements arrive with vertical offset or opacity transition, then rest. The entrance is the motion statement.
 - **Do** respect `prefers-reduced-motion`: every choreographed sequence and transition must degrade to an instant display when the user has set this preference.
 - **Do** meet WCAG 2.1 AA contrast on all text and interactive states, including Poppins 400 body copy over Press Room.
+- **Do** use dark glass (`bg-canvas/75 backdrop-blur-md`) and teal-tinted shadows for depth. Sticky navigation, floating panels, and cards over imagery are prime contexts. Ask "what is beneath this surface?" before applying; glass over a flat same-color ground is a non-effect.
 
 ### Don't:
 - **Don't** use the SaaS cream aesthetic: off-white backgrounds, rounded pill buttons, pastel gradient blobs, floating icon-feature grids. It is the category's first training-data reflex.
 - **Don't** use the corporate enterprise blue playbook: navy/grey palettes, stock-photo hero images, feature bullet lists, formal copywriting.
 - **Don't** let the design read as a crypto or Web3 launch site: no neon, no floating orbs or particle effects, no speculative urgency.
+- **Don't** use light frosted glass (white or near-white `backdrop-filter: blur` with light backgrounds). That reads as generic consumer SaaS. OptiTech's glass is dark-tinted and teal-hued. If it looks like an iOS control or a macOS widget, it's wrong.
+- **Don't** use neutral grey shadows (`box-shadow: 0 4px 12px rgba(0,0,0,0.2)` etc.). Shadows must carry the teal hue or they break the mineral palette's coherence.
 - **Don't** use gradient text (`background-clip: text` + gradient) decoratively or on sub-display type. **Permitted exception:** the four `.display-gradient-*` utility classes in `globals.css` (`display-gradient-brand`, `display-gradient-warm`, `display-gradient-luminous`, `display-gradient-ember`) may be used on `text-display`-scale type only. Rules: once per composition, never on body or headline copy. Gradient stops are defined as CSS custom properties in `tokens.css` and adapt automatically to the active theme (dark or light).
 - **Don't** use side-stripe borders (a colored `border-left` or `border-right` greater than 1px as an accent on cards, callouts, or list items). Rewrite with background tints, full borders, or nothing.
 - **Don't** animate CSS layout properties (`width`, `height`, `top`, `left`). Use `transform` and `opacity` only.

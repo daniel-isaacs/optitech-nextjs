@@ -60,7 +60,7 @@ Full design specs live in [PRODUCT.md](PRODUCT.md) and [DESIGN.md](DESIGN.md). R
 **Key constraints:**
 - Committed color strategy: one saturated anchor fills 30–60% of the surface (not an accent)
 - Serif display + sans body typography; serif never below 1.5rem
-- Choreographed entrances only; flat at rest; no resting shadows; `prefers-reduced-motion` required
+- Layered depth system: dark glass (`bg-canvas/75 backdrop-blur-md`, teal-tinted), teal-hued ambient shadows (can be resting), color depth from the mineral palette; `prefers-reduced-motion` required for all motion
 - WCAG 2.1 AA on all text and interactive states
 
 **Hard prohibitions (from DESIGN.md):** no gradient text, no side-stripe borders >1px, no SaaS-cream/blob aesthetic, no corporate navy, no neon-on-black/Web3 energy, no layout-property animations.

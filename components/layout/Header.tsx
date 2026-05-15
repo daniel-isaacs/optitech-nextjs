@@ -17,7 +17,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-canvas">
+      <header className="sticky top-0 z-50 bg-canvas/80 backdrop-blur-md border-b border-fg/5">
         <div className="flex items-center justify-between px-md py-md lg:px-lg">
 
           {/* Wordmark */}

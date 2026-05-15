@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { SectionLabel } from "../components";
 import HeroBlock from "@/components/blocks/HeroBlock";
 import type { HeroBlockProps } from "@/components/blocks/HeroBlock";
@@ -10,6 +11,7 @@ import QuoteBlock from "@/components/blocks/QuoteBlock";
 import type { QuoteBlockProps } from "@/components/blocks/QuoteBlock";
 import ImageBlock from "@/components/blocks/ImageBlock";
 import type { ImageBlockProps } from "@/components/blocks/ImageBlock";
+import CardBlock from "@/components/blocks/CardBlock";
 import Button from "@/components/ui/Button";
 import { ArrowRight, Zap, ChevronRight } from "lucide-react";
 
@@ -409,6 +411,15 @@ const IMAGE_SHADOWS: Array<{ label: string; note: string; props: ImageBlockProps
     props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, frame: true, overlay: true } },
   },
 ];
+
+// ─── CardBlock data ───────────────────────────────────────────────────────────
+
+const CARD_IMG_A     = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop";
+const CARD_IMG_A_ALT = "Glass skyscrapers in a modern city financial district";
+const CARD_IMG_B     = "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop";
+const CARD_IMG_B_ALT = "Electronic circuit board close-up showing components";
+const CARD_IMG_C     = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop";
+const CARD_IMG_C_ALT = "Data analytics charts on a laptop screen";
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -951,6 +962,490 @@ export default function ShowcaseBlocksPage() {
             caption="OptiTech. Precision at every layer."
             styleOptions={{ ratio: "16:9", animate: true, frame: true, captionPosition: "inset" }}
           />
+        </div>
+
+      </section>
+
+      {/* ════════════════════════════════════════════════════
+          CONTENT BLOCKS
+      ═══════════════════════════════════════════════════ */}
+      <BlockGroup
+        id="content"
+        label="Content Blocks"
+        description="Composable card components for feature sections, case studies, and collection displays. Fill and border are independently controlled; image renders as top, background, or side."
+      />
+
+      <section id="card-block" className="border-t border-fg/5">
+        <div className="px-md pt-xl pb-lg lg:px-lg">
+          <SectionLabel index="06 · Content" title="CardBlock" />
+          <p className="text-body leading-body text-fg-muted max-w-[65ch]">
+            A single composable card: eyebrow, heading, description, optional image, optional CTA.
+            Fill (<code className="font-mono text-fg text-label">ghost</code>,{" "}
+            <code className="font-mono text-fg text-label">surface</code>,{" "}
+            <code className="font-mono text-fg text-label">brand</code>,{" "}
+            <code className="font-mono text-fg text-label">light</code>) and border
+            (<code className="font-mono text-fg text-label">none</code>,{" "}
+            <code className="font-mono text-fg text-label">subtle</code>,{" "}
+            <code className="font-mono text-fg text-label">brand</code>) are independent.
+            Image style controls layout:{" "}
+            <code className="font-mono text-fg text-label">top</code> (4:3 above content),{" "}
+            <code className="font-mono text-fg text-label">background</code> (full-bleed with scrim), or{" "}
+            <code className="font-mono text-fg text-label">side</code> (40% image column, left or right).
+            Cards are <code className="font-mono text-fg text-label">h-full</code> for equal-height grid alignment.
+          </p>
+        </div>
+
+        {/* ── Fill variants ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Fill variants · no image · with CTA
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
+            <CardBlock
+              heading="Targeted Rollouts"
+              eyebrow="Deployment"
+              description="Deploy to any user segment with a single API call. Real-time, without a redeploy."
+              cta={{ label: "Learn more", href: "#" }}
+              styleOptions={{ fill: "ghost", border: "subtle" }}
+            />
+            <CardBlock
+              heading="Experiment Engine"
+              eyebrow="Analytics"
+              description="Concurrent A/B tests with automatic interaction detection. Results in hours, not weeks."
+              cta={{ label: "Learn more", href: "#" }}
+              styleOptions={{ fill: "surface" }}
+            />
+            <CardBlock
+              heading="Statistical Confidence"
+              eyebrow="Insights"
+              description="Power calculations and confidence intervals are built into the platform. No spreadsheets."
+              cta={{ label: "Learn more", href: "#" }}
+              styleOptions={{ fill: "brand" }}
+            />
+            <CardBlock
+              heading="Instant Rollback"
+              eyebrow="Safety"
+              description="One flag, one API call. Revert any change across every deployment in seconds."
+              cta={{ label: "Learn more", href: "#" }}
+              styleOptions={{ fill: "light" }}
+            />
+          </div>
+        </div>
+
+        {/* ── Border variants ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Border variants · no image
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <div>
+              <span className="font-mono text-label text-fg-muted/50">surface · border: none</span>
+              <div className="mt-sm">
+                <CardBlock
+                  heading="No Border"
+                  eyebrow="Surface"
+                  description="Surface fill with no border. Content is defined by background contrast, not a frame."
+                  cta={{ label: "Explore", href: "#" }}
+                  styleOptions={{ fill: "surface", border: "none" }}
+                />
+              </div>
+            </div>
+            <div>
+              <span className="font-mono text-label text-fg-muted/50">surface · border: subtle</span>
+              <div className="mt-sm">
+                <CardBlock
+                  heading="Subtle Border"
+                  eyebrow="Surface"
+                  description="1px at 10% foreground opacity. Barely-there definition for cards that float over dark grounds."
+                  cta={{ label: "Explore", href: "#" }}
+                  styleOptions={{ fill: "surface", border: "subtle" }}
+                />
+              </div>
+            </div>
+            <div>
+              <span className="font-mono text-label text-fg-muted/50">ghost · border: brand</span>
+              <div className="mt-sm">
+                <CardBlock
+                  heading="Brand Border"
+                  eyebrow="Ghost"
+                  description="1px teal border signals selection or attention. Works best on ghost fill over a dark section."
+                  cta={{ label: "Explore", href: "#" }}
+                  styleOptions={{ fill: "ghost", border: "brand" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Image: top ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Image: top · 4:3 aspect · surface fill
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <CardBlock
+              heading="Feature Flags at Scale"
+              eyebrow="Platform"
+              description="Ship to any segment with a kill switch on every flag. The safest way to deploy at velocity."
+              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
+              cta={{ label: "See how it works", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "top" }}
+            />
+            <CardBlock
+              heading="Precision-Grade Telemetry"
+              eyebrow="Infrastructure"
+              description="Every signal, every layer. OptiTech ingests data from flag changes, deploys, and user events in real time."
+              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
+              cta={{ label: "See how it works", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "top" }}
+            />
+            <CardBlock
+              heading="Results You Can Act On"
+              eyebrow="Analytics"
+              description="Statistical significance checks, interaction effects, and automatic stopping rules. No guesswork."
+              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
+              cta={{ label: "See how it works", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "top" }}
+            />
+          </div>
+        </div>
+
+        {/* ── Image: background ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Image: background · scrim · content at bottom
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Dark gradient from bottom. Text always press-white regardless of fill.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <CardBlock
+              heading="Ship with confidence."
+              eyebrow="Deployment"
+              description="Every flag tracked. Every change reversible."
+              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
+              cta={{ label: "Get started", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "background" }}
+            />
+            <CardBlock
+              heading="Measure what matters."
+              eyebrow="Analytics"
+              description="Real signals, not approximations."
+              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
+              styleOptions={{ fill: "surface", imageStyle: "background" }}
+            />
+            <CardBlock
+              heading="Iterate faster."
+              eyebrow="Velocity"
+              description="From hypothesis to result in hours."
+              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
+              cta={{ label: "See the platform", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "background" }}
+            />
+          </div>
+        </div>
+
+        {/* ── Image: side ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Image: side · imageSide left and right
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Stacks vertically on mobile. At md+, image occupies 40% of card width; content fills the rest.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg flex flex-col gap-lg">
+          <div>
+            <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;left&rdquo;</span>
+            <div className="mt-sm">
+              <CardBlock
+                heading="Infrastructure built for continuous delivery."
+                eyebrow="Platform"
+                description="OptiTech gives engineering teams the tooling to ship incrementally, measure precisely, and respond in real time. Feature flags, experiment infrastructure, and deployment telemetry in one platform."
+                image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
+                cta={{ label: "View the platform", href: "#" }}
+                styleOptions={{ fill: "surface", imageStyle: "side", imageSide: "left" }}
+              />
+            </div>
+          </div>
+          <div>
+            <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;right&rdquo;</span>
+            <div className="mt-sm">
+              <CardBlock
+                heading="Statistical confidence at every decision point."
+                eyebrow="Analytics"
+                description="Every experiment runs with power calculations, automatic stopping rules, and interaction effect detection. Ship when the data says so, not when the sprint ends."
+                image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
+                cta={{ label: "Explore analytics", href: "#" }}
+                styleOptions={{ fill: "surface", imageStyle: "side", imageSide: "right" }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* ── Minimal ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Minimal · eyebrow + heading only · no description · no CTA · no image
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <CardBlock
+              heading="Feature flags for every team."
+              eyebrow="Deployment"
+              styleOptions={{ fill: "surface", border: "subtle" }}
+            />
+            <CardBlock
+              heading="Experiments that answer real questions."
+              eyebrow="Analytics"
+              styleOptions={{ fill: "brand" }}
+            />
+            <CardBlock
+              heading="Rollback in one API call."
+              eyebrow="Safety"
+              styleOptions={{ fill: "ghost", border: "brand" }}
+            />
+          </div>
+        </div>
+
+        {/* ── fill:glass ──────────────────────────────────────────────────────── */}
+        <div className="px-md py-lg lg:px-lg border-t border-fg/5">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            fill:glass · dark glass panels over imagery
+          </p>
+          <p className="text-body text-fg-muted mt-xs">
+            Dark glass requires something interesting beneath it — imagery, a teal section, a layered background.
+            The border auto-defaults to subtle to define the glass panel edge.
+          </p>
+        </div>
+        <div className="relative overflow-hidden">
+          {/* Background image behind the glass grid */}
+          <Image
+            src={CARD_IMG_A}
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="100vw"
+            aria-hidden
+          />
+          {/* Dark scrim so the cards don't fight the image too hard */}
+          <div className="absolute inset-0 bg-canvas/40" />
+          <div className="relative z-10 px-md py-xl lg:px-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+              <CardBlock
+                heading="Edges computed at the edge."
+                eyebrow="Edge Network"
+                description="OptiTech routes intelligence to where your users are — 200ms becomes 20ms without changing a line of application code."
+                cta={{ label: "See coverage", href: "#" }}
+                styleOptions={{ fill: "glass", hover: "glow" }}
+              />
+              <CardBlock
+                heading="Flags ship features safely."
+                eyebrow="Feature Flags"
+                description="Controlled rollouts, instant kill-switches, and audience targeting — all without a deployment cycle."
+                cta={{ label: "Read the docs", href: "#" }}
+                styleOptions={{ fill: "glass", hover: "glow" }}
+              />
+              <CardBlock
+                heading="Every experiment tells a story."
+                eyebrow="Experimentation"
+                description="Statistical rigor built in. Run A/B tests and multivariate experiments with automatic significance detection."
+                cta={{ label: "Start experimenting", href: "#" }}
+                styleOptions={{ fill: "glass", hover: "glow" }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="px-md pt-xl pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+            {/* Glass + top image: image blurs into the glass content panel */}
+            <CardBlock
+              heading="Glass over photo."
+              eyebrow="fill:glass · imageStyle:float"
+              description="Float + glass: the content panel blurs the image below it through the glass surface — depth compounds into a single surface moment."
+              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
+              cta={{ label: "Explore", href: "#" }}
+              styleOptions={{ fill: "glass", imageStyle: "float", hover: "lift" }}
+            />
+            {/* Glass with noise + accent */}
+            <CardBlock
+              heading="Glass, grain, accent."
+              eyebrow="fill:glass · noise · accentLine:top"
+              description="Glass surface with mineral grain and a brand-teal top accent. Three depth instruments — blur, texture, edge — layered without competing."
+              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
+              cta={{ label: "Explore", href: "#" }}
+              styleOptions={{ fill: "glass", imageStyle: "top", noise: true, accentLine: "top", hover: "glow" }}
+            />
+          </div>
+        </div>
+
+        {/* ── image:float ─────────────────────────────────────────────────────── */}
+        <div className="px-md py-lg lg:px-lg border-t border-fg/5">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            image:float · content slides up over the image bottom
+          </p>
+          <p className="text-body text-fg-muted mt-xs">
+            Content box overlaps the lower portion of the image with the card&apos;s fill background — depth without resting shadows.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <CardBlock
+              heading="Infrastructure that never sleeps."
+              eyebrow="Platform"
+              description="99.99% uptime across every region, backed by automated failover and real-time health monitoring."
+              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
+              cta={{ label: "View SLA", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "float" }}
+            />
+            <CardBlock
+              heading="Signal in the noise."
+              eyebrow="Analytics"
+              description="Our engine sifts millions of events per second so your team sees what matters — not everything."
+              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
+              cta={{ label: "See the dashboard", href: "#" }}
+              styleOptions={{ fill: "brand", imageStyle: "float" }}
+            />
+            <CardBlock
+              heading="Hardware meets intelligence."
+              eyebrow="Edge compute"
+              description="Push logic to the edge. OptiTech runs where your users are, cutting round-trip latency by 80%."
+              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
+              cta={{ label: "Explore edge", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "float", border: "subtle" }}
+            />
+          </div>
+        </div>
+
+        {/* ── Hover interactions ───────────────────────────────────────────────── */}
+        <div className="px-md py-lg lg:px-lg border-t border-fg/5">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Hover interactions · lift · glow · image zoom
+          </p>
+          <p className="text-body text-fg-muted mt-xs">
+            Depth appears in motion, not at rest. All effects use transform and box-shadow only — no layout-property animation.
+            Image zoom fires on any hover variant.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <CardBlock
+              heading="Lift on hover."
+              eyebrow="hover:lift"
+              description="Card rises 4px with a faint teal ambient shadow. Returns to rest on mouse-out."
+              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
+              cta={{ label: "Interact", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "top", hover: "lift" }}
+            />
+            <CardBlock
+              heading="Glow on hover."
+              eyebrow="hover:glow"
+              description="Teal shadow blooms beneath the card on hover — no translate, pure atmospheric depth."
+              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
+              cta={{ label: "Interact", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "top", hover: "glow" }}
+            />
+            <CardBlock
+              heading="Float + lift."
+              eyebrow="float · hover:lift"
+              description="Float layout with lift interaction — the content overlap and the hover rise compound into a single editorial moment."
+              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
+              cta={{ label: "Interact", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "float", hover: "lift" }}
+            />
+          </div>
+        </div>
+
+        {/* ── Density ─────────────────────────────────────────────────────────── */}
+        <div className="px-md py-lg lg:px-lg border-t border-fg/5">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Density · compact · default · spacious
+          </p>
+          <p className="text-body text-fg-muted mt-xs">
+            Three padding tiers for different grid densities. Compact suits 4+ column grids; spacious anchors 2-column feature layouts.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <CardBlock
+              heading="Compact."
+              eyebrow="density:compact"
+              description="Tighter padding — 16px. Best in high-density grids of four or more cards."
+              styleOptions={{ fill: "surface", border: "subtle", density: "compact" }}
+            />
+            <CardBlock
+              heading="Default."
+              eyebrow="density:default"
+              description="Standard padding — 32px. The baseline for most card contexts."
+              styleOptions={{ fill: "surface", border: "subtle", density: "default" }}
+            />
+            <CardBlock
+              heading="Spacious."
+              eyebrow="density:spacious"
+              description="Generous padding — 64px. Anchors feature-level cards in two-column layouts."
+              styleOptions={{ fill: "surface", border: "subtle", density: "spacious" }}
+            />
+          </div>
+        </div>
+
+        {/* ── Accent line + noise ──────────────────────────────────────────────── */}
+        <div className="px-md py-lg lg:px-lg border-t border-fg/5">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Detail options · accent line · noise texture
+          </p>
+          <p className="text-body text-fg-muted mt-xs">
+            Accent line: 3px brand-teal top edge — not a side stripe. Noise: SVG feTurbulence grain at 7% overlay opacity adds
+            tactile depth on dark surfaces without resting shadows.
+          </p>
+        </div>
+        <div className="px-md pb-xl lg:px-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            <CardBlock
+              heading="Top accent, surface fill."
+              eyebrow="accentLine:top"
+              description="A 3px brand-teal rule on the top edge anchors the card's hierarchy without a full border."
+              styleOptions={{ fill: "surface", accentLine: "top" }}
+            />
+            <CardBlock
+              heading="Top accent, brand fill."
+              eyebrow="accentLine:top · fill:brand"
+              description="On brand panels the accent shifts to press-white at 40% — still readable, never competing."
+              styleOptions={{ fill: "brand", accentLine: "top" }}
+            />
+            <CardBlock
+              heading="Noise on dark."
+              eyebrow="noise:true · fill:surface"
+              description="Grain overlay at 7% via mix-blend-mode: overlay. Tactile mineral depth that reads as material quality, not decoration."
+              styleOptions={{ fill: "surface", border: "subtle", noise: true }}
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-md">
+            <CardBlock
+              heading="Noise on brand."
+              eyebrow="noise:true · fill:brand"
+              description="Grain on the committed teal anchor. Pushes the surface from flat paint into oxidized mineral — the brand palette's physical analogue."
+              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
+              cta={{ label: "See the platform", href: "#" }}
+              styleOptions={{ fill: "brand", imageStyle: "top", noise: true }}
+            />
+            <CardBlock
+              heading="Accent + noise + hover."
+              eyebrow="all three"
+              description="Top accent, grain texture, and lift on hover. Each detail earns its place — together they compose without competing."
+              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
+              cta={{ label: "Explore", href: "#" }}
+              styleOptions={{ fill: "surface", imageStyle: "float", accentLine: "top", noise: true, hover: "lift" }}
+            />
+          </div>
         </div>
 
       </section>

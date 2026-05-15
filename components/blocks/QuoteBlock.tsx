@@ -28,7 +28,7 @@ const sectionCva = cva("px-md lg:px-lg", {
   defaultVariants: { color: "canvas", size: "large" },
 });
 
-const figureCva = cva("", {
+const figureCva = cva("relative overflow-hidden", {
   variants: {
     alignment: {
       left:   "",
@@ -39,23 +39,45 @@ const figureCva = cva("", {
 });
 
 /**
- * Two geometric diamonds — solid at the top, fading to transparent via CSS mask.
- * On dark surfaces: brand teal at full strength.
- * On brand surface: white at 40% opacity so the fade starts more subtly.
+ * The `"` character: absolutely positioned behind the text.
+ * Sits at the top of the figure, fades downward via mask-image so it
+ * dissolves naturally as the quote text begins.
+ *
+ * On dark surfaces: brand teal at 20% opacity.
+ * On brand surface: white at 15% opacity.
+ * Centered alignment centers it behind the text column.
  */
-const quoteMarkSvgCva = cva("block w-auto pointer-events-none select-none", {
-  variants: {
-    color: {
-      brand:   "text-fg-on-brand opacity-40",
-      canvas:  "text-brand",
-      surface: "text-brand",
+const quoteMarkCva = cva(
+  "absolute top-0 font-extrabold leading-none select-none pointer-events-none",
+  {
+    variants: {
+      color: {
+        brand:   "text-fg-on-brand opacity-[0.15]",
+        canvas:  "text-brand opacity-20",
+        surface: "text-brand opacity-20",
+      },
+      size: {
+        large: "text-[10rem] lg:text-[13rem]",
+        small: "text-[7rem]  lg:text-[9rem]",
+      },
+      alignment: {
+        left:   "left-0",
+        center: "left-1/2 -translate-x-1/2",
+      },
     },
+    defaultVariants: { color: "canvas", size: "large", alignment: "left" },
+  }
+);
+
+/** Pushes the text content down so the top of the quote mark peeks above it */
+const quoteContentCva = cva("relative", {
+  variants: {
     size: {
-      large: "h-24 lg:h-32",
-      small: "h-16 lg:h-24",
+      large: "pt-[4rem] lg:pt-[5.5rem]",
+      small: "pt-[2.5rem] lg:pt-[3.5rem]",
     },
   },
-  defaultVariants: { color: "canvas", size: "large" },
+  defaultVariants: { size: "large" },
 });
 
 const quoteTextCva = cva("text-balance", {
@@ -117,29 +139,32 @@ export default function QuoteBlock({
   return (
     <section className={sectionCva({ color, size })}>
       <figure className={figureCva({ alignment })}>
-        {/* Two elongated diamonds — solid at the apex, fade to transparent below */}
-        <svg
+
+        {/* Quote mark: absolute, behind the text, top peeks — bottom fades */}
+        <span
           aria-hidden="true"
-          viewBox="0 0 56 40"
-          fill="currentColor"
-          className={quoteMarkSvgCva({ color, size })}
+          className={quoteMarkCva({ color, size, alignment })}
           style={{
-            WebkitMaskImage: "linear-gradient(to bottom, black 15%, transparent 92%)",
-            maskImage:        "linear-gradient(to bottom, black 15%, transparent 92%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 30%, transparent 78%)",
+            maskImage:        "linear-gradient(to bottom, black 30%, transparent 78%)",
           }}
         >
-          <polygon points="12,0 24,20 12,40 0,20" />
-          <polygon points="44,0 56,20 44,40 32,20" />
-        </svg>
-        <blockquote className="mt-sm">
-          <p className={quoteTextCva({ color, size })}>{quote}</p>
-        </blockquote>
-        <figcaption className="mt-lg flex flex-col gap-xs">
-          <p className={attributionNameCva({ color })}>{attribution.name}</p>
-          {attribution.title && (
-            <p className={attributionTitleCva({ color })}>{attribution.title}</p>
-          )}
-        </figcaption>
+          &ldquo;
+        </span>
+
+        {/* Content: relative so it paints above the absolute mark */}
+        <div className={quoteContentCva({ size })}>
+          <blockquote>
+            <p className={quoteTextCva({ color, size })}>{quote}</p>
+          </blockquote>
+          <figcaption className="mt-lg flex flex-col gap-xs">
+            <p className={attributionNameCva({ color })}>{attribution.name}</p>
+            {attribution.title && (
+              <p className={attributionTitleCva({ color })}>{attribution.title}</p>
+            )}
+          </figcaption>
+        </div>
+
       </figure>
     </section>
   );

@@ -131,7 +131,7 @@ Geometric variable font used sparingly as an accent layer above the Poppins syst
 - **Weight:** 450 only (`style={{ fontWeight: 450 }}`). Above 525 the geometry bloats. Token: `--ot-weight-syne`.
 - **Usage:** Accent headers, section openers, pull quotes. At most once per viewport.
 - **Variants:** Clean (`text-fg`), Brand (`text-brand`), Accent (`text-accent`), Hollow (`.syne-hollow` — wire letterforms via `-webkit-text-stroke`).
-- **Color note:** Accent (terracotta) at 62% lightness against the light canvas may fall below WCAG 3:1. Prefer Clean, Brand, or Hollow on light backgrounds.
+- **Color note:** Accent (signal green) at 82% lightness is too close in lightness to the light canvas to pass WCAG 3:1. Prefer Clean, Brand, or Hollow on light backgrounds.
 
 **The Weight Ladder Rule.** Adjacent hierarchy levels must differ by at least 100 in font weight. Display (800) to Headline (700) to Title (600) to Body (400). Never two adjacent levels at the same weight; the jump from 600 to 400 between Title and Body is intentional and creates the clearest separation in the scale.
 

@@ -96,7 +96,7 @@ body {
 }
 
 .display-gradient-warm {
-  background: linear-gradient(135deg, oklch(74% 0.20 68) 0%, oklch(55% 0.18 195) 100%);
+  background: linear-gradient(135deg, oklch(82% 0.19 145) 0%, oklch(55% 0.18 195) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -110,7 +110,7 @@ body {
 }
 
 .display-gradient-ember {
-  background: linear-gradient(135deg, oklch(80% 0.18 68) 0%, oklch(42% 0.16 68) 100%);
+  background: linear-gradient(135deg, oklch(86% 0.22 145) 0%, oklch(55% 0.16 145) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

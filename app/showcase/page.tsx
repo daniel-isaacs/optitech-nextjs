@@ -85,20 +85,20 @@ const COLORS = [
     token: "--ot-accent",
     twBg: "bg-accent",
     name: "Accent",
-    darkValue:  "oklch(62% 0.18 28)",
-    lightValue: "oklch(62% 0.18 28)",
+    darkValue:  "oklch(82% 0.19 145)",
+    lightValue: "oklch(82% 0.19 145)",
     modeFixed: true,
-    usage: "Terracotta accent. Badges, highlights, secondary CTAs, and moments that need warm contrast against teal.",
+    usage: "Signal green (#68E371). Badges, highlights, secondary CTAs, and moments that need vivid contrast against teal.",
     border: false,
   },
   {
     token: "--ot-accent-hover",
     twBg: "bg-accent-hover",
     name: "Accent Hover",
-    darkValue:  "oklch(50% 0.16 28)",
-    lightValue: "oklch(50% 0.16 28)",
+    darkValue:  "oklch(68% 0.17 145)",
+    lightValue: "oklch(68% 0.17 145)",
     modeFixed: true,
-    usage: "Deeper terracotta for hover and active states on accent-colored surfaces.",
+    usage: "Deeper signal green for hover and active states on accent-colored surfaces.",
     border: false,
   },
   {
@@ -185,12 +185,12 @@ const SYNE_VARIANTS = [
   },
   {
     label: "Accent",
-    darkColor:  "oklch(62% 0.18 28)",
-    lightColor: "oklch(62% 0.18 28)",
+    darkColor:  "oklch(82% 0.19 145)",
+    lightColor: "oklch(82% 0.19 145)",
     hollow: false,
     lightContrastWarning: true,
     token: "font-syne text-accent",
-    usage: "Terracotta accent. Warm contrast against teal. Use when you need heat and visual separation from brand-dominant surfaces.",
+    usage: "Signal green accent. Electric contrast against teal. Use when you need vivid energy and separation from brand-dominant surfaces.",
   },
   {
     label: "Hollow",
@@ -210,9 +210,9 @@ const DISPLAY_GRADIENTS = [
     usage: "Teal-family depth. Light-leading edge deepens to brand-hover at the tail. Rich, directional.",
   },
   {
-    label: "Warm to Cool",
+    label: "Signal to Teal",
     cssClass: "display-gradient-warm",
-    usage: "Amber to teal — thermally charged. Heat at the start, cool authority at the close.",
+    usage: "Signal green to brand teal — electric at the start, grounded at the close.",
   },
   {
     label: "Luminous",
@@ -220,9 +220,9 @@ const DISPLAY_GRADIENTS = [
     usage: "Near-white bleeding into brand teal. Gives type a lit-from-above quality. Best on the darkest canvas.",
   },
   {
-    label: "Ember",
+    label: "Electric",
     cssClass: "display-gradient-ember",
-    usage: "Amber monochromatic — warm, high tension within the accent family. Best for urgency moments.",
+    usage: "Signal green monochromatic — bright to deep, high tension within the accent family. Best for vivid impact moments.",
   },
 ] as const;
 

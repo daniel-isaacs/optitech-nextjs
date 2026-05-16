@@ -26,7 +26,7 @@ export default async function CmsPage({ params, searchParams }: Props) {
     const previewParams: PreviewParams = {
       preview_token: sp_str('preview_token'),
       key:           sp_str('key'),
-      ctx:           path,
+      ctx:           'edit',
       ver:           sp_str('ver'),
       loc:           sp_str('loc'),
     }

@@ -1,6 +1,7 @@
 import type { PreviewParams } from '@optimizely/cms-sdk'
 import {
   OptimizelyComponent,
+  OptimizelyComposition,
   withAppContext,
 } from '@optimizely/cms-sdk/react/server'
 import { PreviewComponent } from '@optimizely/cms-sdk/react/client'
@@ -19,11 +20,16 @@ async function PreviewPage({ searchParams }: Props) {
     params as unknown as PreviewParams,
   )
 
+  const isExperience = Array.isArray(content?.composition?.nodes)
+
   return (
     <>
       <Script src={`${cmsUrl}/util/javascript/communicationinjector.js`} />
       <PreviewComponent />
-      <OptimizelyComponent content={content} />
+      {isExperience
+        ? <OptimizelyComposition nodes={content.composition.nodes} />
+        : <OptimizelyComponent content={content} />
+      }
     </>
   )
 }

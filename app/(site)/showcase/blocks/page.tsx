@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { SectionLabel } from "../components";
-import HeroBlock from "@/components/blocks/HeroBlock";
-import type { HeroBlockProps } from "@/components/blocks/HeroBlock";
-import PrimaryTextBlock from "@/components/blocks/PrimaryTextBlock";
-import type { PrimaryTextBlockProps } from "@/components/blocks/PrimaryTextBlock";
-import RichTextBlock from "@/components/blocks/RichTextBlock";
-import type { RichTextBlockProps } from "@/components/blocks/RichTextBlock";
-import QuoteBlock from "@/components/blocks/QuoteBlock";
-import type { QuoteBlockProps } from "@/components/blocks/QuoteBlock";
-import ImageBlock from "@/components/blocks/ImageBlock";
-import type { ImageBlockProps } from "@/components/blocks/ImageBlock";
-import CardBlock from "@/components/blocks/CardBlock";
-import VideoBlock from "@/components/blocks/VideoBlock";
-import type { VideoBlockProps } from "@/components/blocks/VideoBlock";
+import OT_HeroBlock        from "@/cms/components/OT_HeroBlock";
+import OT_PrimaryTextBlock from "@/cms/components/OT_PrimaryTextBlock";
+import OT_RichTextBlock    from "@/cms/components/OT_RichTextBlock";
+import OT_QuoteBlock       from "@/cms/components/OT_QuoteBlock";
+import OT_ImageBlock       from "@/cms/components/OT_ImageBlock";
+import OT_VideoBlock       from "@/cms/components/OT_VideoBlock";
+import OT_CardBlock        from "@/cms/components/OT_CardBlock";
 import Button from "@/components/ui/Button";
 import { ArrowRight, Zap, ChevronRight } from "lucide-react";
 
@@ -47,169 +41,169 @@ function BlockGroup({
 const HERO_IMG = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80&fit=crop";
 const HERO_ALT = "Glass skyscrapers in a modern city financial district";
 
-const HERO_COLORS: Array<{ label: string; props: HeroBlockProps }> = [
+const HERO_COLORS: Array<{ label: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Brand · Image Right (default)",
-    props: {
+    content: {
       eyebrow: "Introducing OptiTech",
       headline: "Move at the speed of certainty.",
       body: "OptiTech gives your teams the infrastructure to experiment continuously, ship confidently, and know whether it worked.",
-      primaryCta:   { label: "Get started",  href: "#" },
-      secondaryCta: { label: "Learn more",   href: "#" },
-      visualSrc: HERO_IMG,
+      primaryCtaLabel:   "Get started",
+      primaryCtaUrl:     { default: "#" },
+      secondaryCtaLabel: "Learn more",
+      secondaryCtaUrl:   { default: "#" },
+      visual:    HERO_IMG,
       visualAlt: HERO_ALT,
-      styleOptions: { layout: "imageRight", color: "brand" },
     },
+    displaySettings: { layout: "imageRight", color: "brand", animation: "none" },
   },
   {
     label: "Canvas · Image Left",
-    props: {
+    content: {
       eyebrow: "The platform",
       headline: "Built for teams who ship daily.",
       body: "Feature flags, experiment data, and deployment telemetry in one platform. OptiTech closes the gap between shipping and knowing.",
-      primaryCta: { label: "View the platform", href: "#" },
-      visualSrc: HERO_IMG,
+      primaryCtaLabel: "View the platform",
+      primaryCtaUrl:   { default: "#" },
+      visual:    HERO_IMG,
       visualAlt: HERO_ALT,
-      styleOptions: { layout: "imageLeft", color: "canvas" },
     },
+    displaySettings: { layout: "imageLeft", color: "canvas", animation: "none" },
   },
   {
     label: "Surface · Image Right",
-    props: {
+    content: {
       eyebrow: "The method",
       headline: "Precision at every layer.",
       body: "From the first feature flag to the thousandth experiment, OptiTech tracks what matters and surfaces it when you need it.",
-      primaryCta: { label: "See how it works", href: "#" },
-      visualSrc: HERO_IMG,
+      primaryCtaLabel: "See how it works",
+      primaryCtaUrl:   { default: "#" },
+      visual:    HERO_IMG,
       visualAlt: HERO_ALT,
-      styleOptions: { layout: "imageRight", color: "surface" },
     },
+    displaySettings: { layout: "imageRight", color: "surface", animation: "none" },
   },
 ];
 
-const HERO_NO_IMAGE: Array<{ label: string; props: HeroBlockProps }> = [
+const HERO_NO_IMAGE: Array<{ label: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Brand · No image",
-    props: {
+    content: {
       eyebrow: "Introducing OptiTech",
       headline: "Move at the speed of certainty.",
       body: "OptiTech gives your teams the infrastructure to experiment continuously, ship confidently, and know whether it worked.",
-      primaryCta:   { label: "Get started",  href: "#" },
-      secondaryCta: { label: "Learn more",   href: "#" },
-      styleOptions: { color: "brand" },
+      primaryCtaLabel:   "Get started",
+      primaryCtaUrl:     { default: "#" },
+      secondaryCtaLabel: "Learn more",
+      secondaryCtaUrl:   { default: "#" },
     },
+    displaySettings: { color: "brand", animation: "none" },
   },
   {
     label: "Canvas · No image",
-    props: {
+    content: {
       eyebrow: "The platform",
       headline: "Built for teams who ship daily.",
       body: "Feature flags, experiment data, and deployment telemetry in one platform. OptiTech closes the gap between shipping and knowing.",
-      primaryCta: { label: "View the platform", href: "#" },
-      styleOptions: { color: "canvas" },
+      primaryCtaLabel: "View the platform",
+      primaryCtaUrl:   { default: "#" },
     },
+    displaySettings: { color: "canvas", animation: "none" },
   },
   {
     label: "Surface · No image",
-    props: {
+    content: {
       eyebrow: "The method",
       headline: "Precision at every layer.",
       body: "From the first feature flag to the thousandth experiment, OptiTech tracks what matters and surfaces it when you need it.",
-      primaryCta: { label: "See how it works", href: "#" },
-      styleOptions: { color: "surface" },
+      primaryCtaLabel: "See how it works",
+      primaryCtaUrl:   { default: "#" },
     },
+    displaySettings: { color: "surface", animation: "none" },
   },
 ];
 
-const HERO_ANIMATIONS: Array<{ label: string; note: string; props: HeroBlockProps }> = [
+const HERO_ANIMATIONS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Fade",
     note: "motion-safe: fade entrance on section mount",
-    props: {
+    content: {
       eyebrow: "Animation",
       headline: "Fade entrance.",
-      primaryCta: { label: "Get started", href: "#" },
-      visualSrc: HERO_IMG,
+      primaryCtaLabel: "Get started",
+      primaryCtaUrl:   { default: "#" },
+      visual:    HERO_IMG,
       visualAlt: HERO_ALT,
-      styleOptions: { color: "brand", animation: "fade" },
     },
+    displaySettings: { color: "brand", animation: "fade" },
   },
   {
     label: "Slide",
     note: "motion-safe: slide-up entrance — expo ease-out",
-    props: {
+    content: {
       eyebrow: "Animation",
       headline: "Slide entrance.",
-      primaryCta: { label: "Get started", href: "#" },
-      visualSrc: HERO_IMG,
+      primaryCtaLabel: "Get started",
+      primaryCtaUrl:   { default: "#" },
+      visual:    HERO_IMG,
       visualAlt: HERO_ALT,
-      styleOptions: { color: "canvas", animation: "slide" },
     },
+    displaySettings: { color: "canvas", animation: "slide" },
   },
 ];
 
 // ─── PrimaryTextBlock data ────────────────────────────────────────────────────
 
-const PRIMARY_TEXT_SIZES: PrimaryTextBlockProps[] = [
+const PRIMARY_TEXT_SIZES: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
   {
-    eyebrow: "The platform",
-    headline: "Speed that compounds.",
-    styleOptions: { size: "display", color: "canvas", alignment: "left" },
+    content:       { eyebrow: "The platform", headline: "Speed that compounds." },
+    displaySettings: { size: "display",  color: "canvas", alignment: "left", gradient: "none" },
   },
   {
-    eyebrow: "Integrations",
-    headline: "Connect everything you already use.",
-    styleOptions: { size: "headline", color: "canvas", alignment: "left" },
+    content:       { eyebrow: "Integrations", headline: "Connect everything you already use." },
+    displaySettings: { size: "headline", color: "canvas", alignment: "left", gradient: "none" },
   },
   {
-    eyebrow: "Customers",
-    headline: "Trusted by teams who ship fast.",
-    styleOptions: { size: "title", color: "canvas", alignment: "left" },
+    content:       { eyebrow: "Customers", headline: "Trusted by teams who ship fast." },
+    displaySettings: { size: "title",   color: "canvas", alignment: "left", gradient: "none" },
   },
   {
-    headline: "Section tag · Supporting context",
-    styleOptions: { size: "label", color: "canvas", alignment: "left" },
+    content:       { headline: "Section tag · Supporting context" },
+    displaySettings: { size: "label",   color: "canvas", alignment: "left", gradient: "none" },
   },
 ];
 
-const PRIMARY_TEXT_COLORS: PrimaryTextBlockProps[] = [
+const PRIMARY_TEXT_COLORS: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
   {
-    eyebrow: "The method",
-    headline: "Precision at every layer.",
-    styleOptions: { size: "headline", color: "brand", alignment: "left" },
+    content:       { eyebrow: "The method", headline: "Precision at every layer." },
+    displaySettings: { size: "headline", color: "brand",   alignment: "left", gradient: "none" },
   },
   {
-    eyebrow: "The method",
-    headline: "Precision at every layer.",
-    styleOptions: { size: "headline", color: "canvas", alignment: "left" },
+    content:       { eyebrow: "The method", headline: "Precision at every layer." },
+    displaySettings: { size: "headline", color: "canvas",  alignment: "left", gradient: "none" },
   },
   {
-    eyebrow: "The method",
-    headline: "Precision at every layer.",
-    styleOptions: { size: "headline", color: "surface", alignment: "left" },
+    content:       { eyebrow: "The method", headline: "Precision at every layer." },
+    displaySettings: { size: "headline", color: "surface", alignment: "left", gradient: "none" },
   },
 ];
 
-const PRIMARY_TEXT_GRADIENTS: PrimaryTextBlockProps[] = [
+const PRIMARY_TEXT_GRADIENTS: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
   {
-    eyebrow: "Brand Sweep",
-    headline: "Kinetic by design.",
-    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "brand" },
+    content:       { eyebrow: "Brand Sweep", headline: "Kinetic by design." },
+    displaySettings: { size: "display", color: "canvas", alignment: "center", gradient: "brand" },
   },
   {
-    eyebrow: "Warm to Cool",
-    headline: "Heat meets precision.",
-    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "warm" },
+    content:       { eyebrow: "Warm to Cool", headline: "Heat meets precision." },
+    displaySettings: { size: "display", color: "canvas", alignment: "center", gradient: "warm" },
   },
   {
-    eyebrow: "Luminous",
-    headline: "Lit from within.",
-    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "luminous" },
+    content:       { eyebrow: "Luminous", headline: "Lit from within." },
+    displaySettings: { size: "display", color: "canvas", alignment: "center", gradient: "luminous" },
   },
   {
-    eyebrow: "Ember",
-    headline: "Burn bright.",
-    styleOptions: { size: "display", color: "canvas", alignment: "center", gradient: "ember" },
+    content:       { eyebrow: "Ember", headline: "Burn bright." },
+    displaySettings: { size: "display", color: "canvas", alignment: "center", gradient: "ember" },
   },
 ];
 
@@ -245,91 +239,90 @@ const RT_STRUCTURED = `
 <p>Experiment design tools that connect directly to your data. No more waiting three weeks for results from a release you've already moved past.</p>
 `;
 
-const RICH_TEXT_COLORS: RichTextBlockProps[] = [
-  { content: RT_FULL, styleOptions: { color: "canvas", size: "editorial" } },
-  { content: RT_FULL, styleOptions: { color: "surface", size: "editorial" } },
-  { content: RT_FULL, styleOptions: { color: "brand",   size: "editorial" } },
+const RICH_TEXT_COLORS: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
+  { content: { content: { html: RT_FULL } }, displaySettings: { color: "canvas",  size: "editorial", alignment: "left", treatment: "standard", ruledHeadings: false } },
+  { content: { content: { html: RT_FULL } }, displaySettings: { color: "surface", size: "editorial", alignment: "left", treatment: "standard", ruledHeadings: false } },
+  { content: { content: { html: RT_FULL } }, displaySettings: { color: "brand",   size: "editorial", alignment: "left", treatment: "standard", ruledHeadings: false } },
 ];
 
-const RICH_TEXT_TREATMENTS: Array<{ label: string; note: string; props: RichTextBlockProps }> = [
+const RICH_TEXT_TREATMENTS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Standard",
     note: "Faithful prose rendering (default)",
-    props: { content: RT_PROSE, styleOptions: { color: "canvas", treatment: "standard" } },
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas", treatment: "standard", size: "editorial", alignment: "left", ruledHeadings: false },
   },
   {
     label: "Lead",
     note: "First paragraph promoted to deck size in Blueprint color",
-    props: { content: RT_PROSE, styleOptions: { color: "canvas", treatment: "lead" } },
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas", treatment: "lead", size: "editorial", alignment: "left", ruledHeadings: false },
   },
   {
     label: "Dropcap",
     note: "First letter enlarged in brand teal, floated left",
-    props: { content: RT_PROSE, styleOptions: { color: "canvas", treatment: "dropcap" } },
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas", treatment: "dropcap", size: "editorial", alignment: "left", ruledHeadings: false },
   },
 ];
 
-const RICH_TEXT_OPTIONS: Array<{ label: string; note: string; props: RichTextBlockProps }> = [
+const RICH_TEXT_OPTIONS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Ruled headings",
     note: "1px teal rule above h2 and h3: editorial chapter dividers",
-    props: { content: RT_STRUCTURED, styleOptions: { color: "canvas", ruledHeadings: true } },
+    content: { content: { html: RT_STRUCTURED } },
+    displaySettings: { color: "canvas",  size: "editorial", ruledHeadings: true, alignment: "left", treatment: "standard" },
   },
   {
     label: "Compact + ruled",
     note: "Tighter scale for shorter sections; ruled headings still apply",
-    props: { content: RT_STRUCTURED, styleOptions: { color: "surface", size: "compact", ruledHeadings: true } },
+    content: { content: { html: RT_STRUCTURED } },
+    displaySettings: { color: "surface", size: "compact",   ruledHeadings: true, alignment: "left", treatment: "standard" },
   },
   {
     label: "Center aligned",
     note: "Column centred within the section, for opening statements",
-    props: { content: RT_PROSE, styleOptions: { color: "canvas", alignment: "center", treatment: "lead" } },
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas",  alignment: "center", treatment: "lead", size: "editorial", ruledHeadings: false },
   },
 ];
 
 // ─── QuoteBlock data ──────────────────────────────────────────────────────────
 
-const QUOTE_COLOR_SCHEMES: QuoteBlockProps[] = [
+const QUOTE_COLOR_SCHEMES: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
   {
-    quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.",
-    attribution: { name: "Sarah Chen", title: "VP Engineering, Meridian" },
-    styleOptions: { color: "brand", alignment: "left", size: "large" },
+    content: { quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.", attributionName: "Sarah Chen", attributionTitle: "VP Engineering, Meridian" },
+    displaySettings: { color: "brand",   alignment: "left", size: "large" },
   },
   {
-    quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.",
-    attribution: { name: "Sarah Chen", title: "VP Engineering, Meridian" },
-    styleOptions: { color: "canvas", alignment: "left", size: "large" },
+    content: { quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.", attributionName: "Sarah Chen", attributionTitle: "VP Engineering, Meridian" },
+    displaySettings: { color: "canvas",  alignment: "left", size: "large" },
   },
   {
-    quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.",
-    attribution: { name: "Sarah Chen", title: "VP Engineering, Meridian" },
-    styleOptions: { color: "surface", alignment: "left", size: "large" },
+    content: { quote: "OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.", attributionName: "Sarah Chen", attributionTitle: "VP Engineering, Meridian" },
+    displaySettings: { color: "surface", alignment: "left", size: "large" },
   },
 ];
 
-const QUOTE_SIZES: QuoteBlockProps[] = [
+const QUOTE_SIZES: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
   {
-    quote: "We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.",
-    attribution: { name: "Marcus Reid", title: "CTO, Folio" },
-    styleOptions: { size: "large", color: "canvas", alignment: "left" },
+    content: { quote: "We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.", attributionName: "Marcus Reid", attributionTitle: "CTO, Folio" },
+    displaySettings: { size: "large", color: "canvas", alignment: "left" },
   },
   {
-    quote: "We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.",
-    attribution: { name: "Marcus Reid", title: "CTO, Folio" },
-    styleOptions: { size: "small", color: "canvas", alignment: "left" },
+    content: { quote: "We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.", attributionName: "Marcus Reid", attributionTitle: "CTO, Folio" },
+    displaySettings: { size: "small", color: "canvas", alignment: "left" },
   },
 ];
 
-const QUOTE_ALIGNMENTS: QuoteBlockProps[] = [
+const QUOTE_ALIGNMENTS: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
   {
-    quote: "The only platform that keeps up with how fast we move.",
-    attribution: { name: "Priya Nair", title: "Head of Product, Vertex" },
-    styleOptions: { alignment: "left", color: "canvas", size: "large" },
+    content: { quote: "The only platform that keeps up with how fast we move.", attributionName: "Priya Nair", attributionTitle: "Head of Product, Vertex" },
+    displaySettings: { alignment: "left",   color: "canvas", size: "large" },
   },
   {
-    quote: "The only platform that keeps up with how fast we move.",
-    attribution: { name: "Priya Nair", title: "Head of Product, Vertex" },
-    styleOptions: { alignment: "center", color: "canvas", size: "large" },
+    content: { quote: "The only platform that keeps up with how fast we move.", attributionName: "Priya Nair", attributionTitle: "Head of Product, Vertex" },
+    displaySettings: { alignment: "center", color: "canvas", size: "large" },
   },
 ];
 
@@ -338,89 +331,91 @@ const QUOTE_ALIGNMENTS: QuoteBlockProps[] = [
 const IMAGE_SRC = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80&fit=crop";
 const IMAGE_ALT = "Business professionals walking past glass skyscrapers in a modern city financial district";
 
-const IMAGE_TREATMENTS: Array<{ label: string; note: string; props: ImageBlockProps }> = [
+const IMAGE_TREATMENTS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Clean",
     note: "No treatments — baseline",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9" } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9" },
   },
   {
     label: "Frame: offset",
     note: "Bold teal backing block — 12px mounting-board strip on right and bottom",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", frame: "offset" } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", frame: "offset" },
   },
   {
     label: "Frame: glow",
     note: "Inset teal ring + outer ambient bloom — image appears backlit",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", frame: "glow" } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", frame: "glow" },
   },
   {
     label: "Overlay",
     note: "Brand teal at 40% opacity, multiply blend",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", overlay: true } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", overlay: true },
   },
   {
     label: "Glow + Overlay",
     note: "Atmospheric — teal wash unifies tone, glow defines the edge",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", frame: "glow", overlay: true } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", frame: "glow", overlay: true },
   },
   {
     label: "Offset + Overlay",
     note: "Bold — teal backing anchors the image; wash pulls the palette through",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", frame: "offset", overlay: true } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", frame: "offset", overlay: true },
   },
 ];
 
-const IMAGE_CAPTIONS: Array<{ label: string; note: string; props: ImageBlockProps }> = [
+const IMAGE_CAPTIONS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Caption inset",
     note: "Badge floats over bottom-left corner",
-    props: {
-      src: IMAGE_SRC,
-      alt: IMAGE_ALT,
-      caption: "Precision-manufactured circuit board — OptiTech hardware layer.",
-      styleOptions: { ratio: "16:9", captionPosition: "inset" },
-    },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT, caption: "Precision-manufactured circuit board — OptiTech hardware layer." },
+    displaySettings: { ratio: "r16_9", captionPosition: "inset" },
   },
   {
     label: "Caption below",
     note: "Label-scale text beneath the image",
-    props: {
-      src: IMAGE_SRC,
-      alt: IMAGE_ALT,
-      caption: "Precision-manufactured circuit board — OptiTech hardware layer.",
-      styleOptions: { ratio: "16:9", captionPosition: "below" },
-    },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT, caption: "Precision-manufactured circuit board — OptiTech hardware layer." },
+    displaySettings: { ratio: "r16_9", captionPosition: "below" },
   },
 ];
 
-const IMAGE_RATIOS: Array<{ label: string; props: ImageBlockProps }> = [
-  { label: "16:9", props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9" } } },
-  { label: "4:3",  props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "4:3"  } } },
-  { label: "3:2",  props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "3:2"  } } },
-  { label: "1:1",  props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "1:1"  } } },
+const IMAGE_RATIOS: Array<{ label: string; content: any; displaySettings: Record<string, string | boolean> }> = [
+  { label: "16:9", content: { image: IMAGE_SRC, alt: IMAGE_ALT }, displaySettings: { ratio: "r16_9" } },
+  { label: "4:3",  content: { image: IMAGE_SRC, alt: IMAGE_ALT }, displaySettings: { ratio: "r4_3"  } },
+  { label: "3:2",  content: { image: IMAGE_SRC, alt: IMAGE_ALT }, displaySettings: { ratio: "r3_2"  } },
+  { label: "1:1",  content: { image: IMAGE_SRC, alt: IMAGE_ALT }, displaySettings: { ratio: "r1_1"  } },
 ];
 
-const IMAGE_SHADOWS: Array<{ label: string; note: string; props: ImageBlockProps }> = [
+const IMAGE_SHADOWS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Shadow only",
     note: "Teal left, signal green right — chromatic halo",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", shadow: true },
   },
   {
     label: "Shadow + Glow",
     note: "Inset glow defines the image boundary; shadow bloom radiates below — two depths, one surface",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, frame: "glow" } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", shadow: true, frame: "glow" },
   },
   {
     label: "Shadow + Overlay",
     note: "Teal wash unifies image tone; shadow amplifies it",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, overlay: true } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", shadow: true, overlay: true },
   },
   {
     label: "Shadow + Glow + Overlay",
     note: "Full atmospheric stack — wash, edge glow, and bloom all in the same teal register",
-    props: { src: IMAGE_SRC, alt: IMAGE_ALT, styleOptions: { ratio: "16:9", shadow: true, frame: "glow", overlay: true } },
+    content: { image: IMAGE_SRC, alt: IMAGE_ALT },
+    displaySettings: { ratio: "r16_9", shadow: true, frame: "glow", overlay: true },
   },
 ];
 
@@ -431,49 +426,57 @@ const VIDEO_SRC_VM   = "https://vimeo.com/148751763";
 const VIDEO_TITLE_YT = "OptiTech Platform Overview";
 const VIDEO_TITLE_VM = "OptiTech Case Study: Meridian Engineering";
 
-const VIDEO_TREATMENTS: Array<{ label: string; note: string; props: VideoBlockProps }> = [
+const VIDEO_TREATMENTS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Clean",
     note: "No treatments — baseline",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9" } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9" },
   },
   {
     label: "Frame: offset",
     note: "Bold teal backing block — 12px mounting-board strip on right and bottom",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "offset" } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9", frame: "offset" },
   },
   {
     label: "Frame: glow",
     note: "Inset teal ring + outer ambient bloom — poster appears backlit",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "glow" } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9", frame: "glow" },
   },
   {
     label: "Overlay",
     note: "Brand teal at 40% opacity, multiply blend — tints thumbnail in the brand palette",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", overlay: true } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9", overlay: true },
   },
   {
     label: "Glow + Overlay",
     note: "Atmospheric — teal wash unifies thumbnail tone, glow defines the edge",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "glow", overlay: true } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9", frame: "glow", overlay: true },
   },
   {
     label: "Offset + Overlay",
     note: "Bold — teal backing anchors the frame; wash pulls the palette through the thumbnail",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", frame: "offset", overlay: true } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9", frame: "offset", overlay: true },
   },
 ];
 
-const VIDEO_SHADOWS: Array<{ label: string; note: string; props: VideoBlockProps }> = [
+const VIDEO_SHADOWS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
   {
     label: "Shadow only",
     note: "Teal left, signal green right — chromatic halo",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", shadow: true } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9", shadow: true },
   },
   {
     label: "Shadow + Glow",
     note: "Inset glow defines the boundary; shadow bloom radiates below — two depths, one surface",
-    props: { src: VIDEO_SRC_YT, title: VIDEO_TITLE_YT, styleOptions: { ratio: "16:9", shadow: true, frame: "glow" } },
+    content: { src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT },
+    displaySettings: { ratio: "r16_9", shadow: true, frame: "glow" },
   },
 ];
 
@@ -636,16 +639,13 @@ export default function ShowcaseBlocksPage() {
         description="Split-panel hero sections: a text panel on one side, a visual panel on the other. The visual panel accepts a next/image src or any ReactNode for custom compositions like SVGs or code samples."
       />
 
-      {/* HeroBlock */}
       <section id="hero-block" className="border-t border-fg/5">
         <div className="px-md pt-xl pb-lg lg:px-lg">
           <SectionLabel index="01 · Hero" title="HeroBlock" />
           <p className="text-body leading-body text-fg-muted max-w-[65ch]">
             Full-bleed split layout with a text panel and an optional visual panel. When no visual
             is provided the text panel expands to full width. Layout, color, and entrance animation
-            are style options. CTAs are optional. Visual accepts{" "}
-            <code className="font-mono text-fg text-label">visualSrc</code> (next/image)
-            or a <code className="font-mono text-fg text-label">visual</code> ReactNode override.
+            are display settings. CTAs are optional.
           </p>
         </div>
 
@@ -660,7 +660,7 @@ export default function ShowcaseBlocksPage() {
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">{item.label}</span>
             </div>
-            <HeroBlock {...item.props} />
+            <OT_HeroBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -678,7 +678,7 @@ export default function ShowcaseBlocksPage() {
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">{item.label}</span>
             </div>
-            <HeroBlock {...item.props} />
+            <OT_HeroBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -699,7 +699,7 @@ export default function ShowcaseBlocksPage() {
               </span>
               <span className="text-label text-fg-muted/60">{item.note}</span>
             </div>
-            <HeroBlock {...item.props} />
+            <OT_HeroBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -721,8 +721,8 @@ export default function ShowcaseBlocksPage() {
           <SectionLabel index="02 · Typography" title="PrimaryTextBlock" />
           <p className="text-body leading-body text-fg-muted max-w-[65ch]">
             Typographic accent block for section openers, pacing moments, and statement callouts.
-            Eyebrow label and headline only — Poppins throughout. All style options map 1:1 to CMS
-            content properties.
+            Eyebrow label and headline only — Poppins throughout. All display settings map 1:1 to CMS
+            display template choices.
           </p>
         </div>
 
@@ -731,14 +731,14 @@ export default function ShowcaseBlocksPage() {
             Sizes · canvas · left
           </p>
         </div>
-        {PRIMARY_TEXT_SIZES.map((props, i) => (
+        {PRIMARY_TEXT_SIZES.map((item, i) => (
           <div key={i} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">
-                size: &ldquo;{props.styleOptions?.size}&rdquo;
+                size: &ldquo;{item.displaySettings.size}&rdquo;
               </span>
             </div>
-            <PrimaryTextBlock {...props} />
+            <OT_PrimaryTextBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -747,14 +747,14 @@ export default function ShowcaseBlocksPage() {
             Color Schemes · headline · left · same copy
           </p>
         </div>
-        {PRIMARY_TEXT_COLORS.map((props, i) => (
+        {PRIMARY_TEXT_COLORS.map((item, i) => (
           <div key={i} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">
-                color: &ldquo;{props.styleOptions?.color}&rdquo;
+                color: &ldquo;{item.displaySettings.color}&rdquo;
               </span>
             </div>
-            <PrimaryTextBlock {...props} />
+            <OT_PrimaryTextBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -766,14 +766,14 @@ export default function ShowcaseBlocksPage() {
             Gradient fires only when size is &ldquo;display&rdquo; — enforced by CVA compound variant.
           </p>
         </div>
-        {PRIMARY_TEXT_GRADIENTS.map((props, i) => (
+        {PRIMARY_TEXT_GRADIENTS.map((item, i) => (
           <div key={i} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">
-                gradient: &ldquo;{props.styleOptions?.gradient}&rdquo;
+                gradient: &ldquo;{item.displaySettings.gradient}&rdquo;
               </span>
             </div>
-            <PrimaryTextBlock {...props} />
+            <OT_PrimaryTextBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -796,14 +796,14 @@ export default function ShowcaseBlocksPage() {
             Color Schemes · editorial · left · same copy
           </p>
         </div>
-        {RICH_TEXT_COLORS.map((props, i) => (
+        {RICH_TEXT_COLORS.map((item, i) => (
           <div key={i} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">
-                color: &ldquo;{props.styleOptions?.color}&rdquo;
+                color: &ldquo;{item.displaySettings.color}&rdquo;
               </span>
             </div>
-            <RichTextBlock {...props} />
+            <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -819,11 +819,11 @@ export default function ShowcaseBlocksPage() {
           <div key={item.label} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg flex flex-wrap items-baseline gap-x-sm gap-y-xs">
               <span className="font-mono text-label text-fg-muted/50">
-                treatment: &ldquo;{item.props.styleOptions?.treatment}&rdquo;
+                treatment: &ldquo;{item.displaySettings.treatment}&rdquo;
               </span>
               <span className="text-label text-fg-muted/40">{item.note}</span>
             </div>
-            <RichTextBlock {...item.props} />
+            <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -840,7 +840,7 @@ export default function ShowcaseBlocksPage() {
               </span>
               <span className="text-label text-fg-muted/60">{item.note}</span>
             </div>
-            <RichTextBlock {...item.props} />
+            <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -861,7 +861,7 @@ export default function ShowcaseBlocksPage() {
           <SectionLabel index="04 · Quote" title="QuoteBlock" />
           <p className="text-body leading-body text-fg-muted max-w-[65ch]">
             Typographic anchor moment for customer social proof and editorial pull quotes.
-            All style options map 1:1 to CMS content properties.
+            All display settings map 1:1 to CMS display template choices.
           </p>
         </div>
 
@@ -870,14 +870,14 @@ export default function ShowcaseBlocksPage() {
             Color Schemes · large · left · same copy
           </p>
         </div>
-        {QUOTE_COLOR_SCHEMES.map((props, i) => (
+        {QUOTE_COLOR_SCHEMES.map((item, i) => (
           <div key={i} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">
-                color: &ldquo;{props.styleOptions?.color}&rdquo;
+                color: &ldquo;{item.displaySettings.color}&rdquo;
               </span>
             </div>
-            <QuoteBlock {...props} />
+            <OT_QuoteBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -886,14 +886,14 @@ export default function ShowcaseBlocksPage() {
             Sizes · canvas · left · same copy
           </p>
         </div>
-        {QUOTE_SIZES.map((props, i) => (
+        {QUOTE_SIZES.map((item, i) => (
           <div key={i} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">
-                size: &ldquo;{props.styleOptions?.size}&rdquo;
+                size: &ldquo;{item.displaySettings.size}&rdquo;
               </span>
             </div>
-            <QuoteBlock {...props} />
+            <OT_QuoteBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -902,14 +902,14 @@ export default function ShowcaseBlocksPage() {
             Alignment · canvas · large · same copy
           </p>
         </div>
-        {QUOTE_ALIGNMENTS.map((props, i) => (
+        {QUOTE_ALIGNMENTS.map((item, i) => (
           <div key={i} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg">
               <span className="font-mono text-label text-fg-muted/50">
-                alignment: &ldquo;{props.styleOptions?.alignment}&rdquo;
+                alignment: &ldquo;{item.displaySettings.alignment}&rdquo;
               </span>
             </div>
-            <QuoteBlock {...props} />
+            <OT_QuoteBlock content={item.content} displaySettings={item.displaySettings} />
           </div>
         ))}
 
@@ -930,8 +930,8 @@ export default function ShowcaseBlocksPage() {
           <SectionLabel index="05 · Media" title="ImageBlock" />
           <p className="text-body leading-body text-fg-muted max-w-[65ch]">
             Flexible image block with two frame modes (bold offset backing, atmospheric glow), teal brand overlay,
-            inset or below caption, chromatic shadow bloom, and a scroll-triggered wipe reveal. All options map 1:1 to CMS
-            content properties.
+            inset or below caption, chromatic shadow bloom, and a scroll-triggered wipe reveal. All display settings
+            map 1:1 to CMS display template choices.
           </p>
         </div>
 
@@ -947,7 +947,7 @@ export default function ShowcaseBlocksPage() {
                   <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                   <span className="text-label text-fg-muted/60">{item.note}</span>
                 </div>
-                <ImageBlock {...item.props} />
+                <OT_ImageBlock content={item.content} displaySettings={item.displaySettings} />
               </div>
             ))}
           </div>
@@ -965,7 +965,7 @@ export default function ShowcaseBlocksPage() {
                   <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                   <span className="text-label text-fg-muted/60">{item.note}</span>
                 </div>
-                <ImageBlock {...item.props} />
+                <OT_ImageBlock content={item.content} displaySettings={item.displaySettings} />
               </div>
             ))}
           </div>
@@ -980,7 +980,7 @@ export default function ShowcaseBlocksPage() {
             {IMAGE_RATIOS.map((item) => (
               <div key={item.label}>
                 <p className="text-label tracking-label uppercase text-brand font-semibold mb-sm">{item.label}</p>
-                <ImageBlock {...item.props} />
+                <OT_ImageBlock content={item.content} displaySettings={item.displaySettings} />
               </div>
             ))}
           </div>
@@ -1004,7 +1004,7 @@ export default function ShowcaseBlocksPage() {
                   <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                   <span className="text-label text-fg-muted/60">{item.note}</span>
                 </div>
-                <ImageBlock {...item.props} />
+                <OT_ImageBlock content={item.content} displaySettings={item.displaySettings} />
               </div>
             ))}
           </div>
@@ -1021,11 +1021,9 @@ export default function ShowcaseBlocksPage() {
           </p>
         </div>
         <div className="px-md pb-xl lg:px-lg">
-          <ImageBlock
-            src={IMAGE_SRC}
-            alt={IMAGE_ALT}
-            caption="OptiTech. Precision at every layer."
-            styleOptions={{ ratio: "16:9", animate: true, frame: "offset", captionPosition: "inset" }}
+          <OT_ImageBlock
+            content={{ image: IMAGE_SRC, alt: IMAGE_ALT, caption: "OptiTech. Precision at every layer." }}
+            displaySettings={{ ratio: "r16_9", animate: true, frame: "offset", captionPosition: "inset" }}
           />
         </div>
 
@@ -1036,8 +1034,8 @@ export default function ShowcaseBlocksPage() {
           <SectionLabel index="06 · Media" title="VideoBlock" />
           <p className="text-body leading-body text-fg-muted max-w-[65ch]">
             YouTube and Vimeo embeds with a branded poster state. Platform thumbnails are auto-fetched;
-            a teal play button replaces the iframe until clicked. Mirrors ImageBlock&apos;s full style
-            API: frame treatments, overlay, shadow bloom, and caption.
+            a teal play button replaces the iframe until clicked. Mirrors ImageBlock&apos;s full display
+            settings API: frame treatments, overlay, shadow bloom, and caption.
           </p>
         </div>
 
@@ -1058,10 +1056,9 @@ export default function ShowcaseBlocksPage() {
                 <span className="text-label tracking-label uppercase text-brand font-semibold">YouTube</span>
                 <span className="text-label text-fg-muted/60">Platform thumbnail + branded play button</span>
               </div>
-              <VideoBlock
-                src={VIDEO_SRC_YT}
-                title={VIDEO_TITLE_YT}
-                styleOptions={{ ratio: "16:9" }}
+              <OT_VideoBlock
+                content={{ src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT }}
+                displaySettings={{ ratio: "r16_9" }}
               />
             </div>
             <div>
@@ -1069,10 +1066,9 @@ export default function ShowcaseBlocksPage() {
                 <span className="text-label tracking-label uppercase text-brand font-semibold">Vimeo</span>
                 <span className="text-label text-fg-muted/60">oEmbed thumbnail fetched on mount — shimmer while loading</span>
               </div>
-              <VideoBlock
-                src={VIDEO_SRC_VM}
-                title={VIDEO_TITLE_VM}
-                styleOptions={{ ratio: "16:9" }}
+              <OT_VideoBlock
+                content={{ src: { default: VIDEO_SRC_VM }, title: VIDEO_TITLE_VM }}
+                displaySettings={{ ratio: "r16_9" }}
               />
             </div>
           </div>
@@ -1093,7 +1089,7 @@ export default function ShowcaseBlocksPage() {
                   <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                   <span className="text-label text-fg-muted/60">{item.note}</span>
                 </div>
-                <VideoBlock {...item.props} />
+                <OT_VideoBlock content={item.content} displaySettings={item.displaySettings} />
               </div>
             ))}
           </div>
@@ -1117,7 +1113,7 @@ export default function ShowcaseBlocksPage() {
                   <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                   <span className="text-label text-fg-muted/60">{item.note}</span>
                 </div>
-                <VideoBlock {...item.props} />
+                <OT_VideoBlock content={item.content} displaySettings={item.displaySettings} />
               </div>
             ))}
           </div>
@@ -1134,11 +1130,9 @@ export default function ShowcaseBlocksPage() {
                 <span className="text-label tracking-label uppercase text-brand font-semibold">Inset</span>
                 <span className="text-label text-fg-muted/60">Badge floats over bottom-left corner of the poster</span>
               </div>
-              <VideoBlock
-                src={VIDEO_SRC_YT}
-                title={VIDEO_TITLE_YT}
-                caption="OptiTech. Precision at every layer."
-                styleOptions={{ ratio: "16:9", captionPosition: "inset" }}
+              <OT_VideoBlock
+                content={{ src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT, caption: "OptiTech. Precision at every layer." }}
+                displaySettings={{ ratio: "r16_9", captionPosition: "inset" }}
               />
             </div>
             <div>
@@ -1146,11 +1140,9 @@ export default function ShowcaseBlocksPage() {
                 <span className="text-label tracking-label uppercase text-brand font-semibold">Below</span>
                 <span className="text-label text-fg-muted/60">Label-scale text beneath the video</span>
               </div>
-              <VideoBlock
-                src={VIDEO_SRC_YT}
-                title={VIDEO_TITLE_YT}
-                caption="OptiTech. Precision at every layer."
-                styleOptions={{ ratio: "16:9", captionPosition: "below" }}
+              <OT_VideoBlock
+                content={{ src: { default: VIDEO_SRC_YT }, title: VIDEO_TITLE_YT, caption: "OptiTech. Precision at every layer." }}
+                displaySettings={{ ratio: "r16_9", captionPosition: "below" }}
               />
             </div>
           </div>
@@ -1179,11 +1171,7 @@ export default function ShowcaseBlocksPage() {
             (<code className="font-mono text-fg text-label">none</code>,{" "}
             <code className="font-mono text-fg text-label">subtle</code>,{" "}
             <code className="font-mono text-fg text-label">brand</code>) are independent.
-            Image style controls layout:{" "}
-            <code className="font-mono text-fg text-label">top</code> (4:3 above content),{" "}
-            <code className="font-mono text-fg text-label">background</code> (full-bleed with scrim), or{" "}
-            <code className="font-mono text-fg text-label">side</code> (40% image column, left or right).
-            Cards are <code className="font-mono text-fg text-label">h-full</code> for equal-height grid alignment.
+            All display settings map 1:1 to CMS display template choices.
           </p>
         </div>
 
@@ -1195,33 +1183,21 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
-            <CardBlock
-              heading="Targeted Rollouts"
-              eyebrow="Deployment"
-              description="Deploy to any user segment with a single API call. Real-time, without a redeploy."
-              cta={{ label: "Learn more", href: "#" }}
-              styleOptions={{ fill: "ghost", border: "subtle" }}
+            <OT_CardBlock
+              content={{ Heading: "Targeted Rollouts", Eyebrow: "Deployment", Description: "Deploy to any user segment with a single API call. Real-time, without a redeploy.", ctaLabel: "Learn more", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "ghost", border: "subtle" }}
             />
-            <CardBlock
-              heading="Experiment Engine"
-              eyebrow="Analytics"
-              description="Concurrent A/B tests with automatic interaction detection. Results in hours, not weeks."
-              cta={{ label: "Learn more", href: "#" }}
-              styleOptions={{ fill: "surface" }}
+            <OT_CardBlock
+              content={{ Heading: "Experiment Engine", Eyebrow: "Analytics", Description: "Concurrent A/B tests with automatic interaction detection. Results in hours, not weeks.", ctaLabel: "Learn more", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface" }}
             />
-            <CardBlock
-              heading="Statistical Confidence"
-              eyebrow="Insights"
-              description="Power calculations and confidence intervals are built into the platform. No spreadsheets."
-              cta={{ label: "Learn more", href: "#" }}
-              styleOptions={{ fill: "brand" }}
+            <OT_CardBlock
+              content={{ Heading: "Statistical Confidence", Eyebrow: "Insights", Description: "Power calculations and confidence intervals are built into the platform. No spreadsheets.", ctaLabel: "Learn more", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "brand" }}
             />
-            <CardBlock
-              heading="Instant Rollback"
-              eyebrow="Safety"
-              description="One flag, one API call. Revert any change across every deployment in seconds."
-              cta={{ label: "Learn more", href: "#" }}
-              styleOptions={{ fill: "light" }}
+            <OT_CardBlock
+              content={{ Heading: "Instant Rollback", Eyebrow: "Safety", Description: "One flag, one API call. Revert any change across every deployment in seconds.", ctaLabel: "Learn more", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "light" }}
             />
           </div>
         </div>
@@ -1237,36 +1213,27 @@ export default function ShowcaseBlocksPage() {
             <div>
               <span className="font-mono text-label text-fg-muted/50">surface · border: none</span>
               <div className="mt-sm">
-                <CardBlock
-                  heading="No Border"
-                  eyebrow="Surface"
-                  description="Surface fill with no border. Content is defined by background contrast, not a frame."
-                  cta={{ label: "Explore", href: "#" }}
-                  styleOptions={{ fill: "surface", border: "none" }}
+                <OT_CardBlock
+                  content={{ Heading: "No Border", Eyebrow: "Surface", Description: "Surface fill with no border. Content is defined by background contrast, not a frame.", ctaLabel: "Explore", ctaUrl: { default: "#" } }}
+                  displaySettings={{ fill: "surface", border: "none" }}
                 />
               </div>
             </div>
             <div>
               <span className="font-mono text-label text-fg-muted/50">surface · border: subtle</span>
               <div className="mt-sm">
-                <CardBlock
-                  heading="Subtle Border"
-                  eyebrow="Surface"
-                  description="1px at 10% foreground opacity. Barely-there definition for cards that float over dark grounds."
-                  cta={{ label: "Explore", href: "#" }}
-                  styleOptions={{ fill: "surface", border: "subtle" }}
+                <OT_CardBlock
+                  content={{ Heading: "Subtle Border", Eyebrow: "Surface", Description: "1px at 10% foreground opacity. Barely-there definition for cards that float over dark grounds.", ctaLabel: "Explore", ctaUrl: { default: "#" } }}
+                  displaySettings={{ fill: "surface", border: "subtle" }}
                 />
               </div>
             </div>
             <div>
               <span className="font-mono text-label text-fg-muted/50">ghost · border: brand</span>
               <div className="mt-sm">
-                <CardBlock
-                  heading="Brand Border"
-                  eyebrow="Ghost"
-                  description="1px teal border signals selection or attention. Works best on ghost fill over a dark section."
-                  cta={{ label: "Explore", href: "#" }}
-                  styleOptions={{ fill: "ghost", border: "brand" }}
+                <OT_CardBlock
+                  content={{ Heading: "Brand Border", Eyebrow: "Ghost", Description: "1px teal border signals selection or attention. Works best on ghost fill over a dark section.", ctaLabel: "Explore", ctaUrl: { default: "#" } }}
+                  displaySettings={{ fill: "ghost", border: "brand" }}
                 />
               </div>
             </div>
@@ -1281,29 +1248,17 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <CardBlock
-              heading="Feature Flags at Scale"
-              eyebrow="Platform"
-              description="Ship to any segment with a kill switch on every flag. The safest way to deploy at velocity."
-              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
-              cta={{ label: "See how it works", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "top" }}
+            <OT_CardBlock
+              content={{ Heading: "Feature Flags at Scale", Eyebrow: "Platform", Description: "Ship to any segment with a kill switch on every flag. The safest way to deploy at velocity.", image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: "See how it works", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "top" }}
             />
-            <CardBlock
-              heading="Precision-Grade Telemetry"
-              eyebrow="Infrastructure"
-              description="Every signal, every layer. OptiTech ingests data from flag changes, deploys, and user events in real time."
-              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
-              cta={{ label: "See how it works", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "top" }}
+            <OT_CardBlock
+              content={{ Heading: "Precision-Grade Telemetry", Eyebrow: "Infrastructure", Description: "Every signal, every layer. OptiTech ingests data from flag changes, deploys, and user events in real time.", image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: "See how it works", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "top" }}
             />
-            <CardBlock
-              heading="Results You Can Act On"
-              eyebrow="Analytics"
-              description="Statistical significance checks, interaction effects, and automatic stopping rules. No guesswork."
-              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
-              cta={{ label: "See how it works", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "top" }}
+            <OT_CardBlock
+              content={{ Heading: "Results You Can Act On", Eyebrow: "Analytics", Description: "Statistical significance checks, interaction effects, and automatic stopping rules. No guesswork.", image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: "See how it works", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "top" }}
             />
           </div>
         </div>
@@ -1319,28 +1274,17 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <CardBlock
-              heading="Ship with confidence."
-              eyebrow="Deployment"
-              description="Every flag tracked. Every change reversible."
-              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
-              cta={{ label: "Get started", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "background" }}
+            <OT_CardBlock
+              content={{ Heading: "Ship with confidence.", Eyebrow: "Deployment", Description: "Every flag tracked. Every change reversible.", image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: "Get started", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "background" }}
             />
-            <CardBlock
-              heading="Measure what matters."
-              eyebrow="Analytics"
-              description="Real signals, not approximations."
-              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
-              styleOptions={{ fill: "surface", imageStyle: "background" }}
+            <OT_CardBlock
+              content={{ Heading: "Measure what matters.", Eyebrow: "Analytics", Description: "Real signals, not approximations.", image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT }}
+              displaySettings={{ fill: "surface", imageStyle: "background" }}
             />
-            <CardBlock
-              heading="Iterate faster."
-              eyebrow="Velocity"
-              description="From hypothesis to result in hours."
-              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
-              cta={{ label: "See the platform", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "background" }}
+            <OT_CardBlock
+              content={{ Heading: "Iterate faster.", Eyebrow: "Velocity", Description: "From hypothesis to result in hours.", image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: "See the platform", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "background" }}
             />
           </div>
         </div>
@@ -1358,26 +1302,18 @@ export default function ShowcaseBlocksPage() {
           <div>
             <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;left&rdquo;</span>
             <div className="mt-sm">
-              <CardBlock
-                heading="Infrastructure built for continuous delivery."
-                eyebrow="Platform"
-                description="OptiTech gives engineering teams the tooling to ship incrementally, measure precisely, and respond in real time. Feature flags, experiment infrastructure, and deployment telemetry in one platform."
-                image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
-                cta={{ label: "View the platform", href: "#" }}
-                styleOptions={{ fill: "surface", imageStyle: "side", imageSide: "left" }}
+              <OT_CardBlock
+                content={{ Heading: "Infrastructure built for continuous delivery.", Eyebrow: "Platform", Description: "OptiTech gives engineering teams the tooling to ship incrementally, measure precisely, and respond in real time. Feature flags, experiment infrastructure, and deployment telemetry in one platform.", image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: "View the platform", ctaUrl: { default: "#" } }}
+                displaySettings={{ fill: "surface", imageStyle: "side", imageSide: "left" }}
               />
             </div>
           </div>
           <div>
             <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;right&rdquo;</span>
             <div className="mt-sm">
-              <CardBlock
-                heading="Statistical confidence at every decision point."
-                eyebrow="Analytics"
-                description="Every experiment runs with power calculations, automatic stopping rules, and interaction effect detection. Ship when the data says so, not when the sprint ends."
-                image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
-                cta={{ label: "Explore analytics", href: "#" }}
-                styleOptions={{ fill: "surface", imageStyle: "side", imageSide: "right" }}
+              <OT_CardBlock
+                content={{ Heading: "Statistical confidence at every decision point.", Eyebrow: "Analytics", Description: "Every experiment runs with power calculations, automatic stopping rules, and interaction effect detection. Ship when the data says so, not when the sprint ends.", image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: "Explore analytics", ctaUrl: { default: "#" } }}
+                displaySettings={{ fill: "surface", imageStyle: "side", imageSide: "right" }}
               />
             </div>
           </div>
@@ -1391,20 +1327,17 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <CardBlock
-              heading="Feature flags for every team."
-              eyebrow="Deployment"
-              styleOptions={{ fill: "surface", border: "subtle" }}
+            <OT_CardBlock
+              content={{ Heading: "Feature flags for every team.", Eyebrow: "Deployment" }}
+              displaySettings={{ fill: "surface", border: "subtle" }}
             />
-            <CardBlock
-              heading="Experiments that answer real questions."
-              eyebrow="Analytics"
-              styleOptions={{ fill: "brand" }}
+            <OT_CardBlock
+              content={{ Heading: "Experiments that answer real questions.", Eyebrow: "Analytics" }}
+              displaySettings={{ fill: "brand" }}
             />
-            <CardBlock
-              heading="Rollback in one API call."
-              eyebrow="Safety"
-              styleOptions={{ fill: "ghost", border: "brand" }}
+            <OT_CardBlock
+              content={{ Heading: "Rollback in one API call.", Eyebrow: "Safety" }}
+              displaySettings={{ fill: "ghost", border: "brand" }}
             />
           </div>
         </div>
@@ -1420,7 +1353,6 @@ export default function ShowcaseBlocksPage() {
           </p>
         </div>
         <div className="relative overflow-hidden">
-          {/* Background image behind the glass grid */}
           <Image
             src={CARD_IMG_A}
             alt=""
@@ -1429,53 +1361,33 @@ export default function ShowcaseBlocksPage() {
             sizes="100vw"
             aria-hidden
           />
-          {/* Dark scrim so the cards don't fight the image too hard */}
           <div className="absolute inset-0 bg-canvas/40" />
           <div className="relative z-10 px-md py-xl lg:px-lg">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-              <CardBlock
-                heading="Edges computed at the edge."
-                eyebrow="Edge Network"
-                description="OptiTech routes intelligence to where your users are — 200ms becomes 20ms without changing a line of application code."
-                cta={{ label: "See coverage", href: "#" }}
-                styleOptions={{ fill: "glass", hover: "glow" }}
+              <OT_CardBlock
+                content={{ Heading: "Edges computed at the edge.", Eyebrow: "Edge Network", Description: "OptiTech routes intelligence to where your users are — 200ms becomes 20ms without changing a line of application code.", ctaLabel: "See coverage", ctaUrl: { default: "#" } }}
+                displaySettings={{ fill: "glass", hover: "glow" }}
               />
-              <CardBlock
-                heading="Flags ship features safely."
-                eyebrow="Feature Flags"
-                description="Controlled rollouts, instant kill-switches, and audience targeting — all without a deployment cycle."
-                cta={{ label: "Read the docs", href: "#" }}
-                styleOptions={{ fill: "glass", hover: "glow" }}
+              <OT_CardBlock
+                content={{ Heading: "Flags ship features safely.", Eyebrow: "Feature Flags", Description: "Controlled rollouts, instant kill-switches, and audience targeting — all without a deployment cycle.", ctaLabel: "Read the docs", ctaUrl: { default: "#" } }}
+                displaySettings={{ fill: "glass", hover: "glow" }}
               />
-              <CardBlock
-                heading="Every experiment tells a story."
-                eyebrow="Experimentation"
-                description="Statistical rigor built in. Run A/B tests and multivariate experiments with automatic significance detection."
-                cta={{ label: "Start experimenting", href: "#" }}
-                styleOptions={{ fill: "glass", hover: "glow" }}
+              <OT_CardBlock
+                content={{ Heading: "Every experiment tells a story.", Eyebrow: "Experimentation", Description: "Statistical rigor built in. Run A/B tests and multivariate experiments with automatic significance detection.", ctaLabel: "Start experimenting", ctaUrl: { default: "#" } }}
+                displaySettings={{ fill: "glass", hover: "glow" }}
               />
             </div>
           </div>
         </div>
         <div className="px-md pt-xl pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-            {/* Glass + top image: image blurs into the glass content panel */}
-            <CardBlock
-              heading="Glass over photo."
-              eyebrow="fill:glass · imageStyle:float"
-              description="Float + glass: the content panel blurs the image below it through the glass surface — depth compounds into a single surface moment."
-              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
-              cta={{ label: "Explore", href: "#" }}
-              styleOptions={{ fill: "glass", imageStyle: "float", hover: "lift" }}
+            <OT_CardBlock
+              content={{ Heading: "Glass over photo.", Eyebrow: "fill:glass · imageStyle:float", Description: "Float + glass: the content panel blurs the image below it through the glass surface — depth compounds into a single surface moment.", image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: "Explore", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "glass", imageStyle: "float", hover: "lift" }}
             />
-            {/* Glass with noise + accent */}
-            <CardBlock
-              heading="Glass, grain, accent."
-              eyebrow="fill:glass · noise · accentLine:top"
-              description="Glass surface with mineral grain and a brand-teal top accent. Three depth instruments — blur, texture, edge — layered without competing."
-              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
-              cta={{ label: "Explore", href: "#" }}
-              styleOptions={{ fill: "glass", imageStyle: "top", noise: true, accentLine: "top", hover: "glow" }}
+            <OT_CardBlock
+              content={{ Heading: "Glass, grain, accent.", Eyebrow: "fill:glass · noise · accentLine:top", Description: "Glass surface with mineral grain and a brand-teal top accent. Three depth instruments — blur, texture, edge — layered without competing.", image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: "Explore", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "glass", imageStyle: "top", noise: true, accentLine: "top", hover: "glow" }}
             />
           </div>
         </div>
@@ -1491,29 +1403,17 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <CardBlock
-              heading="Infrastructure that never sleeps."
-              eyebrow="Platform"
-              description="99.99% uptime across every region, backed by automated failover and real-time health monitoring."
-              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
-              cta={{ label: "View SLA", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "float" }}
+            <OT_CardBlock
+              content={{ Heading: "Infrastructure that never sleeps.", Eyebrow: "Platform", Description: "99.99% uptime across every region, backed by automated failover and real-time health monitoring.", image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: "View SLA", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "float" }}
             />
-            <CardBlock
-              heading="Signal in the noise."
-              eyebrow="Analytics"
-              description="Our engine sifts millions of events per second so your team sees what matters — not everything."
-              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
-              cta={{ label: "See the dashboard", href: "#" }}
-              styleOptions={{ fill: "brand", imageStyle: "float" }}
+            <OT_CardBlock
+              content={{ Heading: "Signal in the noise.", Eyebrow: "Analytics", Description: "Our engine sifts millions of events per second so your team sees what matters — not everything.", image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: "See the dashboard", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "brand", imageStyle: "float" }}
             />
-            <CardBlock
-              heading="Hardware meets intelligence."
-              eyebrow="Edge compute"
-              description="Push logic to the edge. OptiTech runs where your users are, cutting round-trip latency by 80%."
-              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
-              cta={{ label: "Explore edge", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "float", border: "subtle" }}
+            <OT_CardBlock
+              content={{ Heading: "Hardware meets intelligence.", Eyebrow: "Edge compute", Description: "Push logic to the edge. OptiTech runs where your users are, cutting round-trip latency by 80%.", image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: "Explore edge", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "float", border: "subtle" }}
             />
           </div>
         </div>
@@ -1530,29 +1430,17 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <CardBlock
-              heading="Lift on hover."
-              eyebrow="hover:lift"
-              description="Card rises 4px with a faint teal ambient shadow. Returns to rest on mouse-out."
-              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
-              cta={{ label: "Interact", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "top", hover: "lift" }}
+            <OT_CardBlock
+              content={{ Heading: "Lift on hover.", Eyebrow: "hover:lift", Description: "Card rises 4px with a faint teal ambient shadow. Returns to rest on mouse-out.", image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: "Interact", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "top", hover: "lift" }}
             />
-            <CardBlock
-              heading="Glow on hover."
-              eyebrow="hover:glow"
-              description="Teal shadow blooms beneath the card on hover — no translate, pure atmospheric depth."
-              image={{ src: CARD_IMG_B, alt: CARD_IMG_B_ALT }}
-              cta={{ label: "Interact", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "top", hover: "glow" }}
+            <OT_CardBlock
+              content={{ Heading: "Glow on hover.", Eyebrow: "hover:glow", Description: "Teal shadow blooms beneath the card on hover — no translate, pure atmospheric depth.", image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: "Interact", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "top", hover: "glow" }}
             />
-            <CardBlock
-              heading="Float + lift."
-              eyebrow="float · hover:lift"
-              description="Float layout with lift interaction — the content overlap and the hover rise compound into a single editorial moment."
-              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
-              cta={{ label: "Interact", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "float", hover: "lift" }}
+            <OT_CardBlock
+              content={{ Heading: "Float + lift.", Eyebrow: "float · hover:lift", Description: "Float layout with lift interaction — the content overlap and the hover rise compound into a single editorial moment.", image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: "Interact", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "float", hover: "lift" }}
             />
           </div>
         </div>
@@ -1568,23 +1456,17 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <CardBlock
-              heading="Compact."
-              eyebrow="density:compact"
-              description="Tighter padding — 16px. Best in high-density grids of four or more cards."
-              styleOptions={{ fill: "surface", border: "subtle", density: "compact" }}
+            <OT_CardBlock
+              content={{ Heading: "Compact.", Eyebrow: "density:compact", Description: "Tighter padding — 16px. Best in high-density grids of four or more cards." }}
+              displaySettings={{ fill: "surface", border: "subtle", density: "compact" }}
             />
-            <CardBlock
-              heading="Default."
-              eyebrow="density:default"
-              description="Standard padding — 32px. The baseline for most card contexts."
-              styleOptions={{ fill: "surface", border: "subtle", density: "default" }}
+            <OT_CardBlock
+              content={{ Heading: "Default.", Eyebrow: "density:default", Description: "Standard padding — 32px. The baseline for most card contexts." }}
+              displaySettings={{ fill: "surface", border: "subtle", density: "default" }}
             />
-            <CardBlock
-              heading="Spacious."
-              eyebrow="density:spacious"
-              description="Generous padding — 64px. Anchors feature-level cards in two-column layouts."
-              styleOptions={{ fill: "surface", border: "subtle", density: "spacious" }}
+            <OT_CardBlock
+              content={{ Heading: "Spacious.", Eyebrow: "density:spacious", Description: "Generous padding — 64px. Anchors feature-level cards in two-column layouts." }}
+              displaySettings={{ fill: "surface", border: "subtle", density: "spacious" }}
             />
           </div>
         </div>
@@ -1601,41 +1483,27 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <CardBlock
-              heading="Top accent, surface fill."
-              eyebrow="accentLine:top"
-              description="A 3px brand-teal rule on the top edge anchors the card's hierarchy without a full border."
-              styleOptions={{ fill: "surface", accentLine: "top" }}
+            <OT_CardBlock
+              content={{ Heading: "Top accent, surface fill.", Eyebrow: "accentLine:top", Description: "A 3px brand-teal rule on the top edge anchors the card's hierarchy without a full border." }}
+              displaySettings={{ fill: "surface", accentLine: "top" }}
             />
-            <CardBlock
-              heading="Top accent, brand fill."
-              eyebrow="accentLine:top · fill:brand"
-              description="On brand panels the accent shifts to press-white at 40% — still readable, never competing."
-              styleOptions={{ fill: "brand", accentLine: "top" }}
+            <OT_CardBlock
+              content={{ Heading: "Top accent, brand fill.", Eyebrow: "accentLine:top · fill:brand", Description: "On brand panels the accent shifts to press-white at 40% — still readable, never competing." }}
+              displaySettings={{ fill: "brand", accentLine: "top" }}
             />
-            <CardBlock
-              heading="Noise on dark."
-              eyebrow="noise:true · fill:surface"
-              description="Grain overlay at 7% via mix-blend-mode: overlay. Tactile mineral depth that reads as material quality, not decoration."
-              styleOptions={{ fill: "surface", border: "subtle", noise: true }}
+            <OT_CardBlock
+              content={{ Heading: "Noise on dark.", Eyebrow: "noise:true · fill:surface", Description: "Grain overlay at 7% via mix-blend-mode: overlay. Tactile mineral depth that reads as material quality, not decoration." }}
+              displaySettings={{ fill: "surface", border: "subtle", noise: true }}
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-md">
-            <CardBlock
-              heading="Noise on brand."
-              eyebrow="noise:true · fill:brand"
-              description="Grain on the committed teal anchor. Pushes the surface from flat paint into oxidized mineral — the brand palette's physical analogue."
-              image={{ src: CARD_IMG_A, alt: CARD_IMG_A_ALT }}
-              cta={{ label: "See the platform", href: "#" }}
-              styleOptions={{ fill: "brand", imageStyle: "top", noise: true }}
+            <OT_CardBlock
+              content={{ Heading: "Noise on brand.", Eyebrow: "noise:true · fill:brand", Description: "Grain on the committed teal anchor. Pushes the surface from flat paint into oxidized mineral — the brand palette's physical analogue.", image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: "See the platform", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "brand", imageStyle: "top", noise: true }}
             />
-            <CardBlock
-              heading="Accent + noise + hover."
-              eyebrow="all three"
-              description="Top accent, grain texture, and lift on hover. Each detail earns its place — together they compose without competing."
-              image={{ src: CARD_IMG_C, alt: CARD_IMG_C_ALT }}
-              cta={{ label: "Explore", href: "#" }}
-              styleOptions={{ fill: "surface", imageStyle: "float", accentLine: "top", noise: true, hover: "lift" }}
+            <OT_CardBlock
+              content={{ Heading: "Accent + noise + hover.", Eyebrow: "all three", Description: "Top accent, grain texture, and lift on hover. Each detail earns its place — together they compose without competing.", image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: "Explore", ctaUrl: { default: "#" } }}
+              displaySettings={{ fill: "surface", imageStyle: "float", accentLine: "top", noise: true, hover: "lift" }}
             />
           </div>
         </div>

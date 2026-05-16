@@ -12,7 +12,7 @@ export default function OT_QuoteBlock({ content, displaySettings = {} }: Props) 
   const styleOptions = getQuoteStyles(displaySettings)
 
   return (
-    <div {...pa()}>
+    <div {...pa(content.__composition)}>
       <QuoteBlock
         quote={content.quote ?? ''}
         attribution={{ name: content.attributionName ?? '', title: content.attributionTitle ?? undefined }}

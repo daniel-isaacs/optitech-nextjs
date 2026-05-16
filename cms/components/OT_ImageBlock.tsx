@@ -14,7 +14,7 @@ export default function OT_ImageBlock({ content, displaySettings = {} }: Props) 
   const styleOptions = getImageStyles(displaySettings)
 
   return (
-    <div {...pa()}>
+    <div {...pa(content.__composition)}>
       <ImageBlock
         src={src(content.image) ?? ''}
         alt={content.alt ?? ''}

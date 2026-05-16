@@ -12,7 +12,7 @@ export default function OT_HeroBlock({ content, displaySettings = {} }: Props) {
   const styleOptions = getHeroStyles(displaySettings)
 
   return (
-    <div {...pa()}>
+    <div {...pa(content.__composition)}>
       <HeroBlock
         eyebrow={content.eyebrow ?? undefined}
         headline={content.headline ?? ''}

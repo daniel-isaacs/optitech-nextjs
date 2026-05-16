@@ -25,6 +25,11 @@ import OT_RichTextBlockAdapter    from '@/cms/components/OT_RichTextBlock'
 import OT_ImageBlockAdapter       from '@/cms/components/OT_ImageBlock'
 import OT_VideoBlockAdapter       from '@/cms/components/OT_VideoBlock'
 
+// Composition structure adapters — section/row/column renderers for Visual Builder
+import BlankSectionAdapter from '@/cms/compositions/Section'
+import RowAdapter          from '@/cms/compositions/Row'
+import ColumnAdapter       from '@/cms/compositions/Column'
+
 initContentTypeRegistry([
   OT_HeroBlock,
   OT_CardBlock,
@@ -42,6 +47,7 @@ initContentTypeRegistry([
 
 initReactComponentRegistry({
   resolver: {
+    // Content blocks
     OT_HeroBlock:        OT_HeroBlockAdapter,
     OT_CardBlock:        OT_CardBlockAdapter,
     OT_PrimaryTextBlock: OT_PrimaryTextBlockAdapter,
@@ -49,5 +55,10 @@ initReactComponentRegistry({
     OT_RichTextBlock:    OT_RichTextBlockAdapter,
     OT_ImageBlock:       OT_ImageBlockAdapter,
     OT_VideoBlock:       OT_VideoBlockAdapter,
+    // Composition structure — 'BlankSection' is the SDK's built-in section type key;
+    // '_Row' and '_Column' are the fixed registry keys OptimizelyGridSection resolves.
+    BlankSection: BlankSectionAdapter,
+    _Row:         RowAdapter,
+    _Column:      ColumnAdapter,
   },
 })

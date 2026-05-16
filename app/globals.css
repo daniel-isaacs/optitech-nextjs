@@ -75,6 +75,70 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Grid column spans ───────────────────────────────────────────────────────
+ * Row outputs data-bp="sm|md|lg|xl" on its div.
+ * Column outputs data-col-span="col1…col12" on its div.
+ * Ancestor selector applies the correct flex-basis at the Row's chosen
+ * breakpoint — so column widths activate exactly when the row goes side-by-side.
+ * "auto" span uses flex-1 (the column base class) with no override.
+ * ─────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  [data-bp="sm"] [data-col-span="col1"]  { flex-basis: calc(1  / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col2"]  { flex-basis: calc(2  / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col3"]  { flex-basis: 25%; }
+  [data-bp="sm"] [data-col-span="col4"]  { flex-basis: calc(4  / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col5"]  { flex-basis: calc(5  / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col6"]  { flex-basis: 50%; }
+  [data-bp="sm"] [data-col-span="col7"]  { flex-basis: calc(7  / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col8"]  { flex-basis: calc(8  / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col9"]  { flex-basis: 75%; }
+  [data-bp="sm"] [data-col-span="col10"] { flex-basis: calc(10 / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col11"] { flex-basis: calc(11 / 12 * 100%); }
+  [data-bp="sm"] [data-col-span="col12"] { flex-basis: 100%; }
+}
+@media (min-width: 768px) {
+  [data-bp="md"] [data-col-span="col1"]  { flex-basis: calc(1  / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col2"]  { flex-basis: calc(2  / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col3"]  { flex-basis: 25%; }
+  [data-bp="md"] [data-col-span="col4"]  { flex-basis: calc(4  / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col5"]  { flex-basis: calc(5  / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col6"]  { flex-basis: 50%; }
+  [data-bp="md"] [data-col-span="col7"]  { flex-basis: calc(7  / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col8"]  { flex-basis: calc(8  / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col9"]  { flex-basis: 75%; }
+  [data-bp="md"] [data-col-span="col10"] { flex-basis: calc(10 / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col11"] { flex-basis: calc(11 / 12 * 100%); }
+  [data-bp="md"] [data-col-span="col12"] { flex-basis: 100%; }
+}
+@media (min-width: 1024px) {
+  [data-bp="lg"] [data-col-span="col1"]  { flex-basis: calc(1  / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col2"]  { flex-basis: calc(2  / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col3"]  { flex-basis: 25%; }
+  [data-bp="lg"] [data-col-span="col4"]  { flex-basis: calc(4  / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col5"]  { flex-basis: calc(5  / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col6"]  { flex-basis: 50%; }
+  [data-bp="lg"] [data-col-span="col7"]  { flex-basis: calc(7  / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col8"]  { flex-basis: calc(8  / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col9"]  { flex-basis: 75%; }
+  [data-bp="lg"] [data-col-span="col10"] { flex-basis: calc(10 / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col11"] { flex-basis: calc(11 / 12 * 100%); }
+  [data-bp="lg"] [data-col-span="col12"] { flex-basis: 100%; }
+}
+@media (min-width: 1280px) {
+  [data-bp="xl"] [data-col-span="col1"]  { flex-basis: calc(1  / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col2"]  { flex-basis: calc(2  / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col3"]  { flex-basis: 25%; }
+  [data-bp="xl"] [data-col-span="col4"]  { flex-basis: calc(4  / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col5"]  { flex-basis: calc(5  / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col6"]  { flex-basis: 50%; }
+  [data-bp="xl"] [data-col-span="col7"]  { flex-basis: calc(7  / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col8"]  { flex-basis: calc(8  / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col9"]  { flex-basis: 75%; }
+  [data-bp="xl"] [data-col-span="col10"] { flex-basis: calc(10 / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col11"] { flex-basis: calc(11 / 12 * 100%); }
+  [data-bp="xl"] [data-col-span="col12"] { flex-basis: 100%; }
+}
+
 /* ── Row staggered column entrance ──────────────────────────────────────────
  * MotionObserver (client component in providers/) observes [data-stagger]
  * elements and adds data-in when they enter the viewport.

@@ -71,9 +71,11 @@ export const OT_LandingRow = displayTemplate({
       editor: 'select',
       sortOrder: 60,
       choices: {
-        auto:   { displayName: 'Auto',        sortOrder: 10 },
-        half:   { displayName: 'Half screen', sortOrder: 20 },
-        screen: { displayName: 'Full screen', sortOrder: 30 },
+        auto:         { displayName: 'Auto',         sortOrder: 10 },
+        quarter:      { displayName: '25vh',         sortOrder: 20 },
+        half:         { displayName: '50vh',         sortOrder: 30 },
+        threequarter: { displayName: '75vh',         sortOrder: 40 },
+        screen:       { displayName: '100vh (full)', sortOrder: 50 },
       },
     },
     backgroundColor: {

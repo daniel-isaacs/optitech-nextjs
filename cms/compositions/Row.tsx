@@ -41,9 +41,11 @@ const verticalPaddingClasses: Record<string, string> = {
 }
 
 const minHeightClasses: Record<string, string> = {
-  auto:   '',
-  half:   'min-h-[50vh]',
-  screen: 'min-h-screen',
+  auto:         '',
+  quarter:      'min-h-[25vh]',
+  half:         'min-h-[50vh]',
+  threequarter: 'min-h-[75vh]',
+  screen:       'min-h-screen',
 }
 
 const bgColorClasses: Record<string, string> = {

@@ -55,9 +55,9 @@ const justifyClasses: Record<string, string> = {
 }
 
 const alignClasses: Record<string, string> = {
-  center: 'content-center',
-  end:    'content-end',
-  start:  'content-start',
+  center: 'items-center',
+  end:    'items-end',
+  start:  'items-start',
 }
 
 export default function Column({ node, displaySettings = {}, children }: Props) {
@@ -79,7 +79,7 @@ export default function Column({ node, displaySettings = {}, children }: Props) 
 
   return (
     <div
-      className={`vb:col flex flex-col ${spanClass} ${spacingClass} ${vPadClass} ${hPadClass} ${justifyClass} ${alignClass}`}
+      className={`vb:col flex flex-col self-stretch ${spanClass} ${spacingClass} ${vPadClass} ${hPadClass} ${justifyClass} ${alignClass}`}
       {...pa(node)}
     >
       {children}

@@ -57,8 +57,7 @@ npx @optimizely/cms-cli config push
 
 Result: **13 content types + 10 display templates pushed successfully.**
 
-- [ ] Confirm section/row/column display settings panels appear in Visual Builder
-- [ ] Set a value (e.g., Hero background → "Canvas") and confirm it renders on preview page
+- [x] Confirmed by user: section display settings panels appear in Visual Builder and render correctly ✅
 
 ---
 
@@ -107,65 +106,32 @@ If it's pointing to `/api/draft` that's the wrong target for the main preview fl
 
 ## Phase 3 — Wire `OT_SiteSettings` to Header/Footer
 
-**Status:** Not started
+**Status:** ✅ Code complete — CMS instance needs to be created manually
 
-### 3a. Add logo image field to `OT_SiteSettings`
+### 3a. Add `logoSrc` field to `OT_SiteSettings` ✅
 
-**File:** `cms/content-types/OT_SiteSettings.ts`
+Added `logoSrc: { type: 'string' }` at sortOrder 5. Used `string` rather than `contentReference` so editors can paste a URL directly; avoids needing `src()` from `getPreviewUtils` outside a component adapter context. Pushed to CMS.
 
-Currently has `logoAlt` (string) but no actual logo image reference. Add:
-```ts
-logo: { type: 'contentReference', allowedTypes: ['_image'], displayName: 'Logo', group: 'OT_Content', sortOrder: 5 },
-```
+### 3b. Add `getSiteSettings()` to `lib/optimizely.ts` ✅
 
-- [ ] Add `logo` field
-- [ ] Push updated content type to CMS
+Wrapped in React's `cache()` so Header and Footer each call the function independently but only one Graph fetch happens per request. Falls back to `null` on error so layout never crashes if the CMS instance doesn't exist yet.
 
----
+### 3c. Header refactored to server component ✅
 
-### 3b. Add `getSiteSettings()` to `lib/optimizely.ts`
+- `components/layout/Header.tsx` — now `async` server component; fetches SiteSettings, falls back to static values
+- `components/layout/MobileMenu.tsx` — new `'use client'` component; owns only the `open` state, burger button, and overlay
+- ThemeToggle stays alongside MobileMenu in the mobile controls row (server renders the wrapper, client owns the toggle state)
 
-Query by fixed path `/site-settings`:
-```ts
-export async function getSiteSettings() {
-  const results = await getClient().getContentByPath('/site-settings')
-  return results?.[0] ?? null
-}
-```
+### 3d. Footer refactored to server component ✅
 
-- [ ] Implement and export `getSiteSettings()`
-
----
-
-### 3c. Convert Header to a server component with CMS data
-
-**File:** `components/layout/Header.tsx`
-
-Currently `'use client'` with hardcoded nav links. The client boundary is only needed for the mobile menu toggle. Refactor:
-
-- `Header.tsx` → server component; fetches `getSiteSettings()`, passes nav data down
-- `MobileMenuButton.tsx` → new thin `'use client'` component for the hamburger/overlay only
-
-- [ ] Create `MobileMenuButton.tsx` client component (hamburger + overlay)
-- [ ] Refactor `Header.tsx` to server component; reads nav items and logo from SiteSettings
-- [ ] Handle null/fallback gracefully if SiteSettings not yet created in CMS
-
----
-
-### 3d. Convert Footer to use CMS data
-
-**File:** `components/layout/Footer.tsx`
-
-- [ ] Fetch SiteSettings in Footer (or pass as prop from a parent server component)
-- [ ] Render `footerColumns`, `legalLinks`, `copyright`, `footerTagline` from CMS data
-
----
+- `components/layout/Footer.tsx` — now `async` server component; reads `logoSrc`, `logoAlt`, `navItems`, and `copyright` from SiteSettings with static fallbacks
 
 ### 3e. Create SiteSettings in CMS
 
-- [ ] Create one `OT_SiteSettings` instance at path `/site-settings` in CMS
-- [ ] Add logo, nav items, footer columns, copyright
-- [ ] Verify Header and Footer render CMS data
+- [ ] In Optimizely CMS, create an `OT_SiteSettings` page at path `/site-settings`
+- [ ] Fill in: Logo URL, Logo Alt, CTA Label, CTA URL, Nav Items, Copyright
+- [ ] Restart dev server and verify Header/Footer render CMS data
+- [ ] If nav items don't appear, check that the path is exactly `/site-settings`
 
 ---
 
@@ -242,3 +208,4 @@ Reference: Astro demo's `SiteStyles` component and `siteStylesHelper.ts`.
 | 2026-05-16 | **Phase 1 complete.** SDK confirmed `NODE_TYPES = ['row','column']`; fixed section template to `baseType: '_section'` (valid per ALL_BASE_TYPES). Added `initDisplayTemplateRegistry` to registry.ts. CLI push result: 13 content types + 10 display templates imported. |
 | 2026-05-16 | **Phase 2a complete.** Draft route no longer compares preview_token to static secret — just checks presence. |
 | 2026-05-16 | OT_Style property group confirmed not needed — no content-type properties use it; style settings correctly live only on display templates. |
+| 2026-05-16 | **Phase 3 code complete.** Added `logoSrc` to OT_SiteSettings (string URL, not contentReference — simpler for layout use). Added `getSiteSettings()` with React `cache()` to lib/optimizely.ts. Header split into server component + `MobileMenu.tsx` client component. Footer converted to server component. All fall back to static values if CMS instance absent. Pushed updated content type. |

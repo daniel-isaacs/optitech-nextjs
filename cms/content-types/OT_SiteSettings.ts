@@ -9,6 +9,7 @@ export const OT_SiteSettings = contentType({
   baseType: '_page',
   mayContainTypes: [],
   properties: {
+    logoSrc:        { type: 'string', displayName: 'Logo URL',        group: 'OT_Content', sortOrder: 5  },
     logoAlt:        { type: 'string', displayName: 'Logo Alt Text',   group: 'OT_Content', sortOrder: 10 },
     ctaLabel:       { type: 'string', displayName: 'CTA Label',       group: 'OT_Content', sortOrder: 20 },
     ctaUrl:         { type: 'url',    displayName: 'CTA URL',         group: 'OT_Content', sortOrder: 30 },

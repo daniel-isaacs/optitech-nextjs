@@ -7,10 +7,6 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionObserver } from "@/components/providers/MotionObserver";
 import { getSiteSettings, getRequestDomain, buildThemeCSS } from '@/lib/optimizely'
 
-// Runs synchronously before first paint — sets data-theme from localStorage or
-// system preference so CSS variables resolve correctly with no flash.
-const themeScript = `(function(){try{var t=localStorage.getItem("optitech-theme");var s=window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t||s)}catch(e){}})()`;
-
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -37,9 +33,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const domain   = await getRequestDomain()
-  const settings = await getSiteSettings(domain)
-  const themeCSS = buildThemeCSS(settings)
+  const domain      = await getRequestDomain()
+  const settings    = await getSiteSettings(domain)
+  const themeCSS    = buildThemeCSS(settings)
+  const defaultMode = (settings?.defaultMode as string | undefined) === 'light' ? 'light' : 'dark'
+
+  // Runs synchronously before first paint — localStorage preference wins; CMS defaultMode is the site default.
+  const themeScript = `(function(){try{var t=localStorage.getItem("optitech-theme");document.documentElement.setAttribute("data-theme",t||"${defaultMode}")}catch(e){}})()`;
 
   return (
     <html

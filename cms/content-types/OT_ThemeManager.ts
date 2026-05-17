@@ -27,6 +27,18 @@ export const OT_ThemeManager = contentType({
       ],
     },
     logoInvertDark: { type: 'boolean', displayName: 'Invert Logo in Dark Mode (turns dark logos white)', group: 'OT_Content', sortOrder: 18 },
+    defaultMode: {
+      type: 'string',
+      format: 'selectOne',
+      displayName: 'Default Theme Mode',
+      description: 'Controls the site\'s initial color mode. Users can still switch modes via the header toggle.',
+      group: 'OT_Content',
+      sortOrder: 19,
+      enum: [
+        { value: 'dark',  displayName: 'Dark (default)' },
+        { value: 'light', displayName: 'Light' },
+      ],
+    },
 
     // Header CTA
     ctaLabel: { type: 'string', displayName: 'CTA Label', group: 'OT_Content', sortOrder: 20 },

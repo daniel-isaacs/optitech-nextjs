@@ -52,7 +52,7 @@ export default async function Footer() {
   const footerColumns: FooterColumn[] = settings?.footerColumns?.length
     ? settings.footerColumns.map((col: any) => ({
         title: col.title ?? undefined,
-        links: (col.links ?? []).map((l: any) => ({
+        links: (col.linkItems ?? []).map((l: any) => ({
           label: l.label ?? '',
           href:  l.url?.default ?? '#',
         })),

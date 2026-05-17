@@ -7,7 +7,7 @@ export const OT_FooterColumn = contentType({
   baseType: '_component',
   properties: {
     title: { type: 'string', displayName: 'Title', group: 'OT_Content', sortOrder: 10 },
-    links: {
+    linkItems: {
       type: 'array',
       displayName: 'Links',
       group: 'OT_Content',

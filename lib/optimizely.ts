@@ -37,6 +37,7 @@ const THEME_QUERY = `
         logoAlt
         logoFit
         logoInvertDark
+        defaultMode
         ctaLabel
         ctaUrl { default }
         copyright
@@ -59,7 +60,7 @@ const THEME_QUERY = `
         }
         footerColumns {
           title
-          links {
+          linkItems {
             label
             url { default }
           }

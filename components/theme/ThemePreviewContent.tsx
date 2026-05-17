@@ -38,14 +38,13 @@ function SectionHead({ label, title }: { label: string; title: string }) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function ThemePreviewContent({ settings }: { settings: any }) {
-  const logoSrc    = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
-  const logoAlt    = settings?.logoAlt ?? 'OptiTech'
-  const logoFit    = (settings?.logoFit as string | undefined) ?? 'full'
-  const invertDark = settings?.logoInvertDark === true
-  const ctaLabel   = settings?.ctaLabel ?? 'Get Started'
-  const copyright  = settings?.copyright ?? `© ${new Date().getFullYear()} OptiTech. All rights reserved.`
-
-  const invertClass = invertDark ? 'logo-invert-dark' : ''
+  const logoSrc     = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
+  const logoAlt     = settings?.logoAlt ?? 'OptiTech'
+  const logoFit     = (settings?.logoFit as string | undefined) ?? 'full'
+  const invertDark  = settings?.logoInvertDark === true
+  const ctaLabel    = settings?.ctaLabel ?? 'Get Started'
+  const copyright   = settings?.copyright ?? `© ${new Date().getFullYear()} OptiTech. All rights reserved.`
+  const defaultMode = (settings?.defaultMode as string | undefined) ?? 'dark'
 
   const navItems: { label: string; href: string }[] = settings?.navItems?.length
     ? settings.navItems.map((i: any) => ({ label: i.label ?? '', href: i.url?.default ?? '#' }))
@@ -71,7 +70,8 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
                   alt={logoAlt}
                   width={200}
                   height={40}
-                  className={[LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full, invertClass].filter(Boolean).join(' ')}
+                  className={LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full}
+                  style={invertDark ? { filter: 'brightness(0) invert(1)' } : undefined}
                 />
               </div>
               <div className="hidden sm:flex items-center gap-lg">
@@ -94,7 +94,8 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
                   alt={logoAlt}
                   width={200}
                   height={40}
-                  className={[LOGO_IMG_CLASS_SM[logoFit] ?? LOGO_IMG_CLASS_SM.full, invertClass].filter(Boolean).join(' ')}
+                  className={LOGO_IMG_CLASS_SM[logoFit] ?? LOGO_IMG_CLASS_SM.full}
+                  style={invertDark ? { filter: 'brightness(0) invert(1)' } : undefined}
                 />
               </div>
               <p className="text-label tracking-label uppercase text-fg-muted self-end">{copyright}</p>
@@ -117,7 +118,8 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
                       alt={logoAlt}
                       width={200}
                       height={40}
-                      className={[LOGO_IMG_CLASS[fit], invertClass].filter(Boolean).join(' ')}
+                      className={LOGO_IMG_CLASS[fit]}
+                      style={invertDark ? { filter: 'brightness(0) invert(1)' } : undefined}
                     />
                   </div>
                   <p className="font-mono text-label text-fg-muted/60">{LOGO_IMG_CLASS[fit]}</p>
@@ -126,6 +128,7 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
             </div>
           </div>
 
+          {/* Logo invert comparison — always shows correct result regardless of current browser mode */}
           {invertDark && (
             <div>
               <p className="text-label tracking-label uppercase text-fg-muted mb-md font-semibold">
@@ -135,12 +138,16 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
                 <div className="p-md flex flex-col gap-md" style={{ background: 'oklch(12% 0.012 195)' }}>
                   <p className="text-label tracking-label uppercase font-semibold" style={{ color: 'oklch(68% 0.06 195)' }}>Dark mode — filter applied</p>
                   <Image src={logoSrc} alt={logoAlt} width={200} height={40}
-                    className={[LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full, 'logo-invert-dark'].filter(Boolean).join(' ')} />
+                    className={LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full}
+                    style={{ filter: 'brightness(0) invert(1)' }}
+                  />
                 </div>
-                <div className="p-md flex flex-col gap-md" data-theme="light" style={{ background: 'oklch(97% 0.005 195)' }}>
+                <div className="p-md flex flex-col gap-md" style={{ background: 'oklch(97% 0.005 195)' }}>
                   <p className="text-label tracking-label uppercase font-semibold" style={{ color: 'oklch(38% 0.05 195)' }}>Light mode — no filter</p>
                   <Image src={logoSrc} alt={logoAlt} width={200} height={40}
-                    className={[LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full, 'logo-invert-dark'].filter(Boolean).join(' ')} />
+                    className={LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full}
+                    style={{ filter: 'none' }}
+                  />
                 </div>
               </div>
             </div>
@@ -232,7 +239,7 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
                       <p className="text-label tracking-label uppercase font-semibold text-fg mb-sm">{col.title}</p>
                     )}
                     <ul className="flex flex-col gap-xs">
-                      {(col.links ?? []).map((l: any, j: number) => (
+                      {(col.linkItems ?? []).map((l: any, j: number) => (
                         <li key={j} className="text-sm text-fg-muted">{l.label}</li>
                       ))}
                     </ul>
@@ -261,6 +268,94 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
             <p className="text-label text-fg-on-brand/60">Primary · Brand surface</p>
           </div>
         </div>
+      </section>
+
+      {/* ── 05 Component Preview ── */}
+      <section id="components" className="px-md py-xl lg:px-lg">
+        <SectionHead label="05 · Theme" title="Component Preview" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+
+          {/* Card — image + body */}
+          <div className="bg-surface border border-fg/10 flex flex-col">
+            <div className="aspect-[16/9] bg-brand/15 flex items-center justify-center">
+              <span className="text-brand text-label tracking-label uppercase font-semibold opacity-60">Image area</span>
+            </div>
+            <div className="p-md flex flex-col gap-sm flex-1">
+              <p className="text-label tracking-label uppercase text-brand font-semibold">Product</p>
+              <h3 className="text-title font-semibold leading-title text-fg">
+                Intelligent Optimization at Scale
+              </h3>
+              <p className="text-sm text-fg-muted leading-body">
+                Our platform adapts to your traffic patterns in real time, delivering personalized experiences without engineering overhead.
+              </p>
+              <span className="mt-sm self-start bg-brand text-fg-on-brand text-label font-semibold tracking-label uppercase px-7 py-3">
+                {ctaLabel}
+              </span>
+            </div>
+          </div>
+
+          {/* Card — icon + feature */}
+          <div className="bg-surface border border-fg/10 flex flex-col">
+            <div className="p-md flex flex-col gap-sm flex-1">
+              <div className="w-10 h-10 bg-accent/20 border border-accent/30 flex items-center justify-center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent" aria-hidden="true">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              <h3 className="text-title font-semibold leading-title text-fg mt-sm">
+                Built for Enterprise Teams
+              </h3>
+              <p className="text-sm text-fg-muted leading-body">
+                Role-based access, audit logs, SSO, and SLA-backed uptime — everything your security and compliance teams require.
+              </p>
+            </div>
+            <div className="border-t border-fg/10 px-md py-sm flex items-center justify-between">
+              <p className="text-label text-fg-muted">Enterprise tier</p>
+              <span className="text-label font-semibold text-accent tracking-label uppercase">Learn more →</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── 06 Default Mode ── */}
+      <section id="mode" className="px-md py-xl lg:px-lg">
+        <SectionHead label="06 · Theme" title="Default Theme Mode" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+          {(['dark', 'light'] as const).map(mode => {
+            const isActive = defaultMode === mode
+            const bg   = mode === 'dark'  ? 'oklch(12% 0.012 195)'  : 'oklch(97% 0.005 195)'
+            const fg   = mode === 'dark'  ? 'oklch(97% 0.005 195)'  : 'oklch(12% 0.012 195)'
+            const sub  = mode === 'dark'  ? 'oklch(68% 0.06 195)'   : 'oklch(38% 0.05 195)'
+            const surf = mode === 'dark'  ? 'oklch(20% 0.022 195)'  : 'oklch(93% 0.008 195)'
+            return (
+              <div key={mode} className={`border-2 ${isActive ? 'border-brand' : 'border-fg/10'}`}>
+                {isActive && (
+                  <div className="bg-brand px-md py-xs">
+                    <p className="text-label tracking-label uppercase font-semibold text-fg-on-brand">Active default</p>
+                  </div>
+                )}
+                <div className="p-md" style={{ background: bg }}>
+                  <div className="flex items-center justify-between mb-md" style={{ background: surf, padding: '8px 12px' }}>
+                    <span className="text-label font-semibold" style={{ color: fg }}>OptiTech</span>
+                    <span className="text-label font-semibold tracking-label uppercase" style={{ background: 'oklch(55% 0.18 195)', color: fg, padding: '2px 10px' }}>
+                      {ctaLabel}
+                    </span>
+                  </div>
+                  <div style={{ background: surf, padding: '16px', marginBottom: '8px' }}>
+                    <p className="text-label tracking-label uppercase font-semibold mb-xs" style={{ color: 'oklch(55% 0.18 195)' }}>Hero</p>
+                    <p className="font-bold" style={{ color: fg, fontSize: '1.25rem' }}>Your headline goes here</p>
+                    <p className="text-sm mt-xs" style={{ color: sub }}>Supporting body copy that adapts to the active mode.</p>
+                  </div>
+                  <p className="text-label text-center capitalize" style={{ color: sub }}>{mode} mode</p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <p className="text-label text-fg-muted mt-md">
+          Users can override this with the toggle in the header — their preference is stored in localStorage.
+        </p>
       </section>
     </>
   )

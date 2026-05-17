@@ -22,9 +22,8 @@ import { OT_QuoteBlock }        from '@/cms/content-types/OT_QuoteBlock'
 import { OT_RichTextBlock }     from '@/cms/content-types/OT_RichTextBlock'
 import { OT_ImageBlock }        from '@/cms/content-types/OT_ImageBlock'
 import { OT_VideoBlock }        from '@/cms/content-types/OT_VideoBlock'
-import { BlankExperience }       from '@/cms/content-types/BlankExperience'
-import { OT_LandingExperience } from '@/cms/content-types/OT_LandingExperience'
-import { OT_SiteSettings }      from '@/cms/content-types/OT_SiteSettings'
+import { BlankExperience }  from '@/cms/content-types/BlankExperience'
+import { OT_ThemeManager } from '@/cms/content-types/OT_ThemeManager'
 import { OT_NavItem }           from '@/cms/content-types/OT_NavItem'
 import { OT_FooterLink }        from '@/cms/content-types/OT_FooterLink'
 import { OT_FooterColumn }      from '@/cms/content-types/OT_FooterColumn'
@@ -65,8 +64,7 @@ initContentTypeRegistry([
   OT_ImageBlock,
   OT_VideoBlock,
   BlankExperience,
-  OT_LandingExperience,
-  OT_SiteSettings,
+  OT_ThemeManager,
   OT_NavItem,
   OT_FooterLink,
   OT_FooterColumn,

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { getSiteSettings } from '@/lib/optimizely'
+import { getSiteSettings, getRequestDomain } from '@/lib/optimizely'
 
 const FALLBACK_LINKS = [
   { label: 'Product', href: '#' },
@@ -10,7 +10,7 @@ const FALLBACK_LINKS = [
 ]
 
 export default async function Footer() {
-  const settings = await getSiteSettings()
+  const settings = await getSiteSettings(await getRequestDomain())
 
   const logoSrc   = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
   const logoAlt   = settings?.logoAlt  ?? 'OptiTech'

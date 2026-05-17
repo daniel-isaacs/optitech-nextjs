@@ -5,6 +5,7 @@ import { Geist_Mono, Poppins, Syne } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionObserver } from "@/components/providers/MotionObserver";
+import { getSiteSettings, getRequestDomain, buildThemeCSS } from '@/lib/optimizely'
 
 // Runs synchronously before first paint — sets data-theme from localStorage or
 // system preference so CSS variables resolve correctly with no flash.
@@ -31,11 +32,15 @@ export const metadata: Metadata = {
   description: "OptiTech — bold, forward-moving.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const domain   = await getRequestDomain()
+  const settings = await getSiteSettings(domain)
+  const themeCSS = buildThemeCSS(settings)
+
   return (
     <html
       lang="en"
@@ -44,6 +49,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {themeCSS && <style dangerouslySetInnerHTML={{ __html: themeCSS }} />}
       </head>
       <body className="min-h-full flex flex-col">
         <ThemeProvider>

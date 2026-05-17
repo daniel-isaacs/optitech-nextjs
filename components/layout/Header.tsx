@@ -3,7 +3,7 @@ import Image from 'next/image'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import Button from '@/components/ui/Button'
 import MobileMenu from '@/components/layout/MobileMenu'
-import { getSiteSettings } from '@/lib/optimizely'
+import { getSiteSettings, getRequestDomain } from '@/lib/optimizely'
 
 const FALLBACK_NAV = [
   { label: 'Product',  href: '#' },
@@ -13,7 +13,7 @@ const FALLBACK_NAV = [
 ]
 
 export default async function Header() {
-  const settings = await getSiteSettings()
+  const settings = await getSiteSettings(await getRequestDomain())
 
   const logoSrc  = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
   const logoAlt  = settings?.logoAlt  ?? 'OptiTech'

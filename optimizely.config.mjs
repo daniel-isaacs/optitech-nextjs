@@ -5,5 +5,6 @@ export default {
   ],
   propertyGroups: [
     { key: 'OT_Content', displayName: 'Content', sortOrder: 100 },
+    { key: 'OT_Theme',   displayName: 'Theme',   sortOrder: 200 },
   ],
 }

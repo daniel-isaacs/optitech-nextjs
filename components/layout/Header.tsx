@@ -15,19 +15,22 @@ const FALLBACK_NAV = [
 export default async function Header() {
   const settings = await getSiteSettings(await getRequestDomain())
 
-  const logoSrc  = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
-  const logoAlt  = settings?.logoAlt  ?? 'OptiTech'
-  const logoFit  = (settings?.logoFit as string | undefined) ?? 'auto'
-  const ctaLabel = settings?.ctaLabel ?? 'Get Started'
-  const ctaHref  = settings?.ctaUrl?.default ?? '#'
+  const logoSrc       = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
+  const logoAlt       = settings?.logoAlt       ?? 'OptiTech'
+  const logoFit       = (settings?.logoFit as string | undefined) ?? 'full'
+  const logoInvertDark = settings?.logoInvertDark === true
+  const ctaLabel      = settings?.ctaLabel ?? 'Get Started'
+  const ctaHref       = settings?.ctaUrl?.default ?? '#'
 
   const LOGO_IMG_CLASS: Record<string, string> = {
-    auto:         'max-h-10 w-auto',
-    icon:         'h-10 w-10 object-contain',
-    wide:         'max-h-8 w-auto max-w-[200px]',
-    'wide-padded': 'max-h-10 w-auto max-w-[200px] py-1',
+    full:    'max-h-10 w-auto',
+    icon:    'h-10 w-10 object-contain',
+    compact: 'max-h-7 w-auto max-w-[160px]',
   }
-  const logoImgClass = LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.auto
+  const logoImgClass = [
+    LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full,
+    logoInvertDark ? 'logo-invert-dark' : '',
+  ].filter(Boolean).join(' ')
 
   const navItems: { label: string; href: string }[] = settings?.navItems?.length
     ? settings.navItems.map((item: any) => ({

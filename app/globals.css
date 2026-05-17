@@ -65,6 +65,12 @@
   --animate-slide-up: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Logo dark-mode invert — converts any dark/black logo to white.
+ * Applied by Header/Footer when ThemeManager.logoInvertDark is true.
+ * Removed in light mode so the original logo shows on the light canvas. */
+.logo-invert-dark { filter: brightness(0) invert(1); }
+[data-theme="light"] .logo-invert-dark { filter: none; }
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }

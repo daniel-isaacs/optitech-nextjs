@@ -36,6 +36,7 @@ const THEME_QUERY = `
         logo { url { default } }
         logoAlt
         logoFit
+        logoInvertDark
         ctaLabel
         ctaUrl { default }
         copyright

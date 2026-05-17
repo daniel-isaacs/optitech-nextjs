@@ -12,9 +12,10 @@ export const OT_ThemeManager = contentType({
     frontEndDomain: { type: 'string', displayName: 'Front-End Domain (e.g. mysite.vercel.app)', group: 'OT_Content', sortOrder: 1 },
 
     // Logo
-    logo:    { type: 'contentReference', displayName: 'Logo',                                   group: 'OT_Content', sortOrder: 5   },
-    logoAlt: { type: 'string',           displayName: 'Logo Alt Text',                           group: 'OT_Content', sortOrder: 10  },
-    logoFit: { type: 'string',           displayName: 'Logo Fit (auto|icon|wide|wide-padded)',   group: 'OT_Content', sortOrder: 15  },
+    logo:           { type: 'contentReference', allowedTypes: ['_image'], displayName: 'Logo',                                          group: 'OT_Content', sortOrder: 5   },
+    logoAlt:        { type: 'string',                                     displayName: 'Logo Alt Text',                                   group: 'OT_Content', sortOrder: 10  },
+    logoFit:        { type: 'string',                                     displayName: 'Logo Fit (full | icon | compact)',                 group: 'OT_Content', sortOrder: 15  },
+    logoInvertDark: { type: 'boolean',                                    displayName: 'Invert Logo in Dark Mode (turns dark logos white)', group: 'OT_Content', sortOrder: 18  },
 
     // Header CTA
     ctaLabel: { type: 'string', displayName: 'CTA Label', group: 'OT_Content', sortOrder: 20 },
@@ -49,12 +50,12 @@ export const OT_ThemeManager = contentType({
 
     // Theme color overrides — CSS values (hex, oklch, hsl, etc.)
     // All optional; if empty the defaults in styles/tokens.css apply.
-    colorBrand:        { type: 'string', displayName: 'Brand Color — primary fill (e.g. oklch(55% 0.18 195))', group: 'OT_Theme', sortOrder: 100 },
-    colorBrandHover:   { type: 'string', displayName: 'Brand Hover Color — depth state',                        group: 'OT_Theme', sortOrder: 110 },
-    colorAccent:       { type: 'string', displayName: 'Accent Color — highlights / badges',                     group: 'OT_Theme', sortOrder: 120 },
-    colorCanvas:       { type: 'string', displayName: 'Canvas — dark mode page background',                     group: 'OT_Theme', sortOrder: 130 },
-    colorSurface:      { type: 'string', displayName: 'Surface — dark mode component panels',                   group: 'OT_Theme', sortOrder: 140 },
-    colorCanvasLight:  { type: 'string', displayName: 'Canvas — light mode page background',                    group: 'OT_Theme', sortOrder: 150 },
-    colorSurfaceLight: { type: 'string', displayName: 'Surface — light mode component panels',                  group: 'OT_Theme', sortOrder: 160 },
+    colorBrand:        { type: 'string', displayName: 'Brand Color — primary fill (hex: #00bcd4 or oklch: oklch(55% 0.18 195))', group: 'OT_Theme', sortOrder: 100 },
+    colorBrandHover:   { type: 'string', displayName: 'Brand Hover — depth state (hex or oklch)',                               group: 'OT_Theme', sortOrder: 110 },
+    colorAccent:       { type: 'string', displayName: 'Accent Color — highlights / badges (hex or oklch)',                      group: 'OT_Theme', sortOrder: 120 },
+    colorCanvas:       { type: 'string', displayName: 'Canvas Dark — page background in dark mode (hex or oklch)',              group: 'OT_Theme', sortOrder: 130 },
+    colorSurface:      { type: 'string', displayName: 'Surface Dark — component panels in dark mode (hex or oklch)',            group: 'OT_Theme', sortOrder: 140 },
+    colorCanvasLight:  { type: 'string', displayName: 'Canvas Light — page background in light mode (hex or oklch)',            group: 'OT_Theme', sortOrder: 150 },
+    colorSurfaceLight: { type: 'string', displayName: 'Surface Light — component panels in light mode (hex or oklch)',          group: 'OT_Theme', sortOrder: 160 },
   },
 })

@@ -12,19 +12,22 @@ const FALLBACK_LINKS = [
 export default async function Footer() {
   const settings = await getSiteSettings(await getRequestDomain())
 
-  const logoSrc   = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
-  const logoAlt   = settings?.logoAlt  ?? 'OptiTech'
-  const logoFit   = (settings?.logoFit as string | undefined) ?? 'auto'
-  const copyright = settings?.copyright
+  const logoSrc        = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
+  const logoAlt        = settings?.logoAlt  ?? 'OptiTech'
+  const logoFit        = (settings?.logoFit as string | undefined) ?? 'full'
+  const logoInvertDark = settings?.logoInvertDark === true
+  const copyright      = settings?.copyright
     ?? `© ${new Date().getFullYear()} OptiTech. All rights reserved.`
 
   const LOGO_IMG_CLASS: Record<string, string> = {
-    auto:         'max-h-9 w-auto',
-    icon:         'h-9 w-9 object-contain',
-    wide:         'max-h-7 w-auto max-w-[180px]',
-    'wide-padded': 'max-h-9 w-auto max-w-[180px] py-1',
+    full:    'max-h-9 w-auto',
+    icon:    'h-9 w-9 object-contain',
+    compact: 'max-h-6 w-auto max-w-[140px]',
   }
-  const logoImgClass = LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.auto
+  const logoImgClass = [
+    LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full,
+    logoInvertDark ? 'logo-invert-dark' : '',
+  ].filter(Boolean).join(' ')
 
   const navLinks: { label: string; href: string }[] = settings?.navItems?.length
     ? settings.navItems.map((item: any) => ({

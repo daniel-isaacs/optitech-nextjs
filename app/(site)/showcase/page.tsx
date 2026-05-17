@@ -30,6 +30,14 @@ const SECTIONS = [
     description:
       "Full-page compositions showing how blocks combine. Landing, blog, feature, and campaign layouts demonstrating the system at scale.",
   },
+  {
+    number: "04",
+    label: "Theme Preview",
+    href: "/showcase/theme",
+    count: "CMS-live",
+    description:
+      "Live preview of the active Theme Manager settings — logo rendering across all fit modes, color overrides applied to real surfaces, navigation structure, and CTA button.",
+  },
 ] as const;
 
 export default function ShowcaseOverviewPage() {

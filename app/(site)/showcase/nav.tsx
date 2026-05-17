@@ -40,6 +40,17 @@ const NAV = [
     exact: false,
     items: [],
   },
+  {
+    label: "Theme",
+    href: "/showcase/theme",
+    exact: false,
+    items: [
+      { href: "/showcase/theme#logo",   label: "Logo"       },
+      { href: "/showcase/theme#colors", label: "Colors"     },
+      { href: "/showcase/theme#nav",    label: "Navigation" },
+      { href: "/showcase/theme#cta",    label: "CTA Button" },
+    ],
+  },
 ];
 
 export default function ShowcaseNav() {

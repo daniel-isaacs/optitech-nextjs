@@ -51,6 +51,22 @@ const THEME_QUERY = `
         navItems {
           label
           url { default }
+          children {
+            label
+            url { default }
+            description
+          }
+        }
+        footerColumns {
+          title
+          links {
+            label
+            url { default }
+          }
+        }
+        legalLinks {
+          label
+          url { default }
         }
       }
     }

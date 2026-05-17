@@ -14,17 +14,29 @@ export const OT_ThemeManager = contentType({
     // Logo
     logo:           { type: 'contentReference', allowedTypes: ['_image'], displayName: 'Logo',                                          group: 'OT_Content', sortOrder: 5   },
     logoAlt:        { type: 'string',                                     displayName: 'Logo Alt Text',                                   group: 'OT_Content', sortOrder: 10  },
-    logoFit:        { type: 'string',                                     displayName: 'Logo Fit (full | icon | compact)',                 group: 'OT_Content', sortOrder: 15  },
-    logoInvertDark: { type: 'boolean',                                    displayName: 'Invert Logo in Dark Mode (turns dark logos white)', group: 'OT_Content', sortOrder: 18  },
+    logoFit: {
+      type: 'string',
+      format: 'selectOne',
+      displayName: 'Logo Fit',
+      group: 'OT_Content',
+      sortOrder: 15,
+      enum: [
+        { value: 'full',    displayName: 'Full — wide logo, natural width (default)' },
+        { value: 'icon',    displayName: 'Icon — square / icon logo, fixed 40×40px'  },
+        { value: 'compact', displayName: 'Compact — small horizontal logo, max 160px' },
+      ],
+    },
+    logoInvertDark: { type: 'boolean', displayName: 'Invert Logo in Dark Mode (turns dark logos white)', group: 'OT_Content', sortOrder: 18 },
 
     // Header CTA
     ctaLabel: { type: 'string', displayName: 'CTA Label', group: 'OT_Content', sortOrder: 20 },
     ctaUrl:   { type: 'url',    displayName: 'CTA URL',   group: 'OT_Content', sortOrder: 30 },
 
-    // Navigation
+    // Header Navigation
     navItems: {
       type: 'array',
-      displayName: 'Nav Items',
+      displayName: 'Header Nav Items',
+      description: 'Top-level navigation links. Add Dropdown Items inside each entry to create a multi-level menu.',
       group: 'OT_Content',
       sortOrder: 40,
       items: { type: 'component', contentType: OT_NavItem },
@@ -36,13 +48,15 @@ export const OT_ThemeManager = contentType({
     footerColumns: {
       type: 'array',
       displayName: 'Footer Columns',
+      description: 'Multi-column footer navigation. Each column has a title and a list of links.',
       group: 'OT_Content',
       sortOrder: 70,
       items: { type: 'component', contentType: OT_FooterColumn },
     },
     legalLinks: {
       type: 'array',
-      displayName: 'Legal Links',
+      displayName: 'Legal Links (bottom bar)',
+      description: 'Privacy policy, terms, and other legal links shown next to the copyright.',
       group: 'OT_Content',
       sortOrder: 80,
       items: { type: 'component', contentType: OT_FooterLink },

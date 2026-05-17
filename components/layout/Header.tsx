@@ -3,9 +3,11 @@ import Image from 'next/image'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import Button from '@/components/ui/Button'
 import MobileMenu from '@/components/layout/MobileMenu'
+import DesktopNav from '@/components/layout/DesktopNav'
+import type { NavItem } from '@/components/layout/DesktopNav'
 import { getSiteSettings, getRequestDomain } from '@/lib/optimizely'
 
-const FALLBACK_NAV = [
+const FALLBACK_NAV: NavItem[] = [
   { label: 'Product',  href: '#' },
   { label: 'Pricing',  href: '#' },
   { label: 'About',    href: '#' },
@@ -15,12 +17,12 @@ const FALLBACK_NAV = [
 export default async function Header() {
   const settings = await getSiteSettings(await getRequestDomain())
 
-  const logoSrc       = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
-  const logoAlt       = settings?.logoAlt       ?? 'OptiTech'
-  const logoFit       = (settings?.logoFit as string | undefined) ?? 'full'
+  const logoSrc        = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
+  const logoAlt        = settings?.logoAlt       ?? 'OptiTech'
+  const logoFit        = (settings?.logoFit as string | undefined) ?? 'full'
   const logoInvertDark = settings?.logoInvertDark === true
-  const ctaLabel      = settings?.ctaLabel ?? 'Get Started'
-  const ctaHref       = settings?.ctaUrl?.default ?? '#'
+  const ctaLabel       = settings?.ctaLabel ?? 'Get Started'
+  const ctaHref        = settings?.ctaUrl?.default ?? '#'
 
   const LOGO_IMG_CLASS: Record<string, string> = {
     full:    'max-h-10 w-auto',
@@ -32,10 +34,17 @@ export default async function Header() {
     logoInvertDark ? 'logo-invert-dark' : '',
   ].filter(Boolean).join(' ')
 
-  const navItems: { label: string; href: string }[] = settings?.navItems?.length
+  const navItems: NavItem[] = settings?.navItems?.length
     ? settings.navItems.map((item: any) => ({
-        label: item.label ?? '',
-        href:  item.url?.default ?? '#',
+        label:    item.label ?? '',
+        href:     item.url?.default ?? '#',
+        children: item.children?.length
+          ? item.children.map((c: any) => ({
+              label:       c.label ?? '',
+              href:        c.url?.default ?? '#',
+              description: c.description ?? undefined,
+            }))
+          : undefined,
       }))
     : FALLBACK_NAV
 
@@ -55,17 +64,7 @@ export default async function Header() {
             />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-lg" aria-label="Primary navigation">
-            {navItems.map(link => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-sm font-normal text-fg-muted transition-colors duration-150 ease-quick hover:text-fg"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <DesktopNav navItems={navItems} />
 
           <div className="hidden lg:flex items-center gap-md">
             <ThemeToggle />

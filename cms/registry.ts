@@ -25,6 +25,7 @@ import { OT_VideoBlock }        from '@/cms/content-types/OT_VideoBlock'
 import { BlankExperience }  from '@/cms/content-types/BlankExperience'
 import { OT_ThemeManager } from '@/cms/content-types/OT_ThemeManager'
 import { OT_NavItem }           from '@/cms/content-types/OT_NavItem'
+import { OT_NavSubItem }        from '@/cms/content-types/OT_NavSubItem'
 import { OT_FooterLink }        from '@/cms/content-types/OT_FooterLink'
 import { OT_FooterColumn }      from '@/cms/content-types/OT_FooterColumn'
 
@@ -66,6 +67,7 @@ initContentTypeRegistry([
   BlankExperience,
   OT_ThemeManager,
   OT_NavItem,
+  OT_NavSubItem,
   OT_FooterLink,
   OT_FooterColumn,
 ])

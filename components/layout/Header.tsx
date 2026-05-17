@@ -38,8 +38,8 @@ export default async function Header() {
     ? settings.navItems.map((item: any) => ({
         label:    item.label ?? '',
         href:     item.url?.default ?? '#',
-        children: item.children?.length
-          ? item.children.map((c: any) => ({
+        children: item.dropdownItems?.length
+          ? item.dropdownItems.map((c: any) => ({
               label:       c.label ?? '',
               href:        c.url?.default ?? '#',
               description: c.description ?? undefined,

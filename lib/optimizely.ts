@@ -51,7 +51,7 @@ const THEME_QUERY = `
         navItems {
           label
           url { default }
-          children {
+          dropdownItems {
             label
             url { default }
             description

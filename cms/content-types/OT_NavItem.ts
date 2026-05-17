@@ -8,7 +8,7 @@ export const OT_NavItem = contentType({
   properties: {
     label: { type: 'string', displayName: 'Label', group: 'OT_Content', sortOrder: 10 },
     url:   { type: 'url',    displayName: 'URL',   group: 'OT_Content', sortOrder: 20 },
-    children: {
+    dropdownItems: {
       type: 'array',
       displayName: 'Dropdown Items (leave empty for no dropdown)',
       group: 'OT_Content',

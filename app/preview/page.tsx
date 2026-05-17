@@ -8,18 +8,9 @@ import { PreviewComponent } from '@optimizely/cms-sdk/react/client'
 import { getClient } from '@/lib/optimizely'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import ThemePreviewContent from '@/components/theme/ThemePreviewContent'
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}
-
-function isThemeManager(content: any): boolean {
-  return (
-    (Array.isArray(content?._metadata?.types) && content._metadata.types.includes('OT_ThemeManager')) ||
-    content?._metadata?.contentType === 'OT_ThemeManager' ||
-    content?.__typename === 'OT_ThemeManager'
-  )
 }
 
 async function PreviewPage({ searchParams }: Props) {
@@ -42,23 +33,6 @@ async function PreviewPage({ searchParams }: Props) {
   }
 
   const isExperience = Array.isArray(content?.composition?.nodes)
-
-  // Theme Manager: render the live settings preview with draft data
-  if (isThemeManager(content)) {
-    return (
-      <>
-        <script async src={`${cmsUrl}/util/javascript/communicationinjector.js`} />
-        <PreviewComponent />
-        <div className="min-h-screen bg-canvas">
-          <div className="border-b border-fg/10 px-md py-sm bg-surface flex items-center gap-md">
-            <span className="text-label tracking-label uppercase font-semibold text-brand">Theme Manager Preview</span>
-            <span className="text-label text-fg-muted">Updates when you save in the CMS editor</span>
-          </div>
-          <ThemePreviewContent settings={content} />
-        </div>
-      </>
-    )
-  }
 
   return (
     <>

@@ -126,12 +126,31 @@ Wrapped in React's `cache()` so Header and Footer each call the function indepen
 
 - `components/layout/Footer.tsx` — now `async` server component; reads `logoSrc`, `logoAlt`, `navItems`, and `copyright` from SiteSettings with static fallbacks
 
-### 3e. Create SiteSettings in CMS
+### 3f. Logo as contentReference + logoFit selector ✅
 
-- [ ] In Optimizely CMS, create an `OT_SiteSettings` page at path `/site-settings`
-- [ ] Fill in: Logo URL, Logo Alt, CTA Label, CTA URL, Nav Items, Copyright
+Renamed `OT_SiteSettings` displayName → **"Theme Manager"**.  
+Replaced `logoSrc: string` with `logo: contentReference` — editors now pick from the CMS media library (same pattern as hero `visual` field).  
+Added `logoFit: string` field (values: `auto | icon | wide | wide-padded`).
+
+Header and Footer both have a fixed-height `flex items-center` container holding the `<Image>` element. The `logoFit` value maps to a CSS class set at runtime:
+
+| Value | Classes applied |
+|-------|----------------|
+| `auto` | `max-h-10 w-auto` (default) |
+| `icon` | `h-10 w-10 object-contain` |
+| `wide` | `max-h-8 w-auto max-w-[200px]` |
+| `wide-padded` | `max-h-10 w-auto max-w-[200px] py-1` |
+
+Logo URL read from `settings.logo?.url?.default` (standard Graph shape for expanded contentReference).
+
+Pushed with `--force` (no live data in SiteSettings yet): 13 content types + 10 display templates imported.
+
+### 3e. Create Theme Manager in CMS
+
+- [ ] In Optimizely CMS, create an `OT_SiteSettings` (Theme Manager) page at path `/site-settings`
+- [ ] Upload logo to media library and select it in the Logo picker
+- [ ] Set Logo Alt, Logo Fit, CTA Label, CTA URL, Nav Items, Copyright
 - [ ] Restart dev server and verify Header/Footer render CMS data
-- [ ] If nav items don't appear, check that the path is exactly `/site-settings`
 
 ---
 
@@ -209,3 +228,4 @@ Reference: Astro demo's `SiteStyles` component and `siteStylesHelper.ts`.
 | 2026-05-16 | **Phase 2a complete.** Draft route no longer compares preview_token to static secret — just checks presence. |
 | 2026-05-16 | OT_Style property group confirmed not needed — no content-type properties use it; style settings correctly live only on display templates. |
 | 2026-05-16 | **Phase 3 code complete.** Added `logoSrc` to OT_SiteSettings (string URL, not contentReference — simpler for layout use). Added `getSiteSettings()` with React `cache()` to lib/optimizely.ts. Header split into server component + `MobileMenu.tsx` client component. Footer converted to server component. All fall back to static values if CMS instance absent. Pushed updated content type. |
+| 2026-05-16 | **Logo upgraded to contentReference + logoFit selector.** `OT_SiteSettings` display name → "Theme Manager". `logoSrc: string` replaced with `logo: contentReference` (media library picker). Added `logoFit: string` (auto/icon/wide/wide-padded) driving a CSS class map in Header and Footer. Both components now use fixed-height flex container so logo shape never breaks layout. Pushed with --force (no live data yet). |

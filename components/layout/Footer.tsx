@@ -12,10 +12,19 @@ const FALLBACK_LINKS = [
 export default async function Footer() {
   const settings = await getSiteSettings()
 
-  const logoSrc   = settings?.logoSrc  ?? '/brand/logo/OT.png'
+  const logoSrc   = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
   const logoAlt   = settings?.logoAlt  ?? 'OptiTech'
+  const logoFit   = (settings?.logoFit as string | undefined) ?? 'auto'
   const copyright = settings?.copyright
     ?? `© ${new Date().getFullYear()} OptiTech. All rights reserved.`
+
+  const LOGO_IMG_CLASS: Record<string, string> = {
+    auto:         'max-h-9 w-auto',
+    icon:         'h-9 w-9 object-contain',
+    wide:         'max-h-7 w-auto max-w-[180px]',
+    'wide-padded': 'max-h-9 w-auto max-w-[180px] py-1',
+  }
+  const logoImgClass = LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.auto
 
   const navLinks: { label: string; href: string }[] = settings?.navItems?.length
     ? settings.navItems.map((item: any) => ({
@@ -33,14 +42,14 @@ export default async function Footer() {
           <Link
             href="/"
             aria-label={`${logoAlt} — Home`}
-            className="opacity-100 hover:opacity-80 transition-opacity duration-150 ease-quick"
+            className="flex items-center h-9 opacity-100 hover:opacity-80 transition-opacity duration-150 ease-quick"
           >
             <Image
               src={logoSrc}
               alt={logoAlt}
-              width={160}
+              width={200}
               height={40}
-              className="h-9 w-auto"
+              className={logoImgClass}
             />
           </Link>
 

@@ -15,10 +15,19 @@ const FALLBACK_NAV = [
 export default async function Header() {
   const settings = await getSiteSettings()
 
-  const logoSrc  = settings?.logoSrc  ?? '/brand/logo/OT.png'
+  const logoSrc  = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
   const logoAlt  = settings?.logoAlt  ?? 'OptiTech'
+  const logoFit  = (settings?.logoFit as string | undefined) ?? 'auto'
   const ctaLabel = settings?.ctaLabel ?? 'Get Started'
   const ctaHref  = settings?.ctaUrl?.default ?? '#'
+
+  const LOGO_IMG_CLASS: Record<string, string> = {
+    auto:         'max-h-10 w-auto',
+    icon:         'h-10 w-10 object-contain',
+    wide:         'max-h-8 w-auto max-w-[200px]',
+    'wide-padded': 'max-h-10 w-auto max-w-[200px] py-1',
+  }
+  const logoImgClass = LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.auto
 
   const navItems: { label: string; href: string }[] = settings?.navItems?.length
     ? settings.navItems.map((item: any) => ({
@@ -32,13 +41,13 @@ export default async function Header() {
       <header className="sticky top-0 z-50 bg-canvas/80 backdrop-blur-md border-b border-fg/5">
         <div className="flex items-center justify-between px-md py-md lg:px-lg">
 
-          <Link href="/" aria-label={`${logoAlt} — Home`}>
+          <Link href="/" aria-label={`${logoAlt} — Home`} className="flex items-center h-10">
             <Image
               src={logoSrc}
               alt={logoAlt}
-              width={160}
+              width={200}
               height={40}
-              className="h-10 w-auto"
+              className={logoImgClass}
               priority
             />
           </Link>

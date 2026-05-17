@@ -5,12 +5,13 @@ import { OT_FooterColumn } from './OT_FooterColumn'
 
 export const OT_SiteSettings = contentType({
   key: 'OT_SiteSettings',
-  displayName: 'Site Settings',
+  displayName: 'Theme Manager',
   baseType: '_page',
   mayContainTypes: [],
   properties: {
-    logoSrc:        { type: 'string', displayName: 'Logo URL',        group: 'OT_Content', sortOrder: 5  },
-    logoAlt:        { type: 'string', displayName: 'Logo Alt Text',   group: 'OT_Content', sortOrder: 10 },
+    logo:           { type: 'contentReference', displayName: 'Logo',                              group: 'OT_Content', sortOrder: 5  },
+    logoAlt:        { type: 'string',           displayName: 'Logo Alt Text',                     group: 'OT_Content', sortOrder: 10 },
+    logoFit:        { type: 'string',           displayName: 'Logo Fit (auto|icon|wide|wide-padded)', group: 'OT_Content', sortOrder: 15 },
     ctaLabel:       { type: 'string', displayName: 'CTA Label',       group: 'OT_Content', sortOrder: 20 },
     ctaUrl:         { type: 'url',    displayName: 'CTA URL',         group: 'OT_Content', sortOrder: 30 },
     copyright:      { type: 'string', displayName: 'Copyright',       group: 'OT_Content', sortOrder: 40 },

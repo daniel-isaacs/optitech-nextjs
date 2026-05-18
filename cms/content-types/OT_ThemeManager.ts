@@ -6,7 +6,7 @@ import { OT_FooterColumn } from './OT_FooterColumn'
 export const OT_ThemeManager = contentType({
   key: 'OT_ThemeManager',
   displayName: 'Theme Manager',
-  baseType: '_component',
+  baseType: '_element',
   properties: {
     // Identity — which front-end domain loads this theme
     frontEndDomain: { type: 'string', displayName: 'Front-End Domain (e.g. mysite.vercel.app)', group: 'OT_Content', sortOrder: 1 },

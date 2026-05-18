@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { draftMode } from 'next/headers'
 import { getClient } from '@/lib/optimizely'
 import { OptimizelyComposition } from '@optimizely/cms-sdk/react/server'
@@ -36,7 +36,21 @@ export default async function CmsPage({ params, searchParams }: Props) {
     exp = results?.[0]
   }
 
-  if (!exp?.composition?.nodes) notFound()
+  if (!exp?.composition?.nodes) {
+    // Standalone block content (not an experience) — send to the isolated preview route
+    // so it renders without site chrome and with proper communicationinjector.js setup.
+    if (dm.isEnabled && exp?.__typename) {
+      const qs = new URLSearchParams({
+        preview_token: sp_str('preview_token'),
+        key:           sp_str('key'),
+        ver:           sp_str('ver'),
+        loc:           sp_str('loc'),
+        ctx:           'edit',
+      })
+      redirect(`/preview?${qs}`)
+    }
+    notFound()
+  }
 
   return (
     <>

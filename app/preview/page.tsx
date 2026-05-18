@@ -34,6 +34,13 @@ async function PreviewPage({ searchParams }: Props) {
 
   const isExperience = Array.isArray(content?.composition?.nodes)
 
+  // For standalone blocks (not in an experience), synthesize __composition so
+  // adapters' pa(content.__composition) call generates data-epi-block-id.
+  const contentKey = typeof params.key === 'string' ? params.key : ''
+  const standaloneContent = !isExperience && contentKey
+    ? { ...content, __composition: { key: contentKey } }
+    : content
+
   return (
     <>
       {/* React 19: <script async src> is hoisted to <head> and deduped automatically */}
@@ -48,7 +55,7 @@ async function PreviewPage({ searchParams }: Props) {
           <Footer />
         </>
       ) : (
-        <OptimizelyComponent content={content} />
+        <OptimizelyComponent content={standaloneContent} />
       )}
     </>
   )

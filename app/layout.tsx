@@ -49,7 +49,7 @@ export default async function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        {themeCSS && <style dangerouslySetInnerHTML={{ __html: themeCSS }} />}
+        {themeCSS && <style dangerouslySetInnerHTML={{ __html: themeCSS }} suppressHydrationWarning />}
       </head>
       <body className="min-h-full flex flex-col">
         <ThemeProvider>

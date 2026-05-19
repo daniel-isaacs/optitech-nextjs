@@ -1,5 +1,18 @@
 import type { NextConfig } from "next";
 
+// Derive the CMS hostname from the configured URL so next/image can fetch
+// media assets from that origin without relying solely on the wildcard pattern.
+function cmsHostname(): string | undefined {
+  const url = process.env.OPTIMIZELY_CMS_URL ?? ''
+  try {
+    return url ? new URL(url).hostname : undefined
+  } catch {
+    return undefined
+  }
+}
+
+const cms = cmsHostname()
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -8,9 +21,17 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
       {
+        // Wildcard covers any Optimizely SaaS CMS subdomain
         protocol: "https",
         hostname: "*.cms.optimizely.com",
       },
+      {
+        // DAM / CDN assets that may use a non-cms. subdomain
+        protocol: "https",
+        hostname: "*.optimizely.com",
+      },
+      // Explicitly allow the exact CMS app hostname when available
+      ...(cms ? [{ protocol: "https" as const, hostname: cms }] : []),
     ],
   },
   async headers() {

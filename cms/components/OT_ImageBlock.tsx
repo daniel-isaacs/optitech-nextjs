@@ -10,11 +10,26 @@ type Props = {
 export default function OT_ImageBlock({ content, displaySettings = {} }: Props) {
   const { pa, src } = getPreviewUtils(content)
   const styleOptions = getImageStyles(displaySettings)
+  const imageSrc = src(content.image)
+
+  if (!imageSrc) {
+    return (
+      <div
+        {...pa(content.__composition)}
+        className="w-full flex items-center justify-center bg-surface border border-fg/10"
+        style={{ minHeight: 200 }}
+      >
+        <p className="text-label text-fg-muted/60 font-mono">
+          Image not available — publish the asset in CMS to display it
+        </p>
+      </div>
+    )
+  }
 
   return (
-    <div {...pa(content.__composition)}>
+    <div {...pa(content.__composition)} className="w-full">
       <ImageBlock
-        src={src(content.image) ?? ''}
+        src={imageSrc}
         alt={content.alt ?? ''}
         caption={content.caption ?? undefined}
         styleOptions={styleOptions}

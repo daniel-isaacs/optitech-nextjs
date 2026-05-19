@@ -17,11 +17,14 @@ export function getClient() {
   return _getClient()
 }
 
-/** Extracts the hostname (without port) from the current request's Host header. */
+/**
+ * Returns the host (hostname + port if non-standard) from the current request.
+ * Preserves the port so that frontEndDomain values like "localhost:3000" match.
+ */
 export async function getRequestDomain(): Promise<string> {
   try {
     const h = await headers()
-    return (h.get('host') ?? '').split(':')[0]
+    return h.get('host') ?? ''
   } catch {
     return ''
   }

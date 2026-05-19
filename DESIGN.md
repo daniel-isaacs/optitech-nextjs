@@ -1,15 +1,15 @@
-<!-- Upgraded from seed 2026-05-14. Re-run /impeccable document once real components exist to capture live tokens. -->
-
 ---
-name: OptiTech
-description: Bold, forward-moving brand site. Committed oxidized teal, geometric sans, choreographed motion.
+name: OptiTech CMS Demo Framework
+description: Configurable editorial brand platform. Dark-first, depth-forward, choreographed motion. Full CMS theme override via ThemeManager. Impeccable-collaborative component expansion.
 colors:
-  teal-anchor: "oklch(55% 0.18 195)"
-  teal-deep: "oklch(38% 0.16 195)"
-  editorial-black: "oklch(12% 0.012 195)"
-  press-room: "oklch(20% 0.022 195)"
-  press-white: "oklch(97% 0.005 195)"
-  blueprint: "oklch(68% 0.06 195)"
+  brand: "var(--ot-brand)"          # default oklch(55% 0.18 195) — overrideable via ThemeManager
+  brand-hover: "var(--ot-brand-hover)"
+  accent: "var(--ot-accent)"        # default oklch(82% 0.19 145) — signal green
+  canvas: "var(--ot-canvas)"
+  surface: "var(--ot-surface)"
+  fg: "var(--ot-fg)"
+  fg-muted: "var(--ot-fg-muted)"
+  fg-on-brand: "var(--ot-fg-on-brand)"
 typography:
   display:
     fontFamily: "Poppins, system-ui, sans-serif"
@@ -49,181 +49,309 @@ spacing:
   lg: "32px"
   xl: "64px"
   2xl: "128px"
-components:
-  button-primary:
-    backgroundColor: "{colors.teal-anchor}"
-    textColor: "{colors.press-white}"
-    rounded: "{rounded.none}"
-    padding: "16px 48px"
-  button-primary-hover:
-    backgroundColor: "{colors.teal-deep}"
-    textColor: "{colors.press-white}"
-  button-ghost:
-    backgroundColor: "transparent"
-    textColor: "{colors.press-white}"
-    rounded: "{rounded.none}"
-    padding: "15px 47px"
-  button-ghost-hover:
-    backgroundColor: "oklch(97% 0.005 195 / 0.08)"
-    textColor: "{colors.press-white}"
 ---
 
-# Design System: OptiTech
+# Design System: OptiTech CMS Demo Framework
 
-## 1. Overview
+## 1. Overview and Evolution
 
-**Creative North Star: "The Kinetic Signal"**
+This project started as a fixed teal brand site. It has evolved into something more architecturally interesting: a **configurable, CMS-driven demo platform** that demonstrates how Optimizely SaaS CMS can power a fully themeable, editorially confident web presence.
 
-OptiTech is designed to feel purpose-built by people with a strong point of view. The visual language draws from design-tool precision (Figma, Framer, Arc) — not their fame, but their quality of self-referential craft: a product that demonstrates its own values in how it presents itself.
+The design framework has two jobs:
 
-Color commits rather than accents. Oxidized Teal fills 30-60% of primary surfaces — a presence, not punctuation. Poppins carries the entire type system: hierarchy through weight and scale, not through serif/sans switching. At display sizes (weight 800, tight tracking at -0.03em), the geometric forms read as impactful and forward-moving. At body size (weight 400), the same family provides the comfortable, modern legibility the user asked for. One face, one system, total coherence.
+1. **Standalone quality** — the default theme (mineral teal palette, Poppins type system, dark-first grounds) must look like a considered, professional design in its own right. Not a template, not a demo site. Something that earns attention.
 
-The surface palette runs dark. Physical scene: a consumer discovering OptiTech on their laptop in the evening, skeptical but curious. The committed teal makes the brand statement immediately; ink-black sections carry seriousness and depth; press-white panels enable comfortable long-form reading. Three grounds, one unified hue family.
+2. **Rebranding surface** — everything visually distinctive is expressed through semantic CSS tokens (`--ot-brand`, `--ot-accent`, `--ot-canvas`, etc.) that the ThemeManager overrides via a CMS-injected `<style>` block. Swap the brand color and watch the entire site — bloom halos, gradient fills, button fills, blockquote borders, chromatic shadows — recalibrate automatically.
 
-This system explicitly rejects: generic startup-cream (off-white cards, pastel blobs, rounded pill grids), corporate navy, and the neon-on-black crypto aesthetic.
+**Creative North Star: "The Kinetic Editorial"**
 
-**Key Characteristics:**
-- Committed teal anchor — a surface color, not an accent
-- Single geometric sans (Poppins) with weight/scale hierarchy (800 to 400)
-- Sharp corners everywhere — no pill shapes, no softened cards
-- Choreographed entrances as brand expression; flat and still at rest
-- Every neutral tinted toward the teal hue; nothing truly neutral
+Precision-crafted. Editorial confidence. Choreographed motion. The visual language signals craft and self-awareness — a product that demonstrates its own values in how it presents itself. Depth and motion are expressive tools, not decorations.
 
-## 2. Colors: The Mineral Palette
+**What this is not:**
+- A static design spec. Components expand collaboratively with impeccable, which adds polish and advanced effects.
+- A fixed brand. The token system is the brand; any color can be the brand.
+- A vanilla Claude Code output. The depth system, bloom effects, stagger choreography, and glass surfaces are deliberately distinct from default Tailwind patterns.
 
-One color commits. Everything else defers to it.
+---
 
-### Primary
-- **Oxidized Teal** (`oklch(55% 0.18 195)`, approx #0e7e80): The anchor. Fills hero panels, full-bleed sections, entire backgrounds. 30-60% of any primary view. Not an accent — a commitment.
-- **Verdigris Deep** (`oklch(38% 0.16 195)`, approx #0b5557): Hover state on teal surfaces, depth accents, buttons on teal backgrounds. Recedes while staying in family.
+## 2. The Theme Token System
 
-### Neutral
-- **Editorial Black** (`oklch(12% 0.012 195)`, approx #0e1c1c): Deepest background. Navigation, footer, large dark sections. Near-black but distinctly tinted.
-- **Press Room** (`oklch(20% 0.022 195)`, approx #172e2e): Dark content surface for feature sections, secondary panels. Lighter than Editorial Black; creates depth in dark-ground layouts.
-- **Press White** (`oklch(97% 0.005 195)`, approx #f3fafa): Light reading surfaces and text on dark or teal backgrounds. Not white; tinted.
-- **Blueprint** (`oklch(68% 0.06 195)`, approx #7cb5b6): Secondary text on dark backgrounds. Labels, navigation links at rest, de-emphasized content.
+All visual identity flows through CSS custom properties defined in `styles/tokens.css` and mapped to Tailwind utilities in `app/globals.css` via `@theme inline`.
 
-**The Committed Rule.** The teal anchor fills large surface areas — it is not sparingly applied. Restraint lives in the neutrals. If a view uses Oxidized Teal on less than 20% of its surface, the palette is drifting toward Restrained. Push it back.
+### Semantic roles (not brand names)
 
-**The Tint Rule.** No neutral is ever truly neutral. Editorial Black, Press Room, and Press White all carry the teal hue at low chroma (0.005-0.022). The palette is unified, not collaged from unrelated values. Never use `#000000`, `#111111`, or `#ffffff` without tinting.
+| Token | Default | Role |
+|---|---|---|
+| `--ot-brand` | `oklch(55% 0.18 195)` | The committed color. Fills hero panels, CTAs, primary surfaces. 30–60% of primary views. |
+| `--ot-brand-hover` | `oklch(38% 0.16 195)` | Depth state on brand surfaces — hover, active, shadow reference. |
+| `--ot-accent` | `oklch(82% 0.19 145)` | Signal green. Badges, highlights, alternative CTAs, semantic callouts. |
+| `--ot-accent-hover` | `oklch(68% 0.17 145)` | Deeper accent for hover states. |
+| `--ot-canvas` | `oklch(12% 0.012 195)` | Outermost page background. Darkest in dark mode, lightest in light mode. |
+| `--ot-surface` | `oklch(20% 0.022 195)` | Component panels, one elevation above canvas. |
+| `--ot-fg` | `oklch(97% 0.005 195)` | Primary text. Adapts to mode. |
+| `--ot-fg-muted` | `oklch(68% 0.06 195)` | Secondary text, nav links at rest, metadata. |
+| `--ot-fg-on-brand` | `oklch(97% 0.005 195)` | Text on brand-colored fills. Always light for contrast. |
+| `--ot-fg-on-accent` | `oklch(12% 0.012 195)` | Text on accent-colored fills. Always dark. |
 
-## 3. Typography: One Face, Full Commitment
+### CMS theme override
 
-**Primary Font:** Poppins (Google Fonts — add via `next/font/google`)
-**Accent Display Font:** Syne (Google Fonts, variable — for accent headers and pull moments only)
-**Mono Font:** Geist Mono (already installed — for code samples and technical labels)
+The ThemeManager content type exposes color fields for each semantic token. When populated, `buildThemeCSS()` generates an inline `<style>` block injected before first paint in `app/layout.tsx`. The overrides land as `:root { --ot-brand: ...; }` and `[data-theme="light"] { ... }` rules, sitting above the defaults in source order.
 
-**Character:** Poppins is the entire voice. A geometric sans-serif with an unusually high x-height and consistent stroke width — extremely legible at body sizes, and at display sizes (weight 800, negative tracking) it becomes dense and impactful. The system expresses hierarchy entirely through scale and weight contrast, never through typeface switching.
+**Implication for component authors:** never hardcode a color value (`oklch(55% 0.18 195)`) in component CSS. Always reference a semantic token (`var(--ot-brand)`) or its Tailwind alias (`bg-brand`, `text-fg-muted`, etc.). The bloom and gradient tokens (below) use CSS Relative Color Syntax to derive alpha variants from the semantic tokens — they update automatically when the theme changes.
 
-**Installation note:** Add Poppins to `app/layout.tsx` via `next/font/google`, providing weights `[400, 500, 600, 700, 800]`.
+### Bloom / halo tokens (auto-derived)
 
-### Hierarchy
-- **Display** (Poppins 800, `clamp(3rem, 8vw, 6rem)`, line-height 0.9, tracking -0.03em): Hero and section-opener headlines. Short, punchy, asymmetric where possible. Never more than 14 characters on a line.
-- **Headline** (Poppins 700, `clamp(1.75rem, 4vw, 2.75rem)`, line-height 1.05, tracking -0.02em): Sub-section openers, feature callouts. Strong hierarchy step below Display.
-- **Title** (Poppins 600, `1.25rem`, line-height 1.3, tracking -0.01em): Card headers, navigation labels, strong UI text.
-- **Body** (Poppins 400, `1rem`, line-height 1.65): Prose. Hard cap at 70ch. The comfortable reading size the design is optimized for.
-- **Label** (Poppins 600, `0.8125rem`, tracking +0.06em, uppercase): Metadata, section tags, timestamps. Uppercase with generous tracking.
+```css
+--ot-bloom-brand:        oklch(from var(--ot-brand) l c h / 0.80)
+--ot-bloom-brand-ring:   oklch(from var(--ot-brand) l c h / 0.50)
+--ot-bloom-brand-faint:  oklch(from var(--ot-brand) l c h / 0.25)
+--ot-bloom-brand-border: oklch(from var(--ot-brand) l c h / 0.15)
+--ot-bloom-accent:        oklch(from var(--ot-accent) l c h / 0.60)
+--ot-bloom-accent-ring:   oklch(from var(--ot-accent) l c h / 0.45)
+--ot-bloom-accent-border: oklch(from var(--ot-accent) l c h / 0.18)
+--ot-bloom-accent-faint:  oklch(from var(--ot-accent) l c h / 0.13)
+```
 
-### Syne (Accent Display)
+These power chromatic shadows (`box-shadow: 0 8px 32px var(--ot-bloom-brand-faint)`), glow rings on media blocks, and card hover effects. Because they derive from the semantic tokens via relative color syntax, they follow CMS theme overrides without any additional wiring.
 
-Geometric variable font used sparingly as an accent layer above the Poppins system. Never replaces Poppins for headlines or body — it punctuates rather than narrates.
+### Display gradient fills (four named treatments)
 
-- **Weight:** 450 only (`style={{ fontWeight: 450 }}`). Above 525 the geometry bloats. Token: `--ot-weight-syne`.
-- **Usage:** Accent headers, section openers, pull quotes. At most once per viewport.
-- **Variants:** Clean (`text-fg`), Brand (`text-brand`), Accent (`text-accent`), Hollow (`.syne-hollow` — wire letterforms via `-webkit-text-stroke`).
-- **Color note:** Accent (signal green) at 82% lightness is too close in lightness to the light canvas to pass WCAG 3:1. Prefer Clean, Brand, or Hollow on light backgrounds.
+Available as global CSS classes. Use at display scale only, at most once per composition.
 
-**The Weight Ladder Rule.** Adjacent hierarchy levels must differ by at least 100 in font weight. Display (800) to Headline (700) to Title (600) to Body (400). Never two adjacent levels at the same weight; the jump from 600 to 400 between Title and Body is intentional and creates the clearest separation in the scale.
+| Class | Direction | Usage |
+|---|---|---|
+| `.display-gradient-brand` | brand lighter → brand deeper | Primary brand statement headlines |
+| `.display-gradient-warm` | accent → brand | Cross-spectrum contrast moments |
+| `.display-gradient-luminous` | fg → brand | Luminous editorial headers |
+| `.display-gradient-ember` | accent bright → accent deep | High-energy signal moments |
 
-## 4. Elevation and Depth
+All four adapt automatically to the active theme (dark/light) and to CMS color overrides.
 
-Depth is a design signal — it communicates hierarchy, surface material, and where the user's attention should go. OptiTech uses three depth instruments, applied selectively and always in the teal-mineral register.
+---
 
-### 1. Color Depth
+## 3. Color Philosophy
 
-The mineral palette creates inherent depth without additional treatment. Press Room over Editorial Black reads as a raised surface. Oxidized Teal commands presence by saturation contrast alone. This is the baseline — always available.
+### The committed rule
 
-### 2. Glass Surfaces
+The brand color fills large surface areas — it is a presence, not punctuation. In the default teal theme, Oxidized Teal fills hero panels, entire section backgrounds, CTA buttons. If a layout uses the brand color on less than 20% of its primary surface, it is drifting toward generic. Push it back.
 
-`backdrop-filter: blur()` blurs the layer below into the element's surface, creating a sense of material depth and floating. OptiTech's glass register is dark and tinted, never light and frosted. White frosted glass reads as generic consumer SaaS; OptiTech's glass reads as architectural — darkened, teal-hued, structural.
+### The tint rule
 
-**Dark glass** — sticky nav, floating panels, cards over imagery:
-`bg-canvas/75 backdrop-blur-md` with `border border-fg/10`
+No neutral is ever truly neutral. In the default theme, canvas (dark mode) and fg-on-brand (light text) both carry the brand hue at low chroma. The palette feels like one material. When implementing custom themes via the ThemeManager, apply the same principle: canvas and surface should carry a hint of the brand hue, even at very low chroma.
 
-**Teal glass** — panels over teal surfaces or teal-tinted section backgrounds:
-`bg-brand/15 backdrop-blur-md` with `border border-brand/20`
+### Dark-first grounds
 
-Glass is appropriate when there is something visually interesting beneath — an image, a teal fill, a multi-layer section. Glass over a flat solid same-color surface is a non-effect. Sticky navigation glass is always appropriate: it reinforces the persistent elevated position above scrolling content.
+Dark mode is the default. `data-theme="dark"` on `<html>` is set before first paint via an inline script (avoiding flash). Light mode is a full inversion of canvas/surface/fg tokens, activated by `data-theme="light"`. The brand and accent tokens are constant across modes; only the grounds and text adapt. The ThemeManager can set separate canvas/surface/fg-muted values for each mode.
 
-### 3. Shadows
+---
 
-Shadows communicate hierarchy and can be used at rest when they serve a clear purpose. All shadows must be tinted to the teal hue — neutral grey shadows flatten the system into generic UI patterns and break the mineral palette's coherence.
+## 4. Typography
 
-**Ambient resting shadow** — for cards or panels elevated above the surrounding field:
-`box-shadow: 0 4px 24px oklch(55% 0.18 195 / 0.2)`
+**Three fonts, one system:**
 
-**Hover shadow** — intensified depth on interaction:
-`box-shadow: 0 8px 32px oklch(55% 0.18 195 / 0.3)`
+| Variable | Font | Role |
+|---|---|---|
+| `--font-sans` | Poppins | Everything. Display, headline, title, body, label, buttons, nav. |
+| `--font-syne` | Syne (variable) | Accent moments only. Section openers, pull quotes. Once per viewport max. |
+| `--font-mono` | Geist Mono | Code samples, technical labels, data readouts. |
 
-### The Earned Depth Rule
+### Scale and hierarchy
 
-Depth must serve the hierarchy. A glass card earns its blur when it floats over imagery or a teal surface — the blur has something to reveal. A resting shadow earns its presence when it lifts a prominent element above the field — the shadow has a clear target to separate from.
+| Level | Size | Weight | Line height | Tracking | Token |
+|---|---|---|---|---|---|
+| Display | `clamp(3rem, 8vw, 6rem)` | 800 | 0.9 | −0.03em | `text-display` |
+| Headline | `clamp(1.75rem, 4vw, 2.75rem)` | 700 | 1.05 | −0.02em | `text-headline` |
+| Title | `1.25rem` | 600 | 1.3 | −0.01em | `text-title` |
+| Body | `1rem` | 400 | 1.65 | — | `text-body` |
+| Label | `0.8125rem` | 600 | — | +0.06em uppercase | `text-label` |
 
-Depth applied uniformly is noise; applied selectively it is signal. Before adding glass or shadow, ask: "What is this surface floating above?" If the answer is unclear, the depth treatment doesn't belong.
+**Weight ladder rule:** Adjacent hierarchy levels must differ by at least 100 in weight. The 600→400 jump between Title and Body is the sharpest and most intentional step in the scale.
 
-## 5. Components
+### Syne usage rules
 
-### Buttons
+- Weight 400–525 only. `--ot-weight-syne` is set to 450. Above 525 the geometry bloats.
+- Variants: Clean (`text-fg`), Brand (`text-brand`), Hollow (`.syne-hollow` — wire letterforms via `-webkit-text-stroke`).
+- Never use Syne on body copy or below headline scale.
+- Never on light backgrounds with Accent color — insufficient contrast.
 
-Sharp corners define the entire button system. No border-radius; no pill shapes. Uppercase lettering with tracked spacing.
+---
 
-- **Shape:** Sharp (0px radius). Padding: 16px vertical / 48px horizontal.
-- **Primary:** Oxidized Teal (`teal-anchor`) background, Press White text. Hover: `teal-deep` background + `translateY(-2px)`. Active: snap back to rest.
-- **Ghost:** Transparent background, 1px solid border at `oklch(97% 0.005 195 / 0.40)`, Press White text. Used on dark or teal surfaces. Hover: border opacity to 0.70, faint background fill `oklch(97% 0.005 195 / 0.08)`.
-- **Focus:** 2px solid outline at the button's own primary color, 3px offset. Always visible; never suppressed.
-- **Typography:** Poppins 600, 0.875rem, tracking +0.06em, uppercase.
+## 5. Elevation and Depth
 
-### Navigation
+Depth is a design signal. It communicates hierarchy, surface material, and attention target. This system uses three depth instruments. Apply selectively — depth applied uniformly is noise.
 
-Typographic, minimal, sticky.
+### Color depth (always available)
 
-- **Background:** Dark glass — `bg-canvas/80 backdrop-blur-md` with a hairline bottom border `border-b border-fg/5`. The blur communicates persistent elevation above scrolling content without a hard line.
-- **Logo:** Poppins 800, 0.875rem, tracking +0.12em, uppercase, Press White.
-- **Links at rest:** Poppins 400, 0.875rem, Blueprint color.
-- **Links on hover:** Transition to Press White (0.15s ease-out-quart).
-- **CTA:** Primary button at compact scale (12px / 28px padding, 0.8125rem).
-- **Mobile:** Collapses to wordmark + hamburger; links stack full-width in a full-height overlay.
+The token system creates inherent depth without additional treatment. Surface over Canvas reads as a raised panel. Brand-filled sections command presence through saturation contrast alone. This is the baseline — every layout has it automatically.
 
-### Text Input
+### Glass surfaces
 
-- **Shape:** 4px radius (the only non-zero radius in the system — input fields earn a slight softening).
-- **Background:** Editorial Black or Press Room depending on surface.
-- **Border:** 1px solid `oklch(97% 0.005 195 / 0.15)` at rest.
-- **Focus:** Border becomes 1px solid `teal-anchor`; no glow, no spread. The color change is the signal.
-- **Placeholder:** Blueprint color.
-- **Error:** Border becomes `oklch(60% 0.22 25)` (warm red); no icon, no side stripe. Color alone carries the state.
+`backdrop-filter: blur()` creates material depth and floating. Glass in this system is always **dark and tinted** — never light-frosted.
 
-## 6. Do's and Don'ts
+**Dark glass** (sticky nav, floating panels, cards over imagery):
+```
+bg-canvas/75 backdrop-blur-md border border-fg/10
+```
 
-### Do:
-- **Do** let Oxidized Teal fill large surface areas: hero panels, full-bleed sections, entire page backgrounds. It is a presence, not punctuation.
-- **Do** use Poppins at display sizes (3rem+) with tight letter-spacing (-0.025em to -0.035em). The geometric forms become impactful, not just large.
-- **Do** use weight contrast of 200+ between adjacent type levels. The Weight Ladder Rule exists because the jump from 600 to 400 is the sharpest, most legible step.
-- **Do** tint every neutral toward the teal hue (chroma 0.005-0.022). Press White reads as warm teal-white; Editorial Black reads as teal-black. The palette should feel like one material.
-- **Do** use asymmetry and forward tension in layout. Symmetric grid with equal gutters signals nothing is happening.
-- **Do** choreograph entrances with `cubic-bezier(0.16, 1, 0.3, 1)` (expo ease-out). Elements arrive with vertical offset or opacity transition, then rest. The entrance is the motion statement.
-- **Do** respect `prefers-reduced-motion`: every choreographed sequence and transition must degrade to an instant display when the user has set this preference.
-- **Do** meet WCAG 2.1 AA contrast on all text and interactive states, including Poppins 400 body copy over Press Room.
-- **Do** use dark glass (`bg-canvas/75 backdrop-blur-md`) and teal-tinted shadows for depth. Sticky navigation, floating panels, and cards over imagery are prime contexts. Ask "what is beneath this surface?" before applying; glass over a flat same-color ground is a non-effect.
+**Brand-tinted glass** (panels over brand surfaces):
+```
+bg-brand/15 backdrop-blur-md border border-brand/20
+```
 
-### Don't:
-- **Don't** use the SaaS cream aesthetic: off-white backgrounds, rounded pill buttons, pastel gradient blobs, floating icon-feature grids. It is the category's first training-data reflex.
-- **Don't** use the corporate enterprise blue playbook: navy/grey palettes, stock-photo hero images, feature bullet lists, formal copywriting.
-- **Don't** let the design read as a crypto or Web3 launch site: no neon, no floating orbs or particle effects, no speculative urgency.
-- **Don't** use light frosted glass (white or near-white `backdrop-filter: blur` with light backgrounds). That reads as generic consumer SaaS. OptiTech's glass is dark-tinted and teal-hued. If it looks like an iOS control or a macOS widget, it's wrong.
-- **Don't** use neutral grey shadows (`box-shadow: 0 4px 12px rgba(0,0,0,0.2)` etc.). Shadows must carry the teal hue or they break the mineral palette's coherence.
-- **Don't** use gradient text (`background-clip: text` + gradient) decoratively or on sub-display type. **Permitted exception:** the four `.display-gradient-*` utility classes in `globals.css` (`display-gradient-brand`, `display-gradient-warm`, `display-gradient-luminous`, `display-gradient-ember`) may be used on `text-display`-scale type only. Rules: once per composition, never on body or headline copy. Gradient stops are defined as CSS custom properties in `tokens.css` and adapt automatically to the active theme (dark or light).
-- **Don't** use side-stripe borders (a colored `border-left` or `border-right` greater than 1px as an accent on cards, callouts, or list items). Rewrite with background tints, full borders, or nothing.
-- **Don't** animate CSS layout properties (`width`, `height`, `top`, `left`). Use `transform` and `opacity` only.
-- **Don't** round buttons or cards beyond `input: 4px`. The sharp-corner geometry is a deliberate system choice. Introducing `rounded-lg` or `rounded-full` anywhere breaks the system's identity.
-- **Don't** use Poppins below 0.75rem. The geometric letterforms lose definition at very small sizes. Drop to `system-ui` below that threshold.
+**Rule:** Glass earns its blur when there is something visually interesting beneath — an image, a brand fill, a layered section background. Glass over a flat same-color surface is a non-effect. Sticky navigation glass is always appropriate.
+
+### Chromatic shadows (tinted to brand)
+
+All shadows carry the brand hue. Neutral grey shadows break the mineral palette.
+
+**Resting elevation** (cards or panels above field):
+```
+box-shadow: 0 4px 24px var(--ot-bloom-brand-faint)
+```
+
+**Hover intensification:**
+```
+box-shadow: 0 8px 32px var(--ot-bloom-brand-faint), 0 16px 48px var(--ot-bloom-accent-faint)
+```
+
+### Bloom / glow effects (media and cards)
+
+Image and video blocks support chromatic bloom — a soft halo ring derived from `--ot-bloom-brand-ring` and `--ot-bloom-accent-ring` that appears around media elements. Cards support `.card-hover-lift` (translate + shadow) and `.card-hover-glow` (shadow intensification) global utility classes defined in `globals.css`. Both respect `prefers-reduced-motion`.
+
+---
+
+## 6. Motion
+
+Motion is editorial expression — it makes momentum visible. The system has two motion instruments.
+
+### Easing curves
+
+| Token | Curve | Use |
+|---|---|---|
+| `--ot-ease-kinetic` | `cubic-bezier(0.16, 1, 0.3, 1)` | Entrances, composition reveals, block animations |
+| `--ot-ease-quick` | `cubic-bezier(0.25, 1, 0.5, 1)` | UI state changes — hover, focus, active |
+
+### Stagger system (MotionObserver)
+
+`MotionObserver` (`components/providers/MotionObserver.tsx`) is a client-side IntersectionObserver that watches `[data-stagger]` elements. When a row enters the viewport, the observer adds `data-in` and the CSS in `globals.css` animates each child column with a 120ms delay between them.
+
+Two modes, controlled by the Visual Builder's Row display settings:
+- `data-stagger="slide"` — `slideUp`: `opacity: 0 + translateY(1.5rem)` → natural position
+- `data-stagger="fade"` — `fadeIn`: `opacity: 0` → `opacity: 1`
+
+Both use `--ot-ease-kinetic` at 0.6s duration.
+
+### Block-level animations
+
+Individual blocks (currently HeroBlock) support an `animation` display setting: `none`, `fade`, `slide`, `parallax`. Implemented with `motion-safe:animate-fade-in` and `motion-safe:animate-slide-up` + staggered `animationDelay` values per element within the block.
+
+### The reduced-motion requirement
+
+Every animation and transition in the system must degrade gracefully under `prefers-reduced-motion: reduce`. Use the `motion-safe:` Tailwind modifier for all animation utilities. The stagger system's `@media (prefers-reduced-motion: no-preference)` guard means reduced-motion users see content immediately at full opacity with no layout shift.
+
+---
+
+## 7. Responsiveness
+
+The layout system is driven by Visual Builder composition settings rather than component-level breakpoints. Editors control responsiveness through the Section/Row/Column display templates.
+
+**Row breakpoints** (`showAsRowFrom`): sm (640px), md (768px), lg (1024px), xl (1280px), or never. Below the chosen breakpoint, columns stack vertically.
+
+**Column spans**: 1–12 twelfths, or `auto` (equal). Flex-basis is applied at the Row's chosen breakpoint via `[data-bp="*"] [data-col-span="*"]` selectors in `globals.css`.
+
+**Section width**: full-bleed, container (default), wide (max-7xl), narrow (max-4xl).
+
+**Implication for component authors:** block components should be designed to work at any width from ~280px (single column, narrow viewport) to ~1400px (full-bleed). Never assume a fixed container width inside a block.
+
+---
+
+## 8. Component Inventory
+
+### Navigation (Header)
+
+Server component fed by ThemeManager. Dark glass sticky bar — `bg-canvas/80 backdrop-blur-md` with `border-b border-fg/5`. Logo area, primary nav links (desktop: inline; mobile: full-height overlay via `MobileMenu.tsx` client component), and CTA button. All content CMS-driven.
+
+### Blocks (currently built)
+
+| Block | Key display settings | Notable effects |
+|---|---|---|
+| **HeroBlock** | layout (image left/right), color (brand/canvas/surface), animation (none/fade/slide/parallax) | Split-panel layout, per-element stagger, CVA variant system |
+| **CardBlock** | fill, border, imageStyle (top/left/right), imageSide, hover (lift/glow/none), density, noise, accentLine, maxHeight | `.card-hover-lift` / `.card-hover-glow` global classes |
+| **PrimaryTextBlock** | color (brand/canvas/surface), align, size, eyebrow style, CTA style | Editorial typography moment; supports Syne accent heading |
+| **QuoteBlock** | color, size, attribution style | Pull quote with large typographic treatment |
+| **RichTextBlock** | color (brand/canvas/surface), size (default/compact), treatment (none/lead/dropcap), ruledHeadings | Full prose block; TinyMCE output styled via `[data-rich-text]` scoped CSS |
+| **ImageBlock** | aspectRatio, objectFit, bloom (brand/accent/none), caption, rounded | Chromatic bloom glow ring from bloom tokens |
+| **VideoBlock** | aspectRatio, bloom, caption | Same bloom system as ImageBlock |
+
+### Composition structure
+
+Section, Row, and Column adapters render the Visual Builder tree. See `Optimizely.md` for the full composition architecture.
+
+---
+
+## 9. Special CSS Utilities (globals.css)
+
+These global utilities reference bloom tokens and must be defined in `globals.css` — not as Tailwind arbitrary values — so they follow CMS theme overrides automatically.
+
+| Class | Effect |
+|---|---|
+| `.card-hover-lift` | `translateY(-4px)` + chromatic shadow on hover |
+| `.card-hover-glow` | Chromatic shadow intensification on hover (no transform) |
+| `.btn-signal` | `::before` fill sweep left-to-right on hover/focus, 220ms kinetic ease |
+| `.syne-hollow` | Wire letterform — transparent fill, brand-color `-webkit-text-stroke` |
+| `.display-gradient-brand` | Gradient text fill (brand tones) |
+| `.display-gradient-warm` | Gradient text fill (accent → brand) |
+| `.display-gradient-luminous` | Gradient text fill (fg → brand) |
+| `.display-gradient-ember` | Gradient text fill (accent range) |
+| `.logo-invert-dark` | `filter: brightness(0) invert(1)` in dark mode; removed in light mode |
+
+---
+
+## 10. Impeccable Collaboration
+
+Components in this system are built in collaboration with the **impeccable** skill, which adds polish, advanced effects, and visual distinctiveness beyond a baseline implementation. The process:
+
+1. A block component is first built to the patterns in this document — correct token usage, CVA variant system, preview attribute wiring, responsive behavior.
+2. Impeccable then refines the component — tightening motion, adding depth layers (bloom, glass, subtle 3D transforms), improving typographic rhythm, adding micro-interactions and hover choreography.
+3. Advanced effects that impeccable introduces become part of the display template's settings vocabulary, so editors can control them from the CMS.
+
+**What impeccable adds to blocks (examples):**
+- Inset depth on cards: subtle `inset-shadow` or `box-shadow inset` in dark glass register
+- 3D perspective tilt on hover: `rotateX` / `rotateY` via `perspective` + `transform-style: preserve-3d`
+- Kinetic CTA underlines: `scaleX` transforms on `::after` pseudo-elements
+- Layered section backgrounds: stacked gradients + noise texture + brand-bloom halo
+- Media shimmer: animated gradient overlay on image/video load states
+
+When impeccable introduces a new effect, document it here under the relevant component section and add any new global utilities to section 9.
+
+---
+
+## 11. Do's and Don'ts
+
+### Do
+
+- **Do** use semantic tokens (`var(--ot-brand)`, `bg-brand`, `text-fg-muted`) everywhere — never hardcode color values in component CSS.
+- **Do** let the brand color fill large surface areas. 30–60% of a primary view. Restraint lives in the neutrals.
+- **Do** use `box-shadow` with bloom tokens for elevation — chromatic, not grey.
+- **Do** use dark glass (`bg-canvas/75 backdrop-blur-md`) for floating elements over visual content. Ask "what is beneath this?" before applying.
+- **Do** apply `motion-safe:` modifier to all animation utilities. Stagger and block animations must work at zero motion.
+- **Do** use sharp corners (`rounded-none`) on all interactive elements — buttons, cards, panels. The only permitted non-zero radius is `rounded-input` (4px) on form inputs.
+- **Do** use `text-wrap: balance` on headlines and `text-wrap: pretty` on body paragraphs.
+- **Do** use weight contrast of 200+ between adjacent type hierarchy levels.
+- **Do** tint every neutral toward the brand hue when implementing custom themes.
+- **Do** meet WCAG 2.1 AA on all text and interactive states, including body copy on surface/canvas backgrounds.
+- **Do** use `transform` and `opacity` only for animated properties. Never animate `width`, `height`, `top`, `left`.
+
+### Don't
+
+- **Don't** hardcode `oklch(55% 0.18 195)` or any color literal in component code. That color lives in `tokens.css` as `--ot-brand`. Component code references the token.
+- **Don't** use light frosted glass (white/near-white `backdrop-blur` on light backgrounds). OptiTech's glass is dark-tinted. If it looks like an iOS popover, it's wrong.
+- **Don't** use neutral grey shadows (`rgba(0,0,0,0.2)` etc.). Shadows carry the brand hue via bloom tokens.
+- **Don't** use the SaaS cream aesthetic: off-white cards, pastel gradient blobs, rounded pill buttons, floating feature icon grids.
+- **Don't** use corporate navy or neon-on-black / Web3 energy in custom themes or new components.
+- **Don't** use side-stripe borders (a colored `border-left` or `border-right` > 1px as a decorative accent). Use background tints, full borders, or nothing.
+- **Don't** use Syne below headline scale, at weight above 525, or more than once per viewport.
+- **Don't** use display gradient fills (`display-gradient-*`) on sub-display type or more than once per composition.
+- **Don't** assume a fixed container width inside block components. Blocks render at any width from a full-bleed section to a narrow column.
+- **Don't** introduce new layout-shifting animation properties without a `prefers-reduced-motion: reduce` fallback.
+- **Don't** add `rounded-lg`, `rounded-xl`, or `rounded-full` to buttons or cards. Sharp corners are the system's identity.

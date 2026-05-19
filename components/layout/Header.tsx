@@ -25,9 +25,9 @@ export default async function Header() {
   const ctaHref        = settings?.ctaUrl?.default ?? '#'
 
   const LOGO_IMG_CLASS: Record<string, string> = {
-    full:    'max-h-10 w-auto',
-    icon:    'h-10 w-10 object-contain',
-    compact: 'max-h-7 w-auto max-w-[160px]',
+    full:    'max-h-12 w-auto',
+    icon:    'h-12 w-12 object-contain',
+    compact: 'max-h-9 w-auto max-w-[160px]',
   }
   const logoImgClass = [
     LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full,
@@ -53,7 +53,7 @@ export default async function Header() {
       <header className="sticky top-0 z-50 bg-canvas/80 backdrop-blur-md border-b border-fg/5">
         <div className="flex items-center justify-between px-md py-md lg:px-lg">
 
-          <Link href="/" aria-label={`${logoAlt} — Home`} className="flex items-center h-10">
+          <Link href="/" aria-label={`${logoAlt} — Home`} className="flex items-center h-12">
             <Image
               src={logoSrc}
               alt={logoAlt}

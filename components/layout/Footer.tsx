@@ -37,9 +37,9 @@ export default async function Footer() {
     ?? `© ${new Date().getFullYear()} OptiTech. All rights reserved.`
 
   const LOGO_IMG_CLASS: Record<string, string> = {
-    full:    'max-h-9 w-auto',
-    icon:    'h-9 w-9 object-contain',
-    compact: 'max-h-6 w-auto max-w-[140px]',
+    full:    'max-h-12 w-auto',
+    icon:    'h-12 w-12 object-contain',
+    compact: 'max-h-8 w-auto max-w-[140px]',
   }
   const logoImgClass = [
     LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full,
@@ -78,7 +78,7 @@ export default async function Footer() {
             <Link
               href="/"
               aria-label={`${logoAlt} — Home`}
-              className="flex items-center h-9 opacity-100 hover:opacity-80 transition-opacity duration-150 ease-quick"
+              className="flex items-center h-12 opacity-100 hover:opacity-80 transition-opacity duration-150 ease-quick"
             >
               <Image
                 src={logoSrc}

@@ -74,7 +74,9 @@ const alignItemsClasses: Record<string, string> = {
 export default function Row({ node, displaySettings = {}, children }: Props) {
   const { pa } = getPreviewUtils(node)
 
-  const displayAs = String(displaySettings.displayAs ?? 'grid')
+  const templateKey = String(node?.displayTemplateKey ?? '')
+  const isSlider    = templateKey === 'OT_LandingRowSlider'
+
   const breakpoint = String(displaySettings.showAsRowFrom    ?? 'md')
   const spacing    = String(displaySettings.contentSpacing   ?? 'medium')
   const justify    = String(displaySettings.justifyContent   ?? 'start')
@@ -100,7 +102,7 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
   const isAnimated  = entranceAnimation !== 'none'
   const bgStyle     = bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined
 
-  if (displayAs === 'slider') {
+  if (isSlider) {
     return (
       <SliderRow
         transition={String(displaySettings.sliderTransition  ?? 'slide')}

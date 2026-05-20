@@ -11,6 +11,7 @@ import { OT_ImageDefault }        from '@/cms/display-templates/OT_ImageDefault'
 import { OT_VideoDefault }        from '@/cms/display-templates/OT_VideoDefault'
 import { OT_LandingSection }      from '@/cms/display-templates/OT_LandingSection'
 import { OT_LandingRow }          from '@/cms/display-templates/OT_LandingRow'
+import { OT_LandingRowSlider }    from '@/cms/display-templates/OT_LandingRowSlider'
 import { OT_LandingColumn }       from '@/cms/display-templates/OT_LandingColumn'
 
 // Content type definitions — required at runtime so the SDK's query builder
@@ -54,6 +55,7 @@ initDisplayTemplateRegistry([
   OT_VideoDefault,
   OT_LandingSection,
   OT_LandingRow,
+  OT_LandingRowSlider,
   OT_LandingColumn,
 ])
 

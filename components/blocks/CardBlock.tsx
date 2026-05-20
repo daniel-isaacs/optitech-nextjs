@@ -87,13 +87,13 @@ const FILL_CLASS: Record<CardFill, string> = {
   surface: "bg-surface",
   brand:   "bg-brand",
   light:   "bg-[oklch(97%_0.005_195)]",
-  // Dark glass: needs something visually interesting behind it (imagery, teal section).
-  // Glass over a flat same-color surface is a non-effect.
-  glass:   "bg-canvas/75 backdrop-blur-md",
+  // Gradient from lighter teal-tinted surface to deeper canvas gives the glass-panel depth.
+  // backdrop-blur is subtle so it doesn't fight image-heavy contexts.
+  glass:   "bg-gradient-to-br from-surface/80 to-canvas/95 backdrop-blur-sm",
 };
 
 function resolveBorder(fill: CardFill, border: CardBorder): string {
-  // Glass panels default to subtle — the edge defines the glass surface
+  // Glass always gets a border — the edge is what makes glass readable
   const effectiveBorder = fill === "glass" && border === "none" ? "subtle" : border;
 
   if (effectiveBorder === "none") return "";
@@ -103,7 +103,8 @@ function resolveBorder(fill: CardFill, border: CardBorder): string {
   // subtle — adapts to fill context
   if (fill === "brand") return "border border-fg-on-brand/20";
   if (fill === "light") return "border border-canvas/10";
-  return "border border-fg/10"; // ghost + surface + glass
+  if (fill === "glass") return "border border-fg/[0.14] shadow-[inset_0_1px_0_rgb(255_255_255/0.07)]";
+  return "border border-fg/10"; // ghost + surface
 }
 
 // ─── Hover ────────────────────────────────────────────────────────────────────

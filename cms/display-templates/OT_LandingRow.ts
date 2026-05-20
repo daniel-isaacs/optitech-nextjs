@@ -199,8 +199,8 @@ export const OT_LandingRow = displayTemplate({
       editor: 'select',
       sortOrder: 260,
       choices: {
-        '1':  { displayName: '1 item (Default)', sortOrder: 10 },
-        '2':  { displayName: '2 items',          sortOrder: 20 },
+        one:  { displayName: '1 item (Default)',         sortOrder: 10 },
+        two:  { displayName: '2 items',                  sortOrder: 20 },
         auto: { displayName: 'Auto — follow column widths', sortOrder: 30 },
       },
     },

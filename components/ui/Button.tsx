@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 // ─── Style option types ───────────────────────────────────────────────────────
 
-export type ButtonVariant = "primary" | "ghost" | "signal";
+export type ButtonVariant = "brand" | "accent" | "ghost" | "signal" | "hover-fill" | "glass";
 export type ButtonSize    = "sm" | "md" | "lg";
 
 // ─── CVA configs ─────────────────────────────────────────────────────────────
@@ -25,12 +25,19 @@ const rootCva = cva(
   {
     variants: {
       variant: {
-        primary: [
+        brand: [
           "bg-brand text-fg-on-brand",
           "hover:bg-brand-hover hover:-translate-y-0.5",
           "hover:shadow-hover-lift",
           "active:translate-y-0 active:shadow-none",
           "focus-visible:outline-brand",
+        ],
+        accent: [
+          "bg-accent text-fg-on-accent",
+          "hover:bg-accent-hover hover:-translate-y-0.5",
+          "hover:shadow-hover-lift",
+          "active:translate-y-0 active:shadow-none",
+          "focus-visible:outline-accent",
         ],
         ghost: [
           "bg-transparent border border-fg-on-brand/40 text-fg-on-brand",
@@ -42,6 +49,16 @@ const rootCva = cva(
           "btn-signal bg-surface border border-brand",
           "focus-visible:outline-brand",
         ],
+        "hover-fill": [
+          // Glow border; ::before fill fade handled by .btn-hover-fill in globals.css
+          "btn-hover-fill bg-transparent border border-brand",
+          "focus-visible:outline-brand",
+        ],
+        glass: [
+          // Frosted glass — backdrop handled by .btn-glass in globals.css
+          "btn-glass border",
+          "focus-visible:outline-fg",
+        ],
       },
       size: {
         sm: "px-7 py-3",
@@ -49,7 +66,7 @@ const rootCva = cva(
         lg: "px-16 py-5",
       },
     },
-    defaultVariants: { variant: "primary", size: "md" },
+    defaultVariants: { variant: "brand", size: "md" },
   }
 );
 
@@ -99,7 +116,7 @@ export type ButtonProps = {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function Button({
-  variant      = "primary",
+  variant      = "brand",
   size         = "md",
   leadingIcon,
   trailingIcon,
@@ -111,20 +128,27 @@ export default function Button({
   onClick,
   "aria-label": ariaLabel,
 }: ButtonProps) {
-  const isSignal = variant === "signal";
-  const classes  = cn(rootCva({ variant, size }), className);
+  const isSignal    = variant === "signal";
+  const isHoverFill = variant === "hover-fill";
+  const classes     = cn(rootCva({ variant, size }), className);
+
+  // Text color logic: signal and hover-fill both start as brand and transition to
+  // fg-on-brand once the fill arrives (synced to the respective animation delay).
+  const needsTextTransition = isSignal || isHoverFill;
 
   const content = (
     <span
       className={cn(
         innerCva({ size }),
-        isSignal && [
+        needsTextTransition && [
           "text-brand",
-          // Text turns press-white as the fill sweep arrives
           "group-hover:text-fg-on-brand",
           "group-focus-visible:text-fg-on-brand",
-          // Delay syncs with the sweep (220ms kinetic ease); instant for reduced-motion
           "motion-safe:transition-colors motion-safe:duration-150 motion-safe:delay-75 motion-safe:ease-quick",
+        ],
+        variant === "glass" && [
+          // Dark context: white text. Light context: fg text.
+          "text-fg",
         ]
       )}
     >

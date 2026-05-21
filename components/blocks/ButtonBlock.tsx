@@ -1,4 +1,7 @@
-import { ArrowRight, ChevronRight, Zap, ExternalLink, ArrowUpRight } from "lucide-react";
+import {
+  ArrowRight, ChevronRight, Zap, ExternalLink, ArrowUpRight,
+  Play, Download, Sparkles, Send, Rocket, Star, Plus,
+} from "lucide-react";
 import Button from "@/components/ui/Button";
 import type { ButtonVariant, ButtonSize } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -6,9 +9,23 @@ import type { ReactNode } from "react";
 
 // ─── Style option types ───────────────────────────────────────────────────────
 
-export type ButtonIconKey = "none" | "arrowRight" | "chevronRight" | "zap" | "externalLink" | "arrowUpRight";
+export type ButtonIconKey =
+  | "none"
+  | "arrowRight"
+  | "chevronRight"
+  | "zap"
+  | "externalLink"
+  | "arrowUpRight"
+  | "play"
+  | "download"
+  | "sparkles"
+  | "send"
+  | "rocket"
+  | "star"
+  | "plus";
+
 export type ButtonIconPosition = "leading" | "trailing";
-export type ButtonAlignment = "left" | "center" | "right";
+export type ButtonAlignment    = "left" | "center" | "right";
 
 export type ButtonBlockStyleOptions = {
   variant?:      ButtonVariant;
@@ -34,6 +51,13 @@ const ICON_MAP: Record<ButtonIconKey, ReactNode> = {
   zap:          <Zap />,
   externalLink: <ExternalLink />,
   arrowUpRight: <ArrowUpRight />,
+  play:         <Play />,
+  download:     <Download />,
+  sparkles:     <Sparkles />,
+  send:         <Send />,
+  rocket:       <Rocket />,
+  star:         <Star />,
+  plus:         <Plus />,
 };
 
 const ALIGN_CLASS: Record<ButtonAlignment, string> = {
@@ -50,7 +74,7 @@ export default function ButtonBlock({
   styleOptions = {},
 }: ButtonBlockProps) {
   const {
-    variant      = "primary",
+    variant      = "brand",
     size         = "md",
     icon         = "none",
     iconPosition = "trailing",

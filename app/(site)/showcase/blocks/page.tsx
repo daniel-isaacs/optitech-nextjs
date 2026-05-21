@@ -10,7 +10,7 @@ import OT_ImageBlock       from "@/cms/components/OT_ImageBlock";
 import OT_VideoBlock       from "@/cms/components/OT_VideoBlock";
 import OT_CardBlock        from "@/cms/components/OT_CardBlock";
 import Button from "@/components/ui/Button";
-import { ArrowRight, Zap, ChevronRight } from "lucide-react";
+import { ArrowRight, Zap, ChevronRight, Play, Download, Sparkles, Send, Rocket, Star, Plus } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Components — Design System — OptiTech",
@@ -502,16 +502,20 @@ export default function ShowcaseBlocksPage() {
       <BlockGroup
         id="ui"
         label="UI Elements"
-        description="Foundational interactive primitives. CVA-based, TypeScript props, polymorphic (button or Link). Three variants, three sizes, optional icon slots."
+        description="Foundational interactive primitives. CVA-based, TypeScript props, polymorphic (button or Link). Six variants, three sizes, optional icon slots."
       />
 
       <section id="button" className="border-t border-fg/5">
         <div className="px-md pt-xl pb-lg lg:px-lg">
           <SectionLabel index="00 · UI" title="Button" />
           <p className="text-body leading-body text-fg-muted max-w-[65ch]">
-            Three variants: <code className="font-mono text-fg text-label">primary</code> (teal fill),{" "}
-            <code className="font-mono text-fg text-label">ghost</code> (bordered, for dark/teal surfaces),{" "}
-            <code className="font-mono text-fg text-label">signal</code> (kinetic fill sweep — the attention CTA).
+            Six variants:{" "}
+            <code className="font-mono text-fg text-label">brand</code> (theme fill),{" "}
+            <code className="font-mono text-fg text-label">accent</code> (accent token fill),{" "}
+            <code className="font-mono text-fg text-label">ghost</code> (bordered, for dark surfaces),{" "}
+            <code className="font-mono text-fg text-label">signal</code> (kinetic fill sweep),{" "}
+            <code className="font-mono text-fg text-label">hover-fill</code> (glow border → brand fill on hover),{" "}
+            <code className="font-mono text-fg text-label">glass</code> (frosted backdrop blur).
             Renders as <code className="font-mono text-fg text-label">&lt;button&gt;</code> or{" "}
             <code className="font-mono text-fg text-label">&lt;Link&gt;</code> based on <code className="font-mono text-fg text-label">href</code>.
           </p>
@@ -525,8 +529,12 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg flex flex-wrap gap-md items-start">
           <div className="flex flex-col gap-sm">
-            <span className="font-mono text-label text-fg-muted/50">primary</span>
-            <Button variant="primary" href="#">Get started</Button>
+            <span className="font-mono text-label text-fg-muted/50">brand</span>
+            <Button variant="brand" href="#">Get started</Button>
+          </div>
+          <div className="flex flex-col gap-sm">
+            <span className="font-mono text-label text-fg-muted/50">accent</span>
+            <Button variant="accent" href="#">Explore features</Button>
           </div>
           <div className="flex flex-col gap-sm">
             <span className="font-mono text-label text-fg-muted/50">ghost</span>
@@ -536,26 +544,34 @@ export default function ShowcaseBlocksPage() {
             <span className="font-mono text-label text-fg-muted/50">signal</span>
             <Button variant="signal" href="#">See it in action</Button>
           </div>
+          <div className="flex flex-col gap-sm">
+            <span className="font-mono text-label text-fg-muted/50">hover-fill</span>
+            <Button variant="hover-fill" href="#">Start free trial</Button>
+          </div>
+          <div className="flex flex-col gap-sm">
+            <span className="font-mono text-label text-fg-muted/50">glass</span>
+            <Button variant="glass" href="#">View the platform</Button>
+          </div>
         </div>
 
         {/* ── Sizes ── */}
         <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
           <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
-            Sizes · primary variant
+            Sizes · brand variant
           </p>
         </div>
         <div className="px-md pb-xl lg:px-lg flex flex-wrap gap-md items-end">
           <div className="flex flex-col gap-sm items-start">
             <span className="font-mono text-label text-fg-muted/50">sm</span>
-            <Button variant="primary" size="sm" href="#">Get started</Button>
+            <Button variant="brand" size="sm" href="#">Get started</Button>
           </div>
           <div className="flex flex-col gap-sm items-start">
             <span className="font-mono text-label text-fg-muted/50">md (default)</span>
-            <Button variant="primary" size="md" href="#">Get started</Button>
+            <Button variant="brand" size="md" href="#">Get started</Button>
           </div>
           <div className="flex flex-col gap-sm items-start">
             <span className="font-mono text-label text-fg-muted/50">lg</span>
-            <Button variant="primary" size="lg" href="#">Get started</Button>
+            <Button variant="brand" size="lg" href="#">Get started</Button>
           </div>
         </div>
 
@@ -567,20 +583,36 @@ export default function ShowcaseBlocksPage() {
         </div>
         <div className="px-md pb-xl lg:px-lg flex flex-wrap gap-md items-start">
           <div className="flex flex-col gap-sm items-start">
-            <span className="font-mono text-label text-fg-muted/50">leadingIcon</span>
-            <Button variant="primary" href="#" leadingIcon={<Zap />}>Deploy now</Button>
+            <span className="font-mono text-label text-fg-muted/50">brand · leading · zap</span>
+            <Button variant="brand" href="#" leadingIcon={<Zap />}>Deploy now</Button>
           </div>
           <div className="flex flex-col gap-sm items-start">
-            <span className="font-mono text-label text-fg-muted/50">trailingIcon</span>
-            <Button variant="primary" href="#" trailingIcon={<ArrowRight />}>Get started</Button>
+            <span className="font-mono text-label text-fg-muted/50">brand · trailing · arrowRight</span>
+            <Button variant="brand" href="#" trailingIcon={<ArrowRight />}>Get started</Button>
           </div>
           <div className="flex flex-col gap-sm items-start">
-            <span className="font-mono text-label text-fg-muted/50">ghost + trailingIcon</span>
+            <span className="font-mono text-label text-fg-muted/50">brand · trailing · sparkles</span>
+            <Button variant="brand" href="#" trailingIcon={<Sparkles />}>Try AI features</Button>
+          </div>
+          <div className="flex flex-col gap-sm items-start">
+            <span className="font-mono text-label text-fg-muted/50">accent · trailing · rocket</span>
+            <Button variant="accent" href="#" trailingIcon={<Rocket />}>Launch now</Button>
+          </div>
+          <div className="flex flex-col gap-sm items-start">
+            <span className="font-mono text-label text-fg-muted/50">ghost · trailing · chevronRight</span>
             <Button variant="ghost" href="#" trailingIcon={<ChevronRight />}>Learn more</Button>
           </div>
           <div className="flex flex-col gap-sm items-start">
-            <span className="font-mono text-label text-fg-muted/50">signal + trailingIcon</span>
+            <span className="font-mono text-label text-fg-muted/50">signal · trailing · arrowRight</span>
             <Button variant="signal" href="#" trailingIcon={<ArrowRight />}>See it live</Button>
+          </div>
+          <div className="flex flex-col gap-sm items-start">
+            <span className="font-mono text-label text-fg-muted/50">hover-fill · trailing · play</span>
+            <Button variant="hover-fill" href="#" trailingIcon={<Play />}>Watch demo</Button>
+          </div>
+          <div className="flex flex-col gap-sm items-start">
+            <span className="font-mono text-label text-fg-muted/50">glass · trailing · download</span>
+            <Button variant="glass" href="#" trailingIcon={<Download />}>Download report</Button>
           </div>
         </div>
 
@@ -590,7 +622,7 @@ export default function ShowcaseBlocksPage() {
             Signal · kinetic fill sweep
           </p>
           <p className="text-label text-fg-muted/60 mt-xs">
-            Hover to trigger. Teal fills left-to-right; text transitions to press-white 75ms into the sweep.
+            Hover to trigger. Brand color fills left-to-right; text transitions to press-white 75ms into the sweep.
             Reduced-motion: instant background swap, no animation.
           </p>
         </div>
@@ -612,20 +644,65 @@ export default function ShowcaseBlocksPage() {
           </p>
         </div>
         <div className="px-md pb-xl lg:px-lg flex flex-wrap gap-md items-start">
-          <Button variant="primary" disabled>Get started</Button>
+          <Button variant="brand" disabled>Get started</Button>
+          <Button variant="accent" disabled>Explore features</Button>
           <Button variant="ghost" disabled>Learn more</Button>
           <Button variant="signal" disabled>See it in action</Button>
+          <Button variant="hover-fill" disabled>Start free trial</Button>
+          <Button variant="glass" disabled>View the platform</Button>
         </div>
 
         {/* ── On brand surface ── */}
         <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
           <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
-            On brand surface · ghost + signal in context
+            On brand surface · ghost in context
           </p>
         </div>
         <div className="bg-brand px-md py-xl lg:px-lg flex flex-wrap gap-md items-center">
           <Button variant="ghost" href="#">Learn more</Button>
           <Button variant="ghost" href="#" trailingIcon={<ChevronRight />}>View the platform</Button>
+        </div>
+
+        {/* ── Hover-fill in context ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Hover-fill · glow border → brand fill
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Ambient glow border at rest. On hover: brand color floods in with intensified glow bloom.
+            Reduced-motion: instant fill swap.
+          </p>
+        </div>
+        <div className="bg-canvas px-md py-xl lg:px-lg flex flex-wrap gap-lg items-end">
+          {(["sm", "md", "lg"] as const).map((s) => (
+            <div key={s} className="flex flex-col gap-sm items-start">
+              <span className="font-mono text-label text-fg-muted/50">{s}</span>
+              <Button variant="hover-fill" size={s} href="#" trailingIcon={<ArrowRight />}>
+                {s === "sm" ? "Start free" : s === "md" ? "Start your trial" : "Start your free trial"}
+              </Button>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Glass in context ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Glass · frosted backdrop blur
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Adapts text to the surface — white on dark, near-black on light. Best used layered over imagery or colored backgrounds.
+          </p>
+        </div>
+        <div className="relative overflow-hidden px-md py-xl lg:px-lg flex flex-wrap gap-md items-center"
+          style={{ background: "linear-gradient(135deg, oklch(0.25 0.04 230), oklch(0.18 0.06 260))" }}>
+          <Button variant="glass" href="#">View the platform</Button>
+          <Button variant="glass" href="#" trailingIcon={<ArrowRight />}>Get started</Button>
+          <Button variant="glass" href="#" leadingIcon={<Star />}>Featured release</Button>
+        </div>
+        <div className="relative overflow-hidden px-md py-xl lg:px-lg flex flex-wrap gap-md items-center bg-[oklch(0.96_0.01_220)]">
+          <span className="font-mono text-label text-fg-muted/50 w-full mb-sm">Light surface</span>
+          <Button variant="glass" href="#">View the platform</Button>
+          <Button variant="glass" href="#" trailingIcon={<Plus />}>New project</Button>
         </div>
 
         <div className="pb-xl" />
@@ -650,11 +727,14 @@ export default function ShowcaseBlocksPage() {
           <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Variants</p>
         </div>
         <div className="px-md pb-xl lg:px-lg flex flex-wrap gap-md">
-          {(["primary", "ghost", "signal"] as const).map((v) => (
+          {(["brand", "accent", "ghost", "signal", "hover-fill", "glass"] as const).map((v) => (
             <div key={v} className="flex flex-col gap-sm">
               <span className="font-mono text-label text-fg-muted/50">{v}</span>
               <OT_ButtonBlock
-                content={{ label: v === "primary" ? "Get started" : v === "ghost" ? "Learn more" : "See it in action", url: { default: "#" } }}
+                content={{
+                  label: v === "brand" ? "Get started" : v === "accent" ? "Explore features" : v === "ghost" ? "Learn more" : v === "signal" ? "See it in action" : v === "hover-fill" ? "Start free trial" : "View the platform",
+                  url: { default: "#" }
+                }}
                 displaySettings={{ variant: v }}
               />
             </div>
@@ -663,7 +743,7 @@ export default function ShowcaseBlocksPage() {
 
         {/* ── Sizes ── */}
         <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
-          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Sizes · primary</p>
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Sizes · brand</p>
         </div>
         <div className="px-md pb-xl lg:px-lg flex flex-wrap gap-md items-end">
           {(["sm", "md", "lg"] as const).map((s) => (
@@ -671,7 +751,7 @@ export default function ShowcaseBlocksPage() {
               <span className="font-mono text-label text-fg-muted/50">{s}</span>
               <OT_ButtonBlock
                 content={{ label: "Get started", url: { default: "#" } }}
-                displaySettings={{ variant: "primary", size: s }}
+                displaySettings={{ variant: "brand", size: s }}
               />
             </div>
           ))}
@@ -682,12 +762,12 @@ export default function ShowcaseBlocksPage() {
           <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Icons · trailing (default) · leading</p>
         </div>
         <div className="px-md pb-xl lg:px-lg flex flex-wrap gap-md">
-          {(["arrowRight", "chevronRight", "zap", "externalLink", "arrowUpRight"] as const).map((icon) => (
+          {(["arrowRight", "chevronRight", "zap", "externalLink", "arrowUpRight", "play", "download", "sparkles", "send", "rocket", "star", "plus"] as const).map((icon) => (
             <div key={icon} className="flex flex-col gap-sm">
               <span className="font-mono text-label text-fg-muted/50">{icon}</span>
               <OT_ButtonBlock
                 content={{ label: "Get started", url: { default: "#" } }}
-                displaySettings={{ variant: "primary", icon, iconPosition: "trailing" }}
+                displaySettings={{ variant: "brand", icon, iconPosition: "trailing" }}
               />
             </div>
           ))}
@@ -695,7 +775,7 @@ export default function ShowcaseBlocksPage() {
             <span className="font-mono text-label text-fg-muted/50">leading · zap</span>
             <OT_ButtonBlock
               content={{ label: "Deploy now", url: { default: "#" } }}
-              displaySettings={{ variant: "primary", icon: "zap", iconPosition: "leading" }}
+              displaySettings={{ variant: "brand", icon: "zap", iconPosition: "leading" }}
             />
           </div>
         </div>
@@ -722,12 +802,12 @@ export default function ShowcaseBlocksPage() {
 
         {/* ── Full width ── */}
         <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
-          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Full width · primary</p>
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Full width · brand</p>
         </div>
         <div className="px-md pb-xl lg:px-lg">
           <OT_ButtonBlock
             content={{ label: "Start your free trial — no credit card required", url: { default: "#" } }}
-            displaySettings={{ variant: "primary", size: "lg", fullWidth: "true" }}
+            displaySettings={{ variant: "brand", size: "lg", fullWidth: "true" }}
           />
         </div>
 

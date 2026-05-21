@@ -74,9 +74,9 @@ const T = {
     light: "text-body leading-body text-[oklch(20%_0.022_195)]",
   },
   cta: {
-    dark:  "primary" as const,
-    brand: "ghost"   as const,
-    light: "primary" as const,
+    dark:  "brand" as const,
+    brand: "ghost"  as const,
+    light: "brand" as const,
   },
 } as const;
 

@@ -10,10 +10,11 @@ import { OT_QuoteDefault }        from '@/cms/display-templates/OT_QuoteDefault'
 import { OT_RichTextDefault }     from '@/cms/display-templates/OT_RichTextDefault'
 import { OT_ImageDefault }        from '@/cms/display-templates/OT_ImageDefault'
 import { OT_VideoDefault }        from '@/cms/display-templates/OT_VideoDefault'
-import { OT_LandingSection }      from '@/cms/display-templates/OT_LandingSection'
-import { OT_LandingRow }          from '@/cms/display-templates/OT_LandingRow'
-import { OT_LandingRowSlider }    from '@/cms/display-templates/OT_LandingRowSlider'
-import { OT_LandingColumn }       from '@/cms/display-templates/OT_LandingColumn'
+import { OT_LandingSection }          from '@/cms/display-templates/OT_LandingSection'
+import { OT_LandingRow }              from '@/cms/display-templates/OT_LandingRow'
+import { OT_LandingRowSlider }        from '@/cms/display-templates/OT_LandingRowSlider'
+import { OT_LandingColumn }           from '@/cms/display-templates/OT_LandingColumn'
+import { OT_ImageBgSectionTemplate }  from '@/cms/display-templates/OT_ImageBgSection'
 
 // Content type definitions — required at runtime so the SDK's query builder
 // can generate the correct GraphQL fragments for each type
@@ -31,6 +32,7 @@ import { OT_NavigationItem }    from '@/cms/content-types/OT_NavigationItem'
 import { OT_NavigationSubItem } from '@/cms/content-types/OT_NavigationSubItem'
 import { OT_FooterLink }        from '@/cms/content-types/OT_FooterLink'
 import { OT_FooterColumn }      from '@/cms/content-types/OT_FooterColumn'
+import { OT_ImageBgSection }    from '@/cms/content-types/OT_ImageBgSection'
 
 // React component adapters — maps content type keys to Server Component renderers
 import OT_HeroBlockAdapter        from '@/cms/components/OT_HeroBlock'
@@ -44,9 +46,10 @@ import OT_VideoBlockAdapter       from '@/cms/components/OT_VideoBlock'
 import OT_ThemeManagerAdapter     from '@/cms/components/OT_ThemeManager'
 
 // Composition structure adapters — section/row/column renderers for Visual Builder
-import BlankSectionAdapter from '@/cms/compositions/Section'
-import RowAdapter          from '@/cms/compositions/Row'
-import ColumnAdapter       from '@/cms/compositions/Column'
+import BlankSectionAdapter    from '@/cms/compositions/Section'
+import ImageBgSectionAdapter  from '@/cms/compositions/ImageBgSection'
+import RowAdapter             from '@/cms/compositions/Row'
+import ColumnAdapter          from '@/cms/compositions/Column'
 
 initDisplayTemplateRegistry([
   OT_HeroDefault,
@@ -61,6 +64,7 @@ initDisplayTemplateRegistry([
   OT_LandingRow,
   OT_LandingRowSlider,
   OT_LandingColumn,
+  OT_ImageBgSectionTemplate,
 ])
 
 initContentTypeRegistry([
@@ -78,6 +82,7 @@ initContentTypeRegistry([
   OT_NavigationSubItem,
   OT_FooterLink,
   OT_FooterColumn,
+  OT_ImageBgSection,
 ])
 
 initReactComponentRegistry({
@@ -94,8 +99,9 @@ initReactComponentRegistry({
     OT_ThemeManager:     OT_ThemeManagerAdapter,
     // Composition structure — 'BlankSection' is the SDK's built-in section type key;
     // '_Row' and '_Column' are the fixed registry keys OptimizelyGridSection resolves.
-    BlankSection: BlankSectionAdapter,
-    _Row:         RowAdapter,
-    _Column:      ColumnAdapter,
+    BlankSection:       BlankSectionAdapter,
+    OT_ImageBgSection:  ImageBgSectionAdapter,
+    _Row:               RowAdapter,
+    _Column:            ColumnAdapter,
   },
 })

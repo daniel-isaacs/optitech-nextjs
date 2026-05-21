@@ -1722,6 +1722,90 @@ export default function ShowcaseBlocksPage() {
 
       </section>
 
+      {/* ════════════════════════════════════════════════════
+          IMAGE BACKGROUND SECTION
+      ═══════════════════════════════════════════════════ */}
+      <BlockGroup
+        id="image-bg-section"
+        label="Image Background Section"
+        description="A section-level block (baseType _section) with a CMS-managed background image and a full row/column/element grid inside. data-surface='dark' is baked in — all nested text, ghost buttons, and labels automatically read as white over the photo. Five overlay modes handle legibility across any image."
+      />
+      <section className="border-t border-fg/5">
+
+        {/* ── Overlay variants ── */}
+        <div className="px-md pb-md lg:px-lg pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Overlay modes
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            An absolutely-positioned scrim between the photo and content. Glass uses backdrop-blur-xl — the photo softens into a frosted depth layer while content stays crisp.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-fg/5 border-t border-fg/5">
+          {([
+            { key: "none",       label: "None",         overlayClass: "" },
+            { key: "subtleDark", label: "Subtle dark",  overlayClass: "bg-canvas/40" },
+            { key: "strongDark", label: "Strong dark",  overlayClass: "bg-canvas/70" },
+            { key: "brand",      label: "Brand tint",   overlayClass: "bg-brand/50"  },
+            { key: "glass",      label: "Glass blur",   overlayClass: "backdrop-blur-xl bg-canvas/30" },
+          ] as const).map(({ key, label, overlayClass }) => (
+            <div
+              key={key}
+              data-surface="dark"
+              className="relative isolate overflow-hidden min-h-[380px] flex flex-col justify-end"
+              style={{ backgroundImage: `url(${IMAGE_SRC})`, backgroundSize: "cover", backgroundPosition: "center" }}
+            >
+              {overlayClass && (
+                <div className={`absolute inset-0 -z-10 ${overlayClass}`} aria-hidden="true" />
+              )}
+              <div className="p-lg flex flex-col gap-xs">
+                <span className="font-mono text-label text-fg-muted/50 tracking-label uppercase">{key}</span>
+                <p className="text-headline font-bold text-fg leading-tight">{label}</p>
+                <p className="text-body text-fg-muted text-sm max-w-[38ch] mt-xs">
+                  OptiTech gives your teams the infrastructure to experiment continuously and ship with certainty.
+                </p>
+                <div className="mt-sm">
+                  <Button variant="ghost" size="sm" href="#">Learn more</Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Min-height reference ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/5 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Minimum height
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Content height (default) · 50vh · 75vh · Full viewport. The section expands beyond the minimum to fit its inner grid.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-fg/5 border-t border-fg/5">
+          {([
+            { label: "Content height", heightClass: "min-h-[120px]", note: "none" },
+            { label: "50% viewport",   heightClass: "min-h-[50vh]",  note: "screen50" },
+            { label: "75% viewport",   heightClass: "min-h-[75vh]",  note: "screen75" },
+          ] as const).map(({ label, heightClass, note }) => (
+            <div
+              key={note}
+              data-surface="dark"
+              className={`relative isolate overflow-hidden flex flex-col justify-center items-center ${heightClass}`}
+              style={{ backgroundImage: `url(${IMAGE_SRC})`, backgroundSize: "cover", backgroundPosition: "center" }}
+            >
+              <div className="absolute inset-0 -z-10 bg-canvas/65" aria-hidden="true" />
+              <div className="text-center px-lg py-xl">
+                <span className="font-mono text-label text-fg-muted/50 block mb-xs">{note}</span>
+                <p className="text-headline font-bold text-fg">{label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="pb-xl" />
+      </section>
+
     </>
   );
 }

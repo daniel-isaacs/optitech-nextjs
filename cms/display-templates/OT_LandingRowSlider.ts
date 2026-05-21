@@ -30,22 +30,6 @@ export const OT_LandingRowSlider = displayTemplate({
         brandDeep: { displayName: 'Brand deep', sortOrder: 50 },
       },
     },
-    backgroundImage: {
-      displayName: 'Background image URL',
-      editor: 'select',
-      sortOrder: 30,
-      choices: {},
-    },
-    imageOverlay: {
-      displayName: 'Image overlay',
-      editor: 'select',
-      sortOrder: 40,
-      choices: {
-        none:  { displayName: 'None',  sortOrder: 10 },
-        dark:  { displayName: 'Dark',  sortOrder: 20 },
-        brand: { displayName: 'Brand', sortOrder: 30 },
-      },
-    },
     sliderTransition: {
       displayName: 'Transition style',
       editor: 'select',

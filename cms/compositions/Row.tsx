@@ -49,12 +49,6 @@ const bgColorClasses: Record<string, string> = {
   brandDeep: 'bg-brand-hover',
 }
 
-const overlayClasses: Record<string, string> = {
-  none:  '',
-  dark:  'bg-canvas/70',
-  brand: 'bg-brand/50',
-}
-
 const justifyClasses: Record<string, string> = {
   center:  'justify-center',
   end:     'justify-end',
@@ -83,8 +77,6 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
   const align      = String(displaySettings.alignItems       ?? 'start')
   const vPadding   = String(displaySettings.verticalPadding  ?? 'none')
   const bgColor    = String(displaySettings.backgroundColor  ?? 'none')
-  const bgImage    = displaySettings.backgroundImage ? String(displaySettings.backgroundImage) : ''
-  const overlay    = String(displaySettings.imageOverlay     ?? 'none')
   const wrap              = displaySettings.wrapColumns      === true
   const reverse           = displaySettings.reverseColumns   === true
   const entranceAnimation = String(displaySettings.entranceAnimation ?? 'none')
@@ -94,13 +86,10 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
   const spacingClass    = contentSpacingClasses[spacing]     ?? contentSpacingClasses.medium
   const vPaddingClass   = verticalPaddingClasses[vPadding]   ?? ''
   const bgColorClass    = bgColorClasses[bgColor]            ?? ''
-  const overlayClass    = overlayClasses[overlay]            ?? ''
   const justifyClass    = justifyClasses[justify]            ?? ''
   const alignClass      = alignItemsClasses[align]           ?? ''
 
-  const hasOverlay  = overlayClass.length > 0
   const isAnimated  = entranceAnimation !== 'none'
-  const bgStyle     = bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined
 
   if (isSlider) {
     return (
@@ -112,8 +101,6 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
         peek={String(displaySettings.sliderPeek              ?? 'none')}
         verticalPadding={vPaddingClass}
         bgColorClass={bgColorClass}
-        backgroundStyle={bgStyle}
-        overlayClass={overlayClass}
         staggerAttr={isAnimated ? entranceAnimation : undefined}
         paProps={pa(node) as Record<string, unknown>}
       >
@@ -124,15 +111,11 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
 
   return (
     <div
-      className={`vb:row relative isolate flex ${wrap ? 'flex-wrap' : ''} ${breakpointClass} ${spacingClass} ${vPaddingClass} ${bgColorClass} ${justifyClass} ${alignClass}`}
-      style={bgStyle}
+      className={`vb:row flex ${wrap ? 'flex-wrap' : ''} ${breakpointClass} ${spacingClass} ${vPaddingClass} ${bgColorClass} ${justifyClass} ${alignClass}`}
       data-stagger={isAnimated ? entranceAnimation : undefined}
       {...pa(node)}
       data-bp={breakpoint}
     >
-      {hasOverlay && (
-        <div className={`absolute inset-0 -z-10 ${overlayClass}`} aria-hidden="true" />
-      )}
       {children}
     </div>
   )

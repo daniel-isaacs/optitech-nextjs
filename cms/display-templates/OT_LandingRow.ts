@@ -78,22 +78,6 @@ export const OT_LandingRow = displayTemplate({
         brandDeep: { displayName: 'Brand deep', sortOrder: 50 },
       },
     },
-    backgroundImage: {
-      displayName: 'Background image URL',
-      editor: 'select',
-      sortOrder: 80,
-      choices: {},
-    },
-    imageOverlay: {
-      displayName: 'Image overlay',
-      editor: 'select',
-      sortOrder: 90,
-      choices: {
-        none:  { displayName: 'None',  sortOrder: 10 },
-        dark:  { displayName: 'Dark',  sortOrder: 20 },
-        brand: { displayName: 'Brand', sortOrder: 30 },
-      },
-    },
     wrapColumns: {
       displayName: 'Wrap columns',
       editor: 'select',

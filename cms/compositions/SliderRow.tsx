@@ -1,7 +1,7 @@
 'use client'
 
 import { Children, useCallback, useEffect, useRef, useState } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 const AUTOPLAY_MS: Record<string, number> = { slow: 8000, medium: 5000, fast: 3000 }
@@ -21,18 +21,16 @@ const PEEK_INSET: Record<string, string> = {
 }
 
 type Props = {
-  children:          ReactNode
-  transition:        string
-  controls:          string
-  autoplay:          string
-  loop:              string
-  peek:              string
-  verticalPadding:   string
-  bgColorClass:      string
-  backgroundStyle?:  CSSProperties
-  overlayClass:      string
-  paProps?:          Record<string, unknown>
-  staggerAttr?:      string | undefined
+  children:         ReactNode
+  transition:       string
+  controls:         string
+  autoplay:         string
+  loop:             string
+  peek:             string
+  verticalPadding:  string
+  bgColorClass:     string
+  paProps?:         Record<string, unknown>
+  staggerAttr?:     string | undefined
 }
 
 export default function SliderRow({
@@ -44,8 +42,6 @@ export default function SliderRow({
   peek            = 'none',
   verticalPadding = '',
   bgColorClass    = '',
-  backgroundStyle,
-  overlayClass    = '',
   paProps         = {},
   staggerAttr,
 }: Props) {
@@ -86,7 +82,6 @@ export default function SliderRow({
 
   const showArrows  = controls === 'both' || controls === 'arrows'
   const showDots    = controls === 'both' || controls === 'dots'
-  const hasOverlay  = overlayClass.length > 0
   const isFadeBased = transition === 'fade' || transition === 'morph'
   const hasPeek     = peek !== 'none'
   const canPrev     = loop !== 'none' || active > 0
@@ -94,14 +89,10 @@ export default function SliderRow({
 
   return (
     <div
-      className={cn('vb:row relative isolate w-full', bgColorClass, verticalPadding)}
-      style={backgroundStyle}
+      className={cn('vb:row w-full', bgColorClass, verticalPadding)}
       data-stagger={staggerAttr}
       {...paProps}
     >
-      {hasOverlay && (
-        <div className={cn('absolute inset-0 -z-10', overlayClass)} aria-hidden="true" />
-      )}
 
       {/* Track */}
       <div className={cn('relative w-full', PEEK_OUTER[peek])}>

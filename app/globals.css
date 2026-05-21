@@ -80,11 +80,18 @@
 }
 
 [data-surface="light"] {
+  /* Text tokens — mirror the [data-theme="light"] values so all text within
+   * a light-patched section (headings, body, labels, muted) is readable
+   * without any per-element changes. */
+  --ot-fg:       oklch(12% 0.012 195);
+  --ot-fg-muted: oklch(38% 0.05  195);
+
+  /* Button ghost/transparent overrides — ghost uses fg-on-brand (always white)
+   * so it needs an explicit override; clear-fg cascades from --ot-fg above. */
   --ot-btn-ghost-fg:           oklch(12% 0.012 195);
   --ot-btn-ghost-border:       oklch(12% 0.012 195 / 0.40);
   --ot-btn-ghost-border-hover: oklch(12% 0.012 195 / 0.70);
   --ot-btn-ghost-bg-hover:     oklch(12% 0.012 195 / 0.06);
-  --ot-btn-clear-fg:           oklch(12% 0.012 195);
 }
 
 /* Logo dark-mode invert — converts any dark/black logo to white.

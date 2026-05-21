@@ -35,8 +35,8 @@ const sectionCva = cva("px-md lg:px-lg", {
       surface: "bg-surface",
     },
     size: {
-      editorial: "py-2xl",
-      compact:   "py-xl",
+      editorial: "py-lg",
+      compact:   "py-md",
     },
   },
   defaultVariants: { color: "canvas", size: "editorial" },

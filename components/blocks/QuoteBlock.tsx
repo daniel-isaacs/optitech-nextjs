@@ -22,8 +22,8 @@ const sectionCva = cva("px-md lg:px-lg", {
       surface: "bg-surface",
     },
     size: {
-      large: "py-2xl",
-      small: "py-xl",
+      large: "py-xl",
+      small: "py-lg",
     },
   },
   defaultVariants: { color: "canvas", size: "large" },

@@ -8,6 +8,22 @@ type Props = {
   children: ReactNode
 }
 
+const gridSpanClasses: Record<string, string> = {
+  auto:  'flex-1 min-w-0',
+  col1:  'flex-none w-full md:w-[8.333%]',
+  col2:  'flex-none w-full md:w-[16.667%]',
+  col3:  'flex-none w-full md:w-1/4',
+  col4:  'flex-none w-full md:w-1/3',
+  col5:  'flex-none w-full md:w-[41.667%]',
+  col6:  'flex-none w-full md:w-1/2',
+  col7:  'flex-none w-full md:w-[58.333%]',
+  col8:  'flex-none w-full md:w-2/3',
+  col9:  'flex-none w-full md:w-3/4',
+  col10: 'flex-none w-full md:w-[83.333%]',
+  col11: 'flex-none w-full md:w-[91.667%]',
+  col12: 'flex-none w-full',
+}
+
 const contentSpacingClasses: Record<string, string> = {
   none:   'gap-0',
   small:  'gap-sm',
@@ -54,6 +70,7 @@ export default function Column({ node, displaySettings = {}, children }: Props) 
   const vPad    = String(displaySettings.verticalPadding   ?? 'none')
   const hPad    = String(displaySettings.horizontalPadding ?? 'none')
 
+  const spanClass    = gridSpanClasses[span]              ?? gridSpanClasses.auto
   const spacingClass = contentSpacingClasses[spacing]     ?? contentSpacingClasses.medium
   const justifyClass = justifyClasses[justify]            ?? ''
   const alignClass   = alignClasses[align]                ?? ''
@@ -62,8 +79,7 @@ export default function Column({ node, displaySettings = {}, children }: Props) 
 
   return (
     <div
-      className={`vb:col flex flex-col self-stretch flex-1 ${spacingClass} ${vPadClass} ${hPadClass} ${justifyClass} ${alignClass}`}
-      data-col-span={span !== 'auto' ? span : undefined}
+      className={`vb:col flex flex-col self-stretch ${spanClass} ${spacingClass} ${vPadClass} ${hPadClass} ${justifyClass} ${alignClass}`}
       {...pa(node)}
     >
       {children}

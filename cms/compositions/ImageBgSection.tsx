@@ -32,7 +32,7 @@ const overlayClasses: Record<string, string> = {
   subtleDark: 'bg-canvas/40',
   strongDark: 'bg-canvas/70',
   brand:      'bg-brand/50',
-  glass:      'backdrop-blur-xl bg-canvas/30',
+  glass:      'backdrop-blur-md bg-canvas/20',
 }
 
 const alignClasses: Record<string, string> = {

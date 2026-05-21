@@ -1748,7 +1748,7 @@ export default function ShowcaseBlocksPage() {
             { key: "subtleDark", label: "Subtle dark",  overlayClass: "bg-canvas/40" },
             { key: "strongDark", label: "Strong dark",  overlayClass: "bg-canvas/70" },
             { key: "brand",      label: "Brand tint",   overlayClass: "bg-brand/50"  },
-            { key: "glass",      label: "Glass blur",   overlayClass: "backdrop-blur-xl bg-canvas/30" },
+            { key: "glass",      label: "Glass blur",   overlayClass: "backdrop-blur-md bg-canvas/20" },
           ] as const).map(({ key, label, overlayClass }) => (
             <div
               key={key}

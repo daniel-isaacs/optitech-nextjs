@@ -7,5 +7,7 @@ export function getRichTextStyles(s: Record<string, string | boolean>): RichText
     size:          (s.size          ?? 'editorial') as RichTextStyleOptions['size'],
     treatment:     (s.treatment     ?? 'standard')  as RichTextStyleOptions['treatment'],
     ruledHeadings: s.ruledHeadings === 'true' || s.ruledHeadings === true,
+    textScale:     (s.textScale     ?? 'body')      as RichTextStyleOptions['textScale'],
+    textWeight:    (s.textWeight    ?? 'regular')   as RichTextStyleOptions['textWeight'],
   }
 }

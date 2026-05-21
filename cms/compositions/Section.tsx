@@ -26,6 +26,7 @@ const bgColorClasses: Record<string, string> = {
   surface:   'bg-surface',
   brand:     'bg-brand',
   brandDeep: 'bg-brand-hover',
+  glass:     'bg-glass',
 }
 
 export default function Section({ content, displaySettings = {} }: Props) {

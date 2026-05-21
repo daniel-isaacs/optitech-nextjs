@@ -18,6 +18,10 @@ export type RichTextStyleOptions = {
   treatment?: "standard" | "lead" | "dropcap";
   /** Adds a 1px teal rule above h2 and h3 headings — editorial chapter dividers */
   ruledHeadings?: boolean;
+  /** Prose font size tier: body (default), large, lead, or statement callout */
+  textScale?: "body" | "large" | "lead" | "statement";
+  /** Prose font weight: regular (default), medium, or semibold */
+  textWeight?: "regular" | "medium" | "semibold";
 };
 
 // ─── CVA variant configs ─────────────────────────────────────────────────────
@@ -74,6 +78,8 @@ export default function RichTextBlock({
     size          = "editorial",
     treatment     = "standard",
     ruledHeadings = false,
+    textScale     = "body",
+    textWeight    = "regular",
   } = styleOptions;
 
   return (
@@ -85,6 +91,8 @@ export default function RichTextBlock({
         data-size={size}
         data-treatment={treatment !== "standard" ? treatment : undefined}
         data-ruled-headings={ruledHeadings ? "" : undefined}
+        data-scale={textScale !== "body" ? textScale : undefined}
+        data-weight={textWeight !== "regular" ? textWeight : undefined}
         className={innerCva({ alignment, size })}
         {...pa('content')}
         dangerouslySetInnerHTML={{ __html: content }}

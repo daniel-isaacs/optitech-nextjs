@@ -47,6 +47,7 @@ const bgColorClasses: Record<string, string> = {
   surface:   'bg-surface',
   brand:     'bg-brand',
   brandDeep: 'bg-brand-hover',
+  glass:     'bg-glass',
 }
 
 const justifyClasses: Record<string, string> = {

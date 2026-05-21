@@ -288,6 +288,54 @@ const RICH_TEXT_OPTIONS: Array<{ label: string; note: string; content: any; disp
   },
 ];
 
+const RICH_TEXT_SCALES: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
+  {
+    label: "Body (default)",
+    note: "1rem / weight 400 — standard prose",
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas", textScale: "body", size: "compact", alignment: "left", treatment: "standard", ruledHeadings: false },
+  },
+  {
+    label: "Large",
+    note: "1.125rem / weight 400 — important supporting copy",
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas", textScale: "large", size: "compact", alignment: "left", treatment: "standard", ruledHeadings: false },
+  },
+  {
+    label: "Lead",
+    note: "1.25rem / weight 400 / tracking –0.005em — editorial intro scale",
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas", textScale: "lead", size: "compact", alignment: "left", treatment: "standard", ruledHeadings: false },
+  },
+  {
+    label: "Statement",
+    note: "1.5rem / weight 300 / tracking –0.02em — standalone callout",
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "canvas", textScale: "statement", size: "compact", alignment: "left", treatment: "standard", ruledHeadings: false },
+  },
+];
+
+const RICH_TEXT_WEIGHTS: Array<{ label: string; note: string; content: any; displaySettings: Record<string, string | boolean> }> = [
+  {
+    label: "Regular",
+    note: "400 — default prose weight",
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "surface", textWeight: "regular", textScale: "large", size: "compact", alignment: "left", treatment: "standard", ruledHeadings: false },
+  },
+  {
+    label: "Medium",
+    note: "500 — more presence; good for supporting callouts",
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "surface", textWeight: "medium", textScale: "large", size: "compact", alignment: "left", treatment: "standard", ruledHeadings: false },
+  },
+  {
+    label: "Semibold",
+    note: "600 — maximum prose emphasis; best for short, punchy callouts",
+    content: { content: { html: RT_PROSE } },
+    displaySettings: { color: "surface", textWeight: "semibold", textScale: "large", size: "compact", alignment: "left", treatment: "standard", ruledHeadings: false },
+  },
+];
+
 // ─── QuoteBlock data ──────────────────────────────────────────────────────────
 
 const QUOTE_COLOR_SCHEMES: Array<{ content: any; displaySettings: Record<string, string | boolean> }> = [
@@ -1017,6 +1065,46 @@ export default function ShowcaseBlocksPage() {
           </p>
         </div>
         {RICH_TEXT_OPTIONS.map((item) => (
+          <div key={item.label} className="border-t border-fg/5">
+            <div className="px-md pt-sm pb-xs lg:px-lg flex flex-wrap items-baseline gap-x-sm gap-y-xs">
+              <span className="text-label tracking-label uppercase text-brand font-semibold">
+                {item.label}
+              </span>
+              <span className="text-label text-fg-muted/60">{item.note}</span>
+            </div>
+            <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
+          </div>
+        ))}
+
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Prose scale · textScale setting
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Four size tiers. Statement drops to weight 300 — at 1.5rem, lighter weight reads as more refined.
+          </p>
+        </div>
+        {RICH_TEXT_SCALES.map((item) => (
+          <div key={item.label} className="border-t border-fg/5">
+            <div className="px-md pt-sm pb-xs lg:px-lg flex flex-wrap items-baseline gap-x-sm gap-y-xs">
+              <span className="text-label tracking-label uppercase text-brand font-semibold">
+                {item.label}
+              </span>
+              <span className="text-label text-fg-muted/60">{item.note}</span>
+            </div>
+            <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
+          </div>
+        ))}
+
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Font weight · textWeight setting · shown at large scale
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Weight override applies to paragraphs and list items only — headings maintain their own weight hierarchy.
+          </p>
+        </div>
+        {RICH_TEXT_WEIGHTS.map((item) => (
           <div key={item.label} className="border-t border-fg/5">
             <div className="px-md pt-sm pb-xs lg:px-lg flex flex-wrap items-baseline gap-x-sm gap-y-xs">
               <span className="text-label tracking-label uppercase text-brand font-semibold">
@@ -1801,6 +1889,89 @@ export default function ShowcaseBlocksPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="pb-xl" />
+      </section>
+
+      {/* ════════════════════════════════════════════════════
+          GLASS PANEL BACKGROUNDS
+      ═══════════════════════════════════════════════════ */}
+      <BlockGroup
+        id="glass-panel"
+        label="Glass Panel Background"
+        description="The 'Glass (frosted)' backgroundColor option available on both rows and sections. Brand-tinted backdrop-filter material at structural scale. The blur earns its depth over a brand fill, image background, or layered surface — over flat canvas it renders as a subtle dark tinted panel."
+      />
+      <section className="border-t border-fg/5">
+
+        {/* ── Glass over brand fill ── */}
+        <div className="px-md pb-md lg:px-lg pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Glass over brand fill — row backgroundColor: glass, inside brand section
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            The glass panel floats above the committed teal — blur catches the saturated color and diffracts it into a frosted mineral layer.
+          </p>
+        </div>
+        <div className="bg-brand py-xl px-md lg:px-lg">
+          <div className="bg-glass py-xl px-lg">
+            <p className="font-mono text-label text-fg-muted/60 mb-sm">backgroundColor: &ldquo;glass&rdquo;</p>
+            <p className="text-headline font-bold text-fg leading-tight max-w-[22ch]">
+              The infrastructure that made continuous shipping possible.
+            </p>
+            <p className="text-body text-fg-muted mt-md max-w-[55ch]">
+              OptiTech gives your engineering and product teams a shared language for running experiments with statistical confidence backed by real signal.
+            </p>
+          </div>
+        </div>
+
+        {/* ── Glass over image background ── */}
+        <div className="px-md pb-md lg:px-lg pt-lg border-t border-fg/5">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Glass over image background — row backgroundColor: glass, inside ImageBgSection
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            The specular rim and brand bloom lift the glass panel off the photo — depth without obscuring the image.
+          </p>
+        </div>
+        <div
+          className="relative isolate overflow-hidden py-2xl"
+          data-surface="dark"
+          style={{ backgroundImage: `url(${IMAGE_SRC})`, backgroundSize: "cover", backgroundPosition: "center" }}
+        >
+          <div className="absolute inset-0 -z-10 bg-canvas/40" aria-hidden="true" />
+          <div className="container mx-auto px-lg">
+            <div className="bg-glass py-xl px-lg max-w-3xl">
+              <p className="font-mono text-label text-fg-muted/60 mb-sm">backgroundColor: &ldquo;glass&rdquo;</p>
+              <p className="text-headline font-bold text-fg leading-tight max-w-[22ch]">
+                Speed that compounds. The faster you measure, the faster you iterate.
+              </p>
+              <p className="text-body text-fg-muted mt-md max-w-[55ch]">
+                Feature flags, experiment data, user behaviour telemetry, and deployment events — all in one signal layer.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Glass over surface ── */}
+        <div className="px-md pb-md lg:px-lg pt-lg border-t border-fg/5">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Glass over surface fill — subtle dark tinted panel
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Over a flat surface, glass renders as a quiet tinted layer with specular rim. Valid as a subtle section divider, quieter than brand fill.
+          </p>
+        </div>
+        <div className="bg-surface py-xl px-md lg:px-lg">
+          <div className="bg-glass py-lg px-lg">
+            <p className="font-mono text-label text-fg-muted/60 mb-sm">backgroundColor: &ldquo;glass&rdquo; over surface</p>
+            <p className="text-title font-semibold text-fg">
+              A quieter treatment — still distinctly material, not a flat box.
+            </p>
+            <p className="text-body text-fg-muted mt-sm max-w-[55ch]">
+              Use glass over canvas or surface when you want gentle visual separation without committing to a brand fill.
+            </p>
+          </div>
         </div>
 
         <div className="pb-xl" />

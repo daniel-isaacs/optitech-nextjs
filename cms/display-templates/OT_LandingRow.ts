@@ -71,11 +71,12 @@ export const OT_LandingRow = displayTemplate({
       editor: 'select',
       sortOrder: 70,
       choices: {
-        none:      { displayName: 'None',       sortOrder: 10 },
-        canvas:    { displayName: 'Canvas',     sortOrder: 20 },
-        surface:   { displayName: 'Surface',    sortOrder: 30 },
-        brand:     { displayName: 'Brand',      sortOrder: 40 },
-        brandDeep: { displayName: 'Brand deep', sortOrder: 50 },
+        none:      { displayName: 'None',          sortOrder: 10 },
+        canvas:    { displayName: 'Canvas',        sortOrder: 20 },
+        surface:   { displayName: 'Surface',       sortOrder: 30 },
+        brand:     { displayName: 'Brand',         sortOrder: 40 },
+        brandDeep: { displayName: 'Brand deep',    sortOrder: 50 },
+        glass:     { displayName: 'Glass (frosted)', sortOrder: 60 },
       },
     },
     wrapColumns: {

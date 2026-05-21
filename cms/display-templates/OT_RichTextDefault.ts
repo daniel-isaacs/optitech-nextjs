@@ -49,8 +49,29 @@ export const OT_RichTextDefault = displayTemplate({
       editor: 'select',
       sortOrder: 50,
       choices: {
-        false: { displayName: 'Off (Default)',              sortOrder: 10 },
-        true:  { displayName: 'On',                         sortOrder: 20 },
+        false: { displayName: 'Off (Default)', sortOrder: 10 },
+        true:  { displayName: 'On',            sortOrder: 20 },
+      },
+    },
+    textScale: {
+      displayName: 'Prose scale',
+      editor: 'select',
+      sortOrder: 60,
+      choices: {
+        body:      { displayName: 'Body (Default)',  sortOrder: 10 },
+        large:     { displayName: 'Large',           sortOrder: 20 },
+        lead:      { displayName: 'Lead',            sortOrder: 30 },
+        statement: { displayName: 'Statement',       sortOrder: 40 },
+      },
+    },
+    textWeight: {
+      displayName: 'Font weight',
+      editor: 'select',
+      sortOrder: 70,
+      choices: {
+        regular:  { displayName: 'Regular (Default)', sortOrder: 10 },
+        medium:   { displayName: 'Medium',            sortOrder: 20 },
+        semibold: { displayName: 'Semibold',          sortOrder: 30 },
       },
     },
   },

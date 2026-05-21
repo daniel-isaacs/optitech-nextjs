@@ -75,7 +75,7 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
   const spacing    = String(displaySettings.contentSpacing   ?? 'medium')
   const justify    = String(displaySettings.justifyContent   ?? 'start')
   const align      = String(displaySettings.alignItems       ?? 'start')
-  const vPadding   = String(displaySettings.verticalPadding  ?? 'none')
+  const vPadding   = String(displaySettings.verticalPadding  ?? 'small')
   const bgColor    = String(displaySettings.backgroundColor  ?? 'none')
   const wrap              = displaySettings.wrapColumns      === true
   const reverse           = displaySettings.reverseColumns   === true

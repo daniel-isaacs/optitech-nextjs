@@ -23,11 +23,11 @@ export const OT_LandingRow = displayTemplate({
       editor: 'select',
       sortOrder: 20,
       choices: {
-        none:   { displayName: 'None',   sortOrder: 10 },
-        small:  { displayName: 'Small',  sortOrder: 20 },
-        medium: { displayName: 'Medium', sortOrder: 30 },
-        large:  { displayName: 'Large',  sortOrder: 40 },
-        xl:     { displayName: 'XL',     sortOrder: 50 },
+        none:   { displayName: 'None',            sortOrder: 10 },
+        small:  { displayName: 'Small',           sortOrder: 20 },
+        medium: { displayName: 'Medium (Default)', sortOrder: 30 },
+        large:  { displayName: 'Large',            sortOrder: 40 },
+        xl:     { displayName: 'XL',               sortOrder: 50 },
       },
     },
     verticalPadding: {
@@ -35,8 +35,8 @@ export const OT_LandingRow = displayTemplate({
       editor: 'select',
       sortOrder: 30,
       choices: {
-        none:   { displayName: 'None',   sortOrder: 10 },
-        small:  { displayName: 'Small',  sortOrder: 20 },
+        none:   { displayName: 'None',            sortOrder: 10 },
+        small:  { displayName: 'Small (Default)', sortOrder: 20 },
         medium: { displayName: 'Medium', sortOrder: 30 },
         large:  { displayName: 'Large',  sortOrder: 40 },
         xl:     { displayName: 'XL',     sortOrder: 50 },

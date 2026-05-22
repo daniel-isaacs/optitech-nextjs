@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { getClient, getSiteSettings } from '@/lib/optimizely'
+import { getClient } from '@/lib/optimizely'
 import type { SearchResult } from '@/lib/search'
 
 // Searches all indexed string properties — headline, subHeadline, body, topic, etc.
@@ -51,6 +51,20 @@ const EXPERIENCE_QUERY = `
   }
 `
 
+// Lightweight query — only the two fields needed for search scope resolution.
+// Kept separate from the heavy THEME_QUERY so a new/unindexed field on
+// ThemeManager can never break theme loading.
+const SCOPE_QUERY = `
+  query GetSearchScope {
+    OT_ThemeManager(limit: 20) {
+      items {
+        frontEndDomain
+        searchScope
+      }
+    }
+  }
+`
+
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220)
 }
@@ -72,21 +86,33 @@ export async function GET(req: NextRequest) {
 
   if (q.length < 2) return NextResponse.json([])
 
-  // ── Site scope filtering ─────────────────────────────────────────────────
-  // Default is "this site only". Only switch to all-sites when ThemeManager
-  // has searchScope === 'allSites'. Uses the request host to identify the site.
-  const host     = req.nextUrl.host  // e.g. "localhost:3000" or "mysite.vercel.app"
-  const proto    = req.nextUrl.protocol.replace(':', '')  // "http" or "https"
-  const baseUrl  = host ? `${proto}://${host}` : null
+  // ── Site scope resolution ────────────────────────────────────────────────
+  // Compare the request host against each ThemeManager's frontEndDomain to
+  // find the matching site. Fall back to the first ThemeManager if none match
+  // (handles localhost vs. production URL mismatch in development).
+  //
+  // filterBase is built from the ThemeManager's canonical domain, NOT the
+  // request host — so dev on localhost:3000 still sees the correct site content
+  // whose URLs were stored with the production domain.
+  const host = req.nextUrl.host
 
-  let allSites = false
-  if (baseUrl) {
-    try {
-      const settings = await getSiteSettings(host)
-      allSites = settings?.searchScope === 'allSites'
-    } catch {
-      // fall through — default to this-site filtering
+  let allSites   = false
+  let filterBase: string | null = null
+
+  try {
+    const scopeData  = await getClient().request(SCOPE_QUERY, {})
+    const themeItems: any[] = (scopeData as any)?.OT_ThemeManager?.items ?? []
+    const matched = themeItems.find((i: any) => i.frontEndDomain === host) ?? themeItems[0] ?? null
+    if (matched) {
+      allSites = matched.searchScope === 'allSites'
+      const domain = (matched.frontEndDomain as string | undefined) ?? ''
+      if (domain) {
+        const proto = domain.startsWith('localhost') ? 'http' : 'https'
+        filterBase = `${proto}://${domain}`
+      }
     }
+  } catch {
+    // scope unavailable — fall through, show all results
   }
 
   const results: SearchResult[] = []
@@ -124,11 +150,8 @@ export async function GET(req: NextRequest) {
       const items: any[] = (data as any)?._Content?.items ?? []
       for (const item of items) {
         const types: string[] = item._metadata?.types ?? []
-        // Only navigable page types
         if (!types.includes('_Page')) continue
-        // Skip blog pages already captured above
         if (types.includes('OT_BlogPage')) continue
-        // Skip settings and nav config types
         if (types.some(t => SETTINGS_TYPES.has(t))) continue
         if (!item._metadata?.url?.default) continue
         results.push({
@@ -161,10 +184,10 @@ export async function GET(req: NextRequest) {
   }
 
   // ── Scope filtering ──────────────────────────────────────────────────────
-  // When allSites is false (default), only return results whose URL belongs
-  // to this site. Compares against the full protocol+host base URL.
-  const finalResults = (!allSites && baseUrl)
-    ? results.filter(r => r.url.startsWith(baseUrl))
+  // Graph may store URLs as relative paths (/slug/) or absolute URLs.
+  // Relative paths are always "this site" content — only filter absolute URLs.
+  const finalResults = (!allSites && filterBase)
+    ? results.filter(r => !r.url.startsWith('http') || r.url.startsWith(filterBase!))
     : results
 
   return NextResponse.json(finalResults)

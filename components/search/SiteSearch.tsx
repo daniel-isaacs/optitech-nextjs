@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Search, X, Maximize2, Minimize2 } from 'lucide-react'
+import { Search, X, Maximize2, Minimize2, FileText, Newspaper } from 'lucide-react'
 import { useSearch } from './SearchProvider'
 import type { SearchResult } from '@/lib/search'
 
@@ -12,7 +12,7 @@ type DisplayMode = 'immersive' | 'compact'
 type TypeFilter  = 'all' | 'Blog' | 'Page'
 
 const DISPLAY_MODE_KEY  = 'ot-search-mode'
-const SUGGESTED_QUERIES = ['Product', 'Technology', 'AI', 'Design', 'Platform']
+const SUGGESTED_QUERIES = ['Platform', 'Engineering', 'AI', 'Product', 'Innovation']
 
 const TYPE_FILTERS: { value: TypeFilter; label: string }[] = [
   { value: 'all',  label: 'All'  },
@@ -171,154 +171,156 @@ export default function SiteSearch() {
 
   const panelVariants = {
     hidden:  { y: '-100%' },
-    visible: { y: 0,       transition: { duration: dur(400), ease: [0.16, 1, 0.3, 1] as const } },
-    exit:    { y: '-100%', transition: { duration: dur(260), ease: [0.4, 0, 0.2, 1]  as const } },
+    visible: { y: 0,       transition: { duration: dur(380), ease: [0.16, 1, 0.3, 1] as const } },
+    exit:    { y: '-100%', transition: { duration: dur(240), ease: [0.4, 0, 0.2, 1]  as const } },
   }
 
   const overlayVariants = {
     hidden:  { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: dur(220) } },
-    exit:    { opacity: 0, transition: { duration: dur(160) } },
+    visible: { opacity: 1, transition: { duration: dur(200) } },
+    exit:    { opacity: 0, transition: { duration: dur(150) } },
   }
 
-  if (!mounted) return null
+  // ─── Metric filter blocks ──────────────────────────────────────────────────
+  // Data-forward: the count IS the visual anchor, not the label.
+  // Active block: brand tint + brand text. Inactive: subdued, lifts on hover.
 
-  // ─── Filter Rail ───────────────────────────────────────────────────────────
-  // Replaces the old segmented chip control with a typography-led discovery bar.
-  //
-  // Layout: [ALL 12] [BLOG 8] [PAGE 4]  ·  [#ai] [#engineering]
-  //                  ─────── (active = 2px brand underline, no fill)
-  //
-  // Counts are brand-colored so the data is the visual anchor. Active tab gets
-  // a bottom-border indicator, not a background fill. Topics are `#`-prefixed
-  // and emerge inline after a hairline separator when blog results are present.
-
-  function FilterRail({ large }: { large: boolean }) {
-    const countSize = large ? 'text-base font-bold' : 'text-sm font-bold'
-    const labelSize = large ? 'text-label uppercase tracking-label' : 'text-[11px] uppercase tracking-[0.07em]'
-    const pad       = large ? 'px-md pb-[6px] pt-[2px]' : 'px-sm pb-[5px] pt-[1px]'
-    const topicSize = large ? 'text-label uppercase tracking-label' : 'text-[11px] uppercase tracking-[0.07em]'
-
+  function FilterMetrics({ size }: { size: 'full' | 'compact' }) {
     const countFor = (f: TypeFilter) => {
-      if (f === 'all')  return allCount
+      if (f === 'all') return allCount
       if (f === 'Blog') return blogCount
       return pageCount
     }
 
-    return (
-      <div className="flex items-end flex-wrap gap-0" role="group" aria-label="Content type filter">
+    if (size === 'compact') {
+      // Inline tab row for the HUD: type label · count, separated by hairlines
+      return (
+        <div className="flex items-center gap-0" role="group" aria-label="Content type filter">
+          {TYPE_FILTERS.map((f, i) => {
+            const isActive = typeFilter === f.value
+            const count    = countFor(f.value)
+            return (
+              <button
+                key={f.value}
+                type="button"
+                onClick={() => handleTypeFilter(f.value)}
+                aria-pressed={isActive}
+                className={[
+                  'flex items-center gap-[5px] px-sm py-[8px] transition-colors duration-150',
+                  i > 0 ? 'border-l border-fg/10' : '',
+                  'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand',
+                  isActive
+                    ? 'text-brand'
+                    : 'text-fg-muted/50 hover:text-fg-muted',
+                ].join(' ')}
+              >
+                <span className="text-[11px] uppercase tracking-[0.09em] font-semibold">{f.label}</span>
+                {hasSearched && (
+                  <span className={`text-[11px] font-bold tabular-nums ${isActive ? 'text-brand' : 'text-fg-muted/35'}`}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )
+    }
 
-        {/* Type tabs — underline indicator style */}
-        {TYPE_FILTERS.map(chip => {
-          const isActive = typeFilter === chip.value
-          const count    = countFor(chip.value)
+    // Full metric blocks for immersive sidebar
+    return (
+      <div className="flex gap-[6px]" role="group" aria-label="Content type filter">
+        {TYPE_FILTERS.map(f => {
+          const isActive = typeFilter === f.value
+          const count    = countFor(f.value)
           return (
             <button
-              key={chip.value}
+              key={f.value}
               type="button"
-              onClick={() => handleTypeFilter(chip.value)}
+              onClick={() => handleTypeFilter(f.value)}
               aria-pressed={isActive}
               className={[
-                pad,
-                'flex items-baseline gap-[5px] mr-xs',
-                'border-b-2 transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand focus-visible:ring-offset-0',
+                'flex-1 flex flex-col items-center py-[14px] px-sm border transition-all duration-150',
+                'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand',
                 isActive
-                  ? 'border-brand'
-                  : 'border-transparent hover:border-fg/20',
+                  ? 'border-brand/40 bg-brand/8 text-brand'
+                  : 'border-fg/10 text-fg-muted/50 hover:border-fg/20 hover:text-fg-muted',
               ].join(' ')}
             >
-              <span className={`${labelSize} ${isActive ? 'text-fg' : 'text-fg-muted/55'} transition-colors duration-150`}>
-                {chip.label}
+              <span
+                className="font-syne font-black tabular-nums leading-none"
+                style={{ fontSize: 'clamp(1.75rem, 3vw, 2.25rem)', fontVariationSettings: "'wght' 900" }}
+              >
+                {hasSearched ? count : '—'}
               </span>
-              {hasSearched && (
-                <span className={`${countSize} tabular-nums ${isActive ? 'text-brand' : 'text-fg-muted/35'} transition-colors duration-150`}>
-                  {count}
-                </span>
-              )}
+              <span className="text-[10px] uppercase tracking-[0.12em] font-semibold mt-[5px]">
+                {f.label}
+              </span>
             </button>
           )
         })}
+      </div>
+    )
+  }
 
-        {/* Topic refinements — appear after hairline when blog results exist */}
-        {showTopics && (
-          <>
-            <span aria-hidden="true" className={`self-center mx-sm w-px ${large ? 'h-4' : 'h-3'} bg-fg/15 shrink-0`} />
-            <div className="flex items-end flex-wrap gap-xs">
-              {availableTopics.map(topic => {
-                const isActive = topicFilter === topic
-                return (
-                  <button
-                    key={topic}
-                    type="button"
-                    onClick={() => setTopicFilter(isActive ? null : topic)}
-                    aria-pressed={isActive}
-                    className={[
-                      large ? 'px-sm pb-[6px] pt-[2px]' : 'px-xs pb-[5px] pt-[1px]',
-                      topicSize,
-                      'border-b-2 transition-colors duration-150',
-                      'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand',
-                      isActive
-                        ? 'border-brand text-brand'
-                        : 'border-transparent text-fg-muted/40 hover:text-brand/70 hover:border-brand/30',
-                    ].join(' ')}
-                  >
-                    #{topic}
-                  </button>
-                )
-              })}
-              {topicFilter && (
-                <button
-                  type="button"
-                  onClick={() => setTopicFilter(null)}
-                  aria-label="Clear topic filter"
-                  className={[
-                    large ? 'px-sm pb-[6px] pt-[2px]' : 'px-xs pb-[5px] pt-[1px]',
-                    topicSize,
-                    'text-fg-muted/35 hover:text-fg-muted transition-colors duration-150',
-                    'focus-visible:outline-none',
-                  ].join(' ')}
-                >
-                  ×clear
-                </button>
-              )}
-            </div>
-          </>
+  // ─── Topic chips ───────────────────────────────────────────────────────────
+
+  function TopicChips({ compact: isCompact }: { compact: boolean }) {
+    if (!showTopics) return null
+    return (
+      <div className={`flex flex-wrap items-center gap-xs ${isCompact ? '' : 'mt-sm'}`}>
+        {!isCompact && (
+          <span className="text-[10px] uppercase tracking-[0.1em] font-semibold text-fg-muted/35 mr-[2px]">
+            Topic
+          </span>
+        )}
+        {availableTopics.map(topic => {
+          const isActive = topicFilter === topic
+          return (
+            <button
+              key={topic}
+              type="button"
+              onClick={() => setTopicFilter(isActive ? null : topic)}
+              aria-pressed={isActive}
+              className={[
+                isCompact ? 'px-xs py-[4px] text-[10px]' : 'px-sm py-[5px] text-[11px]',
+                'uppercase tracking-[0.08em] font-semibold border transition-all duration-150',
+                'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand',
+                isActive
+                  ? 'border-brand/50 bg-brand/10 text-brand'
+                  : 'border-fg/10 text-fg-muted/45 hover:border-fg/25 hover:text-fg-muted',
+              ].join(' ')}
+            >
+              {topic}
+            </button>
+          )
+        })}
+        {topicFilter && (
+          <button
+            type="button"
+            onClick={() => setTopicFilter(null)}
+            className="text-[10px] text-fg-muted/30 hover:text-fg-muted transition-colors ml-xs focus-visible:outline-none"
+          >
+            clear
+          </button>
         )}
       </div>
     )
   }
 
-  // ─── Loading indicator ─────────────────────────────────────────────────────
-
-  function LoadingDots({ compact: isCompact }: { compact: boolean }) {
-    return (
-      <div
-        className={`flex items-center gap-xs ${isCompact ? 'px-md py-sm' : 'py-md'}`}
-        aria-label="Searching"
-      >
-        {[0, 1, 2].map(i => (
-          <span
-            key={i}
-            className="block w-[6px] h-[6px] bg-brand/60 motion-safe:animate-pulse"
-            style={{ animationDelay: `${i * 160}ms` }}
-          />
-        ))}
-      </div>
-    )
-  }
-
-  // ─── Suggested query chips ─────────────────────────────────────────────────
+  // ─── Suggested queries ─────────────────────────────────────────────────────
 
   function SuggestedQueries({ compact: isCompact }: { compact: boolean }) {
     return (
-      <div className={isCompact ? 'px-md py-md flex flex-wrap items-center gap-xs' : 'py-md'}>
+      <div className={isCompact ? 'px-md py-md' : ''}>
         {!isCompact && (
-          <p className="text-label uppercase tracking-label text-fg-muted/40 mb-sm">Suggested</p>
+          <p className="text-[10px] uppercase tracking-[0.1em] font-semibold text-fg-muted/35 mb-sm">
+            Try searching
+          </p>
         )}
-        <div className="flex flex-wrap items-center gap-xs">
+        <div className="flex flex-wrap gap-xs items-center">
           {isCompact && (
-            <span className="text-label uppercase tracking-label text-fg-muted/40 mr-xs select-none">
+            <span className="text-[11px] uppercase tracking-[0.08em] text-fg-muted/35 mr-xs select-none">
               Try
             </span>
           )}
@@ -328,10 +330,10 @@ export default function SiteSearch() {
               type="button"
               onClick={() => handleQueryChange(s)}
               className={[
-                isCompact ? 'px-sm py-[4px]' : 'px-sm py-xs',
-                'text-label uppercase tracking-label',
-                'border border-fg/10 text-fg-muted/50',
-                'hover:border-brand/40 hover:text-brand/70',
+                isCompact ? 'px-sm py-[5px] text-[11px]' : 'px-sm py-[6px] text-[12px]',
+                'uppercase tracking-[0.08em] font-medium',
+                'border border-fg/8 text-fg-muted/45',
+                'hover:border-brand/35 hover:text-brand/70',
                 'transition-all duration-150 focus-visible:outline-none',
               ].join(' ')}
             >
@@ -343,305 +345,304 @@ export default function SiteSearch() {
     )
   }
 
-  // ─── Result item — compact ─────────────────────────────────────────────────
-  // Solid dark-gradient panel: high-contrast titles, visible excerpts,
-  // thumbnail on the left for blog posts.
+  // ─── Loading dots ──────────────────────────────────────────────────────────
 
-  function ResultItemCompact({ result, index }: { result: SearchResult; index: number }) {
-    const date         = formatDate(result.published)
-    const isFocused    = focusedIdx === index
-    const hasThumbnail = !!result.imageUrl && result.type === 'Blog'
-
+  function LoadingDots() {
     return (
-      <li key={result.id}>
-        <button
-          data-result-item
-          tabIndex={isFocused ? 0 : -1}
-          type="button"
-          onClick={() => handleResultClick(result.url)}
-          className={[
-            'group w-full text-left',
-            'px-md py-[14px] border-b border-fg/8 last:border-b-0',
-            'flex items-start gap-md',
-            'hover:bg-brand/8 focus-visible:outline-none focus-visible:bg-brand/8',
-            'transition-colors duration-100',
-            isFocused ? 'bg-brand/8' : '',
-          ].join(' ')}
-        >
-          {/* Thumbnail */}
-          {hasThumbnail && (
-            <div className="shrink-0 w-[52px] h-[52px] overflow-hidden bg-surface mt-[2px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={result.imageUrl!}
-                alt=""
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-
-          {/* Text content */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-sm">
-              <span className="text-[15px] font-bold text-fg leading-snug line-clamp-2 group-hover:text-brand transition-colors duration-150">
-                {result.title}
-              </span>
-              <span className="shrink-0 text-[10px] uppercase tracking-[0.08em] font-semibold text-fg-muted/50 pt-[3px]">
-                {result.type}
-              </span>
-            </div>
-
-            {result.excerpt && (
-              <p className="text-sm text-fg-muted mt-[5px] line-clamp-2 leading-relaxed font-medium">
-                {result.excerpt}
-              </p>
-            )}
-
-            {(result.topic || date) && (
-              <div className="flex items-center gap-sm mt-[5px]">
-                {result.topic && (
-                  <span className="text-[10px] uppercase tracking-[0.08em] font-semibold text-brand">{result.topic}</span>
-                )}
-                {date && (
-                  <span className="text-[10px] text-fg-muted/50">{date}</span>
-                )}
-              </div>
-            )}
-          </div>
-        </button>
-      </li>
+      <div className="flex items-center gap-xs py-md px-md lg:px-0" aria-label="Searching">
+        {[0, 1, 2].map(i => (
+          <span
+            key={i}
+            className="block w-[5px] h-[5px] bg-brand/50 motion-safe:animate-pulse"
+            style={{ animationDelay: `${i * 140}ms` }}
+          />
+        ))}
+      </div>
     )
   }
 
-  // ─── Result item — immersive ───────────────────────────────────────────────
-  // Editorial layout: arrow + optional thumbnail + title + excerpt + metadata.
+  // ─── Result item ───────────────────────────────────────────────────────────
+  // Single component used in both views — `compact` controls density.
+  // Thumbnail is always shown when available; when not, a type icon fills the space.
 
-  function ResultItemImmersive({ result, index }: { result: SearchResult; index: number }) {
+  function ResultItem({ result, index, compact: isCompact }: {
+    result:  SearchResult
+    index:   number
+    compact: boolean
+  }) {
     const date         = formatDate(result.published)
     const isFocused    = focusedIdx === index
-    const hasThumbnail = !!result.imageUrl && result.type === 'Blog'
+    const hasThumbnail = !!result.imageUrl
+
+    const thumbW = isCompact ? 'w-[52px]' : 'w-[72px]'
+    const thumbH = isCompact ? 'h-[52px]' : 'h-[72px]'
 
     return (
-      <li key={result.id}>
+      <li>
         <button
           data-result-item
           tabIndex={isFocused ? 0 : -1}
           type="button"
           onClick={() => handleResultClick(result.url)}
           className={[
-            'group w-full text-left py-md',
-            'border-t border-fg/10',
-            'flex items-start gap-md',
-            'hover:bg-fg/5 focus-visible:outline-none focus-visible:bg-fg/5',
+            'group w-full text-left flex items-start gap-md',
+            isCompact ? 'px-md py-[13px]' : 'py-md',
+            'border-b border-fg/8 last:border-0',
+            'hover:bg-brand/6 focus-visible:outline-none focus-visible:bg-brand/6',
             'transition-colors duration-100',
-            isFocused ? 'bg-fg/5' : '',
+            isFocused ? 'bg-brand/6' : '',
           ].join(' ')}
         >
-          {/* Arrow */}
-          <span
-            aria-hidden="true"
-            className="shrink-0 mt-1 text-fg-muted/25 group-hover:text-brand group-focus-visible:text-brand transition-colors duration-150 font-mono text-sm"
-          >
-            →
-          </span>
-
-          {/* Thumbnail */}
-          {hasThumbnail && (
-            <div className="shrink-0 w-16 h-16 overflow-hidden bg-surface">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* Thumbnail / type placeholder */}
+          <div className={`shrink-0 ${thumbW} ${thumbH} overflow-hidden bg-surface/60 flex items-center justify-center mt-[2px]`}>
+            {hasThumbnail ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={result.imageUrl!}
                 alt=""
                 loading="lazy"
                 className="w-full h-full object-cover"
               />
-            </div>
-          )}
-
-          {/* Text */}
-          <div className="flex-1 min-w-0">
-            <span className="block text-title font-semibold text-fg leading-snug group-hover:text-brand transition-colors duration-150">
-              {result.title}
-            </span>
-
-            {result.excerpt && (
-              <p className="text-sm text-fg-muted mt-[6px] line-clamp-2 leading-relaxed">
-                {result.excerpt}
-              </p>
+            ) : result.type === 'Blog' ? (
+              <Newspaper size={isCompact ? 16 : 20} className="text-fg-muted/25" />
+            ) : (
+              <FileText size={isCompact ? 16 : 20} className="text-fg-muted/25" />
             )}
+          </div>
 
-            <div className="flex items-center gap-xs mt-[6px] flex-wrap">
-              <span className="text-label uppercase tracking-label text-brand">{result.type}</span>
+          {/* Text content */}
+          <div className="flex-1 min-w-0">
+            {/* Meta row: type · topic · date */}
+            <div className="flex items-center gap-[6px] flex-wrap mb-[4px]">
+              <span className={`text-[10px] uppercase tracking-[0.1em] font-bold ${result.type === 'Blog' ? 'text-brand' : 'text-fg-muted/60'}`}>
+                {result.type}
+              </span>
               {result.topic && (
                 <>
-                  <span aria-hidden="true" className="text-fg/20 text-label">·</span>
-                  <span className="text-label uppercase tracking-label text-fg-muted">{result.topic}</span>
+                  <span className="text-fg/15 leading-none">·</span>
+                  <span className="text-[10px] uppercase tracking-[0.08em] font-semibold text-fg-muted/55">
+                    {result.topic}
+                  </span>
                 </>
               )}
               {date && (
                 <>
-                  <span aria-hidden="true" className="text-fg/20 text-label">—</span>
-                  <span className="text-label text-fg-muted/55">{date}</span>
+                  <span className="text-fg/15 leading-none">·</span>
+                  <span className="text-[10px] text-fg-muted/40">{date}</span>
                 </>
               )}
             </div>
+
+            {/* Title */}
+            <p className={[
+              'font-semibold text-fg leading-snug line-clamp-2',
+              'group-hover:text-brand group-focus-visible:text-brand transition-colors duration-150',
+              isCompact ? 'text-[15px]' : 'text-[17px]',
+            ].join(' ')}>
+              {result.title}
+            </p>
+
+            {/* Excerpt */}
+            {result.excerpt && (
+              <p className={`text-fg-muted leading-relaxed mt-[5px] line-clamp-2 ${isCompact ? 'text-[12px]' : 'text-[13px]'}`}>
+                {result.excerpt}
+              </p>
+            )}
           </div>
+
+          {/* Arrow (immersive only) */}
+          {!isCompact && (
+            <span
+              aria-hidden
+              className="shrink-0 self-center text-fg/15 group-hover:text-brand group-focus-visible:text-brand transition-colors duration-150 text-base mt-[1px]"
+            >
+              →
+            </span>
+          )}
         </button>
       </li>
     )
   }
 
   // ─── Immersive panel ───────────────────────────────────────────────────────
-  // Dark canvas with teal atmospheric glow — brand presence without flooding
-  // the surface with bright color, keeping all text readable.
+  // Full-screen. Desktop: two-column (sidebar + results). Mobile: stacked.
+  // Sidebar holds the bold Syne wordmark, large input, and metric filter blocks.
 
   function ImmersivePanel() {
     return (
       <div className="flex flex-col h-full overflow-hidden">
 
-        {/* Header area: teal radial glow emanates from top-center */}
-        <div
-          style={{
-            background: 'radial-gradient(ellipse 90% 110% at 50% -10%, oklch(55% 0.18 195 / 0.16) 0%, transparent 62%)',
-          }}
-        >
-          {/* Top bar */}
-          <div className="flex items-center justify-between px-md pt-md lg:px-xl shrink-0">
-            <span className="text-label uppercase tracking-label text-fg-muted/45 select-none">
-              OptiTech
-            </span>
-            <div className="flex items-center gap-xs">
-              <button
-                type="button"
-                onClick={toggleMode}
-                aria-label="Switch to compact mode"
-                className="p-sm text-fg-muted/45 hover:text-fg transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
-              >
-                <Minimize2 size={15} />
-              </button>
-              <button
-                type="button"
-                onClick={closeSearch}
-                aria-label="Close search"
-                className="p-sm text-fg-muted/45 hover:text-fg transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
-              >
-                <X size={17} />
-              </button>
-            </div>
-          </div>
-
-          {/* SEARCH hollow wordmark — brand stroke on dark canvas */}
-          <div className="px-md lg:px-xl pt-xs pb-0 shrink-0 leading-none select-none" aria-hidden="true">
-            <span
-              className="font-syne"
-              style={{
-                fontSize:         'clamp(4rem, 11vw, 9rem)',
-                fontWeight:       450,
-                lineHeight:       0.88,
-                letterSpacing:    '-0.04em',
-                WebkitTextStroke: '1.5px var(--ot-brand)',
-                color:            'transparent',
-                display:          'block',
-              }}
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-md lg:px-xl py-[10px] border-b border-fg/8 shrink-0">
+          <span className="text-[10px] uppercase tracking-[0.12em] font-semibold text-fg-muted/35 select-none">
+            OptiTech Search
+          </span>
+          <div className="flex items-center gap-[2px]">
+            <button
+              type="button"
+              onClick={toggleMode}
+              aria-label="Switch to compact mode"
+              className="p-[7px] text-fg-muted/40 hover:text-fg transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
             >
-              SEARCH
-            </span>
-          </div>
-
-          {/* Search input */}
-          <div className="px-md lg:px-xl pt-md pb-sm shrink-0">
-            <div className="relative flex items-center border-b border-fg/15 focus-within:border-brand/80 transition-colors duration-200">
-              <Search size={18} className="shrink-0 text-fg-muted/45 mr-sm" aria-hidden="true" />
-              <input
-                ref={inputRef}
-                id="search-input"
-                type="search"
-                value={query}
-                onChange={e => handleQueryChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="What are you looking for?"
-                autoComplete="off"
-                spellCheck={false}
-                aria-label="Search query"
-                aria-controls="search-results"
-                aria-autocomplete="list"
-                className={[
-                  'flex-1 bg-transparent',
-                  'text-title font-normal text-fg py-sm outline-none',
-                  'placeholder:text-fg-muted/35',
-                  '[&::-webkit-search-cancel-button]:hidden',
-                ].join(' ')}
-              />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => handleQueryChange('')}
-                  aria-label="Clear search"
-                  className="shrink-0 p-xs text-fg-muted/45 hover:text-fg transition-colors duration-150"
-                >
-                  <X size={13} />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Filter rail */}
-          <div className="px-md lg:px-xl pb-sm shrink-0">
-            {FilterRail({ large: true })}
+              <Minimize2 size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={closeSearch}
+              aria-label="Close search"
+              className="p-[7px] text-fg-muted/40 hover:text-fg transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
+            >
+              <X size={16} />
+            </button>
           </div>
         </div>
 
-        {/* Results */}
-        <div
-          ref={resultsRef}
-          id="search-results"
-          role="region"
-          aria-label="Search results"
-          aria-live="polite"
-          className="flex-1 overflow-y-auto px-md lg:px-xl pb-xl border-t border-fg/8"
-        >
-          {loading && LoadingDots({ compact: false })}
+        {/* Body: sidebar | results */}
+        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
 
-          {!loading && !hasSearched && SuggestedQueries({ compact: false })}
+          {/* ── Left sidebar ─────────────────────────────────────────────── */}
+          <div className="flex flex-col w-full lg:w-[380px] xl:w-[420px] shrink-0 lg:border-r lg:border-fg/8 overflow-y-auto lg:overflow-y-auto">
 
-          {!loading && hasSearched && filteredResults.length === 0 && (
-            <div className="py-md">
-              <p className="text-title font-semibold text-fg/65">
-                No results for <span className="text-fg">"{query}"</span>
-              </p>
-              <p className="text-label uppercase tracking-label text-fg-muted/40 mt-xs">
-                Try different keywords or remove filters
-              </p>
+            {/* SEARCH wordmark — bold solid Syne, not hollow */}
+            <div className="px-md lg:px-xl pt-lg pb-sm select-none" aria-hidden>
+              <span
+                className="font-syne font-black text-fg block leading-none"
+                style={{
+                  fontSize:             'clamp(3.25rem, 8vw, 6.5rem)',
+                  letterSpacing:        '-0.04em',
+                  fontVariationSettings: "'wght' 900",
+                }}
+              >
+                SEARCH
+              </span>
             </div>
-          )}
 
-          {!loading && filteredResults.length > 0 && (
-            <ul>
-              {filteredResults.map((result, i) =>
-                ResultItemImmersive({ result, index: i })
-              )}
-            </ul>
-          )}
+            {/* Search input */}
+            <div className="px-md lg:px-xl pb-md shrink-0">
+              <label htmlFor="search-input-immersive" className="sr-only">Search query</label>
+              <div className="relative flex items-center border-b-2 border-fg/15 focus-within:border-brand transition-colors duration-200">
+                <Search size={17} className="shrink-0 text-fg-muted/40 mr-sm" aria-hidden />
+                <input
+                  ref={inputRef}
+                  id="search-input-immersive"
+                  type="search"
+                  value={query}
+                  onChange={e => handleQueryChange(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="What are you looking for?"
+                  autoComplete="off"
+                  spellCheck={false}
+                  aria-label="Search query"
+                  aria-controls="search-results"
+                  aria-autocomplete="list"
+                  className={[
+                    'flex-1 bg-transparent text-fg py-sm outline-none',
+                    'text-[1.1rem] font-medium placeholder:text-fg-muted/30',
+                    '[&::-webkit-search-cancel-button]:hidden',
+                  ].join(' ')}
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => handleQueryChange('')}
+                    aria-label="Clear search"
+                    className="shrink-0 p-xs text-fg-muted/40 hover:text-fg transition-colors"
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Metric filter blocks */}
+            <div className="px-md lg:px-xl pb-md shrink-0">
+              {FilterMetrics({ size: 'full' })}
+            </div>
+
+            {/* Topic chips */}
+            {showTopics && (
+              <div className="px-md lg:px-xl pb-md shrink-0">
+                {TopicChips({ compact: false })}
+              </div>
+            )}
+
+            {/* Suggested queries — only shown before any search */}
+            {!hasSearched && !query && (
+              <div className="px-md lg:px-xl pb-md shrink-0">
+                {SuggestedQueries({ compact: false })}
+              </div>
+            )}
+
+            {/* Result count — shown after searching, bottom of sidebar */}
+            {hasSearched && !loading && (
+              <div className="px-md lg:px-xl pb-md mt-auto shrink-0 hidden lg:block">
+                <p className="text-[11px] uppercase tracking-[0.1em] text-fg-muted/35">
+                  {filteredResults.length === 0
+                    ? 'No results'
+                    : `${filteredResults.length} result${filteredResults.length !== 1 ? 's' : ''}`}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* ── Right results pane ───────────────────────────────────────── */}
+          <div
+            ref={resultsRef}
+            id="search-results"
+            role="region"
+            aria-label="Search results"
+            aria-live="polite"
+            className="flex-1 overflow-y-auto px-md lg:px-xl pt-md pb-2xl"
+          >
+            {loading && LoadingDots()}
+
+            {!loading && !hasSearched && (
+              // Mobile only: suggest queries here (desktop has them in sidebar)
+              <div className="lg:hidden">
+                {SuggestedQueries({ compact: false })}
+              </div>
+            )}
+
+            {!loading && hasSearched && filteredResults.length === 0 && (
+              <div className="py-md">
+                <p className="text-[1.25rem] font-semibold text-fg/60">
+                  No results for{' '}
+                  <span className="text-fg">"{query}"</span>
+                </p>
+                <p className="text-[11px] uppercase tracking-[0.1em] text-fg-muted/35 mt-xs">
+                  Try a different keyword or clear your filters
+                </p>
+              </div>
+            )}
+
+            {!loading && filteredResults.length > 0 && (
+              <ul>
+                {filteredResults.map((result, i) =>
+                  ResultItem({ result, index: i, compact: false })
+                )}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
     )
   }
 
-  // ─── Compact panel ─────────────────────────────────────────────────────────
-  // Solid dark brand-gradient background: no page content bleeds through.
-  // High-contrast typography, generous spacing, thumbnail left for blog posts.
+  // ─── Compact HUD panel ─────────────────────────────────────────────────────
+  // Sits just below the sticky nav. bg-canvas adapts to the active theme —
+  // readable on both light and dark configurations without forced color override.
 
   function CompactPanel() {
     return (
-      <div className="flex flex-col overflow-hidden" style={{ maxHeight: '72vh' }}>
+      <div className="flex flex-col overflow-hidden" style={{ maxHeight: '70vh' }}>
 
         {/* Input row */}
-        <div className="flex items-center gap-sm px-md py-[11px] border-b border-fg/12 shrink-0">
-          <Search size={16} className="shrink-0 text-fg-muted/60" aria-hidden="true" />
+        <div className="flex items-center gap-sm px-md py-[10px] border-b border-fg/10 shrink-0">
+          <Search size={15} className="shrink-0 text-fg-muted/50" aria-hidden />
+          <label htmlFor="search-input-compact" className="sr-only">Search query</label>
           <input
             ref={inputRef}
-            id="search-input"
+            id="search-input-compact"
             type="search"
             value={query}
             onChange={e => handleQueryChange(e.target.value)}
@@ -653,44 +654,50 @@ export default function SiteSearch() {
             aria-controls="search-results"
             aria-autocomplete="list"
             className={[
-              'flex-1 bg-transparent text-fg placeholder:text-fg-muted/45',
+              'flex-1 bg-transparent text-fg placeholder:text-fg-muted/40',
               'text-[15px] font-medium outline-none leading-none py-[2px]',
               '[&::-webkit-search-cancel-button]:hidden',
             ].join(' ')}
           />
-          <div className="flex items-center gap-[2px] shrink-0">
+          <div className="flex items-center gap-[1px] shrink-0">
             {query && (
               <button
                 type="button"
                 onClick={() => handleQueryChange('')}
                 aria-label="Clear"
-                className="p-[6px] text-fg-muted/50 hover:text-fg transition-colors focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
+                className="p-[6px] text-fg-muted/45 hover:text-fg transition-colors focus-visible:outline-2 focus-visible:outline-brand"
               >
-                <X size={13} />
+                <X size={12} />
               </button>
             )}
             <button
               type="button"
               onClick={toggleMode}
-              aria-label="Switch to immersive mode"
-              className="p-[6px] text-fg-muted/50 hover:text-fg transition-colors focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
+              aria-label="Switch to full search"
+              className="p-[6px] text-fg-muted/45 hover:text-fg transition-colors focus-visible:outline-2 focus-visible:outline-brand"
             >
-              <Maximize2 size={14} />
+              <Maximize2 size={13} />
             </button>
             <button
               type="button"
               onClick={closeSearch}
               aria-label="Close search"
-              className="p-[6px] text-fg-muted/50 hover:text-fg transition-colors focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
+              className="p-[6px] text-fg-muted/45 hover:text-fg transition-colors focus-visible:outline-2 focus-visible:outline-brand"
             >
-              <X size={15} />
+              <X size={14} />
             </button>
           </div>
         </div>
 
-        {/* Filter rail */}
-        <div className="px-md pt-[6px] border-b border-fg/8 shrink-0">
-          {FilterRail({ large: false })}
+        {/* Filter + topic row */}
+        <div className="flex items-center flex-wrap gap-0 px-md border-b border-fg/8 shrink-0">
+          {FilterMetrics({ size: 'compact' })}
+          {showTopics && (
+            <>
+              <span className="w-px h-4 bg-fg/10 mx-sm self-center" aria-hidden />
+              {TopicChips({ compact: true })}
+            </>
+          )}
         </div>
 
         {/* Results */}
@@ -702,20 +709,25 @@ export default function SiteSearch() {
           aria-live="polite"
           className="overflow-y-auto flex-1"
         >
-          {loading && LoadingDots({ compact: true })}
+          {loading && (
+            <div className="px-md">
+              {LoadingDots()}
+            </div>
+          )}
 
           {!loading && !hasSearched && SuggestedQueries({ compact: true })}
 
           {!loading && hasSearched && filteredResults.length === 0 && (
-            <p className="px-md py-md text-[15px] font-medium text-fg-muted/70">
-              No results for <span className="text-fg font-bold">"{query}"</span>
+            <p className="px-md py-md text-[14px] font-medium text-fg-muted/60">
+              No results for{' '}
+              <span className="text-fg font-semibold">"{query}"</span>
             </p>
           )}
 
           {!loading && filteredResults.length > 0 && (
             <ul>
               {filteredResults.map((result, i) =>
-                ResultItemCompact({ result, index: i })
+                ResultItem({ result, index: i, compact: true })
               )}
             </ul>
           )}
@@ -726,11 +738,13 @@ export default function SiteSearch() {
 
   // ─── Portal output ─────────────────────────────────────────────────────────
 
+  if (!mounted) return null
+
   return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Compact backdrop */}
+          {/* Backdrop overlay for compact mode */}
           {mode === 'compact' && (
             <motion.div
               key="overlay"
@@ -738,9 +752,9 @@ export default function SiteSearch() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              aria-hidden="true"
+              aria-hidden
               onClick={closeSearch}
-              className="fixed inset-0 z-[48] bg-canvas/70"
+              className="fixed inset-0 z-[48] bg-canvas/65 backdrop-blur-[2px]"
             />
           )}
 
@@ -755,14 +769,11 @@ export default function SiteSearch() {
             exit="exit"
             className={
               mode === 'immersive'
-                // Full-screen dark canvas — above nav (z-60)
+                // Full-screen canvas — above nav
                 ? 'fixed inset-0 z-[60] bg-canvas flex flex-col'
-                // HUD panel below nav — solid dark gradient, no page bleed-through
-                : 'fixed left-0 right-0 top-20 z-[49] flex flex-col border-b border-brand/20 shadow-[0_24px_64px_oklch(5%_0.03_195_/_0.8)]'
+                // HUD panel below nav — bg-canvas adapts to theme, solid + opaque
+                : 'fixed left-0 right-0 top-20 z-[49] flex flex-col bg-canvas border-b border-fg/10 shadow-[0_8px_48px_oklch(0%_0_0_/_0.22)]'
             }
-            style={mode === 'compact' ? {
-              background: 'linear-gradient(170deg, oklch(18% 0.045 195) 0%, oklch(12% 0.015 195) 100%)',
-            } : undefined}
           >
             {mode === 'immersive' ? ImmersivePanel() : CompactPanel()}
           </motion.div>

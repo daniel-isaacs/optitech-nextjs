@@ -63,7 +63,6 @@ const THEME_QUERY = `
         defaultMode
         ctaLabel
         ctaUrl { default }
-        searchScope
         copyright
         footerTagline
         colorBrand

@@ -119,6 +119,8 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
 
 // ─── Shared header props ──────────────────────────────────────────────────────
 
+type PreviewAttrs = (field: string) => Record<string, unknown>
+
 type HeaderProps = {
   headline:        string
   subHeadline?:    string
@@ -131,6 +133,7 @@ type HeaderProps = {
   initials:        string
   imageUrl?:       string | null
   videoUrl?:       string | null
+  pa?:             PreviewAttrs
 }
 
 // ─── Impact Header ────────────────────────────────────────────────────────────
@@ -140,6 +143,7 @@ type HeaderProps = {
 function ImpactHeader({
   headline, subHeadline, topic,
   author, authorRole, authorPhotoUrl, published, readTime, initials,
+  pa,
 }: HeaderProps) {
   const topicIndex = topic ? (TOPIC_INDEX[topic] ?? '—') : null
 
@@ -157,17 +161,17 @@ function ImpactHeader({
 
         <div className="relative z-10 mx-auto max-w-6xl px-md lg:px-xl pt-xl pb-xl">
           {topic && (
-            <div className="mb-lg">
+            <div className="mb-lg" {...pa?.('topic')}>
               <TopicMark topic={topic} />
             </div>
           )}
 
-          <h1 className="blog-impact-hollow-text [text-wrap:balance] max-w-[12ch]">
+          <h1 className="blog-impact-hollow-text [text-wrap:balance] max-w-[12ch]" {...pa?.('headline')}>
             {headline}
           </h1>
 
           {subHeadline && (
-            <p className="mt-lg text-title leading-title text-fg-muted max-w-[56ch] [text-wrap:pretty]">
+            <p className="mt-lg text-title leading-title text-fg-muted max-w-[56ch] [text-wrap:pretty]" {...pa?.('subHeadline')}>
               {subHeadline}
             </p>
           )}
@@ -185,10 +189,10 @@ function ImpactHeader({
                   </div>
                 )}
                 <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
-                  {author && <span className="text-fg font-semibold">{author}</span>}
-                  {author && authorRole && <><span aria-hidden>·</span><span>{authorRole}</span></>}
+                  {author && <span className="text-fg font-semibold" {...pa?.('author')}>{author}</span>}
+                  {author && authorRole && <><span aria-hidden>·</span><span {...pa?.('authorRole')}>{authorRole}</span></>}
                   {published && <><span aria-hidden>·</span><time dateTime={published}>{formatDate(published)}</time></>}
-                  {readTime && <><span aria-hidden>·</span><span>{readTime}</span></>}
+                  {readTime && <><span aria-hidden>·</span><span {...pa?.('readTime')}>{readTime}</span></>}
                 </div>
               </div>
             </div>
@@ -209,6 +213,7 @@ function AtmosphericHeader({
   headline, subHeadline, topic,
   author, authorRole, authorPhotoUrl, published, readTime, initials,
   imageUrl, videoUrl,
+  pa,
 }: HeaderProps) {
   const hasMedia = videoUrl || imageUrl
 
@@ -227,6 +232,7 @@ function AtmosphericHeader({
               muted
               playsInline
               className="absolute inset-0 w-full h-full object-cover"
+              {...pa?.('featuredVideo')}
             />
           ) : (
             <img
@@ -234,6 +240,7 @@ function AtmosphericHeader({
               alt=""
               aria-hidden
               className="absolute inset-0 w-full h-full object-cover"
+              {...pa?.('featuredImage')}
             />
           )}
           <div className="blog-atmospheric-overlay absolute inset-0" />
@@ -247,17 +254,17 @@ function AtmosphericHeader({
         <div className="mx-auto max-w-4xl">
           <div className="bg-glass px-lg py-lg lg:px-xl lg:py-xl">
             {topic && (
-              <div className="mb-md">
+              <div className="mb-md" {...pa?.('topic')}>
                 <TopicMark topic={topic} />
               </div>
             )}
 
-            <h1 className="text-headline leading-headline tracking-headline text-fg [text-wrap:balance]">
+            <h1 className="text-headline leading-headline tracking-headline text-fg [text-wrap:balance]" {...pa?.('headline')}>
               {headline}
             </h1>
 
             {subHeadline && (
-              <p className="mt-sm text-title leading-title text-fg-muted [text-wrap:pretty] max-w-[52ch]">
+              <p className="mt-sm text-title leading-title text-fg-muted [text-wrap:pretty] max-w-[52ch]" {...pa?.('subHeadline')}>
                 {subHeadline}
               </p>
             )}
@@ -274,10 +281,10 @@ function AtmosphericHeader({
                   </div>
                 )}
                 <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
-                  {author && <span className="text-fg font-semibold">{author}</span>}
-                  {author && authorRole && <><span aria-hidden>·</span><span>{authorRole}</span></>}
+                  {author && <span className="text-fg font-semibold" {...pa?.('author')}>{author}</span>}
+                  {author && authorRole && <><span aria-hidden>·</span><span {...pa?.('authorRole')}>{authorRole}</span></>}
                   {published && <><span aria-hidden>·</span><time dateTime={published}>{formatDate(published)}</time></>}
-                  {readTime && <><span aria-hidden>·</span><span>{readTime}</span></>}
+                  {readTime && <><span aria-hidden>·</span><span {...pa?.('readTime')}>{readTime}</span></>}
                 </div>
               </div>
             )}
@@ -295,6 +302,7 @@ function AtmosphericHeader({
 function EditorialHeader({
   headline, subHeadline, topic,
   author, authorRole, authorPhotoUrl, published, readTime, initials,
+  pa,
 }: HeaderProps) {
   return (
     <header className="bg-surface">
@@ -305,11 +313,11 @@ function EditorialHeader({
 
           {/* Headline column */}
           <div>
-            <h1 className="text-headline leading-headline tracking-headline text-fg [text-wrap:balance]">
+            <h1 className="text-headline leading-headline tracking-headline text-fg [text-wrap:balance]" {...pa?.('headline')}>
               {headline}
             </h1>
             {subHeadline && (
-              <p className="mt-md text-title leading-title text-fg-muted [text-wrap:pretty]">
+              <p className="mt-md text-title leading-title text-fg-muted [text-wrap:pretty]" {...pa?.('subHeadline')}>
                 {subHeadline}
               </p>
             )}
@@ -317,7 +325,11 @@ function EditorialHeader({
 
           {/* Sidebar: topic pill + author stacked */}
           <div className="flex flex-col gap-lg lg:border-l lg:border-fg/[0.08] lg:pl-xl">
-            {topic && <TopicPill topic={topic} />}
+            {topic && (
+              <div {...pa?.('topic')}>
+                <TopicPill topic={topic} />
+              </div>
+            )}
 
             {(author || published || readTime) && (
               <div className="flex flex-col gap-sm">
@@ -331,14 +343,14 @@ function EditorialHeader({
                       )}
                     </div>
                     <div>
-                      <p className="text-label font-semibold text-fg leading-tight">{author}</p>
-                      {authorRole && <p className="text-label text-fg-muted">{authorRole}</p>}
+                      <p className="text-label font-semibold text-fg leading-tight" {...pa?.('author')}>{author}</p>
+                      {authorRole && <p className="text-label text-fg-muted" {...pa?.('authorRole')}>{authorRole}</p>}
                     </div>
                   </div>
                 )}
                 <div className="flex flex-col gap-xs text-label text-fg-muted">
                   {published && <time dateTime={published}>{formatDate(published)}</time>}
-                  {readTime && <span>{readTime}</span>}
+                  {readTime && <span {...pa?.('readTime')}>{readTime}</span>}
                 </div>
               </div>
             )}
@@ -354,11 +366,12 @@ function EditorialHeader({
 type Props = {
   content:     BlogPageContent
   latestPosts: BlogPostSummary[]
+  pa?:         PreviewAttrs
 }
 
 const VALID_STYLES: BlogStyle[] = ['impact', 'atmospheric', 'editorial']
 
-export default function BlogPage({ content, latestPosts }: Props) {
+export default function BlogPage({ content, latestPosts, pa }: Props) {
   const {
     headline, subHeadline, topic,
     author, authorRole, authorPhoto, readTime,
@@ -380,6 +393,7 @@ export default function BlogPage({ content, latestPosts }: Props) {
     headline, subHeadline, topic,
     author, authorRole, authorPhotoUrl, published, readTime,
     initials, imageUrl, videoUrl,
+    pa,
   }
 
   // Atmospheric embeds the featured media in the header — skip the zone below
@@ -401,12 +415,14 @@ export default function BlogPage({ content, latestPosts }: Props) {
                 src={videoUrl!}
                 controls
                 className="w-full aspect-video object-cover shadow-[0_16px_48px_var(--ot-bloom-brand-faint)]"
+                {...pa?.('featuredVideo')}
               />
             ) : (
               <img
                 src={imageUrl!}
                 alt={headline}
                 className="w-full aspect-video object-cover shadow-[0_16px_48px_var(--ot-bloom-brand-faint)]"
+                {...pa?.('featuredImage')}
               />
             )}
           </div>
@@ -420,6 +436,7 @@ export default function BlogPage({ content, latestPosts }: Props) {
           data-color="canvas"
           data-scale={blogStyle === 'editorial' ? 'large' : undefined}
           className="mx-auto max-w-[68ch] px-md"
+          {...pa?.('body')}
           // CMS-managed rich text — not user input
           dangerouslySetInnerHTML={{ __html: body?.html ?? '' }}
         />

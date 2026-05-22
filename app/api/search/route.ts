@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { getClient } from '@/lib/optimizely'
 import type { SearchResult } from '@/lib/search'
 
+// Searches all indexed string properties — headline, subHeadline, body, topic, etc.
 const BLOG_QUERY = `
   query SearchBlogs($query: String!, $limit: Int!) {
     OT_BlogPage(
@@ -13,12 +14,14 @@ const BLOG_QUERY = `
         headline
         subHeadline
         topic
+        featuredImage { url { default } }
+        body { html }
       }
     }
   }
 `
 
-// Generic content query — falls back gracefully if _Content type is unavailable
+// Generic pages — filtered to _Page types only (not blogs, not components)
 const CONTENT_QUERY = `
   query SearchContent($query: String!, $limit: Int!) {
     _Content(
@@ -33,6 +36,34 @@ const CONTENT_QUERY = `
   }
 `
 
+// Experience pages (BlankExperience and any future _experience types)
+const EXPERIENCE_QUERY = `
+  query SearchExperiences($query: String!, $limit: Int!) {
+    _Experience(
+      where: { _fulltext: { match: $query } }
+      limit: $limit
+    ) {
+      items {
+        _metadata { key url { default } }
+        name
+      }
+    }
+  }
+`
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220)
+}
+
+const SETTINGS_TYPES = new Set([
+  'OT_SiteSettings',
+  'OT_ThemeManager',
+  'OT_NavigationItem',
+  'OT_NavigationSubItem',
+  'OT_FooterColumn',
+  'OT_FooterLink',
+])
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const q     = (searchParams.get('q') ?? '').trim()
@@ -43,21 +74,25 @@ export async function GET(req: NextRequest) {
 
   const results: SearchResult[] = []
 
-  // Blog results
+  // ── Blog results (highest content priority) ──────────────────────────────
   if (type !== 'Page') {
     try {
       const data = await getClient().request(BLOG_QUERY, { query: q, limit })
       const items: any[] = (data as any)?.OT_BlogPage?.items ?? []
       for (const item of items) {
         if (!item._metadata?.url?.default) continue
+        const subHead  = (item.subHeadline as string | undefined) || undefined
+        const bodyHtml = (item.body?.html as string | undefined) || undefined
+        const excerpt  = subHead ?? (bodyHtml ? stripHtml(bodyHtml) : undefined)
         results.push({
           id:        item._metadata.key,
-          title:     item.headline   ?? 'Untitled',
+          title:     item.headline ?? 'Untitled',
           url:       item._metadata.url.default,
           type:      'Blog',
-          topic:     item.topic      || undefined,
+          topic:     item.topic || undefined,
           published: item._metadata.published || undefined,
-          excerpt:   item.subHeadline || undefined,
+          excerpt,
+          imageUrl:  item.featuredImage?.url?.default || undefined,
         })
       }
     } catch (err) {
@@ -65,16 +100,19 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Generic page results via _Content (best-effort)
+  // ── Generic page results ─────────────────────────────────────────────────
   if (type !== 'Blog') {
     try {
       const data = await getClient().request(CONTENT_QUERY, { query: q, limit })
       const items: any[] = (data as any)?._Content?.items ?? []
       for (const item of items) {
         const types: string[] = item._metadata?.types ?? []
-        // Skip blog pages already captured, system types, and component types
+        // Only navigable page types
+        if (!types.includes('_Page')) continue
+        // Skip blog pages already captured above
         if (types.includes('OT_BlogPage')) continue
-        if (types.some((t: string) => t.startsWith('Sys') || t === '_Component')) continue
+        // Skip settings and nav config types
+        if (types.some(t => SETTINGS_TYPES.has(t))) continue
         if (!item._metadata?.url?.default) continue
         results.push({
           id:    item._metadata.key,
@@ -84,7 +122,24 @@ export async function GET(req: NextRequest) {
         })
       }
     } catch {
-      // _Content type may not be present in this schema version — silently skip
+      // _Content type may not be present in this schema version — skip
+    }
+
+    // Experience pages (BlankExperience, etc.) — best-effort
+    try {
+      const data = await getClient().request(EXPERIENCE_QUERY, { query: q, limit })
+      const items: any[] = (data as any)?._Experience?.items ?? []
+      for (const item of items) {
+        if (!item._metadata?.url?.default) continue
+        results.push({
+          id:    item._metadata.key,
+          title: item.name ?? 'Untitled',
+          url:   item._metadata.url.default,
+          type:  'Page',
+        })
+      }
+    } catch {
+      // _Experience type may not be queryable in this schema version — skip
     }
   }
 

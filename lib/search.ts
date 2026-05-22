@@ -6,4 +6,5 @@ export type SearchResult = {
   topic?: string
   published?: string
   excerpt?: string
+  imageUrl?: string
 }

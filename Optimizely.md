@@ -418,6 +418,43 @@ Run `npx @optimizely/cms-cli config push` after any change to a content type or 
 
 ---
 
+## Adding a new CMS page type — checklist
+
+`_page` types are traditional CMS pages with URLs. Unlike `_experience` types (which render a Visual Builder composition), they are fetched and rendered by a dedicated React component in the Next.js route handler.
+
+1. **Content type** — create `cms/content-types/OT_MyPage.ts` using `contentType({ key, baseType: '_page', properties })`. No `compositionBehaviors` (pages are not placed inside compositions).
+
+2. **Register** — in `cms/registry.ts`, add the content type to `initContentTypeRegistry` only. No display template, no adapter, no `initReactComponentRegistry` entry is needed for page types.
+
+3. **Push to CMS** — run `npx @optimizely/cms-cli config push`.
+
+4. **Data fetching** — add query functions to `lib/blog.ts` (or a new `lib/my-page.ts`). Use `getClient().request(QUERY, vars)` for direct GraphQL queries. For related content (e.g. latest posts), use `cache()` from React to deduplicate cross-component fetches.
+
+5. **React component** — create `components/pages/MyPage.tsx`. Receives all content as typed props. No CMS SDK imports.
+
+6. **Route handler** — in `app/(site)/[...slug]/page.tsx`, add a branch inside the `!exp?.composition?.nodes` block that checks `exp?.__typename === 'OT_MyPage'`. For public requests make a targeted direct query to fetch all fields (the initial `getContentByPath` call may not return page-specific fields). For draft/preview mode, `exp` from `getPreviewContent` already contains all fields and can be used directly.
+
+7. **Showcase** — add a section with mock data to `app/(site)/showcase/blocks/page.tsx`.
+
+### How `_page` routing differs from `_experience`
+
+| | `_experience` | `_page` |
+|---|---|---|
+| Renders via | `<CompositionRenderer>` (SDK composition tree) | Dedicated React component |
+| Display template | Yes — controls Visual Builder settings | Not needed |
+| CMS adapter | One per block type inside the experience | Not needed |
+| Route detection | `exp?.composition?.nodes` exists | `exp?.__typename === 'OT_MyPage'` |
+| Preview mode | Uses `exp` from `getPreviewContent` directly | Same |
+| Field data source | SDK auto-generates fragment from registry | Direct GraphQL query in `lib/` |
+
+### Existing `_page` types
+
+| Type key | Component | Data fetching |
+|---|---|---|
+| `OT_BlogPage` | `components/pages/BlogPage.tsx` | `lib/blog.ts` — `getBlogPage(key)`, `getLatestBlogPosts(excludeKey)` |
+
+---
+
 ## Adding a new CMS block — checklist
 
 Follow all steps in order; omitting any step causes silent failures.

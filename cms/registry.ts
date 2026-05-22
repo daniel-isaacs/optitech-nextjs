@@ -33,6 +33,7 @@ import { OT_NavigationSubItem } from '@/cms/content-types/OT_NavigationSubItem'
 import { OT_FooterLink }        from '@/cms/content-types/OT_FooterLink'
 import { OT_FooterColumn }      from '@/cms/content-types/OT_FooterColumn'
 import { OT_ImageBgSection }    from '@/cms/content-types/OT_ImageBgSection'
+import { OT_BlogPage }          from '@/cms/content-types/OT_BlogPage'
 
 // React component adapters — maps content type keys to Server Component renderers
 import OT_HeroBlockAdapter        from '@/cms/components/OT_HeroBlock'
@@ -83,6 +84,7 @@ initContentTypeRegistry([
   OT_FooterLink,
   OT_FooterColumn,
   OT_ImageBgSection,
+  OT_BlogPage,
 ])
 
 initReactComponentRegistry({

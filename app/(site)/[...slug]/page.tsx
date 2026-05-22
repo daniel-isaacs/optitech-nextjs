@@ -1,10 +1,12 @@
 import { notFound, redirect } from 'next/navigation'
 import { draftMode } from 'next/headers'
 import { getClient, getRequestBaseUrl } from '@/lib/optimizely'
+import { getBlogPage, getLatestBlogPosts } from '@/lib/blog'
 import { withAppContext } from '@optimizely/cms-sdk/react/server'
 import { PreviewComponent } from '@optimizely/cms-sdk/react/client'
 import type { PreviewParams } from '@optimizely/cms-sdk'
 import { CompositionRenderer } from '@/lib/CompositionRenderer'
+import BlogPage from '@/components/pages/BlogPage'
 import Script from 'next/script'
 
 type Props = {
@@ -42,6 +44,29 @@ async function CmsPage({ params, searchParams }: Props) {
   }
 
   if (!exp?.composition?.nodes) {
+    // Blog page — _page type rendered by its own component, not a composition
+    if (exp?.__typename === 'OT_BlogPage') {
+      const contentKey = exp._metadata?.key as string | undefined
+      // For preview, getPreviewContent already returns all fields.
+      // For public, make a targeted query to ensure all fields are present.
+      const blogContent = dm.isEnabled
+        ? exp
+        : (contentKey ? await getBlogPage(contentKey) : null)
+      const latestPosts = await getLatestBlogPosts(contentKey)
+
+      if (blogContent) {
+        return (
+          <>
+            {dm.isEnabled && cmsUrl && (
+              <Script src={`${cmsUrl}/util/javascript/communicationinjector.js`} />
+            )}
+            {dm.isEnabled && <PreviewComponent />}
+            <BlogPage content={blogContent} latestPosts={latestPosts} />
+          </>
+        )
+      }
+    }
+
     // Standalone block content (not an experience) — send to the isolated preview route
     // so it renders without site chrome and with proper communicationinjector.js setup.
     if (dm.isEnabled && exp?.__typename) {

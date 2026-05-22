@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { getClient } from '@/lib/optimizely'
+import { getClient, getSiteSettings } from '@/lib/optimizely'
 import type { SearchResult } from '@/lib/search'
 
 // Searches all indexed string properties — headline, subHeadline, body, topic, etc.
@@ -72,6 +72,23 @@ export async function GET(req: NextRequest) {
 
   if (q.length < 2) return NextResponse.json([])
 
+  // ── Site scope filtering ─────────────────────────────────────────────────
+  // Default is "this site only". Only switch to all-sites when ThemeManager
+  // has searchScope === 'allSites'. Uses the request host to identify the site.
+  const host     = req.nextUrl.host  // e.g. "localhost:3000" or "mysite.vercel.app"
+  const proto    = req.nextUrl.protocol.replace(':', '')  // "http" or "https"
+  const baseUrl  = host ? `${proto}://${host}` : null
+
+  let allSites = false
+  if (baseUrl) {
+    try {
+      const settings = await getSiteSettings(host)
+      allSites = settings?.searchScope === 'allSites'
+    } catch {
+      // fall through — default to this-site filtering
+    }
+  }
+
   const results: SearchResult[] = []
 
   // ── Blog results (highest content priority) ──────────────────────────────
@@ -143,5 +160,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json(results)
+  // ── Scope filtering ──────────────────────────────────────────────────────
+  // When allSites is false (default), only return results whose URL belongs
+  // to this site. Compares against the full protocol+host base URL.
+  const finalResults = (!allSites && baseUrl)
+    ? results.filter(r => r.url.startsWith(baseUrl))
+    : results
+
+  return NextResponse.json(finalResults)
 }

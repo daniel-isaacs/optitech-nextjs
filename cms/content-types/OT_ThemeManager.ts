@@ -44,6 +44,20 @@ export const OT_ThemeManager = contentType({
     ctaLabel: { type: 'string', displayName: 'CTA Label', group: 'OT_Content', sortOrder: 20 },
     ctaUrl:   { type: 'url',    displayName: 'CTA URL',   group: 'OT_Content', sortOrder: 30 },
 
+    // Search
+    searchScope: {
+      type: 'string',
+      format: 'selectOne',
+      displayName: 'Search Scope',
+      description: 'Controls whether site search returns results from this site only or all sites in the CMS instance.',
+      group: 'OT_Content',
+      sortOrder: 35,
+      enum: [
+        { value: 'thisSite', displayName: 'This Site Only (default)' },
+        { value: 'allSites', displayName: 'All Sites in CMS Instance' },
+      ],
+    },
+
     // Header Navigation
     primaryNavigation: {
       type: 'array',

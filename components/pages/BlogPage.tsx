@@ -14,7 +14,6 @@ const TOPIC_LABELS: Record<string, string> = {
   community:   'Community',
 }
 
-// Ordinal position per topic — used as the ghost decoration in Impact style
 const TOPIC_INDEX: Record<string, string> = {
   innovation: '01',
   engineering: '02',
@@ -37,7 +36,7 @@ function authorInitials(name: string): string {
   return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 }
 
-// ─── TopicMark — horizontal rule + label (headers) ───────────────────────────
+// ─── TopicMark — horizontal rule + label (atmospheric glass panel) ────────────
 
 function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolean }) {
   const label = TOPIC_LABELS[topic] ?? topic
@@ -54,6 +53,17 @@ function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolea
   )
 }
 
+// ─── TopicPill — filled accent badge (editorial header) ───────────────────────
+
+function TopicPill({ topic }: { topic: string }) {
+  const label = TOPIC_LABELS[topic] ?? topic
+  return (
+    <span className="inline-flex items-center px-sm py-[3px] rounded-[4px] bg-accent text-fg-on-accent text-label uppercase tracking-label font-semibold">
+      {label}
+    </span>
+  )
+}
+
 // ─── TopicTag — small dot + label (post cards) ────────────────────────────────
 
 function TopicTag({ topic }: { topic: string }) {
@@ -62,21 +72,6 @@ function TopicTag({ topic }: { topic: string }) {
     <div className="inline-flex items-center gap-xs">
       <span className="block w-1.5 h-1.5 bg-accent flex-none" aria-hidden />
       <span className="text-label uppercase tracking-label text-accent font-semibold">{label}</span>
-    </div>
-  )
-}
-
-// ─── TopicBand — full-width accent banner (Impact header only) ────────────────
-
-function TopicBand({ topic }: { topic: string }) {
-  const label = TOPIC_LABELS[topic] ?? topic
-  return (
-    <div className="bg-accent">
-      <div className="mx-auto max-w-6xl px-md lg:px-xl py-sm">
-        <span className="text-label uppercase tracking-label text-fg-on-accent font-semibold">
-          {label}
-        </span>
-      </div>
     </div>
   )
 }
@@ -125,21 +120,22 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
 // ─── Shared header props ──────────────────────────────────────────────────────
 
 type HeaderProps = {
-  headline:       string
-  subHeadline?:   string
-  topic?:         string
-  author?:        string
-  authorRole?:    string
+  headline:        string
+  subHeadline?:    string
+  topic?:          string
+  author?:         string
+  authorRole?:     string
   authorPhotoUrl?: string | null
-  published?:     string
-  readTime?:      string
-  initials:       string
-  imageUrl?:      string | null
+  published?:      string
+  readTime?:       string
+  initials:        string
+  imageUrl?:       string | null
+  videoUrl?:       string | null
 }
 
 // ─── Impact Header ────────────────────────────────────────────────────────────
-// Poster aesthetic: display-scale type with 3D extrusion shadow, full-width
-// brand background, ghost ordinal index decoration, full-bleed topic band.
+// Canvas background with horizontal ruled texture. Exaggerated hollow Syne
+// display type with ambient brand glow. Ghost ordinal watermark in brand color.
 
 function ImpactHeader({
   headline, subHeadline, topic,
@@ -148,45 +144,48 @@ function ImpactHeader({
   const topicIndex = topic ? (TOPIC_INDEX[topic] ?? '—') : null
 
   return (
-    <header className="bg-brand overflow-hidden">
-      {topic && <TopicBand topic={topic} />}
-
+    <header className="bg-canvas blog-impact-ruled-bg overflow-hidden">
       <div className="relative">
-        {/* Ghost ordinal — decorative watermark, contributes poster energy */}
         {topicIndex && (
           <span
             aria-hidden
-            className="blog-impact-index select-none pointer-events-none absolute -right-4 top-0 text-fg-on-brand font-extrabold"
+            className="blog-impact-index select-none pointer-events-none absolute -right-4 top-0 font-extrabold"
           >
             {topicIndex}
           </span>
         )}
 
-        <div className="relative z-10 mx-auto max-w-6xl px-md lg:px-xl pt-2xl pb-xl">
-          <h1 className="text-display leading-display tracking-display text-fg-on-brand [text-wrap:balance] max-w-[14ch] blog-impact-3d-text">
+        <div className="relative z-10 mx-auto max-w-6xl px-md lg:px-xl pt-xl pb-xl">
+          {topic && (
+            <div className="mb-lg">
+              <TopicMark topic={topic} />
+            </div>
+          )}
+
+          <h1 className="blog-impact-hollow-text [text-wrap:balance] max-w-[12ch]">
             {headline}
           </h1>
 
           {subHeadline && (
-            <p className="mt-lg text-title leading-title text-fg-on-brand/70 max-w-[56ch] [text-wrap:pretty]">
+            <p className="mt-lg text-title leading-title text-fg-muted max-w-[56ch] [text-wrap:pretty]">
               {subHeadline}
             </p>
           )}
 
           {(author || published || readTime) && (
-            <div className="mt-xl pt-lg border-t border-fg-on-brand/[0.12]">
+            <div className="mt-xl pt-lg border-t border-fg/[0.08]">
               <div className="flex items-center gap-md flex-wrap">
                 {author && (
-                  <div className="flex-none w-9 h-9 overflow-hidden bg-brand-hover flex items-center justify-center">
+                  <div className="flex-none w-9 h-9 overflow-hidden bg-surface flex items-center justify-center">
                     {authorPhotoUrl ? (
                       <img src={authorPhotoUrl} alt={author} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-label font-semibold text-fg-on-brand">{initials}</span>
+                      <span className="text-label font-semibold text-fg-muted">{initials}</span>
                     )}
                   </div>
                 )}
-                <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-on-brand/70">
-                  {author && <span className="text-fg-on-brand font-semibold">{author}</span>}
+                <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
+                  {author && <span className="text-fg font-semibold">{author}</span>}
                   {author && authorRole && <><span aria-hidden>·</span><span>{authorRole}</span></>}
                   {published && <><span aria-hidden>·</span><time dateTime={published}>{formatDate(published)}</time></>}
                   {readTime && <><span aria-hidden>·</span><span>{readTime}</span></>}
@@ -201,33 +200,49 @@ function ImpactHeader({
 }
 
 // ─── Atmospheric Header ───────────────────────────────────────────────────────
-// Cinematic: featured image fills the header, gradient overlay, glass content
-// panel anchored to the bottom of the frame. No separate media zone below.
+// Featured image or video fills the header. Heavy darkening gradient ensures
+// the glass panel text is always readable. data-theme="dark" forces light text
+// tokens regardless of the page-level theme, since the content sits over a dark
+// overlay. When a video is provided it replaces the image as the background.
 
 function AtmosphericHeader({
   headline, subHeadline, topic,
   author, authorRole, authorPhotoUrl, published, readTime, initials,
-  imageUrl,
+  imageUrl, videoUrl,
 }: HeaderProps) {
+  const hasMedia = videoUrl || imageUrl
+
   return (
     <header
+      data-theme="dark"
       className="relative bg-canvas overflow-hidden flex flex-col justify-end min-h-[68vh]"
     >
-      {imageUrl ? (
+      {hasMedia ? (
         <>
-          <img
-            src={imageUrl}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          {videoUrl ? (
+            <video
+              src={videoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <img
+              src={imageUrl!}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
           <div className="blog-atmospheric-overlay absolute inset-0" />
         </>
       ) : (
         <div className="absolute inset-0 bg-brand" />
       )}
 
-      {/* Glass content panel — earns its blur over the image behind it */}
+      {/* Glass content panel */}
       <div className="relative z-10 px-md lg:px-xl pb-xl">
         <div className="mx-auto max-w-4xl">
           <div className="bg-glass px-lg py-lg lg:px-xl lg:py-xl">
@@ -274,9 +289,8 @@ function AtmosphericHeader({
 }
 
 // ─── Editorial Header ─────────────────────────────────────────────────────────
-// Split layout: headline fills a wide left column, topic mark and author
-// occupy a narrow sidebar. Surface background distinguishes it from the canvas
-// body below. A 3px brand bar at top acts as an editorial edition marker.
+// Split layout: headline fills the wide left column, topic pill and author
+// stack in the right sidebar. Surface background with a 3px brand bar at top.
 
 function EditorialHeader({
   headline, subHeadline, topic,
@@ -301,9 +315,9 @@ function EditorialHeader({
             )}
           </div>
 
-          {/* Sidebar: topic + author stacked */}
+          {/* Sidebar: topic pill + author stacked */}
           <div className="flex flex-col gap-lg lg:border-l lg:border-fg/[0.08] lg:pl-xl">
-            {topic && <TopicMark topic={topic} />}
+            {topic && <TopicPill topic={topic} />}
 
             {(author || published || readTime) && (
               <div className="flex flex-col gap-sm">
@@ -365,10 +379,10 @@ export default function BlogPage({ content, latestPosts }: Props) {
   const headerProps: HeaderProps = {
     headline, subHeadline, topic,
     author, authorRole, authorPhotoUrl, published, readTime,
-    initials, imageUrl,
+    initials, imageUrl, videoUrl,
   }
 
-  // Atmospheric embeds the featured image in the header — skip the media zone below
+  // Atmospheric embeds the featured media in the header — skip the zone below
   const showMedia  = mediaType !== null && blogStyle !== 'atmospheric'
   const bodyTopPad = showMedia ? 'pt-xl' : 'pt-2xl'
 

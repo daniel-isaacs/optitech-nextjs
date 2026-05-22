@@ -675,39 +675,54 @@ body {
   }
 }
 
-/* ── Blog: Impact — 3D extruded type and ghost index number ──────────────────
- * text-shadow stacks brand-hover copies to simulate a letterpress extrusion,
- * with a soft chromatic blur shadow at the end for depth falloff.
- * blog-impact-index is the ghost decimal position marker behind the headline.
+/* ── Blog: Impact — hollow Syne display type with ambient glow ───────────────
+ * Outline-only letterforms using -webkit-text-stroke. The glow text-shadow
+ * halo creates ambient brand light radiating from the stroke edges.
+ * blog-impact-index is the ghost ordinal watermark behind the headline.
+ * blog-impact-ruled-bg lays a faint horizontal rule grid over the header.
  * ─────────────────────────────────────────────────────────────────────────── */
-.blog-impact-3d-text {
+.blog-impact-hollow-text {
+  font-family: var(--ot-font-syne);
+  font-size: clamp(4.5rem, 13vw, 11rem);
+  font-weight: 450;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ot-brand);
+  paint-order: stroke fill;
   text-shadow:
-    1px  1px  0 var(--ot-brand-hover),
-    2px  2px  0 var(--ot-brand-hover),
-    3px  3px  0 var(--ot-brand-hover),
-    4px  4px  0 var(--ot-brand-hover),
-    5px  5px  0 var(--ot-brand-hover),
-    6px  6px  0 oklch(from var(--ot-brand) calc(l - 0.20) c h),
-    7px  7px  0 oklch(from var(--ot-brand) calc(l - 0.25) c h),
-    8px  8px  20px oklch(from var(--ot-brand) calc(l - 0.30) calc(c + 0.02) h / 0.70);
+    0 0 80px  oklch(from var(--ot-brand) l c h / 0.28),
+    0 0 180px oklch(from var(--ot-brand) l c h / 0.12);
 }
 
 .blog-impact-index {
   font-size: clamp(10rem, 25vw, 20rem);
   font-weight: 800;
-  opacity: 0.06;
+  opacity: 0.08;
   line-height: 1;
+  color: var(--ot-brand);
 }
 
-/* ── Blog: Atmospheric — gradient overlay for image-background header ─────────
- * Sits between the featured image and the glass content panel.
- * Top is brand-tinted (image partially visible), bottom darkens toward canvas.
+.blog-impact-ruled-bg {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    oklch(from var(--ot-brand) l c h / 0.05) 0px,
+    oklch(from var(--ot-brand) l c h / 0.05) 1px,
+    transparent 1px,
+    transparent 56px
+  );
+}
+
+/* ── Blog: Atmospheric — gradient overlay for image/video background header ──
+ * Heavy darkening gradient ensures the glass panel text is legible regardless
+ * of the image/video content behind it. Top stays relatively open to show the
+ * media; bottom drops to near-opaque for the content panel.
  * ─────────────────────────────────────────────────────────────────────────── */
 .blog-atmospheric-overlay {
   background: linear-gradient(
     to bottom,
-    oklch(from var(--ot-brand) calc(l - 0.20) c h / 0.40) 0%,
-    oklch(from var(--ot-brand) calc(l - 0.28) c h / 0.65) 100%
+    oklch(from var(--ot-brand) calc(l - 0.22) c h / 0.45) 0%,
+    oklch(from var(--ot-brand) calc(l - 0.38) c h / 0.92) 100%
   );
 }
 

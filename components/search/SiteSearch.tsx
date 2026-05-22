@@ -505,19 +505,17 @@ export default function SiteSearch() {
         >
           <div className="px-md lg:px-2xl xl:px-[8vw] pt-lg pb-2xl">
 
-            {/* SEARCH display wordmark — hollow Syne with brand glow for legibility */}
+            {/* /SEARCH — slash in brand teal, word in foreground. Same font, same size. */}
             <div className="mb-lg select-none" aria-hidden>
               <span
-                className="syne-hollow font-syne font-black block leading-none"
+                className="font-syne block leading-none"
                 style={{
-                  fontSize:              'clamp(4rem, 10vw, 10rem)',
-                  letterSpacing:         '-0.04em',
-                  fontVariationSettings: "'wght' 900",
-                  WebkitTextStroke:      '3px var(--ot-brand)',
-                  filter:               'drop-shadow(0 0 32px oklch(from var(--ot-brand) l c h / 0.50))',
+                  fontSize:              'clamp(4rem, 9vw, 9rem)',
+                  letterSpacing:         '-0.045em',
+                  fontVariationSettings: "'wght' 500",
                 }}
               >
-                SEARCH
+                <span className="text-brand">/</span><span className="text-fg">SEARCH</span>
               </span>
             </div>
 

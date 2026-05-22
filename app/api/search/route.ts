@@ -2,58 +2,12 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { getClient } from '@/lib/optimizely'
 import type { SearchResult } from '@/lib/search'
 
-// Searches all indexed string properties — headline, subHeadline, body, topic, etc.
-const BLOG_QUERY = `
-  query SearchBlogs($query: String!, $limit: Int!) {
-    OT_BlogPage(
-      where: { _fulltext: { match: $query } }
-      limit: $limit
-    ) {
-      items {
-        _metadata { key published url { default } }
-        headline
-        subHeadline
-        topic
-        featuredImage { url { default } }
-        body { html }
-      }
-    }
-  }
-`
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220)
+}
 
-// Generic pages — filtered to _Page types only (not blogs, not components)
-const CONTENT_QUERY = `
-  query SearchContent($query: String!, $limit: Int!) {
-    _Content(
-      where: { _fulltext: { match: $query } }
-      limit: $limit
-    ) {
-      items {
-        _metadata { key url { default } types }
-        name
-      }
-    }
-  }
-`
-
-// Experience pages (BlankExperience and any future _experience types)
-const EXPERIENCE_QUERY = `
-  query SearchExperiences($query: String!, $limit: Int!) {
-    _Experience(
-      where: { _fulltext: { match: $query } }
-      limit: $limit
-    ) {
-      items {
-        _metadata { key url { default } }
-        name
-      }
-    }
-  }
-`
-
-// Lightweight query — only the two fields needed for search scope resolution.
-// Kept separate from the heavy THEME_QUERY so a new/unindexed field on
-// ThemeManager can never break theme loading.
+// Lightweight scope query — isolated from the shared theme query so a
+// new/unindexed ThemeManager field can never break theme loading.
 const SCOPE_QUERY = `
   query GetSearchScope {
     OT_ThemeManager(limit: 20) {
@@ -65,8 +19,79 @@ const SCOPE_QUERY = `
   }
 `
 
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220)
+// Build a blog query with optional Graph-level domain scoping.
+// When withDomain=true, _metadata.url.base is compared against $domain so the
+// CMS itself enforces site isolation — not a post-filter on relative paths.
+// Adds fuzzy matching and synonym expansion for more forgiving keyword search.
+function buildBlogQuery(withDomain: boolean, semantic: boolean): string {
+  const domainVar    = withDomain ? ', $domain: String' : ''
+  const domainFilter = withDomain ? '_metadata: { url: { base: { eq: $domain } } }' : ''
+  const ranking      = semantic
+    ? 'orderBy: { _ranking: SEMANTIC, _semanticWeight: 0.3 }'
+    : 'orderBy: { _ranking: RELEVANCE }'
+  return `
+    query SearchBlogs($query: String!, $limit: Int!${domainVar}) {
+      OT_BlogPage(
+        ${ranking}
+        where: {
+          _fulltext: { match: $query, fuzzy: true, synonyms: ONE }
+          ${domainFilter}
+        }
+        limit: $limit
+      ) {
+        items {
+          _metadata { key published url { default } }
+          headline
+          subHeadline
+          topic
+          featuredImage { url { default } }
+          body { html }
+        }
+      }
+    }
+  `
+}
+
+function buildContentQuery(withDomain: boolean): string {
+  const domainVar    = withDomain ? ', $domain: String' : ''
+  const domainFilter = withDomain ? '_metadata: { url: { base: { eq: $domain } } }' : ''
+  return `
+    query SearchContent($query: String!, $limit: Int!${domainVar}) {
+      _Content(
+        where: {
+          _fulltext: { match: $query, fuzzy: true, synonyms: ONE }
+          ${domainFilter}
+        }
+        limit: $limit
+      ) {
+        items {
+          _metadata { key url { default } types }
+          name
+        }
+      }
+    }
+  `
+}
+
+function buildExperienceQuery(withDomain: boolean): string {
+  const domainVar    = withDomain ? ', $domain: String' : ''
+  const domainFilter = withDomain ? '_metadata: { url: { base: { eq: $domain } } }' : ''
+  return `
+    query SearchExperiences($query: String!, $limit: Int!${domainVar}) {
+      _Experience(
+        where: {
+          _fulltext: { match: $query, fuzzy: true, synonyms: ONE }
+          ${domainFilter}
+        }
+        limit: $limit
+      ) {
+        items {
+          _metadata { key url { default } }
+          name
+        }
+      }
+    }
+  `
 }
 
 const SETTINGS_TYPES = new Set([
@@ -80,20 +105,17 @@ const SETTINGS_TYPES = new Set([
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
-  const q     = (searchParams.get('q') ?? '').trim()
-  const type  = (searchParams.get('type') ?? 'all') as 'all' | 'Blog' | 'Page'
-  const limit = 12
+  const q        = (searchParams.get('q') ?? '').trim()
+  const type     = (searchParams.get('type') ?? 'all') as 'all' | 'Blog' | 'Page'
+  const semantic = searchParams.get('semantic') === 'true'
+  const limit    = 16
 
   if (q.length < 2) return NextResponse.json([])
 
   // ── Site scope resolution ────────────────────────────────────────────────
-  // Compare the request host against each ThemeManager's frontEndDomain to
-  // find the matching site. Fall back to the first ThemeManager if none match
-  // (handles localhost vs. production URL mismatch in development).
-  //
-  // filterBase is built from the ThemeManager's canonical domain, NOT the
-  // request host — so dev on localhost:3000 still sees the correct site content
-  // whose URLs were stored with the production domain.
+  // filterBase is built from ThemeManager's canonical frontEndDomain, NOT the
+  // request host — so localhost dev still resolves the correct production domain
+  // that was stored as url.base in Content Graph when content was published.
   const host = req.nextUrl.host
 
   let allSites   = false
@@ -112,20 +134,26 @@ export async function GET(req: NextRequest) {
       }
     }
   } catch {
-    // scope unavailable — fall through, show all results
+    // scope unavailable — proceed without domain restriction
   }
+
+  // Domain filter is applied in the GraphQL WHERE clause (not post-filtered)
+  // so Content Graph handles site isolation natively.
+  const withDomain = !allSites && filterBase !== null
+  const domainVars = withDomain ? { domain: filterBase } : {}
 
   const results: SearchResult[] = []
 
-  // ── Blog results (highest content priority) ──────────────────────────────
+  // ── Blog results ─────────────────────────────────────────────────────────
   if (type !== 'Page') {
     try {
-      const data = await getClient().request(BLOG_QUERY, { query: q, limit })
+      const blogQuery = buildBlogQuery(withDomain, semantic)
+      const data = await getClient().request(blogQuery, { query: q, limit, ...domainVars })
       const items: any[] = (data as any)?.OT_BlogPage?.items ?? []
       for (const item of items) {
         if (!item._metadata?.url?.default) continue
         const subHead  = (item.subHeadline as string | undefined) || undefined
-        const bodyHtml = (item.body?.html as string | undefined) || undefined
+        const bodyHtml = (item.body?.html  as string | undefined) || undefined
         const excerpt  = subHead ?? (bodyHtml ? stripHtml(bodyHtml) : undefined)
         results.push({
           id:        item._metadata.key,
@@ -143,10 +171,11 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // ── Generic page results ─────────────────────────────────────────────────
+  // ── Generic page results ──────────────────────────────────────────────────
   if (type !== 'Blog') {
     try {
-      const data = await getClient().request(CONTENT_QUERY, { query: q, limit })
+      const contentQuery = buildContentQuery(withDomain)
+      const data = await getClient().request(contentQuery, { query: q, limit, ...domainVars })
       const items: any[] = (data as any)?._Content?.items ?? []
       for (const item of items) {
         const types: string[] = item._metadata?.types ?? []
@@ -162,12 +191,12 @@ export async function GET(req: NextRequest) {
         })
       }
     } catch {
-      // _Content type may not be present in this schema version — skip
+      // _Content may not be present in this schema version
     }
 
-    // Experience pages (BlankExperience, etc.) — best-effort
     try {
-      const data = await getClient().request(EXPERIENCE_QUERY, { query: q, limit })
+      const expQuery = buildExperienceQuery(withDomain)
+      const data = await getClient().request(expQuery, { query: q, limit, ...domainVars })
       const items: any[] = (data as any)?._Experience?.items ?? []
       for (const item of items) {
         if (!item._metadata?.url?.default) continue
@@ -179,16 +208,9 @@ export async function GET(req: NextRequest) {
         })
       }
     } catch {
-      // _Experience type may not be queryable in this schema version — skip
+      // _Experience may not be queryable in this schema version
     }
   }
 
-  // ── Scope filtering ──────────────────────────────────────────────────────
-  // Graph may store URLs as relative paths (/slug/) or absolute URLs.
-  // Relative paths are always "this site" content — only filter absolute URLs.
-  const finalResults = (!allSites && filterBase)
-    ? results.filter(r => !r.url.startsWith('http') || r.url.startsWith(filterBase!))
-    : results
-
-  return NextResponse.json(finalResults)
+  return NextResponse.json(results)
 }

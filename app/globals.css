@@ -675,6 +675,42 @@ body {
   }
 }
 
+/* ── Blog: Impact — 3D extruded type and ghost index number ──────────────────
+ * text-shadow stacks brand-hover copies to simulate a letterpress extrusion,
+ * with a soft chromatic blur shadow at the end for depth falloff.
+ * blog-impact-index is the ghost decimal position marker behind the headline.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.blog-impact-3d-text {
+  text-shadow:
+    1px  1px  0 var(--ot-brand-hover),
+    2px  2px  0 var(--ot-brand-hover),
+    3px  3px  0 var(--ot-brand-hover),
+    4px  4px  0 var(--ot-brand-hover),
+    5px  5px  0 var(--ot-brand-hover),
+    6px  6px  0 oklch(from var(--ot-brand) calc(l - 0.20) c h),
+    7px  7px  0 oklch(from var(--ot-brand) calc(l - 0.25) c h),
+    8px  8px  20px oklch(from var(--ot-brand) calc(l - 0.30) calc(c + 0.02) h / 0.70);
+}
+
+.blog-impact-index {
+  font-size: clamp(10rem, 25vw, 20rem);
+  font-weight: 800;
+  opacity: 0.06;
+  line-height: 1;
+}
+
+/* ── Blog: Atmospheric — gradient overlay for image-background header ─────────
+ * Sits between the featured image and the glass content panel.
+ * Top is brand-tinted (image partially visible), bottom darkens toward canvas.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.blog-atmospheric-overlay {
+  background: linear-gradient(
+    to bottom,
+    oklch(from var(--ot-brand) calc(l - 0.20) c h / 0.40) 0%,
+    oklch(from var(--ot-brand) calc(l - 0.28) c h / 0.65) 100%
+  );
+}
+
 /* ── Glass Button — brand-tinted frosted material ─────────────────────────────
  * Distinct from ghost: brand-tinted surface (not transparent), diagonal sheen,
  * specular top-edge highlight, and chromatic outer bloom for floating depth.

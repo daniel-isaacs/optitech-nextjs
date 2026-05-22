@@ -5,6 +5,18 @@ export const OT_BlogPage = contentType({
   displayName: 'Blog Article',
   baseType: '_page',
   properties: {
+    blogStyle: {
+      type: 'string',
+      format: 'selectOne',
+      displayName: 'Blog Style',
+      group: 'OT_Style',
+      sortOrder: 5,
+      enum: [
+        { value: 'editorial',   displayName: 'Editorial (Split Layout)' },
+        { value: 'atmospheric', displayName: 'Atmospheric (Glass)' },
+        { value: 'impact',      displayName: 'Impact (Display Type)' },
+      ],
+    },
     headline:     { type: 'string', displayName: 'Headline',      group: 'OT_Content', sortOrder: 10 },
     subHeadline:  { type: 'string', displayName: 'Sub-headline',  group: 'OT_Content', sortOrder: 20 },
     topic: {

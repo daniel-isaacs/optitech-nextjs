@@ -10,6 +10,7 @@ export type BlogPageContent = {
   headline: string
   subHeadline?: string
   topic?: string
+  blogStyle?: string
   featuredImage?: { url: { default: string | null } }
   featuredVideo?: { url: { default: string | null } }
   body?: { html: string }
@@ -36,6 +37,7 @@ const BLOG_PAGE_QUERY = `
         headline
         subHeadline
         topic
+        blogStyle
         featuredImage { url { default } }
         featuredVideo { url { default } }
         body { html }

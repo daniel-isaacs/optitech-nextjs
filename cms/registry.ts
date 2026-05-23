@@ -28,6 +28,7 @@ import { OT_QuoteBlock }        from '@/cms/content-types/OT_QuoteBlock'
 import { OT_RichTextBlock }     from '@/cms/content-types/OT_RichTextBlock'
 import { OT_ImageBlock }        from '@/cms/content-types/OT_ImageBlock'
 import { OT_VideoBlock }        from '@/cms/content-types/OT_VideoBlock'
+import { OT_StatItem }         from '@/cms/content-types/OT_StatItem'
 import { OT_StatBlock }        from '@/cms/content-types/OT_StatBlock'
 import { BlankExperience }  from '@/cms/content-types/BlankExperience'
 import { OT_ThemeManager } from '@/cms/content-types/OT_ThemeManager'
@@ -110,6 +111,7 @@ initContentTypeRegistry([
   OT_RichTextBlock,
   OT_ImageBlock,
   OT_VideoBlock,
+  OT_StatItem,
   OT_StatBlock,
   BlankExperience,
   OT_ThemeManager,

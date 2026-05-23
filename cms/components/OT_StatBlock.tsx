@@ -3,18 +3,31 @@ import { getStatBlockStyles }     from '@/cms/styling/OT_StatBlock.styling'
 import StatBlock, { type StatItem } from '@/components/blocks/StatBlock'
 
 type Props = {
-  content:         any
+  content:          any
   displaySettings?: Record<string, string | boolean>
 }
 
 /**
  * Build a StatItem[] from the content object.
  *
- * Supports two formats:
- *   1. Flat CMS properties: stat1Value / stat1Label / stat1Context / stat1Icon … stat4*
- *   2. Direct items array (used in showcase page and testing)
+ * Supports three formats:
+ *   1. CMS array:  content.stats[]  — each item has value/label/context/icon (new format)
+ *   2. Items array: content.items[] — used in showcase page and testing
+ *   3. Flat props:  content.stat1Value … stat4Value — legacy fallback
  */
 function buildStats(content: any): StatItem[] {
+  // Format 1: CMS array property (OT_StatItem components)
+  if (Array.isArray(content.stats)) {
+    return (content.stats as any[])
+      .filter(item => item?.value && item?.label)
+      .map(item => ({
+        value:   String(item.value),
+        label:   String(item.label),
+        context: item.context ? String(item.context) : undefined,
+        icon:    item.icon    ? String(item.icon)    : undefined,
+      }))
+  }
+
   // Format 2: items array (showcase / test)
   if (Array.isArray(content.items)) {
     return (content.items as any[])
@@ -22,12 +35,12 @@ function buildStats(content: any): StatItem[] {
       .map(item => ({
         value:   String(item.value),
         label:   String(item.label),
-        context: item.context  ? String(item.context)  : undefined,
-        icon:    item.icon     ? String(item.icon)     : undefined,
+        context: item.context ? String(item.context) : undefined,
+        icon:    item.icon    ? String(item.icon)    : undefined,
       }))
   }
 
-  // Format 1: flat CMS properties
+  // Format 3: flat CMS properties (legacy — stat1Value … stat4Value)
   const stats: StatItem[] = []
   for (let n = 1; n <= 4; n++) {
     const v = content[`stat${n}Value`]

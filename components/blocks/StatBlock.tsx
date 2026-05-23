@@ -7,15 +7,13 @@ import { ICON_REGISTRY, type LucideIcon } from '@/components/icons/iconRegistry'
 
 // ─── Icon lookup ──────────────────────────────────────────────────────────────
 // Delegates to the shared registry (camelCase keys).
-// Legacy kebab-case aliases kept for backward compat with showcase / old content.
+// Legacy kebab-case and title-case aliases kept for backward compat.
 
 const ICONS: Record<string, LucideIcon> = {
   ...ICON_REGISTRY,
-  // Legacy kebab-case aliases
   'trending-up':  ICON_REGISTRY['trendingUp'],
   'bar-chart':    ICON_REGISTRY['barChart'],
   'check-circle': ICON_REGISTRY['checkCircle'],
-  // Title-case aliases from an earlier EnumValues attempt
   'Zap':          ICON_REGISTRY['zap'],
   'Shield':       ICON_REGISTRY['shield'],
   'Users':        ICON_REGISTRY['users'],
@@ -46,6 +44,8 @@ export type StatItem = {
 export type StatBlockStyleOptions = {
   columns?:   2 | 3 | 4
   color?:     'brand' | 'canvas' | 'surface'
+  /** Wraps the stat row in a frosted glass panel layered over the background color */
+  glass?:     boolean
   showIcons?: boolean
   animate?:   boolean
 }
@@ -55,7 +55,6 @@ export type StatBlockStyleOptions = {
 type Parsed = { prefix: string; number: number; suffix: string; decimals: number }
 
 function parseValue(raw: string): Parsed {
-  // Capture: optional non-digit prefix · digits with optional decimal · remaining suffix
   const m = raw.match(/^([^0-9]*)(\d+(?:\.\d+)?)(.*)$/)
   if (!m) return { prefix: '', number: 0, suffix: raw, decimals: 0 }
   const dec = m[2].includes('.') ? m[2].split('.')[1].length : 0
@@ -90,6 +89,22 @@ const sectionCva = cva('px-md lg:px-lg', {
   defaultVariants: { color: 'brand', columns: 3 },
 })
 
+/**
+ * Glass inner panel — carries the content padding when glass is enabled.
+ * The outer section drops to a tighter frame gap so the bg-color peeks
+ * around the edges of the glass, creating a layered, elevated look.
+ */
+const glassPanelCva = cva('bg-glass rounded-sm', {
+  variants: {
+    columns: {
+      2: 'px-md lg:px-xl py-xl lg:py-2xl',
+      3: 'px-md lg:px-xl py-xl',
+      4: 'px-md lg:px-lg py-lg lg:py-xl',
+    },
+  },
+  defaultVariants: { columns: 3 },
+})
+
 const gridCva = cva('grid', {
   variants: {
     columns: {
@@ -103,8 +118,8 @@ const gridCva = cva('grid', {
 
 /**
  * Number typography scales per column count.
- * 2–3 columns: full display scale (3–6rem) — heroic presence.
- * 4 columns: intermediate scale (2–3.75rem) — still prominent, fits four-up.
+ * 2–3 columns: full display scale — heroic presence.
+ * 4 columns: intermediate scale — still prominent, fits four-up.
  */
 const valueCva = cva('font-extrabold leading-none tabular-nums', {
   variants: {
@@ -144,10 +159,16 @@ const contextCva = cva('text-label font-normal', {
   defaultVariants: { color: 'brand' },
 })
 
-const iconCva = cva('', {
+/**
+ * Icon watermark — color only; opacity is animated via inline style.
+ * Renders as an oversized ghost icon (96px, strokeWidth 0.75) positioned
+ * absolutely in the cell background. Acts as atmospheric texture rather
+ * than a functional label — the number is always the hero.
+ */
+const iconWatermarkCva = cva('', {
   variants: {
     color: {
-      brand:   'text-fg-on-brand/55',
+      brand:   'text-fg-on-brand',
       canvas:  'text-brand',
       surface: 'text-brand',
     },
@@ -159,7 +180,7 @@ const iconCva = cva('', {
 
 const ENTER_MS   = 600   // column entrance duration
 const STAGGER_MS = 110   // per-column stagger
-const COUNT_LAG  = 150   // ms after first column starts before count-up begins
+const COUNT_LAG  = 150   // ms after entry before count-up begins
 const COUNT_MS   = 1400  // count-up duration
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -176,18 +197,19 @@ export default function StatBlock({
   const {
     columns   = 3,
     color     = 'brand',
+    glass     = false,
     showIcons = false,
     animate   = true,
   } = styleOptions
 
-  const ref        = useRef<HTMLElement>(null)
-  const parsed     = stats.map(s => parseValue(s.value))
+  const ref    = useRef<HTMLElement>(null)
+  const parsed = stats.map(s => parseValue(s.value))
 
   // shouldAnim: true once we confirm client + motion pref + animate prop
   const [shouldAnim, setShouldAnim] = useState(false)
   // entered: true when block crosses into viewport
   const [entered,    setEntered]    = useState(false)
-  // countOn: true after the brief COUNT_LAG following entry
+  // countOn: true after COUNT_LAG following entry
   const [countOn,    setCountOn]    = useState(false)
   // progress: 0→1 driven by RAF (starts at 1 = SSR final-value safe)
   const [progress,   setProgress]   = useState(1)
@@ -203,11 +225,9 @@ export default function StatBlock({
 
     if (!willAnimate) {
       setEntered(true)
-      // progress stays at 1 — final values shown immediately
       return
     }
 
-    // Reset number display to zero now that we're client-side
     setProgress(0)
 
     const observer = new IntersectionObserver(
@@ -243,7 +263,6 @@ export default function StatBlock({
       if (t < 1) {
         raf = requestAnimationFrame(tick)
       } else {
-        // Count complete — fire the pulse, then clear it
         setPulsing(true)
         setTimeout(() => setPulsing(false), 280)
       }
@@ -253,150 +272,167 @@ export default function StatBlock({
     return () => cancelAnimationFrame(raf)
   }, [countOn])
 
-  // ── Derived display value ─────────────────────────────────────────────────
-  // Before countOn: show 0 (column is still fading in so it's nearly invisible).
-  // After countOn starts: animate from 0 to target.
-  // No animation: always show final value via progress=1.
   const displayFor = (p: Parsed) =>
     shouldAnim && !countOn ? 0 : p.number * progress
 
-  // ── Color-dependent class fragments ──────────────────────────────────────
-  const mobileBorderClass = color === 'brand'
-    ? 'border-fg-on-brand/15'
-    : 'border-fg/10'
+  const mobileBorderClass = color === 'brand' ? 'border-fg-on-brand/15' : 'border-fg/10'
+  const dividerBgClass    = color === 'brand' ? 'bg-fg-on-brand/15'     : 'bg-fg/10'
 
-  const dividerBgClass = color === 'brand'
-    ? 'bg-fg-on-brand/15'
-    : 'bg-fg/10'
+  // When glass is on, outer section uses tight frame padding; glass panel
+  // carries the full content padding via glassPanelCva.
+  const outerClass = cn(
+    sectionCva({ color, columns }),
+    glass && 'py-sm lg:py-md',
+  )
+
+  const grid = (
+    <ul className={gridCva({ columns })} role="list">
+      {stats.map((stat, i) => {
+        const p         = parsed[i]
+        const staggerMs = i * STAGGER_MS
+
+        // ── Column entrance (opacity + translateY) ────────────────────────
+        const itemStyle: React.CSSProperties = shouldAnim
+          ? {
+              opacity:    entered ? 1 : 0,
+              transform:  entered ? 'none' : 'translateY(1.25rem)',
+              transition: entered
+                ? [
+                    `opacity ${ENTER_MS}ms var(--ot-ease-kinetic) ${staggerMs}ms`,
+                    `transform ${ENTER_MS}ms var(--ot-ease-kinetic) ${staggerMs}ms`,
+                  ].join(', ')
+                : 'none',
+            }
+          : {}
+
+        // ── Vertical divider draw-in (scaleY from top) ────────────────────
+        const dividerStyle: React.CSSProperties = shouldAnim
+          ? {
+              transform:       entered ? 'scaleY(1)' : 'scaleY(0)',
+              transformOrigin: 'top center',
+              transition:      `transform 0.75s var(--ot-ease-kinetic) ${staggerMs + 320}ms`,
+            }
+          : {}
+
+        // ── Label + context slide up ──────────────────────────────────────
+        const labelStyle: React.CSSProperties = shouldAnim
+          ? {
+              opacity:    entered ? 1 : 0,
+              transform:  entered ? 'none' : 'translateY(0.4rem)',
+              transition: [
+                `opacity 0.55s var(--ot-ease-kinetic) ${staggerMs + COUNT_LAG + 60}ms`,
+                `transform 0.55s var(--ot-ease-kinetic) ${staggerMs + COUNT_LAG + 60}ms`,
+              ].join(', '),
+            }
+          : {}
+
+        // ── Watermark icon: scale-settle from enlarged + invisible ────────
+        // Fires slightly after column entrance, well before count-up completes.
+        // The scale shrink (1.15 → 1.0) gives the icon a sense of gravity —
+        // it breathes into place rather than popping in.
+        const iconWatermarkStyle: React.CSSProperties = shouldAnim
+          ? {
+              opacity:    entered ? 0.08 : 0,
+              transform:  entered ? 'none' : 'scale(1.15)',
+              transition: [
+                `opacity 1.1s var(--ot-ease-kinetic) ${staggerMs + 180}ms`,
+                `transform 1.1s var(--ot-ease-kinetic) ${staggerMs + 180}ms`,
+              ].join(', '),
+            }
+          : { opacity: 0.08 }
+
+        const Icon = stat.icon ? ICONS[stat.icon] : null
+        const disp = displayFor(p)
+
+        return (
+          <li
+            key={i}
+            className={cn(
+              'relative overflow-hidden flex flex-col py-lg md:py-xl',
+              'px-md md:pl-xl md:pr-0',
+              // Mobile horizontal separator
+              `border-t ${mobileBorderClass} first:border-t-0 md:border-t-0`,
+            )}
+            style={itemStyle}
+          >
+            {/* ── Vertical column divider — desktop, not on first item ─── */}
+            {i > 0 && (
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'absolute left-0 top-lg bottom-lg hidden md:block w-px',
+                  dividerBgClass,
+                )}
+                style={dividerStyle}
+              />
+            )}
+
+            {/* ── Watermark icon (atmospheric background texture) ──────────
+                Oversized, gossamer-thin stroke, very low opacity.
+                Breathes in from slightly enlarged — settles into place.
+                Hidden on mobile (single-column separators handle rhythm there).
+            ─────────────────────────────────────────────────────────────── */}
+            {showIcons && Icon && (
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'absolute right-md top-md pointer-events-none hidden md:block',
+                  iconWatermarkCva({ color }),
+                )}
+                style={iconWatermarkStyle}
+              >
+                <Icon size={96} strokeWidth={0.75} />
+              </span>
+            )}
+
+            {/* ── Value (count-up) ──────────────────────────────────────── */}
+            <p
+              className={cn(
+                valueCva({ color, columns }),
+                pulsing && shouldAnim && 'animate-stat-pulse',
+              )}
+              aria-hidden="true"
+            >
+              {p.prefix}{fmtNumber(disp, p.decimals)}{p.suffix}
+            </p>
+            <span className="sr-only">{stat.value}</span>
+
+            {/* ── Label ─────────────────────────────────────────────────── */}
+            <p
+              className={cn(labelCva({ color }), 'mt-xs')}
+              style={labelStyle}
+            >
+              {stat.label}
+            </p>
+
+            {/* ── Context (optional) ────────────────────────────────────── */}
+            {stat.context && (
+              <p
+                className={cn(contextCva({ color }), 'mt-xs')}
+                style={labelStyle}
+              >
+                {stat.context}
+              </p>
+            )}
+          </li>
+        )
+      })}
+    </ul>
+  )
 
   return (
     <section
       ref={ref}
-      className={sectionCva({ color, columns })}
+      className={outerClass}
       aria-label="Key metrics"
     >
-      <ul className={gridCva({ columns })} role="list">
-        {stats.map((stat, i) => {
-          const p          = parsed[i]
-          const staggerMs  = i * STAGGER_MS
-
-          // ── Column entrance (opacity + translateY, CSS transition) ────────
-          const itemStyle: React.CSSProperties = shouldAnim
-            ? {
-                opacity:   entered ? 1 : 0,
-                transform: entered ? 'none' : 'translateY(1.25rem)',
-                transition: entered
-                  ? [
-                      `opacity ${ENTER_MS}ms var(--ot-ease-kinetic) ${staggerMs}ms`,
-                      `transform ${ENTER_MS}ms var(--ot-ease-kinetic) ${staggerMs}ms`,
-                    ].join(', ')
-                  : 'none',
-              }
-            : {}
-
-          // ── Vertical divider draw-in (scaleY from top) ────────────────────
-          const dividerStyle: React.CSSProperties = shouldAnim
-            ? {
-                transform:       entered ? 'scaleY(1)' : 'scaleY(0)',
-                transformOrigin: 'top center',
-                transition:      `transform 0.75s var(--ot-ease-kinetic) ${staggerMs + 320}ms`,
-              }
-            : {}
-
-          // ── Icon fade-in (slightly ahead of count-up) ─────────────────────
-          const iconStyle: React.CSSProperties = shouldAnim
-            ? {
-                opacity:    entered ? 1 : 0,
-                transition: `opacity 0.55s var(--ot-ease-kinetic) ${staggerMs + 80}ms`,
-              }
-            : {}
-
-          // ── Label + context slide up (after count-up lag) ─────────────────
-          const labelStyle: React.CSSProperties = shouldAnim
-            ? {
-                opacity:    entered ? 1 : 0,
-                transform:  entered ? 'none' : 'translateY(0.4rem)',
-                transition: [
-                  `opacity 0.55s var(--ot-ease-kinetic) ${staggerMs + COUNT_LAG + 60}ms`,
-                  `transform 0.55s var(--ot-ease-kinetic) ${staggerMs + COUNT_LAG + 60}ms`,
-                ].join(', '),
-              }
-            : {}
-
-          const Icon = stat.icon ? ICONS[stat.icon] : null
-          const disp = displayFor(p)
-
-          return (
-            <li
-              key={i}
-              className={cn(
-                'relative flex flex-col py-lg md:py-xl',
-                'px-md md:pl-xl md:pr-0',
-                // Mobile horizontal separator — hidden once grid goes multi-column
-                `border-t ${mobileBorderClass} first:border-t-0 md:border-t-0`,
-              )}
-              style={itemStyle}
-            >
-              {/* ── Vertical column divider — desktop, not on first item ─── */}
-              {i > 0 && (
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    'absolute left-0 top-lg bottom-lg hidden md:block w-px',
-                    dividerBgClass,
-                  )}
-                  style={dividerStyle}
-                />
-              )}
-
-              {/* ── Icon (optional) ───────────────────────────────────────── */}
-              {showIcons && Icon && (
-                <span
-                  aria-hidden="true"
-                  className={cn('mb-sm block', iconCva({ color }))}
-                  style={iconStyle}
-                >
-                  <Icon size={28} strokeWidth={1.5} />
-                </span>
-              )}
-
-              {/* ── Value (count-up number) ───────────────────────────────── */}
-              {/*
-                aria-hidden: the live counting number is hidden from AT.
-                The sr-only span below provides the final static value.
-              */}
-              <p
-                className={cn(
-                  valueCva({ color, columns }),
-                  pulsing && shouldAnim && 'animate-stat-pulse',
-                )}
-                aria-hidden="true"
-              >
-                {p.prefix}{fmtNumber(disp, p.decimals)}{p.suffix}
-              </p>
-              <span className="sr-only">{stat.value}</span>
-
-              {/* ── Label ────────────────────────────────────────────────── */}
-              <p
-                className={cn(labelCva({ color }), 'mt-xs')}
-                style={labelStyle}
-              >
-                {stat.label}
-              </p>
-
-              {/* ── Context (optional) ────────────────────────────────────── */}
-              {stat.context && (
-                <p
-                  className={cn(contextCva({ color }), 'mt-xs')}
-                  style={labelStyle}
-                >
-                  {stat.context}
-                </p>
-              )}
-            </li>
-          )
-        })}
-      </ul>
+      {glass ? (
+        <div className={glassPanelCva({ columns })}>
+          {grid}
+        </div>
+      ) : (
+        grid
+      )}
     </section>
   )
 }

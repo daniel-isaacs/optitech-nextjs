@@ -1,5 +1,5 @@
-import { displayTemplate }          from '@optimizely/cms-sdk'
-import { ICON_CHOICES_WITH_NONE }   from './_shared/iconChoices'
+import { displayTemplate }        from '@optimizely/cms-sdk'
+import { ICON_CHOICES_WITH_NONE } from './_shared/iconChoices'
 
 export const OT_StatBlockDefault = displayTemplate({
   key:         'OT_StatBlockDefault',
@@ -15,6 +15,15 @@ export const OT_StatBlockDefault = displayTemplate({
         brand:   { displayName: 'Brand (Default)', sortOrder: 10 },
         canvas:  { displayName: 'Canvas',          sortOrder: 20 },
         surface: { displayName: 'Surface',         sortOrder: 30 },
+      },
+    },
+    glass: {
+      displayName: 'Glass overlay',
+      editor:      'select',
+      sortOrder:   15,
+      choices: {
+        false: { displayName: 'Off (Default)',                    sortOrder: 10 },
+        true:  { displayName: 'On — frosted panel over bg color', sortOrder: 20 },
       },
     },
     columns: {
@@ -45,7 +54,7 @@ export const OT_StatBlockDefault = displayTemplate({
         true:  { displayName: 'On',            sortOrder: 20 },
       },
     },
-    // ── Per-slot icon selectors (choices from shared registry) ──────────────
+    // ── Per-slot icon selectors ──────────────────────────────────────────────
     stat1Icon: { displayName: 'Stat 1 — Icon', editor: 'select', sortOrder: 50, choices: ICON_CHOICES_WITH_NONE },
     stat2Icon: { displayName: 'Stat 2 — Icon', editor: 'select', sortOrder: 60, choices: ICON_CHOICES_WITH_NONE },
     stat3Icon: { displayName: 'Stat 3 — Icon', editor: 'select', sortOrder: 70, choices: ICON_CHOICES_WITH_NONE },

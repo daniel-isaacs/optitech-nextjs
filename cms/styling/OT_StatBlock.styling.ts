@@ -9,6 +9,7 @@ export function getStatBlockStyles(s: Record<string, string | boolean>): StatBlo
   return {
     columns:   cols as 2 | 3 | 4,
     color:     (s.color    ?? 'brand')  as StatBlockStyleOptions['color'],
+    glass:      s.glass    === true || s.glass    === 'true',
     showIcons:  s.showIcons === true || s.showIcons === 'true',
     animate:    s.animate  !== false  && s.animate  !== 'false',
   }

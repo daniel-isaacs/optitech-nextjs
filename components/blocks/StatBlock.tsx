@@ -9,9 +9,23 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-// ─── Icon registry (10 keys) ──────────────────────────────────────────────────
+// ─── Icon registry ────────────────────────────────────────────────────────────
+// Accepts both the human-readable CMS dropdown labels ("Zap", "Bar Chart") and
+// the legacy kebab-case keys used in showcase / old content ("zap", "bar-chart").
 
 const ICONS: Record<string, LucideIcon> = {
+  // Human-readable labels — matches CMS EnumValues
+  'Zap':           Zap,
+  'Shield':        Shield,
+  'Users':         Users,
+  'Trending Up':   TrendingUp,
+  'Clock':         Clock,
+  'Award':         Award,
+  'Bar Chart':     BarChart2,
+  'Globe':         Globe,
+  'Sparkles':      Sparkles,
+  'Check Circle':  CheckCircle,
+  // Legacy kebab-case — backward compat with existing content / showcase
   'zap':           Zap,
   'shield':        Shield,
   'users':         Users,

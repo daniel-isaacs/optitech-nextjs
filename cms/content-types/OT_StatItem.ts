@@ -33,7 +33,7 @@ export const OT_StatItem = contentType({
     icon: {
       type:        'string',
       displayName: 'Icon',
-      description: 'Optional icon key. Choices: zap, shield, users, trending-up, clock, award, bar-chart, globe, sparkles, check-circle',
+      description: 'Choose an icon to display alongside this stat. Choices: Zap | Shield | Users | Trending Up | Clock | Award | Bar Chart | Globe | Sparkles | Check Circle',
       group:       'OT_Content',
       sortOrder:   40,
     },

@@ -110,6 +110,18 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes statPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.038); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-stat-pulse {
+    animation: statPulse 0.26s var(--ot-ease-quick) forwards;
+  }
+}
+
 /* ── Grid column spans ───────────────────────────────────────────────────────
  * Row outputs data-bp="sm|md|lg|xl" on its div.
  * Column outputs data-col-span="col1…col12" on its div.

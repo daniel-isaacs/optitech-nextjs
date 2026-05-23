@@ -9,6 +9,7 @@ import OT_QuoteBlock       from "@/cms/components/OT_QuoteBlock";
 import OT_ImageBlock       from "@/cms/components/OT_ImageBlock";
 import OT_VideoBlock       from "@/cms/components/OT_VideoBlock";
 import OT_CardBlock        from "@/cms/components/OT_CardBlock";
+import OT_StatBlock       from "@/cms/components/OT_StatBlock";
 import Button from "@/components/ui/Button";
 import { ArrowRight, Zap, ChevronRight, Play, Download, Sparkles, Send, Rocket, Star, Plus } from "lucide-react";
 
@@ -1972,6 +1973,259 @@ export default function ShowcaseBlocksPage() {
               Use glass over canvas or surface when you want gentle visual separation without committing to a brand fill.
             </p>
           </div>
+        </div>
+
+        <div className="pb-xl" />
+      </section>
+
+
+      {/* ════════════════════════════════════════════════════
+          STAT BLOCKS
+      ═══════════════════════════════════════════════════ */}
+      <BlockGroup
+        id="stat"
+        label="Stat Blocks"
+        description="A horizontal row of metric callouts for communicating scale and ROI. Numbers animate on scroll entry with a staggered entrance and easeOutQuart count-up. No card chrome — stats sit as open typographic monuments."
+      />
+
+      <section id="stat-block" className="border-t border-fg/5">
+        <div className="px-md pt-xl pb-lg lg:px-lg">
+          <SectionLabel index="09 · Social Proof" title="StatBlock" />
+          <p className="text-body leading-body text-fg-muted max-w-[65ch]">
+            Three color schemes (brand, canvas, surface), three column counts (2/3/4), optional Lucide
+            icon slots, and an opt-in animated count-up on scroll. Numbers at{" "}
+            <code className="font-mono text-fg text-label">text-display</code> scale for 2–3 columns,
+            intermediate scale for 4. Stagger entrance + divider draw-in + completion pulse on every
+            metric.
+          </p>
+        </div>
+
+        {/* ── Color schemes · 3 columns · no icons ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Color schemes · 3 columns · animate off (static)
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Brand is the committed default. Canvas and surface for lighter editorial contexts.
+          </p>
+        </div>
+        {(["brand", "canvas", "surface"] as const).map((color) => (
+          <div key={color} className="border-t border-fg/5">
+            <div className="px-md pt-sm pb-xs lg:px-lg">
+              <span className="font-mono text-label text-fg-muted/50">color: &ldquo;{color}&rdquo;</span>
+            </div>
+            <OT_StatBlock
+              content={{
+                items: [
+                  { value: "40%",    label: "Faster deployment",  context: "vs. baseline" },
+                  { value: "99.99%", label: "Uptime SLA",         context: "across all regions" },
+                  { value: "2M+",    label: "Active users",       context: "and growing" },
+                ],
+              }}
+              displaySettings={{ color, columns: "3", animate: false }}
+            />
+          </div>
+        ))}
+
+        {/* ── Column counts · brand · no icons ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Column counts · brand · animate off
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            2-col uses the full display scale — heroic presence for anchor stat moments.
+            4-col compresses to an intermediate scale that still reads at a glance.
+          </p>
+        </div>
+        <div className="border-t border-fg/5">
+          <div className="px-md pt-sm pb-xs lg:px-lg">
+            <span className="font-mono text-label text-fg-muted/50">columns: &ldquo;2&rdquo;</span>
+          </div>
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "$6.4B",  label: "Total loan volume",  context: "originated this year" },
+                { value: "312K",   label: "Member accounts",    context: "across all regions" },
+              ],
+            }}
+            displaySettings={{ color: "brand", columns: "2", animate: false }}
+          />
+        </div>
+        <div className="border-t border-fg/5">
+          <div className="px-md pt-sm pb-xs lg:px-lg">
+            <span className="font-mono text-label text-fg-muted/50">columns: &ldquo;3&rdquo;</span>
+          </div>
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "40%",    label: "Faster deployment",  context: "vs. baseline"        },
+                { value: "99.99%", label: "Uptime SLA",         context: "across all regions"  },
+                { value: "2M+",    label: "Active users",       context: "and growing"         },
+              ],
+            }}
+            displaySettings={{ color: "brand", columns: "3", animate: false }}
+          />
+        </div>
+        <div className="border-t border-fg/5">
+          <div className="px-md pt-sm pb-xs lg:px-lg">
+            <span className="font-mono text-label text-fg-muted/50">columns: &ldquo;4&rdquo;</span>
+          </div>
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "1.2M",   label: "Claims processed",    context: "last 12 months"     },
+                { value: "98.3%",  label: "Satisfaction rate",   context: "post-claim survey"  },
+                { value: "4.8hr",  label: "Avg. resolution",     context: "from first contact" },
+                { value: "340+",   label: "Partner carriers",    context: "in our network"     },
+              ],
+            }}
+            displaySettings={{ color: "brand", columns: "4", animate: false }}
+          />
+        </div>
+
+        {/* ── With icons · 3 columns · brand ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            With icons · 3 columns · brand · animate off
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Icons sit above the value at 28px / strokeWidth 1.5. Muted to 55% opacity on brand
+            surfaces so they support without competing with the number.
+          </p>
+        </div>
+        <div className="border-t border-fg/5">
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "40%",    label: "Faster deployment",  context: "vs. baseline",       icon: "zap"          },
+                { value: "99.99%", label: "Uptime SLA",         context: "across all regions", icon: "shield"       },
+                { value: "2M+",    label: "Active users",       context: "and growing",        icon: "users"        },
+              ],
+            }}
+            displaySettings={{ color: "brand", columns: "3", showIcons: true, animate: false }}
+          />
+        </div>
+        <div className="border-t border-fg/5">
+          <div className="px-md pt-sm pb-xs lg:px-lg">
+            <span className="font-mono text-label text-fg-muted/50">canvas + icons</span>
+          </div>
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "18K+",   label: "Member organisations", icon: "users"       },
+                { value: "420",    label: "Annual events",        icon: "clock"       },
+                { value: "97%",    label: "Renewal rate",         icon: "check-circle"},
+              ],
+            }}
+            displaySettings={{ color: "canvas", columns: "3", showIcons: true, animate: false }}
+          />
+        </div>
+
+        {/* ── Icon key reference ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Icon key reference · all 10 icons · canvas
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Available icon keys for the CMS{" "}
+            <code className="font-mono text-fg">icon</code> field on each stat item.
+          </p>
+        </div>
+        <div className="border-t border-fg/5">
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "1", label: "zap",           icon: "zap"           },
+                { value: "2", label: "shield",         icon: "shield"        },
+                { value: "3", label: "users",          icon: "users"         },
+                { value: "4", label: "trending-up",    icon: "trending-up"   },
+              ],
+            }}
+            displaySettings={{ color: "canvas", columns: "4", showIcons: true, animate: false }}
+          />
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "5", label: "clock",          icon: "clock"         },
+                { value: "6", label: "award",          icon: "award"         },
+                { value: "7", label: "bar-chart",      icon: "bar-chart"     },
+                { value: "8", label: "globe",          icon: "globe"         },
+              ],
+            }}
+            displaySettings={{ color: "canvas", columns: "4", showIcons: true, animate: false }}
+          />
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "9",  label: "sparkles",      icon: "sparkles"      },
+                { value: "10", label: "check-circle",  icon: "check-circle"  },
+              ],
+            }}
+            displaySettings={{ color: "canvas", columns: "4", showIcons: true, animate: false }}
+          />
+        </div>
+
+        {/* ── Animated (live) ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Animated · brand · 3 columns · icons on
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Scroll this section into view to trigger. Sequence: columns stagger slide-up →
+            dividers draw in → numbers count 0→target over 1.4s (easeOutQuart) →
+            completion pulse on landing. Respects{" "}
+            <code className="font-mono text-fg">prefers-reduced-motion</code>.
+          </p>
+        </div>
+        <div className="border-t border-fg/5">
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "40%",    label: "Faster deployment",  context: "vs. baseline",       icon: "zap"     },
+                { value: "99.99%", label: "Uptime SLA",         context: "across all regions", icon: "shield"  },
+                { value: "2M+",    label: "Active users",       context: "and growing",        icon: "users"   },
+              ],
+            }}
+            displaySettings={{ color: "brand", columns: "3", showIcons: true, animate: true }}
+          />
+        </div>
+        <div className="border-t border-fg/5">
+          <div className="px-md pt-sm pb-xs lg:px-lg">
+            <span className="font-mono text-label text-fg-muted/50">canvas · 4 columns · animate on</span>
+          </div>
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "8.3B",   label: "Assets under management", icon: "bar-chart"   },
+                { value: "99.95%", label: "System uptime",           icon: "shield"      },
+                { value: "47K+",   label: "Client accounts",         icon: "users"       },
+                { value: "4.9",    label: "NPS score",               icon: "award"       },
+              ],
+            }}
+            displaySettings={{ color: "canvas", columns: "4", showIcons: true, animate: true }}
+          />
+        </div>
+
+        {/* ── Vertical use cases · no context line ── */}
+        <div className="px-md pb-md lg:px-lg border-t border-fg/10 pt-lg">
+          <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+            Without context line · surface · 3 columns
+          </p>
+          <p className="text-label text-fg-muted/60 mt-xs">
+            Context is optional. Omitting it gives the block a tighter, more editorial rhythm — value + label only.
+          </p>
+        </div>
+        <div className="border-t border-fg/5">
+          <OT_StatBlock
+            content={{
+              items: [
+                { value: "12K",   label: "Experiments run"      },
+                { value: "94%",   label: "Rollout confidence"   },
+                { value: "6.2ms", label: "Avg. flag latency"    },
+              ],
+            }}
+            displaySettings={{ color: "surface", columns: "3", animate: false }}
+          />
         </div>
 
         <div className="pb-xl" />

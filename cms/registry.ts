@@ -10,6 +10,7 @@ import { OT_QuoteDefault }        from '@/cms/display-templates/OT_QuoteDefault'
 import { OT_RichTextDefault }     from '@/cms/display-templates/OT_RichTextDefault'
 import { OT_ImageDefault }        from '@/cms/display-templates/OT_ImageDefault'
 import { OT_VideoDefault }        from '@/cms/display-templates/OT_VideoDefault'
+import { OT_StatBlockDefault }   from '@/cms/display-templates/OT_StatBlockDefault'
 import { OT_LandingSection }          from '@/cms/display-templates/OT_LandingSection'
 import { OT_LandingRow }              from '@/cms/display-templates/OT_LandingRow'
 import { OT_LandingRowSlider }        from '@/cms/display-templates/OT_LandingRowSlider'
@@ -27,6 +28,7 @@ import { OT_QuoteBlock }        from '@/cms/content-types/OT_QuoteBlock'
 import { OT_RichTextBlock }     from '@/cms/content-types/OT_RichTextBlock'
 import { OT_ImageBlock }        from '@/cms/content-types/OT_ImageBlock'
 import { OT_VideoBlock }        from '@/cms/content-types/OT_VideoBlock'
+import { OT_StatBlock }        from '@/cms/content-types/OT_StatBlock'
 import { BlankExperience }  from '@/cms/content-types/BlankExperience'
 import { OT_ThemeManager } from '@/cms/content-types/OT_ThemeManager'
 import { OT_NavigationItem }    from '@/cms/content-types/OT_NavigationItem'
@@ -59,6 +61,7 @@ import OT_QuoteBlockAdapter       from '@/cms/components/OT_QuoteBlock'
 import OT_RichTextBlockAdapter    from '@/cms/components/OT_RichTextBlock'
 import OT_ImageBlockAdapter       from '@/cms/components/OT_ImageBlock'
 import OT_VideoBlockAdapter       from '@/cms/components/OT_VideoBlock'
+import OT_StatBlockAdapter       from '@/cms/components/OT_StatBlock'
 import OT_ThemeManagerAdapter     from '@/cms/components/OT_ThemeManager'
 import OT_BlogPageAdapter         from '@/cms/components/OT_BlogPage'
 
@@ -89,6 +92,7 @@ initDisplayTemplateRegistry([
   OT_RichTextDefault,
   OT_ImageDefault,
   OT_VideoDefault,
+  OT_StatBlockDefault,
   OT_LandingSection,
   OT_LandingRow,
   OT_LandingRowSlider,
@@ -106,6 +110,7 @@ initContentTypeRegistry([
   OT_RichTextBlock,
   OT_ImageBlock,
   OT_VideoBlock,
+  OT_StatBlock,
   BlankExperience,
   OT_ThemeManager,
   OT_NavigationItem,
@@ -140,6 +145,7 @@ initReactComponentRegistry({
     OT_RichTextBlock:    OT_RichTextBlockAdapter,
     OT_ImageBlock:       OT_ImageBlockAdapter,
     OT_VideoBlock:       OT_VideoBlockAdapter,
+    OT_StatBlock:        OT_StatBlockAdapter,
     OT_ThemeManager:     OT_ThemeManagerAdapter,
     OT_BlogPage:         OT_BlogPageAdapter,
     // Composition structure — 'BlankSection' is the SDK's built-in section type key;

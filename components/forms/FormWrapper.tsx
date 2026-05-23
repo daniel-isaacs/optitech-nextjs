@@ -31,7 +31,8 @@ export default function FormWrapper({ children, title, description, submitUrl, c
 
   if (status === 'submitted') {
     return (
-      <div className="py-xl">
+      <div className="relative w-full bg-surface border border-fg/10 px-lg py-lg">
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[2px] bg-brand" />
         <p className="text-body leading-body text-fg">
           {confirmationMessage ?? 'Thank you. Your submission has been received.'}
         </p>
@@ -40,17 +41,28 @@ export default function FormWrapper({ children, title, description, submitUrl, c
   }
 
   return (
-    <div className="w-full">
+    <div className="relative w-full bg-surface border border-fg/10 px-lg py-lg">
+      {/* 2px brand rule at the top of the form card */}
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[2px] bg-brand" />
+
       {(title || description) && (
-        <header className="mb-lg">
-          {title && (
-            <h2 className="text-title leading-title tracking-title font-semibold text-fg">{title}</h2>
-          )}
-          {description && (
-            <p className="text-body text-fg-muted leading-body mt-2">{description}</p>
-          )}
-        </header>
+        <>
+          <header className="mb-lg">
+            {title && (
+              <h2
+                className="font-syne font-[450] text-title leading-title tracking-title text-fg"
+              >
+                {title}
+              </h2>
+            )}
+            {description && (
+              <p className="mt-xs text-body text-fg-muted leading-body max-w-prose">{description}</p>
+            )}
+          </header>
+          <div className="mb-lg h-px bg-fg/8" />
+        </>
       )}
+
       <form onSubmit={handleSubmit} noValidate>
         <fieldset disabled={status === 'submitting'} className="contents">
           {children}

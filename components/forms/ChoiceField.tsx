@@ -14,18 +14,18 @@ export default function ChoiceField({ id, name, label, tooltip, options, allowMu
   const inputType = allowMultiSelect ? 'checkbox' : 'radio'
 
   return (
-    <fieldset className="flex flex-col gap-2">
+    <fieldset className="flex flex-col gap-3">
       {label && (
-        <legend className="text-label font-medium text-fg-muted tracking-label uppercase mb-0.5">
+        <legend className="text-label font-medium text-fg-muted tracking-label uppercase mb-xs">
           {label}
           {required && <span className="text-brand ml-1.5" aria-hidden="true">*</span>}
         </legend>
       )}
-      <div className="flex flex-col gap-2.5" aria-describedby={tooltip ? `${id}-hint` : undefined}>
+      <div className="flex flex-col gap-3" aria-describedby={tooltip ? `${id}-hint` : undefined}>
         {options.map((opt, i) => {
           const optId = `${id}-${i}`
           return (
-            <label key={optId} className="flex items-center gap-sm text-body text-fg cursor-pointer select-none">
+            <label key={optId} className="flex items-center gap-sm text-body text-fg cursor-pointer select-none group">
               <input
                 type={inputType}
                 id={optId}
@@ -33,9 +33,11 @@ export default function ChoiceField({ id, name, label, tooltip, options, allowMu
                 value={opt.value}
                 defaultChecked={opt.checked}
                 required={!allowMultiSelect && required}
-                className="w-3.5 h-3.5 shrink-0 rounded-none accent-[var(--ot-brand)] disabled:opacity-50"
+                className="w-4 h-4 shrink-0 rounded-none accent-[var(--ot-brand)] disabled:opacity-50"
               />
-              {opt.caption}
+              <span className="text-fg-muted group-has-[:checked]:text-fg transition-colors duration-150 ease-quick">
+                {opt.caption}
+              </span>
             </label>
           )
         })}

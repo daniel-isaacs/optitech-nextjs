@@ -20,7 +20,7 @@ export default function RangeField({ id, name, label, tooltip, defaultValue, min
 
   return (
     <FieldWrapper id={id} label={label} tooltip={tooltip} required={required}>
-      <div className="flex items-center gap-md">
+      <div className="flex items-center gap-md pt-1.5">
         <input
           type="range"
           id={id}
@@ -32,11 +32,11 @@ export default function RangeField({ id, name, label, tooltip, defaultValue, min
           onChange={e => setValue(Number(e.target.value))}
           required={required}
           aria-describedby={tooltip ? `${id}-hint` : undefined}
-          className="flex-1 h-[3px] cursor-pointer rounded-none accent-[var(--ot-brand)] disabled:opacity-50"
+          className="flex-1 h-[2px] cursor-pointer rounded-none accent-[var(--ot-brand)] disabled:opacity-50"
         />
         <output
           htmlFor={id}
-          className="text-label font-medium tabular-nums text-fg-muted min-w-[2.5rem] text-right shrink-0"
+          className="text-label font-medium tabular-nums text-brand min-w-[3rem] text-right shrink-0"
         >
           {value}
         </output>

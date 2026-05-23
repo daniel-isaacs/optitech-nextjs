@@ -10,7 +10,7 @@ type Props = {
 
 export default function FieldWrapper({ id, label, tooltip, required, children }: Props) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1.5">
       {label && (
         <label htmlFor={id} className="text-label font-medium text-fg-muted tracking-label uppercase">
           {label}
@@ -21,7 +21,7 @@ export default function FieldWrapper({ id, label, tooltip, required, children }:
       )}
       {children}
       {tooltip && (
-        <p id={`${id}-hint`} className="text-[11px] text-fg-muted/60 leading-snug">{tooltip}</p>
+        <p id={`${id}-hint`} className="text-[11px] text-fg-muted/50 leading-snug mt-0.5">{tooltip}</p>
       )}
     </div>
   )

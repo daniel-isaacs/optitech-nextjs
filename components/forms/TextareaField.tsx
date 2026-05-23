@@ -1,9 +1,10 @@
 import FieldWrapper from './FieldWrapper'
 
 const inputBase = [
-  'w-full bg-canvas border border-fg/15 px-sm py-2.5',
+  'w-full bg-transparent border-0 border-b border-fg/20 rounded-none',
+  'px-0 py-3.5',
   'text-body text-fg placeholder:text-fg-muted/40',
-  'rounded-input resize-y min-h-[8rem]',
+  'resize-y min-h-[8rem]',
   'focus:outline-none focus-visible:border-brand',
   'transition-colors duration-150 ease-quick',
   'disabled:opacity-50',

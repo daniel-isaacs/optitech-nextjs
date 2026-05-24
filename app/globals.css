@@ -813,3 +813,18 @@ body {
 .ot-field:focus-visible {
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--ot-brand) 20%, transparent);
 }
+
+/* ─── LocaleSelector dropdown ────────────────────────────────────────────────
+ * Kinetic entrance for the locale picker dropdown. Opacity + subtle Y slide.
+ * Respects prefers-reduced-motion — falls back to instant appearance.
+ * ─────────────────────────────────────────────────────────────────────────── */
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-dropdown-in {
+    animation: dropdownIn 180ms var(--ot-ease-kinetic) forwards;
+  }
+}

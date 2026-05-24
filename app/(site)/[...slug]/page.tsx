@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { draftMode } from 'next/headers'
-import { getClient, getRequestBaseUrl } from '@/lib/optimizely'
+import { getClient, getLocalizedContentByPath, getRequestBaseUrl, getRequestLocale, setRequestContext } from '@/lib/optimizely'
 import { getBlogPage, getLatestBlogPosts } from '@/lib/blog'
 import { withAppContext } from '@optimizely/cms-sdk/react/server'
 import { PreviewComponent } from '@optimizely/cms-sdk/react/client'
@@ -20,6 +20,7 @@ async function CmsPage({ params, searchParams }: Props) {
   const path      = '/' + slug.join('/')
   const cmsUrl    = (process.env.OPTIMIZELY_CMS_URL ?? '').replace(/\/$/, '')
   const dm        = await draftMode()
+  const locale    = await getRequestLocale()
 
   const sp_str = (key: string) => {
     const v = sp[key]
@@ -30,17 +31,20 @@ async function CmsPage({ params, searchParams }: Props) {
 
   let exp: any
   if (dm.isEnabled && sp_str('preview_token')) {
+    // Preview: locale comes from the CMS editor (sp loc param)
+    const previewLocale = sp_str('loc') || locale
+    await setRequestContext(previewLocale as any)
+
     const previewParams: PreviewParams = {
       preview_token: sp_str('preview_token'),
       key:           sp_str('key'),
       ctx:           'edit',
       ver:           sp_str('ver'),
-      loc:           sp_str('loc'),
+      loc:           previewLocale,
     }
     exp = await getClient().getPreviewContent(previewParams, { cache: false })
   } else {
-    const results = await getClient().getContentByPath(path, { host: baseUrl || undefined })
-    exp = results?.[0]
+    exp = await getLocalizedContentByPath(path, locale, baseUrl)
   }
 
   if (!exp?.composition?.nodes) {
@@ -74,7 +78,7 @@ async function CmsPage({ params, searchParams }: Props) {
         preview_token: sp_str('preview_token'),
         key:           sp_str('key'),
         ver:           sp_str('ver'),
-        loc:           sp_str('loc'),
+        loc:           sp_str('loc') || locale,
         ctx:           'edit',
       })
       redirect(`/preview?${qs}`)

@@ -1,16 +1,18 @@
 "use client";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const { t } = useTranslation();
   const isDark = theme === "dark";
 
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? t('theme.toggleLight') : t('theme.toggleDark')}
       className="flex items-center justify-center w-8 h-8
                  text-fg-muted hover:text-fg
                  transition-colors duration-150 ease-quick

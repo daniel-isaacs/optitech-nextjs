@@ -234,7 +234,9 @@ export default function CardBlock({
   );
 
   return (
-    <div className={rootClass} style={accentStyle}>
+    // data-theme="dark" on background-image cards: the dark scrim is always dark,
+    // so text tokens must resolve to light values regardless of the page theme.
+    <div className={rootClass} style={accentStyle} {...(isBg ? { 'data-theme': 'dark' } : {})}>
 
       {/* ── Noise grain overlay ───────────────────────────────────────────────── */}
       {noise && (

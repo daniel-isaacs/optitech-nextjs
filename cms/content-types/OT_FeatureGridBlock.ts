@@ -16,6 +16,8 @@ export const OT_FeatureGridBlock = contentType({
   properties: {
     eyebrow: {
       type:        'string',
+      isLocalized: true,
+      maxLength:   60,
       displayName: 'Eyebrow',
       description: 'Small label above the heading e.g. "Why OptiTech"',
       group:       'OT_Content',
@@ -23,12 +25,16 @@ export const OT_FeatureGridBlock = contentType({
     },
     heading: {
       type:        'string',
+      isLocalized: true,
+      maxLength:   120,
       displayName: 'Heading',
       group:       'OT_Content',
       sortOrder:   20,
     },
     subheading: {
       type:        'string',
+      isLocalized: true,
+      maxLength:   200,
       displayName: 'Subheading',
       description: 'One sentence of supporting context below the heading.',
       group:       'OT_Content',
@@ -44,6 +50,8 @@ export const OT_FeatureGridBlock = contentType({
     },
     ctaLabel: {
       type:        'string',
+      isLocalized: true,
+      maxLength:   40,
       displayName: 'Section CTA Label',
       description: "Text for the section-level call to action e.g. 'See all features'",
       group:       'OT_Content',

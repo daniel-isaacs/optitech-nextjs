@@ -4,7 +4,9 @@ import { useState, useEffect, startTransition } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
+import { LocaleSelectorMobile } from '@/components/layout/LocaleSelector'
 import type { NavItem } from '@/components/layout/DesktopNav'
+import { useTranslation } from '@/lib/i18n/useTranslation'
 
 type Props = {
   navItems: NavItem[]
@@ -16,6 +18,7 @@ export default function MobileMenu({ navItems, ctaLabel, ctaHref }: Props) {
   const [open,        setOpen]        = useState(false)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
   const [mounted,     setMounted]     = useState(false)
+  const { t } = useTranslation()
 
   useEffect(() => { startTransition(() => setMounted(true)) }, [])
 
@@ -45,7 +48,7 @@ export default function MobileMenu({ navItems, ctaLabel, ctaHref }: Props) {
       <button
         type="button"
         className="lg:hidden flex flex-col justify-center gap-1.5 p-sm"
-        aria-label={open ? 'Close navigation' : 'Open navigation'}
+        aria-label={open ? t('nav.closeMenu') : t('nav.openMenu')}
         aria-expanded={open}
         onClick={() => { setOpen(v => !v); setExpandedIdx(null) }}
       >
@@ -64,7 +67,7 @@ export default function MobileMenu({ navItems, ctaLabel, ctaHref }: Props) {
           <div className="flex items-center justify-end px-sm h-20 shrink-0">
             <button
               type="button"
-              aria-label="Close navigation"
+              aria-label={t('nav.closeMenu')}
               onClick={close}
               className="flex flex-col justify-center gap-1.5 p-sm text-fg hover:text-fg-muted transition-colors duration-150 ease-quick"
             >
@@ -74,7 +77,7 @@ export default function MobileMenu({ navItems, ctaLabel, ctaHref }: Props) {
             </button>
           </div>
 
-          <nav aria-label="Mobile navigation" className="px-md">
+          <nav aria-label={t('nav.openMenu')} className="px-md">
             {navItems.map((item, i) => {
               const hasChildren = !!item.children?.length
               const isExpanded  = expandedIdx === i
@@ -133,6 +136,9 @@ export default function MobileMenu({ navItems, ctaLabel, ctaHref }: Props) {
                 </div>
               )
             })}
+
+            {/* Locale selector — below nav links, above CTA */}
+            <LocaleSelectorMobile onSelect={close} />
           </nav>
 
           <div className="mt-lg px-md">

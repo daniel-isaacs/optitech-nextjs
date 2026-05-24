@@ -6,7 +6,7 @@ export const OT_ButtonBlock = contentType({
   baseType: '_component',
   compositionBehaviors: ['elementEnabled', 'sectionEnabled'],
   properties: {
-    label: { type: 'string', displayName: 'Button Label', group: 'OT_Content', sortOrder: 10 },
-    url:   { type: 'url',    displayName: 'Link URL',     group: 'OT_Content', sortOrder: 20 },
+    label: { type: 'string', isLocalized: true, maxLength: 40, displayName: 'Button Label', group: 'OT_Content', sortOrder: 10 },
+    url:   { type: 'url',    isLocalized: true, displayName: 'Link URL',     group: 'OT_Content', sortOrder: 20 },
   },
 })

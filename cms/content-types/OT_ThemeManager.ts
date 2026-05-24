@@ -9,11 +9,19 @@ export const OT_ThemeManager = contentType({
   baseType: '_component',
   properties: {
     // Identity — which front-end domain loads this theme
-    frontEndDomain: { type: 'string', displayName: 'Front-End Domain (e.g. mysite.vercel.app)', group: 'OT_Content', sortOrder: 1 },
+    frontEndDomain: {
+      type: 'string',
+      maxLength: 100,
+      pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\\-]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]*[a-zA-Z0-9])?)*([:\\d]+)?$',
+      displayName: 'Front-End Domain (e.g. mysite.vercel.app)',
+      description: 'Hostname only — no https:// prefix. Include port if needed (e.g. localhost:3000).',
+      group: 'OT_Content',
+      sortOrder: 1,
+    },
 
     // Logo
     logo:           { type: 'contentReference', allowedTypes: ['_image'], displayName: 'Logo',                                          group: 'OT_Content', sortOrder: 5   },
-    logoAlt:        { type: 'string',                                     displayName: 'Logo Alt Text',                                   group: 'OT_Content', sortOrder: 10  },
+    logoAlt:        { type: 'string', isLocalized: true, maxLength: 100,   displayName: 'Logo Alt Text',                                   group: 'OT_Content', sortOrder: 10  },
     logoFit: {
       type: 'string',
       format: 'selectOne',
@@ -41,8 +49,8 @@ export const OT_ThemeManager = contentType({
     },
 
     // Header CTA
-    ctaLabel: { type: 'string', displayName: 'CTA Label', group: 'OT_Content', sortOrder: 20 },
-    ctaUrl:   { type: 'url',    displayName: 'CTA URL',   group: 'OT_Content', sortOrder: 30 },
+    ctaLabel: { type: 'string', isLocalized: true, maxLength: 40, displayName: 'CTA Label', group: 'OT_Content', sortOrder: 20 },
+    ctaUrl:   { type: 'url',    isLocalized: true, displayName: 'CTA URL',   group: 'OT_Content', sortOrder: 30 },
 
     // Search
     searchScope: {
@@ -69,8 +77,8 @@ export const OT_ThemeManager = contentType({
     },
 
     // Footer
-    copyright:    { type: 'string', displayName: 'Copyright',      group: 'OT_Content', sortOrder: 50 },
-    footerTagline: { type: 'string', displayName: 'Footer Tagline', group: 'OT_Content', sortOrder: 60 },
+    copyright:    { type: 'string', isLocalized: true, maxLength: 150, displayName: 'Copyright',      group: 'OT_Content', sortOrder: 50 },
+    footerTagline: { type: 'string', isLocalized: true, maxLength: 150, displayName: 'Footer Tagline', group: 'OT_Content', sortOrder: 60 },
     footerColumns: {
       type: 'array',
       displayName: 'Footer Columns',

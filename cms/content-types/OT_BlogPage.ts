@@ -1,4 +1,5 @@
 import { contentType } from '@optimizely/cms-sdk'
+import { OT_Author } from './OT_Author'
 
 export const OT_BlogPage = contentType({
   key: 'OT_BlogPage',
@@ -17,8 +18,8 @@ export const OT_BlogPage = contentType({
         { value: 'impact',      displayName: 'Impact (Display Type)' },
       ],
     },
-    headline:     { type: 'string', displayName: 'Headline',      group: 'OT_Content', sortOrder: 10 },
-    subHeadline:  { type: 'string', displayName: 'Sub-headline',  group: 'OT_Content', sortOrder: 20 },
+    headline:     { type: 'string', isLocalized: true, maxLength: 120, displayName: 'Headline',      group: 'OT_Content', sortOrder: 10 },
+    subHeadline:  { type: 'string', isLocalized: true, maxLength: 200, displayName: 'Sub-headline',  group: 'OT_Content', sortOrder: 20 },
     topic: {
       type: 'string',
       format: 'selectOne',
@@ -35,10 +36,14 @@ export const OT_BlogPage = contentType({
     },
     featuredImage: { type: 'contentReference', allowedTypes: ['_image'], displayName: 'Featured Image', group: 'OT_Content', sortOrder: 40 },
     featuredVideo: { type: 'contentReference', allowedTypes: ['_video'], displayName: 'Featured Video', group: 'OT_Content', sortOrder: 50 },
-    body:          { type: 'richText',         displayName: 'Body',          group: 'OT_Content', sortOrder: 60 },
-    author:        { type: 'string',           displayName: 'Author',        group: 'OT_Content', sortOrder: 70 },
-    authorRole:    { type: 'string',           displayName: 'Author Role',   group: 'OT_Content', sortOrder: 80 },
-    authorPhoto:   { type: 'contentReference', allowedTypes: ['_image'],     displayName: 'Author Photo', group: 'OT_Content', sortOrder: 90 },
-    readTime:      { type: 'string',           displayName: 'Read Time',     group: 'OT_Content', sortOrder: 100 },
+    body:          { type: 'richText', isLocalized: true, displayName: 'Body', group: 'OT_Content', sortOrder: 60 },
+    authorRef: {
+      type: 'contentReference',
+      allowedTypes: [OT_Author],
+      displayName: 'Author',
+      group: 'OT_Content',
+      sortOrder: 70,
+    },
+    readTime: { type: 'string', maxLength: 20, displayName: 'Read Time (e.g. "8 min read")', group: 'OT_Content', sortOrder: 80 },
   },
 })

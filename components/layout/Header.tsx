@@ -4,9 +4,11 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 import Button from '@/components/ui/Button'
 import MobileMenu from '@/components/layout/MobileMenu'
 import DesktopNav from '@/components/layout/DesktopNav'
+import { LocaleSelector } from '@/components/layout/LocaleSelector'
 import type { NavItem } from '@/components/layout/DesktopNav'
 import SearchTrigger from '@/components/search/SearchTrigger'
-import { getSiteSettings, getRequestDomain } from '@/lib/optimizely'
+import { getSiteSettings, getRequestDomain, getRequestLocale } from '@/lib/optimizely'
+import { t } from '@/lib/i18n/t'
 
 const FALLBACK_NAV: NavItem[] = [
   { label: 'Product',  href: '#' },
@@ -17,6 +19,7 @@ const FALLBACK_NAV: NavItem[] = [
 
 export default async function Header() {
   const settings = await getSiteSettings(await getRequestDomain())
+  const locale   = await getRequestLocale()
 
   const logoSrc        = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
   const logoAlt        = settings?.logoAlt       ?? 'OptiTech'
@@ -51,10 +54,20 @@ export default async function Header() {
 
   return (
     <>
+      {/* Skip to main content — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-sm focus:left-sm focus:z-[9999]
+                   focus:px-md focus:py-sm focus:bg-brand focus:text-fg-on-brand
+                   focus:text-sm focus:font-semibold"
+      >
+        {t(locale, 'nav.skipToMain')}
+      </a>
+
       <header className="sticky top-0 z-50 bg-canvas/80 backdrop-blur-md border-b border-fg/5">
         <div className="flex items-center justify-between px-md py-md lg:px-lg">
 
-          <Link href="/" aria-label={`${logoAlt} — Home`} className="flex items-center h-12">
+          <Link href="/" aria-label={`${logoAlt} — ${t(locale, 'nav.home')}`} className="flex items-center h-12">
             <Image
               src={logoSrc}
               alt={logoAlt}
@@ -69,6 +82,7 @@ export default async function Header() {
 
           <div className="hidden lg:flex items-center gap-sm">
             <SearchTrigger />
+            <LocaleSelector />
             <ThemeToggle />
             <Button href={ctaHref} size="sm">{ctaLabel}</Button>
           </div>

@@ -1,33 +1,44 @@
 import { cache } from 'react'
 import { getClient } from '@/lib/optimizely'
 
+// ─── Types ─────────────────────────────────────────────────────────────────────
+
+export type AuthorData = {
+  name:     string
+  role?:    string
+  photo?:   { url: { default: string | null } }
+  linkedIn?: string | null
+  twitter?:  string | null
+}
+
 export type BlogPageContent = {
   _metadata: {
     key: string
     published: string
     url: { default: string | null }
   }
-  headline: string
-  subHeadline?: string
-  topic?: string
-  blogStyle?: string
+  headline:      string
+  subHeadline?:  string
+  topic?:        string
+  blogStyle?:    string
   featuredImage?: { url: { default: string | null } }
   featuredVideo?: { url: { default: string | null } }
-  body?: { html: string }
-  author?: string
-  authorRole?: string
-  authorPhoto?: { url: { default: string | null } }
-  readTime?: string
+  body?:          { html: string }
+  /** Resolved author reference — replaces inline author/authorRole/authorPhoto fields */
+  authorRef?:    AuthorData | null
+  readTime?:     string
 }
 
 export type BlogPostSummary = {
   _metadata: { key: string; published: string; url: { default: string | null } }
-  headline: string
-  topic?: string
+  headline:    string
+  topic?:      string
   featuredImage?: { url: { default: string | null } }
-  author?: string
-  readTime?: string
+  authorRef?:    Pick<AuthorData, 'name'> | null
+  readTime?:   string
 }
+
+// ─── GraphQL queries ────────────────────────────────────────────────────────────
 
 const BLOG_PAGE_QUERY = `
   query GetBlogPage($key: String!) {
@@ -41,9 +52,15 @@ const BLOG_PAGE_QUERY = `
         featuredImage { url { default } }
         featuredVideo { url { default } }
         body { html }
-        author
-        authorRole
-        authorPhoto { url { default } }
+        authorRef {
+          ... on OT_Author {
+            name
+            role
+            photo { url { default } }
+            linkedIn { default }
+            twitter  { default }
+          }
+        }
         readTime
       }
     }
@@ -58,17 +75,37 @@ const LATEST_POSTS_QUERY = `
         headline
         topic
         featuredImage { url { default } }
-        author
+        authorRef {
+          ... on OT_Author {
+            name
+          }
+        }
         readTime
       }
     }
   }
 `
 
+// ─── Data access ────────────────────────────────────────────────────────────────
+
 export async function getBlogPage(key: string): Promise<BlogPageContent | null> {
   try {
     const data = await getClient().request(BLOG_PAGE_QUERY, { key })
-    return (data as any)?.OT_BlogPage?.items?.[0] ?? null
+    const item = (data as any)?.OT_BlogPage?.items?.[0] ?? null
+    if (!item) return null
+
+    // Normalise url fields from Optimizely's { default: string } structure
+    const authorRef = item.authorRef
+      ? {
+          name:     item.authorRef.name ?? '',
+          role:     item.authorRef.role ?? undefined,
+          photo:    item.authorRef.photo ?? undefined,
+          linkedIn: item.authorRef.linkedIn?.default ?? null,
+          twitter:  item.authorRef.twitter?.default  ?? null,
+        }
+      : null
+
+    return { ...item, authorRef }
   } catch {
     return null
   }
@@ -79,10 +116,14 @@ export const getLatestBlogPosts = cache(async function getLatestBlogPosts(
 ): Promise<BlogPostSummary[]> {
   try {
     const data = await getClient().request(LATEST_POSTS_QUERY, {})
-    const items: BlogPostSummary[] = (data as any)?.OT_BlogPage?.items ?? []
+    const items: any[] = (data as any)?.OT_BlogPage?.items ?? []
     return items
       .filter(p => !excludeKey || p._metadata?.key !== excludeKey)
       .slice(0, 3)
+      .map(p => ({
+        ...p,
+        authorRef: p.authorRef ? { name: p.authorRef.name ?? '' } : null,
+      }))
   } catch {
     return []
   }

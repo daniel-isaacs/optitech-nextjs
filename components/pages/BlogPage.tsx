@@ -79,10 +79,11 @@ function TopicTag({ topic }: { topic: string }) {
 // ─── BlogCard ─────────────────────────────────────────────────────────────────
 
 function BlogCard({ post }: { post: BlogPostSummary }) {
-  const imageUrl  = post.featuredImage?.url?.default
-  const postUrl   = post._metadata?.url?.default ?? '#'
-  const published = post._metadata?.published
-  const topic     = post.topic
+  const imageUrl   = post.featuredImage?.url?.default
+  const postUrl    = post._metadata?.url?.default ?? '#'
+  const published  = post._metadata?.published
+  const topic      = post.topic
+  const authorName = post.authorRef?.name
 
   return (
     <a href={postUrl} className="group block card-hover-lift bg-canvas border border-fg/[0.08]">
@@ -107,8 +108,8 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
           {post.headline}
         </h3>
         <div className="mt-sm flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
-          {post.author && <span>{post.author}</span>}
-          {post.author && published && <span aria-hidden>·</span>}
+          {authorName && <span>{authorName}</span>}
+          {authorName && published && <span aria-hidden>·</span>}
           {published && <time dateTime={published}>{formatDate(published)}</time>}
           {post.readTime && <><span aria-hidden>·</span><span>{post.readTime}</span></>}
         </div>
@@ -125,7 +126,7 @@ type HeaderProps = {
   headline:        string
   subHeadline?:    string
   topic?:          string
-  author?:         string
+  authorName?:     string
   authorRole?:     string
   authorPhotoUrl?: string | null
   published?:      string
@@ -142,7 +143,7 @@ type HeaderProps = {
 
 function ImpactHeader({
   headline, subHeadline, topic,
-  author, authorRole, authorPhotoUrl, published, readTime, initials,
+  authorName, authorRole, authorPhotoUrl, published, readTime, initials,
   pa,
 }: HeaderProps) {
   const topicIndex = topic ? (TOPIC_INDEX[topic] ?? '—') : null
@@ -176,21 +177,21 @@ function ImpactHeader({
             </p>
           )}
 
-          {(author || published || readTime) && (
+          {(authorName || published || readTime) && (
             <div className="mt-xl pt-lg border-t border-fg/[0.08]">
-              <div className="flex items-center gap-md flex-wrap">
-                {author && (
+              <div className="flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
+                {authorName && (
                   <div className="flex-none w-9 h-9 overflow-hidden bg-surface flex items-center justify-center">
                     {authorPhotoUrl ? (
-                      <img src={authorPhotoUrl} alt={author} className="w-full h-full object-cover" />
+                      <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-label font-semibold text-fg-muted">{initials}</span>
                     )}
                   </div>
                 )}
                 <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
-                  {author && <span className="text-fg font-semibold" {...pa?.('author')}>{author}</span>}
-                  {author && authorRole && <><span aria-hidden>·</span><span {...pa?.('authorRole')}>{authorRole}</span></>}
+                  {authorName && <span className="text-fg font-semibold">{authorName}</span>}
+                  {authorName && authorRole && <><span aria-hidden>·</span><span>{authorRole}</span></>}
                   {published && <><span aria-hidden>·</span><time dateTime={published}>{formatDate(published)}</time></>}
                   {readTime && <><span aria-hidden>·</span><span {...pa?.('readTime')}>{readTime}</span></>}
                 </div>
@@ -211,7 +212,7 @@ function ImpactHeader({
 
 function AtmosphericHeader({
   headline, subHeadline, topic,
-  author, authorRole, authorPhotoUrl, published, readTime, initials,
+  authorName, authorRole, authorPhotoUrl, published, readTime, initials,
   imageUrl, videoUrl,
   pa,
 }: HeaderProps) {
@@ -269,20 +270,20 @@ function AtmosphericHeader({
               </p>
             )}
 
-            {(author || published || readTime) && (
-              <div className="mt-lg pt-lg border-t border-fg/[0.08] flex items-center gap-md flex-wrap">
-                {author && (
+            {(authorName || published || readTime) && (
+              <div className="mt-lg pt-lg border-t border-fg/[0.08] flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
+                {authorName && (
                   <div className="flex-none w-8 h-8 overflow-hidden bg-surface flex items-center justify-center">
                     {authorPhotoUrl ? (
-                      <img src={authorPhotoUrl} alt={author} className="w-full h-full object-cover" />
+                      <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-label font-semibold text-fg-muted">{initials}</span>
                     )}
                   </div>
                 )}
                 <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
-                  {author && <span className="text-fg font-semibold" {...pa?.('author')}>{author}</span>}
-                  {author && authorRole && <><span aria-hidden>·</span><span {...pa?.('authorRole')}>{authorRole}</span></>}
+                  {authorName && <span className="text-fg font-semibold">{authorName}</span>}
+                  {authorName && authorRole && <><span aria-hidden>·</span><span>{authorRole}</span></>}
                   {published && <><span aria-hidden>·</span><time dateTime={published}>{formatDate(published)}</time></>}
                   {readTime && <><span aria-hidden>·</span><span {...pa?.('readTime')}>{readTime}</span></>}
                 </div>
@@ -301,7 +302,7 @@ function AtmosphericHeader({
 
 function EditorialHeader({
   headline, subHeadline, topic,
-  author, authorRole, authorPhotoUrl, published, readTime, initials,
+  authorName, authorRole, authorPhotoUrl, published, readTime, initials,
   pa,
 }: HeaderProps) {
   return (
@@ -331,20 +332,20 @@ function EditorialHeader({
               </div>
             )}
 
-            {(author || published || readTime) && (
-              <div className="flex flex-col gap-sm">
-                {author && (
+            {(authorName || published || readTime) && (
+              <div className="flex flex-col gap-sm" {...pa?.('authorRef')}>
+                {authorName && (
                   <div className="flex items-center gap-sm">
                     <div className="flex-none w-8 h-8 bg-canvas overflow-hidden flex items-center justify-center">
                       {authorPhotoUrl ? (
-                        <img src={authorPhotoUrl} alt={author} className="w-full h-full object-cover" />
+                        <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
                       ) : (
                         <span className="text-label font-semibold text-fg-muted">{initials}</span>
                       )}
                     </div>
                     <div>
-                      <p className="text-label font-semibold text-fg leading-tight" {...pa?.('author')}>{author}</p>
-                      {authorRole && <p className="text-label text-fg-muted" {...pa?.('authorRole')}>{authorRole}</p>}
+                      <p className="text-label font-semibold text-fg leading-tight">{authorName}</p>
+                      {authorRole && <p className="text-label text-fg-muted">{authorRole}</p>}
                     </div>
                   </div>
                 )}
@@ -374,7 +375,7 @@ const VALID_STYLES: BlogStyle[] = ['impact', 'atmospheric', 'editorial']
 export default function BlogPage({ content, latestPosts, pa }: Props) {
   const {
     headline, subHeadline, topic,
-    author, authorRole, authorPhoto, readTime,
+    authorRef, readTime,
     body, featuredImage, featuredVideo, _metadata,
   } = content
 
@@ -386,12 +387,14 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
   const videoUrl       = featuredVideo?.url?.default
   const imageUrl       = featuredImage?.url?.default
   const mediaType      = videoUrl ? 'video' : imageUrl ? 'image' : null
-  const authorPhotoUrl = authorPhoto?.url?.default
-  const initials       = author ? authorInitials(author) : ''
+  const authorName     = authorRef?.name
+  const authorRole     = authorRef?.role
+  const authorPhotoUrl = authorRef?.photo?.url?.default ?? null
+  const initials       = authorName ? authorInitials(authorName) : ''
 
   const headerProps: HeaderProps = {
     headline, subHeadline, topic,
-    author, authorRole, authorPhotoUrl, published, readTime,
+    authorName, authorRole, authorPhotoUrl, published, readTime,
     initials, imageUrl, videoUrl,
     pa,
   }

@@ -61,9 +61,14 @@ export default function ImageBgSection({ content, displaySettings = {} }: Props)
   const hasOverlay = overlayClass.length > 0
 
   return (
+    // data-theme="dark" ensures all nested blocks (text, cards, etc.) render with
+    // light text tokens regardless of the page theme — the section always has a
+    // dark image or dark overlay behind the content.
+    // data-surface="dark" keeps button ghost/glass variants legible on this surface.
     <section
       className={`vb:section relative isolate flex flex-col w-full ${minHeightClass}`}
       style={bgSrc ? { backgroundImage: `url(${bgSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      data-theme="dark"
       data-surface="dark"
       {...pa(content)}
     >

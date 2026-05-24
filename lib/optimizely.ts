@@ -1,6 +1,12 @@
 import { cache } from 'react'
 import { headers } from 'next/headers'
 import { config, getClient as _getClient } from '@optimizely/cms-sdk'
+import { isSupportedLocale, DEFAULT_LOCALE } from '@/lib/i18n/config'
+import type { Locale } from '@/lib/i18n/config'
+
+// setContext is called per-request to tell the SDK the active locale.
+// Import lazily to avoid pulling in React server-only code at module init.
+let _setContext: ((ctx: Record<string, unknown>) => void) | undefined
 
 let initialized = false
 
@@ -15,6 +21,38 @@ function ensureInitialized() {
 export function getClient() {
   ensureInitialized()
   return _getClient()
+}
+
+/**
+ * Sets the Optimizely SDK context for the current request.
+ * Must be called before any SDK rendering so preview attributes and
+ * composition rendering have access to the active locale.
+ */
+export async function setRequestContext(locale: Locale): Promise<void> {
+  try {
+    if (!_setContext) {
+      const mod = await import('@optimizely/cms-sdk/react/server')
+      _setContext = (mod as any).setContext
+    }
+    _setContext?.({ locale })
+  } catch {
+    // Server-only module; safe to swallow outside React tree
+  }
+}
+
+/**
+ * Returns the active locale for the current request.
+ * Reads the x-locale header set by middleware, falls back to DEFAULT_LOCALE.
+ * Safe to call from any server component or route handler.
+ */
+export async function getRequestLocale(): Promise<Locale> {
+  try {
+    const h      = await headers()
+    const locale = h.get('x-locale')
+    return isSupportedLocale(locale) ? locale : DEFAULT_LOCALE
+  } catch {
+    return DEFAULT_LOCALE
+  }
 }
 
 /**
@@ -99,6 +137,32 @@ const THEME_QUERY = `
     }
   }
 `
+
+/**
+ * Fetches a CMS page/experience by URL path with locale awareness.
+ *
+ * The SDK's getContentByPath may return multiple locale variants of the same
+ * content item. This helper prefers the requested locale, falls back to the
+ * default locale, then to any available item.
+ */
+export async function getLocalizedContentByPath(
+  path: string,
+  locale: Locale,
+  baseUrl?: string,
+): Promise<any | null> {
+  await setRequestContext(locale)
+  const results = await getClient().getContentByPath(path, { host: baseUrl || undefined })
+  if (!results?.length) return null
+  if (results.length === 1) return results[0]
+  // Multiple locale variants — prefer the requested locale
+  const preferred = results.find(
+    (r: any) => r._metadata?.locale?.toLowerCase() === locale.toLowerCase(),
+  )
+  const fallback = results.find(
+    (r: any) => r._metadata?.locale?.toLowerCase() === DEFAULT_LOCALE.toLowerCase(),
+  )
+  return preferred ?? fallback ?? results[0]
+}
 
 // One Graph fetch per request; layout, Header, and Footer all share this cache.
 const _fetchAllThemeManagers = cache(async function fetchAllThemeManagers() {

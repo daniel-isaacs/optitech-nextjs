@@ -2,14 +2,20 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { SearchProvider } from "@/components/search/SearchProvider";
 import SiteSearch from "@/components/search/SiteSearch";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
+import { getRequestLocale } from "@/lib/optimizely";
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getRequestLocale()
+
   return (
-    <SearchProvider>
-      <Header />
-      <SiteSearch />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </SearchProvider>
+    <LocaleProvider locale={locale}>
+      <SearchProvider>
+        <Header />
+        <SiteSearch />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </SearchProvider>
+    </LocaleProvider>
   )
 }

@@ -6,6 +6,23 @@ export const metadata: Metadata = {
   title: "Page Types — Design System — OptiTech",
 };
 
+// ─── Mock author ──────────────────────────────────────────────────────────────
+
+const MOCK_AUTHOR = {
+  name:     'Nadia Okafor',
+  role:     'Staff Infrastructure Engineer',
+  photo:    {
+    url: {
+      default: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80&fit=crop&crop=faces',
+    },
+  },
+  bio: {
+    html: '<p>Nadia leads infrastructure reliability at OptiTech, specialising in distributed evaluation systems and edge-state propagation. Before joining, she built low-latency data pipelines at two YC-backed startups and co-authored an open-source benchmark suite for feature flag SDKs. She speaks at QCon and writes about systems design on her personal blog.</p>',
+  },
+  linkedIn: 'https://linkedin.com',
+  twitter:  'https://x.com',
+}
+
 // ─── Shared mock content ──────────────────────────────────────────────────────
 
 const MOCK_CONTENT_BASE = {
@@ -17,8 +34,7 @@ const MOCK_CONTENT_BASE = {
   headline:    'How OptiTech Builds for Speed: Architecture Behind Sub-Millisecond Feature Delivery',
   subHeadline: 'A look inside the evaluation hot path, edge-distributed state, and the targeting rule compiler that makes it possible.',
   topic:       'engineering',
-  author:      'Sarah Chen',
-  authorRole:  'Staff Engineer',
+  authorRef:   MOCK_AUTHOR,
   readTime:    '8 min read',
   featuredImage: {
     url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80&fit=crop' },
@@ -51,8 +67,8 @@ const MOCK_LATEST_POSTS = [
     featuredImage: {
       url: { default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop' },
     },
-    author:   'Marcus Webb',
-    readTime: '5 min read',
+    authorRef: { name: 'Marcus Webb' },
+    readTime:  '5 min read',
   },
   {
     _metadata: {
@@ -65,8 +81,8 @@ const MOCK_LATEST_POSTS = [
     featuredImage: {
       url: { default: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop' },
     },
-    author:   'Priya Nair',
-    readTime: '6 min read',
+    authorRef: { name: 'Priya Nair' },
+    readTime:  '6 min read',
   },
   {
     _metadata: {
@@ -77,7 +93,7 @@ const MOCK_LATEST_POSTS = [
     headline:      'Observability in 2026: Five Trends Redefining How Teams Monitor Production',
     topic:         'trends',
     featuredImage: undefined,
-    author:        'James Okonkwo',
+    authorRef:     { name: 'James Okonkwo' },
     readTime:      '4 min read',
   },
 ]

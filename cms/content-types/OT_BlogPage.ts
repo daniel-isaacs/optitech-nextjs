@@ -44,6 +44,6 @@ export const OT_BlogPage = contentType({
       group: 'OT_Content',
       sortOrder: 70,
     },
-    readTime: { type: 'string', maxLength: 20, displayName: 'Read Time (e.g. "8 min read")', group: 'OT_Content', sortOrder: 80 },
+    readTime: { type: 'string', isLocalized: true, maxLength: 20, displayName: 'Read Time (e.g. "8 min read")', group: 'OT_Content', sortOrder: 80 },
   },
 })

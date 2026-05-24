@@ -395,6 +395,89 @@ If the CMS instance has more than one application defined, a default application
 
 ---
 
+## Preview vs production — rendering differences
+
+The CMS preview renders through the same Next.js app as production, but there are structural and data differences that affect how components look. This causes persistent visual discrepancies between the CMS editor and the live site. Understanding these differences prevents incorrect "bug" diagnoses and guides better component design.
+
+### How each preview context works
+
+| Context | Entry route | Data source | Layout |
+|---|---|---|---|
+| **Visual Builder (experience)** | slug route, draft mode active | `getPreviewContent(previewParams)` | Full site layout (Header + Footer) |
+| **Page preview (`_page` type)** | slug route, draft mode active | `getPreviewContent(previewParams)` | Full site layout (Header + Footer) |
+| **Standalone block preview** | `/preview?key=...` | `getPreviewContent(previewParams)` | No site layout — `OptimizelyComponent` renders directly against canvas background |
+
+### Data differences between preview and public
+
+When draft mode is active, content comes from `getPreviewContent()` (SDK direct return). When public, `_page` types run a targeted GraphQL query (`getBlogPage`, etc.) that explicitly requests all needed fields.
+
+**Key difference**: `getPreviewContent()` may return content references in a different shape than a Content Graph query. Fields that rely on Content Graph expansion (like `featuredImage.url.default`) may be present as a raw content reference object with a `key` but no expanded URL. Always test that any `?.url?.default` access has a graceful fallback — do not assume it is equivalent to the published Graph result.
+
+**Example** — atmospheric blog header: `imageUrl = featuredImage?.url?.default` may be `undefined` in preview even when an image is assigned. The component must show a branded fallback background rather than relying on the image to fill the space.
+
+### Visual differences to expect and design around
+
+**1. Standalone block previews look sparse**
+
+`OptimizelyComponent` renders the block with no surrounding layout. The block appears in the top-left of a dark canvas page. This is correct behaviour — the block adapter (`cms/components/`) should wrap its output in a preview shell that provides minimum padding and a full-height background so editors can see the block clearly without surrounding page context.
+
+Pattern — add to every adapter that will be previewed standalone:
+```tsx
+return (
+  <div className="min-h-screen bg-canvas flex items-start justify-start p-xl">
+    <div {...pa(content.__composition)} className="...your-block-styles...">
+      {/* block content */}
+    </div>
+  </div>
+)
+```
+
+**2. `vh`-based sizing behaves differently in the preview iframe**
+
+The CMS preview iframe is typically narrower and shorter than a real browser viewport. A header with `min-h-[68vh]` that fills two-thirds of the screen on Vercel may fill the *entire* visible area of the CMS preview iframe, hiding the content that `justify-end` pushes to the bottom. Mitigate with responsive min-heights:
+
+```tsx
+// Good — smaller on constrained viewports (including CMS iframe)
+className="min-h-[55vh] lg:min-h-[68vh]"
+
+// Bad — always 68 % of whatever viewport the iframe has
+className="min-h-[68vh]"
+```
+
+**3. Featured images may not load in preview**
+
+Image URLs from `getPreviewContent()` resolve to CMS-hosted assets. In some contexts the image may fail to load (indexing delay, transient auth). Components with full-bleed background images must declare a hardcoded fallback background colour so the editor sees a branded surface, not a black void.
+
+```tsx
+// Hardcode the fallback — do not rely solely on CSS variables for critical backgrounds.
+// bg-brand via a Tailwind class resolves through CSS custom properties and
+// still works; but an inline style with an explicit oklch value guarantees
+// something visible even before the theme CSS has applied.
+<header style={{ backgroundColor: 'oklch(38% 0.16 195)' }}>
+  {imageUrl && <img src={imageUrl} className="absolute inset-0 w-full h-full object-cover" />}
+</header>
+```
+
+**4. CSS custom properties resolve identically in preview and production**
+
+The root layout (`app/layout.tsx`) runs for every route including `/preview` and the slug route in draft mode. `data-theme` is set via an inline script before first paint, and `styles/tokens.css` defines all `--ot-*` variables in `:root`. CSS custom properties are available in every preview context — do not duplicate or hardcode design token values in adapters as a "preview fix." The exception is critical background colours where a hardcoded fallback guarantees visibility before the first CSS paint (see point 3 above).
+
+**5. `pa()` attributes are no-ops in production**
+
+`getPreviewUtils(content)` returns a `pa` function that emits `data-epi-property-name` or `data-epi-block-id` attributes only when preview mode is active. In production it returns `{}`. Never gate rendering logic on the presence of `pa` attributes — they are metadata overlays, not conditional flags.
+
+### Checklist for every new component
+
+Before shipping a block or page adapter:
+
+- [ ] Does the component have a visible fallback if `featuredImage?.url?.default` is null?
+- [ ] If the component uses `min-h-[Xvh]`, is it responsive enough that the CMS iframe won't hide the content?
+- [ ] Does the standalone block adapter wrap in a `min-h-screen bg-canvas p-xl` preview shell?
+- [ ] Are all design token references via `var(--ot-*)` or Tailwind utilities, not hardcoded colour values (except critical fallback backgrounds)?
+- [ ] Does `pa()` appear on every directly-editable field and on `content.__composition`?
+
+---
+
 ## CLI — syncing content types to the CMS
 
 The `optimizely.config.mjs` file tells the CLI what to push:

@@ -70,25 +70,6 @@ export default async function Footer() {
         }}
       />
 
-      {/* ── Decorative Syne glyph — typographic depth ───────────────────────
-           A large "/>" code-tag fragment sits at the back-right of the footer.
-           References JSX/HTML syntax: on-brand for a dev-facing CMS demo.
-           Syne at weight 400, brand color at 6% opacity — present but distant.
-           aria-hidden; no interaction; font-syne loaded via next/font. ─────── */}
-      <span
-        className="absolute right-0 bottom-0 font-syne text-brand pointer-events-none select-none leading-none"
-        aria-hidden="true"
-        style={{
-          fontSize: 'clamp(9rem, 22vw, 18rem)',
-          fontWeight: 400,
-          opacity: 0.06,
-          transform: 'translate(8%, 20%)',
-          zIndex: -1,
-        }}
-      >
-        /&gt;
-      </span>
-
       {/* ── Accent bar — 2 px gradient horizon: brand ➜ accent ──────────────
            At 1 px the gradient disappeared entirely. 2 px makes it readable. */}
       <div

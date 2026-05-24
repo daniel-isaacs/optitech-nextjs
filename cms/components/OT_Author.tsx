@@ -22,9 +22,13 @@ export default function OT_Author({ content }: Props) {
   const bioHtml:  string = content.bio?.html ?? ''
 
   return (
+    /* Standalone block preview wrapper — centres the card in the preview iframe
+       and gives it breathing room against the canvas background. Not visible on
+       the public site (author data is rendered inline by BlogPage instead). */
+    <div className="min-h-screen bg-canvas flex items-start justify-start p-xl">
     <div
       {...pa(content.__composition)}
-      className="flex gap-md p-lg bg-surface border border-fg/10 max-w-lg"
+      className="flex gap-md p-lg bg-surface border border-fg/10 max-w-lg w-full"
     >
       {photoUrl && (
         <div className="shrink-0">
@@ -51,6 +55,7 @@ export default function OT_Author({ content }: Props) {
           />
         )}
       </div>
+    </div>
     </div>
   )
 }

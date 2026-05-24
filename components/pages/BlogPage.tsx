@@ -58,7 +58,7 @@ function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolea
 function TopicPill({ topic }: { topic: string }) {
   const label = TOPIC_LABELS[topic] ?? topic
   return (
-    <span className="inline-flex items-center px-sm py-[3px] rounded-[4px] bg-accent text-fg-on-accent text-label uppercase tracking-label font-semibold">
+    <span className="inline-flex items-center px-sm py-0.75 rounded-sm bg-accent text-fg-on-accent text-label uppercase tracking-label font-semibold">
       {label}
     </span>
   )
@@ -86,7 +86,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
   const authorName = post.authorRef?.name
 
   return (
-    <a href={postUrl} className="group block card-hover-lift bg-canvas border border-fg/[0.08]">
+    <a href={postUrl} className="group block card-hover-lift bg-canvas border border-fg/8">
       <div className="aspect-video overflow-hidden bg-surface">
         {imageUrl ? (
           <img
@@ -95,7 +95,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
             className="w-full h-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-brand/20 to-canvas" />
+          <div className="w-full h-full bg-linear-to-br from-brand/20 to-canvas" />
         )}
       </div>
       <div className="px-md pt-md pb-lg">
@@ -104,7 +104,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
             <TopicTag topic={topic} />
           </div>
         )}
-        <h3 className="text-title leading-title font-semibold text-fg [text-wrap:balance] line-clamp-3">
+        <h3 className="text-title leading-title font-semibold text-fg text-balance line-clamp-3">
           {post.headline}
         </h3>
         <div className="mt-sm flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
@@ -146,39 +146,28 @@ function ImpactHeader({
   authorName, authorRole, authorPhotoUrl, published, readTime, initials,
   pa,
 }: HeaderProps) {
-  const topicIndex = topic ? (TOPIC_INDEX[topic] ?? '—') : null
-
   return (
     <header className="bg-canvas blog-impact-ruled-bg overflow-hidden">
       <div className="relative">
-        {topicIndex && (
-          <span
-            aria-hidden
-            className="blog-impact-index select-none pointer-events-none absolute -right-4 top-0 font-extrabold"
-          >
-            {topicIndex}
-          </span>
-        )}
-
-        <div className="relative z-10 mx-auto max-w-6xl px-md lg:px-xl pt-xl pb-xl">
+        <div className="mx-auto max-w-6xl px-md lg:px-xl pt-xl pb-xl">
           {topic && (
             <div className="mb-lg" {...pa?.('topic')}>
               <TopicMark topic={topic} />
             </div>
           )}
 
-          <h1 className="blog-impact-hollow-text [text-wrap:balance] max-w-[12ch]" {...pa?.('headline')}>
+          <h1 className="blog-impact-hollow-text text-balance max-w-[12ch]" {...pa?.('headline')}>
             {headline}
           </h1>
 
           {subHeadline && (
-            <p className="mt-lg text-title leading-title text-fg-muted max-w-[56ch] [text-wrap:pretty]" {...pa?.('subHeadline')}>
+            <p className="mt-lg text-title leading-title text-fg-muted max-w-[56ch] text-pretty" {...pa?.('subHeadline')}>
               {subHeadline}
             </p>
           )}
 
           {(authorName || published || readTime) && (
-            <div className="mt-xl pt-lg border-t border-fg/[0.08]">
+            <div className="mt-xl pt-lg border-t border-fg/8">
               <div className="flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
                 {authorName && (
                   <div className="flex-none w-9 h-9 overflow-hidden bg-surface flex items-center justify-center">
@@ -221,8 +210,13 @@ function AtmosphericHeader({
   return (
     <header
       data-theme="dark"
-      className="relative bg-canvas overflow-hidden flex flex-col justify-end min-h-[68vh]"
+      className="relative overflow-hidden flex flex-col justify-end min-h-[55vh] lg:min-h-[68vh]"
+      style={{ backgroundColor: 'oklch(38% 0.16 195)' }}
     >
+      {/* Hardcoded brand-hover base — ensures a recognisable branded background
+          when the featured image fails to load (e.g. in CMS preview before the
+          draft content is fully indexed) or when no media is set. The image
+          overlays and covers this colour when it loads successfully. */}
       {hasMedia ? (
         <>
           {videoUrl ? (
@@ -246,9 +240,7 @@ function AtmosphericHeader({
           )}
           <div className="blog-atmospheric-overlay absolute inset-0" />
         </>
-      ) : (
-        <div className="absolute inset-0 bg-brand" />
-      )}
+      ) : null}
 
       {/* Glass content panel */}
       <div className="relative z-10 px-md lg:px-xl pb-xl">
@@ -260,18 +252,18 @@ function AtmosphericHeader({
               </div>
             )}
 
-            <h1 className="text-headline leading-headline tracking-headline text-fg [text-wrap:balance]" {...pa?.('headline')}>
+            <h1 className="text-headline leading-headline tracking-headline text-fg text-balance" {...pa?.('headline')}>
               {headline}
             </h1>
 
             {subHeadline && (
-              <p className="mt-sm text-title leading-title text-fg-muted [text-wrap:pretty] max-w-[52ch]" {...pa?.('subHeadline')}>
+              <p className="mt-sm text-title leading-title text-fg-muted text-pretty max-w-[52ch]" {...pa?.('subHeadline')}>
                 {subHeadline}
               </p>
             )}
 
             {(authorName || published || readTime) && (
-              <div className="mt-lg pt-lg border-t border-fg/[0.08] flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
+              <div className="mt-lg pt-lg border-t border-fg/8 flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
                 {authorName && (
                   <div className="flex-none w-8 h-8 overflow-hidden bg-surface flex items-center justify-center">
                     {authorPhotoUrl ? (
@@ -307,25 +299,25 @@ function EditorialHeader({
 }: HeaderProps) {
   return (
     <header className="bg-surface">
-      <div className="h-[3px] bg-brand" />
+      <div className="h-0.75 bg-brand" />
 
       <div className="mx-auto max-w-6xl px-md lg:px-xl pt-xl pb-xl">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-xl items-start">
 
           {/* Headline column */}
           <div>
-            <h1 className="text-headline leading-headline tracking-headline text-fg [text-wrap:balance]" {...pa?.('headline')}>
+            <h1 className="text-headline leading-headline tracking-headline text-fg text-balance" {...pa?.('headline')}>
               {headline}
             </h1>
             {subHeadline && (
-              <p className="mt-md text-title leading-title text-fg-muted [text-wrap:pretty]" {...pa?.('subHeadline')}>
+              <p className="mt-md text-title leading-title text-fg-muted text-pretty" {...pa?.('subHeadline')}>
                 {subHeadline}
               </p>
             )}
           </div>
 
           {/* Sidebar: topic pill + author stacked */}
-          <div className="flex flex-col gap-lg lg:border-l lg:border-fg/[0.08] lg:pl-xl">
+          <div className="flex flex-col gap-lg lg:border-l lg:border-fg/8 lg:pl-xl">
             {topic && (
               <div {...pa?.('topic')}>
                 <TopicPill topic={topic} />
@@ -481,7 +473,7 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
                     {authorName}
                   </p>
                   {authorRole && (
-                    <p className="text-label text-fg-muted mt-[3px]">{authorRole}</p>
+                    <p className="text-label text-fg-muted mt-0.75">{authorRole}</p>
                   )}
 
                   {authorRef.bio?.html && (

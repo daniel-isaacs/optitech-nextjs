@@ -420,10 +420,15 @@ export default function StatBlock({
     </ul>
   )
 
+  // brand fill is always dark; glass overlay is always dark — assert dark theme
+  // so nested tokens (text-fg, text-fg-muted) resolve correctly on any site theme.
+  const isDarkSurface = color === 'brand' || glass
+
   return (
     <section
       ref={ref}
       className={outerClass}
+      data-theme={isDarkSurface ? 'dark' : undefined}
       aria-label="Key metrics"
     >
       {glass ? (

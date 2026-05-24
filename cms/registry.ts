@@ -18,7 +18,6 @@ import { OT_LandingSection }          from '@/cms/display-templates/OT_LandingSe
 import { OT_LandingRow }              from '@/cms/display-templates/OT_LandingRow'
 import { OT_LandingRowSlider }        from '@/cms/display-templates/OT_LandingRowSlider'
 import { OT_LandingColumn }           from '@/cms/display-templates/OT_LandingColumn'
-import { OT_ImageBgSectionTemplate }  from '@/cms/display-templates/OT_ImageBgSection'
 import { OptiFormsContainerDefault }  from '@/cms/display-templates/OptiFormsContainer'
 
 // Content type definitions — required at runtime so the SDK's query builder
@@ -41,7 +40,6 @@ import { OT_NavigationItem }    from '@/cms/content-types/OT_NavigationItem'
 import { OT_NavigationSubItem } from '@/cms/content-types/OT_NavigationSubItem'
 import { OT_FooterLink }        from '@/cms/content-types/OT_FooterLink'
 import { OT_FooterColumn }      from '@/cms/content-types/OT_FooterColumn'
-import { OT_ImageBgSection }    from '@/cms/content-types/OT_ImageBgSection'
 import { OT_Author }            from '@/cms/content-types/OT_Author'
 import { OT_FooterBlock }       from '@/cms/content-types/OT_FooterBlock'
 import { OT_BlogPage }          from '@/cms/content-types/OT_BlogPage'
@@ -79,7 +77,7 @@ import OT_BlogPageAdapter         from '@/cms/components/OT_BlogPage'
 import OT_FolderPageAdapter       from '@/cms/components/OT_FolderPage'
 
 // OptiForm component adapters
-import OptiFormsContainerDataAdapter    from '@/cms/components/OptiFormsContainerData'
+import OptiFormsContainerDataAdapter   from '@/cms/components/OptiFormsContainerData'
 import OptiFormsChoiceElementAdapter    from '@/cms/components/OptiFormsChoiceElement'
 import OptiFormsNumberElementAdapter    from '@/cms/components/OptiFormsNumberElement'
 import OptiFormsRangeElementAdapter     from '@/cms/components/OptiFormsRangeElement'
@@ -92,7 +90,6 @@ import OptiFormsUrlElementAdapter       from '@/cms/components/OptiFormsUrlEleme
 
 // Composition structure adapters — section/row/column renderers for Visual Builder
 import BlankSectionAdapter    from '@/cms/compositions/Section'
-import ImageBgSectionAdapter  from '@/cms/compositions/ImageBgSection'
 import RowAdapter             from '@/cms/compositions/Row'
 import ColumnAdapter          from '@/cms/compositions/Column'
 
@@ -113,7 +110,6 @@ initDisplayTemplateRegistry([
   OT_LandingRow,
   OT_LandingRowSlider,
   OT_LandingColumn,
-  OT_ImageBgSectionTemplate,
   OptiFormsContainerDefault,
 ])
 
@@ -136,7 +132,6 @@ initContentTypeRegistry([
   OT_NavigationSubItem,
   OT_FooterLink,
   OT_FooterColumn,
-  OT_ImageBgSection,
   OT_Author,
   OT_FooterBlock,
   OT_BlogPage,
@@ -177,7 +172,6 @@ initReactComponentRegistry({
     // Composition structure — 'BlankSection' is the SDK's built-in section type key;
     // '_Row' and '_Column' are the fixed registry keys OptimizelyGridSection resolves.
     BlankSection:       BlankSectionAdapter,
-    OT_ImageBgSection:  ImageBgSectionAdapter,
     _Row:               RowAdapter,
     _Column:            ColumnAdapter,
     // OptiForm elements — resolved by content type key when encountered in compositions

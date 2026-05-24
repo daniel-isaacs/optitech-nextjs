@@ -23,7 +23,6 @@ export const BLOCK_SECTIONS: NavSection[] = [
   { id: 'image-block',        label: 'Image' },
   { id: 'video-block',        label: 'Video' },
   { id: 'card-block',         label: 'Card' },
-  { id: 'image-bg-section',   label: 'Image BG' },
   { id: 'stat-block',         label: 'Stat Block' },
   { id: 'feature-grid-block', label: 'Feature Grid' },
 ]

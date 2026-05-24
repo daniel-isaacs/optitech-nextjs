@@ -114,6 +114,8 @@ const THEME_QUERY = `
         colorCanvasLight
         colorSurfaceLight
         colorFgOnBrand
+        colorFg
+        colorFgLight
         colorFgMuted
         colorFgMutedLight
         primaryNavigation {
@@ -244,6 +246,8 @@ export function buildThemeCSS(settings: any): string {
   if (settings.colorSurfaceLight) light.push(`--ot-surface: ${settings.colorSurfaceLight}`)
   // Foreground
   if (settings.colorFgOnBrand)    root.push(`--ot-fg-on-brand: ${settings.colorFgOnBrand}`)
+  if (settings.colorFg)           root.push(`--ot-fg: ${settings.colorFg}`)
+  if (settings.colorFgLight)      light.push(`--ot-fg: ${settings.colorFgLight}`)
   if (settings.colorFgMuted)      root.push(`--ot-fg-muted: ${settings.colorFgMuted}`)
   if (settings.colorFgMutedLight) light.push(`--ot-fg-muted: ${settings.colorFgMutedLight}`)
 

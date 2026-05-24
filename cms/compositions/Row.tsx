@@ -50,6 +50,11 @@ const bgColorClasses: Record<string, string> = {
   glass:     'bg-glass',
 }
 
+// Rows with a dark fill need to assert dark theme so nested text tokens
+// (text-fg, text-fg-muted) resolve to the light values from :root / [data-theme="dark"].
+// Without this, a brand or glass row inside a light-mode page uses dark text on dark bg.
+const DARK_BG = new Set(['brand', 'brandDeep', 'glass'])
+
 const justifyClasses: Record<string, string> = {
   center:  'justify-center',
   end:     'justify-end',
@@ -113,6 +118,7 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
   return (
     <div
       className={`vb:row flex ${wrap ? 'flex-wrap' : ''} ${breakpointClass} ${spacingClass} ${vPaddingClass} ${bgColorClass} ${justifyClass} ${alignClass}`}
+      data-theme={DARK_BG.has(bgColor) ? 'dark' : undefined}
       data-stagger={isAnimated ? entranceAnimation : undefined}
       {...pa(node)}
       data-bp={breakpoint}

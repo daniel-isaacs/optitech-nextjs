@@ -175,7 +175,13 @@ export default function HeroBlock({
     <section className={sectionCva({ layout })} aria-label="Hero">
 
       {/* ── Text panel ── */}
-      <div className={textPanelCva({ color, mode: hasVisual ? "split" : "full" })}>
+      {/* data-theme="dark" on brand panels ensures tokens like bg-canvas, text-fg,
+          and button hover states always resolve to dark-mode values regardless of
+          the site's page-level theme (light or dark). */}
+      <div
+        className={textPanelCva({ color, mode: hasVisual ? "split" : "full" })}
+        data-theme={color === 'brand' ? 'dark' : undefined}
+      >
         <div className="flex flex-col gap-lg">
           {eyebrow && (
             <p className={`${eyebrowCva({ color })} ${animClass}`} style={stagger(0)} {...pa('eyebrow')}>

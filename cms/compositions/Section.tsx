@@ -29,6 +29,10 @@ const bgColorClasses: Record<string, string> = {
   glass:     'bg-glass',
 }
 
+// brand, brandDeep, and glass are all dark surfaces — force dark theme so
+// nested text/button tokens resolve to light values regardless of the page theme.
+const DARK_BG = new Set(['brand', 'brandDeep', 'glass'])
+
 export default function Section({ content, displaySettings = {} }: Props) {
   const { pa } = getPreviewUtils(content)
 
@@ -43,6 +47,7 @@ export default function Section({ content, displaySettings = {} }: Props) {
   return (
     <section
       className={`vb:section flex flex-col w-full ${bgColorClass}`}
+      data-theme={DARK_BG.has(bgColor) ? 'dark' : undefined}
       {...pa(content)}
     >
       <div className={`flex flex-col flex-1 ${widthClass} ${vSpaceClass}`}>

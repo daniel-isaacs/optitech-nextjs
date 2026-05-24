@@ -37,7 +37,13 @@ export default async function OptiFormsContainerDataAdapter({ content, displaySe
   const spacingClass = spacingClasses[spacing] ?? spacingClasses.large
   const bgClass      = bgClasses[bg]           ?? ''
 
-  const nodes = content.nodes ?? []
+  // nodes can live at content.nodes (composition context) or
+  // content.__composition?.nodes (some SDK versions surface it there).
+  const nodes: any[] = (
+    Array.isArray(content.nodes)               ? content.nodes :
+    Array.isArray(content.__composition?.nodes)? content.__composition.nodes :
+    []
+  )
 
   return (
     <section className={`vb:section flex flex-col w-full ${bgClass}`} {...pa(content)}>
@@ -51,8 +57,28 @@ export default async function OptiFormsContainerDataAdapter({ content, displaySe
           {nodes.length > 0 ? (
             <OptimizelyGridSection nodes={nodes} />
           ) : (
-            <div className="border border-dashed border-fg/15 py-lg text-center text-label tracking-label text-fg-muted uppercase">
-              Add form elements in the Visual Builder
+            /* Empty state — shown in standalone CMS preview or when no elements
+               have been added to this form container in the Visual Builder.
+               In a VB experience, add form elements (Textbox, Selection, etc.)
+               directly inside this form container section. */
+            <div className="flex flex-col gap-sm">
+              {/* Placeholder fields that hint the expected layout */}
+              {[
+                { label: 'Text field', w: 'w-full' },
+                { label: 'Text field', w: 'w-full' },
+                { label: 'Selection', w: 'w-full md:w-1/2' },
+              ].map((f, i) => (
+                <div key={i} className={`${f.w} flex flex-col gap-xs`}>
+                  <div className="h-3.5 w-24 rounded-sm bg-fg/8" />
+                  <div className="h-10 w-full rounded-input border border-fg/10 bg-canvas/40" />
+                </div>
+              ))}
+              <div className="pt-sm">
+                <div className="h-10 w-32 rounded-sm bg-brand/20 border border-brand/30" />
+              </div>
+              <p className="text-label text-fg-muted/50 tracking-label uppercase pt-xs">
+                Add form elements in the Visual Builder
+              </p>
             </div>
           )}
         </FormWrapper>

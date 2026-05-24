@@ -123,6 +123,8 @@ export const OT_ThemeManager = contentType({
     colorSurfaceLight: { type: 'string', displayName: 'Surface Light — component panels in light mode (hex or oklch)',                 group: 'OT_Theme', sortOrder: 160 },
     // ── Foreground ─────────────────────────────────────────────────────────
     colorFgOnBrand:    { type: 'string', displayName: 'Foreground on Brand — text/borders on brand-filled surfaces (hex or oklch)',    group: 'OT_Theme', sortOrder: 165 },
+    colorFg:           { type: 'string', displayName: 'Foreground Dark — primary text in dark mode (default: near-white)',             group: 'OT_Theme', sortOrder: 167 },
+    colorFgLight:      { type: 'string', displayName: 'Foreground Light — primary text in light mode (default: near-black)',           group: 'OT_Theme', sortOrder: 168 },
     colorFgMuted:      { type: 'string', displayName: 'Foreground Muted Dark — secondary text in dark mode (hex or oklch)',            group: 'OT_Theme', sortOrder: 170 },
     colorFgMutedLight: { type: 'string', displayName: 'Foreground Muted Light — secondary text in light mode (hex or oklch)',          group: 'OT_Theme', sortOrder: 175 },
   },

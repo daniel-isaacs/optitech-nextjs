@@ -55,10 +55,36 @@ export default async function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-canvas border-t border-fg/10">
+    <footer className="relative overflow-hidden isolate bg-canvas border-t border-fg/10">
 
-      {/* Chromatic accent bar — thin brand line that frames the footer */}
-      <div className="h-px bg-brand/30" aria-hidden="true" />
+      {/* ── Geometric background layer ───────────────────────────────────────
+           Diamond lattice: two crossing repeating-linear-gradients at ±45°
+           produce a crystallographic mesh. Brand color at 15% opacity on
+           0.5px lines — visible but never dominant.
+           Corner bloom: a soft radial gradient from bottom-right anchors the
+           composition and reads as a light source behind the sparse content.
+           Static — no animation, satisfies prefers-reduced-motion. ────────── */}
+      <div
+        className="absolute inset-0 pointer-events-none select-none"
+        aria-hidden="true"
+        style={{
+          zIndex: -1,
+          backgroundImage: [
+            'radial-gradient(ellipse 70% 90% at 100% 100%, var(--ot-bloom-brand-faint) 0%, transparent 60%)',
+            'repeating-linear-gradient( 45deg, var(--ot-bloom-brand-border) 0, var(--ot-bloom-brand-border) 0.5px, transparent 0.5px, transparent 28px)',
+            'repeating-linear-gradient(-45deg, var(--ot-bloom-brand-border) 0, var(--ot-bloom-brand-border) 0.5px, transparent 0.5px, transparent 28px)',
+          ].join(', '),
+        }}
+      />
+
+      {/* ── Accent bar — gradient horizon: brand → accent, fading at edges ── */}
+      <div
+        className="h-px"
+        aria-hidden="true"
+        style={{
+          background: 'linear-gradient(to right, transparent, var(--ot-brand) 20%, var(--ot-accent) 80%, transparent)',
+        }}
+      />
 
       {hasContent ? (
         <div className="px-md lg:px-lg">

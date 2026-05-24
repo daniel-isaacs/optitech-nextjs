@@ -1818,7 +1818,7 @@ export default function ShowcaseBlocksPage() {
       <BlockGroup
         id="glass-panel"
         label="Glass Panel Background"
-        description="The 'Glass (frosted)' backgroundColor option available on both rows and sections. Brand-tinted backdrop-filter material at structural scale. The blur earns its depth over a brand fill, image background, or layered surface — over flat canvas it renders as a subtle dark tinted panel."
+        description="The 'Glass (frosted)' backgroundColor option available on both rows and sections. Neutral glassmorphism: blurs and slightly darkens whatever is behind it without imposing any hue. Works over brand fills, images, or any background — the color of the glass comes entirely from what sits beneath it."
       />
       <section className="border-t border-fg/5">
 
@@ -1828,7 +1828,7 @@ export default function ShowcaseBlocksPage() {
             Glass over brand fill — row backgroundColor: glass, inside brand section
           </p>
           <p className="text-label text-fg-muted/60 mt-xs">
-            The glass panel floats above the committed teal — blur catches the saturated color and diffracts it into a frosted mineral layer.
+            The glass panel blurs and darkens whatever is behind it — no imposed hue. Over a brand fill, backdrop-filter catches the saturated color and diffracts it into a frosted mineral layer.
           </p>
         </div>
         <div className="bg-brand py-xl px-md lg:px-lg" data-theme="dark">
@@ -1849,7 +1849,7 @@ export default function ShowcaseBlocksPage() {
             Glass over image background — row backgroundColor: glass, inside ImageBgSection
           </p>
           <p className="text-label text-fg-muted/60 mt-xs">
-            The specular rim and brand bloom lift the glass panel off the photo — depth without obscuring the image.
+            The neutral dark fill and specular rim lift the glass panel off the photo — depth without obscuring the image.
           </p>
         </div>
         <div

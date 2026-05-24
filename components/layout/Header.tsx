@@ -8,6 +8,7 @@ import { LocaleSelector } from '@/components/layout/LocaleSelector'
 import type { NavItem } from '@/components/layout/DesktopNav'
 import SearchTrigger from '@/components/search/SearchTrigger'
 import { getSiteSettings, getRequestDomain, getRequestLocale } from '@/lib/optimizely'
+import { getEnabledLanguages } from '@/lib/i18n/getEnabledLanguages'
 import { t } from '@/lib/i18n/t'
 
 const FALLBACK_NAV: NavItem[] = [
@@ -38,10 +39,9 @@ export default async function Header() {
     logoInvertDark ? 'logo-invert-dark' : '',
   ].filter(Boolean).join(' ')
 
-  // Locale codes configured in the CMS ThemeManager. Empty array = show all.
-  const enabledLocales: string[] = Array.isArray(settings?.enabledLocales)
-    ? settings.enabledLocales.filter((l: unknown) => typeof l === 'string' && l.trim())
-    : []
+  // Locale codes sourced from Graph (Content locale facets) rather than a manual
+  // ThemeManager field — see lib/i18n/getEnabledLanguages.ts.
+  const enabledLocales = await getEnabledLanguages()
 
   const navItems: NavItem[] = settings?.primaryNavigation?.length
     ? settings.primaryNavigation.map((item: any) => ({

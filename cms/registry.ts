@@ -7,6 +7,7 @@ import { OT_ButtonDefault }       from '@/cms/display-templates/OT_ButtonDefault
 import { OT_CardDefault }         from '@/cms/display-templates/OT_CardDefault'
 import { OT_PrimaryTextDefault }  from '@/cms/display-templates/OT_PrimaryTextDefault'
 import { OT_QuoteDefault }        from '@/cms/display-templates/OT_QuoteDefault'
+import { OT_AuthorDefault }       from '@/cms/display-templates/OT_AuthorDefault'
 import { OT_RichTextDefault }     from '@/cms/display-templates/OT_RichTextDefault'
 import { OT_ImageDefault }        from '@/cms/display-templates/OT_ImageDefault'
 import { OT_VideoDefault }        from '@/cms/display-templates/OT_VideoDefault'
@@ -41,6 +42,7 @@ import { OT_FooterLink }        from '@/cms/content-types/OT_FooterLink'
 import { OT_FooterColumn }      from '@/cms/content-types/OT_FooterColumn'
 import { OT_ImageBgSection }    from '@/cms/content-types/OT_ImageBgSection'
 import { OT_Author }            from '@/cms/content-types/OT_Author'
+import { OT_FooterBlock }       from '@/cms/content-types/OT_FooterBlock'
 import { OT_BlogPage }          from '@/cms/content-types/OT_BlogPage'
 import { OT_FolderPage }        from '@/cms/content-types/OT_FolderPage'
 
@@ -70,6 +72,7 @@ import OT_VideoBlockAdapter       from '@/cms/components/OT_VideoBlock'
 import OT_StatBlockAdapter            from '@/cms/components/OT_StatBlock'
 import OT_FeatureGridBlockAdapter     from '@/cms/components/OT_FeatureGridBlock'
 import OT_ThemeManagerAdapter     from '@/cms/components/OT_ThemeManager'
+import OT_AuthorAdapter           from '@/cms/components/OT_Author'
 import OT_BlogPageAdapter         from '@/cms/components/OT_BlogPage'
 import OT_FolderPageAdapter       from '@/cms/components/OT_FolderPage'
 
@@ -97,6 +100,7 @@ initDisplayTemplateRegistry([
   OT_CardDefault,
   OT_PrimaryTextDefault,
   OT_QuoteDefault,
+  OT_AuthorDefault,
   OT_RichTextDefault,
   OT_ImageDefault,
   OT_VideoDefault,
@@ -131,6 +135,7 @@ initContentTypeRegistry([
   OT_FooterColumn,
   OT_ImageBgSection,
   OT_Author,
+  OT_FooterBlock,
   OT_BlogPage,
   OT_FolderPage,
   // OptiForm types
@@ -162,6 +167,7 @@ initReactComponentRegistry({
     OT_StatBlock:        OT_StatBlockAdapter,
     OT_FeatureGridBlock: OT_FeatureGridBlockAdapter,
     OT_ThemeManager:     OT_ThemeManagerAdapter,
+    OT_Author:           OT_AuthorAdapter,
     OT_BlogPage:         OT_BlogPageAdapter,
     OT_FolderPage:       OT_FolderPageAdapter,
     // Composition structure — 'BlankSection' is the SDK's built-in section type key;

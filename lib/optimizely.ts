@@ -94,7 +94,6 @@ const THEME_QUERY = `
     OT_ThemeManager(limit: 20) {
       items {
         frontEndDomain
-        enabledLocales
         logo { url { default } }
         logoAlt
         logoFit
@@ -102,8 +101,16 @@ const THEME_QUERY = `
         defaultMode
         ctaLabel
         ctaUrl { default }
+        footerRef {
+          ... on OT_FooterBlock {
+            description { html }
+            links {
+              label
+              url { default }
+            }
+          }
+        }
         copyright
-        footerTagline
         colorBrand
         colorBrandHover
         colorAccent
@@ -122,17 +129,6 @@ const THEME_QUERY = `
             menuLink { text title target url { default } }
             description
           }
-        }
-        footerColumns {
-          title
-          linkItems {
-            label
-            url { default }
-          }
-        }
-        legalLinks {
-          label
-          url { default }
         }
       }
     }

@@ -2,32 +2,13 @@ import { contentType } from '@optimizely/cms-sdk'
 import { OT_NavigationItem } from './OT_NavigationItem'
 import { OT_FooterLink } from './OT_FooterLink'
 import { OT_FooterColumn } from './OT_FooterColumn'
+import { OT_FooterBlock } from './OT_FooterBlock'
 
 export const OT_ThemeManager = contentType({
   key: 'OT_ThemeManager',
   displayName: 'Theme Manager',
   baseType: '_component',
   properties: {
-    // Language selector — multi-select of which locales to show in the site header.
-    // Leave empty to show all supported locales.
-    // ⚠️ Each language selected here must also be enabled in CMS > Settings > Languages.
-    enabledLocales: {
-      type: 'array',
-      displayName: 'Enabled Languages',
-      description: 'Select which languages appear in the site header language picker. Leave empty to show all supported languages. Each selected language must also be enabled in CMS ▸ Settings ▸ Languages.',
-      group: 'OT_Content',
-      sortOrder: 2,
-      items: {
-        type: 'string',
-        enum: [
-          { value: 'en', displayName: 'English (EN)' },
-          { value: 'fr', displayName: 'Français (FR)' },
-          { value: 'de', displayName: 'Deutsch (DE)' },
-          { value: 'es', displayName: 'Español (ES)' },
-        ],
-      },
-    },
-
     // Identity — which front-end domain loads this theme
     frontEndDomain: {
       type: 'string',
@@ -94,6 +75,16 @@ export const OT_ThemeManager = contentType({
       group: 'OT_Content',
       sortOrder: 40,
       items: { type: 'component', contentType: OT_NavigationItem },
+    },
+
+    // Footer — structured footer block (replaces footerColumns / footerTagline)
+    footerRef: {
+      type: 'contentReference',
+      allowedTypes: [OT_FooterBlock],
+      displayName: 'Footer Block',
+      description: 'Select the Footer block item that contains the site description and navigation links. Create a Footer block in Shared Assets first.',
+      group: 'OT_Content',
+      sortOrder: 45,
     },
 
     // Footer

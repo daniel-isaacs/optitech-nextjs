@@ -20,6 +20,9 @@ export const OT_Author = contentType({
   key: 'OT_Author',
   displayName: 'Author',
   baseType: '_component',
+  // elementEnabled — allows this block to be added to VB experiences, which is what
+  // enables the CMS preview pane when editing a shared Author item.
+  compositionBehaviors: ['elementEnabled'],
   properties: {
     name: {
       type: 'string',

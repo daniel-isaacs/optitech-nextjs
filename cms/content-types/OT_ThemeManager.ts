@@ -1,7 +1,5 @@
 import { contentType } from '@optimizely/cms-sdk'
 import { OT_NavigationItem } from './OT_NavigationItem'
-import { OT_FooterLink } from './OT_FooterLink'
-import { OT_FooterColumn } from './OT_FooterColumn'
 import { OT_FooterBlock } from './OT_FooterBlock'
 
 export const OT_ThemeManager = contentType({
@@ -89,23 +87,6 @@ export const OT_ThemeManager = contentType({
 
     // Footer
     copyright:    { type: 'string', isLocalized: true, maxLength: 150, displayName: 'Copyright',      group: 'OT_Content', sortOrder: 50 },
-    footerTagline: { type: 'string', isLocalized: true, maxLength: 150, displayName: 'Footer Tagline', group: 'OT_Content', sortOrder: 60 },
-    footerColumns: {
-      type: 'array',
-      displayName: 'Footer Columns',
-      description: 'Multi-column footer navigation. Each column has a title and a list of links.',
-      group: 'OT_Content',
-      sortOrder: 70,
-      items: { type: 'component', contentType: OT_FooterColumn },
-    },
-    legalLinks: {
-      type: 'array',
-      displayName: 'Legal Links (bottom bar)',
-      description: 'Privacy policy, terms, and other legal links shown next to the copyright.',
-      group: 'OT_Content',
-      sortOrder: 80,
-      items: { type: 'component', contentType: OT_FooterLink },
-    },
 
     // Theme color overrides — CSS values (hex, oklch, hsl, etc.)
     // All optional; if empty the defaults in styles/tokens.css apply.

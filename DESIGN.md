@@ -282,6 +282,21 @@ Server component fed by ThemeManager. Dark glass sticky bar — `bg-canvas/80 ba
 | **RichTextBlock** | color (brand/canvas/surface), size (default/compact), treatment (none/lead/dropcap), ruledHeadings | Full prose block; TinyMCE output styled via `[data-rich-text]` scoped CSS |
 | **ImageBlock** | aspectRatio, objectFit, bloom (brand/accent/none), caption, rounded | Chromatic bloom glow ring from bloom tokens |
 | **VideoBlock** | aspectRatio, bloom, caption | Same bloom system as ImageBlock |
+| **StatBlock** | color (brand/canvas/surface), layout (row/grid), glass | Animated counters, staggered entrance, divider lines |
+| **FeatureGridBlock** | color, layout (grid/list), glass | Icon + heading + body feature tiles |
+| **TrustRail** | motion (scroll/fade/static), treatment (mono/color), background (canvas/surface/brand), size (sm/md/lg), density, glass | Seamless CSS marquee (doubled track + `paddingRight` seam fix), IntersectionObserver fade, mono grayscale + hover lift, brand-surface white silhouette |
+
+### TrustRail logo image guidance
+
+**Format: SVG is strongly preferred.** The component applies `grayscale`, `opacity`, and `brightness`/`invert` CSS filters depending on the treatment setting. These filters produce clean, crisp results on vector SVG files. Raster images (PNG, JPG) look acceptable but may show filter artifacts at small sizes and on retina displays.
+
+- **SVG** — best results at any size; filters are perfectly sharp; file size is usually smaller than PNG
+- **Transparent PNG** — acceptable fallback when SVG is unavailable; use the highest resolution available (2× or 3× the display size)
+- **JPG or opaque PNG** — avoid; the grayscale filter will expose the background color, breaking the mono treatment
+
+**Recommended dimensions:** logos vary in proportions, but a height of 80–160px in the source SVG viewBox works well across all three size settings (sm/md/lg). Width is unconstrained — the component respects natural aspect ratio up to `5 × height`.
+
+**Transparency is required** for the `mono` and `brand` treatments to work correctly. On a `brand` background, logos are forced to white silhouette via `brightness(0) invert(1)` — a transparent background is mandatory for this to produce the correct result.
 
 ### Composition structure
 

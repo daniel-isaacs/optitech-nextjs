@@ -1,0 +1,74 @@
+import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { getRequestLocale } from '@/lib/optimizely'
+import { getBlogFeedPosts }  from '@/lib/blogFeed'
+import BlogFeedBlock         from '@/components/blocks/BlogFeedBlock'
+import type { BlogFeedColor, BlogFeedColumns, BlogFeedHeadingSize } from '@/components/blocks/BlogFeedBlock'
+
+// ─── Types ─────────────────────────────────────────────────────────────────────
+
+type Props = {
+  content:          any
+  displaySettings?: Record<string, string | boolean>
+}
+
+// ─── OT_BlogFeedBlock adapter ─────────────────────────────────────────────────
+//
+// Async server component — fetches blog posts at render time using the current
+// locale (set by middleware → getRequestLocale) so the feed is always in sync
+// with the active language without any client round-trips.
+//
+// The article root's hierarchical URL is read directly from the content
+// reference metadata returned by the SDK (the _IContent fragment includes
+// url.hierarchical), which avoids an extra Graph query to resolve the root.
+
+export default async function OT_BlogFeedBlockAdapter({
+  content,
+  displaySettings = {},
+}: Props) {
+  const { pa } = getPreviewUtils(content)
+
+  // ── Locale ────────────────────────────────────────────────────────────────
+  // getRequestLocale reads the x-locale header set by middleware; falls back
+  // to the default locale when called outside a request context (e.g. build).
+  const locale = await getRequestLocale()
+
+  // ── Article root ──────────────────────────────────────────────────────────
+  // The SDK's generated fragment includes _metadata.url.hierarchical for
+  // contentReference fields, so we can read it directly from content.articleRoot.
+  const articleRootPath: string | null =
+    content.articleRoot?._metadata?.url?.hierarchical ?? null
+
+  // ── Page size ─────────────────────────────────────────────────────────────
+  const rawPageSize = content.pageSize
+  const pageSize    = Number.isInteger(rawPageSize) && rawPageSize >= 1
+    ? Math.min(rawPageSize, 24)
+    : 9
+
+  // ── Fetch posts ───────────────────────────────────────────────────────────
+  // React cache() dedups this call if multiple Blog Feed blocks appear on the
+  // same page with the same locale + root (e.g. the same locale + no root).
+  const { posts, topics } = await getBlogFeedPosts(locale, articleRootPath)
+
+  // ── Display settings ──────────────────────────────────────────────────────
+  const color       = String(displaySettings.color       ?? 'canvas')  as BlogFeedColor
+  const columns     = String(displaySettings.columns     ?? 'col3')    as BlogFeedColumns
+  const headingSize = String(displaySettings.headingSize ?? 'headline') as BlogFeedHeadingSize
+
+  // ── Heading — localised field ─────────────────────────────────────────────
+  // The heading property has isLocalized: true. The SDK resolves the correct
+  // locale variant and exposes it as a plain string on content.heading.
+  const heading = content.heading ? String(content.heading) : undefined
+
+  return (
+    <div {...pa(content.__composition)} className="w-full">
+      <BlogFeedBlock
+        heading={heading}
+        posts={posts}
+        topics={topics}
+        pageSize={pageSize}
+        styleOptions={{ color, columns, headingSize }}
+        pa={pa}
+      />
+    </div>
+  )
+}

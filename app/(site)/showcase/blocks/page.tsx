@@ -14,6 +14,8 @@ import OT_FeatureGridBlock     from "@/cms/components/OT_FeatureGridBlock";
 import OT_TrustRail            from "@/cms/components/OT_TrustRail";
 import Button from "@/components/ui/Button";
 import { ArrowRight, Zap, ChevronRight, Play, Download, Sparkles, Send, Rocket, Star, Plus } from "lucide-react";
+import BlogFeedBlock from "@/components/blocks/BlogFeedBlock";
+import type { BlogFeedPost } from "@/lib/blogFeed";
 
 export const metadata: Metadata = {
   title: "Components — Design System — OptiTech",
@@ -2494,6 +2496,192 @@ export default function ShowcaseBlocksPage() {
         <div className="pb-xl" />
       </section>
 
+
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* Blog Feed Block                                                     */}
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {(() => {
+        // ── Realistic static post data ────────────────────────────────────
+        const DEMO_POSTS: BlogFeedPost[] = [
+          {
+            _metadata: { key: 'post-1', published: '2025-11-14T10:00:00Z', url: { default: '#', hierarchical: '/blog/ai-experiment-velocity/' } },
+            headline: 'How AI-Assisted Testing Doubled Our Experiment Velocity',
+            topic: 'innovation',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Mara Okonkwo' },
+            readTime: '6 min read',
+          },
+          {
+            _metadata: { key: 'post-2', published: '2025-11-07T09:00:00Z', url: { default: '#', hierarchical: '/blog/personalization-at-scale/' } },
+            headline: 'Personalization at Scale: Lessons from 500 Million Decisions a Day',
+            topic: 'insights',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'James Whitfield' },
+            readTime: '9 min read',
+          },
+          {
+            _metadata: { key: 'post-3', published: '2025-10-31T08:00:00Z', url: { default: '#', hierarchical: '/blog/feature-flag-safety/' } },
+            headline: 'The Three Rules of Safe Feature Flag Rollouts',
+            topic: 'resources',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Priya Ramesh' },
+            readTime: '5 min read',
+          },
+          {
+            _metadata: { key: 'post-4', published: '2025-10-22T10:00:00Z', url: { default: '#', hierarchical: '/blog/q3-product-news/' } },
+            headline: 'Q3 Product Update: Edge Delivery, Improved Metrics, and More',
+            topic: 'news',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Mara Okonkwo' },
+            readTime: '4 min read',
+          },
+          {
+            _metadata: { key: 'post-5', published: '2025-10-15T11:00:00Z', url: { default: '#', hierarchical: '/blog/engineering-culture/' } },
+            headline: 'Building a Culture Where Every Engineer Owns the Outcome',
+            topic: 'culture',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Takeshi Mori' },
+            readTime: '7 min read',
+          },
+          {
+            _metadata: { key: 'post-6', published: '2025-10-08T09:00:00Z', url: { default: '#', hierarchical: '/blog/cto-series-risk/' } },
+            headline: 'The CTO Series: Eliminating "Big Bang" Release Risk in Enterprise',
+            topic: 'leadership',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Sofia Andrade' },
+            readTime: '11 min read',
+          },
+          {
+            _metadata: { key: 'post-7', published: '2025-09-30T10:00:00Z', url: { default: '#', hierarchical: '/blog/summit-2025/' } },
+            headline: 'OptiTech Summit 2025: Three Signals You Cannot Ignore',
+            topic: 'events',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'James Whitfield' },
+            readTime: '3 min read',
+          },
+          {
+            _metadata: { key: 'post-8', published: '2025-09-22T08:00:00Z', url: { default: '#', hierarchical: '/blog/multivariate-guide/' } },
+            headline: 'The Practitioner\'s Guide to Multivariate Experiments',
+            topic: 'resources',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1543286386-713bdd548da4?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Priya Ramesh' },
+            readTime: '13 min read',
+          },
+          {
+            _metadata: { key: 'post-9', published: '2025-09-15T10:00:00Z', url: { default: '#', hierarchical: '/blog/from-hunch-to-certainty/' } },
+            headline: 'From Hunch to Certainty: Building an Evidence-First Product Team',
+            topic: 'stories',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Sofia Andrade' },
+            readTime: '8 min read',
+          },
+          {
+            _metadata: { key: 'post-10', published: '2025-09-08T09:00:00Z', url: { default: '#', hierarchical: '/blog/continuous-delivery-metrics/' } },
+            headline: 'Five Metrics Every Continuous Delivery Team Should Track',
+            topic: 'insights',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Takeshi Mori' },
+            readTime: '6 min read',
+          },
+          {
+            _metadata: { key: 'post-11', published: '2025-09-01T08:00:00Z', url: { default: '#', hierarchical: '/blog/edge-rollouts/' } },
+            headline: 'Zero-Latency Rollouts: OptiTech\'s New Edge Delivery Architecture',
+            topic: 'innovation',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'Mara Okonkwo' },
+            readTime: '10 min read',
+          },
+          {
+            _metadata: { key: 'post-12', published: '2025-08-25T10:00:00Z', url: { default: '#', hierarchical: '/blog/shipping-confidently/' } },
+            headline: 'Shipping Confidently: Why Bravery Without Data Is Just Gambling',
+            topic: 'leadership',
+            featuredImage: { url: { default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop' } },
+            authorRef: { name: 'James Whitfield' },
+            readTime: '5 min read',
+          },
+        ]
+
+        const DEMO_TOPICS = ['innovation', 'insights', 'resources', 'news', 'culture', 'leadership', 'events', 'stories']
+
+        return (
+          <>
+            <BlockGroup
+              id="blog-feed"
+              label="Blog Feed"
+              description="Paginated, filterable listing of blog posts. Supports grid and list views, per-language headings, topic filter chips, and an article root scoping. All interactivity is client-side; the heading and initial post set are server-rendered."
+            />
+
+            {/* ── 01: Canvas background, 3-column grid, headline size ──────── */}
+            <div className="pt-lg px-md lg:px-lg pb-md">
+              <p className="text-label text-fg-muted uppercase tracking-label">
+                <code className="font-mono text-accent">canvas · 3 columns · headline · page size 9</code> — default configuration
+              </p>
+            </div>
+            <BlogFeedBlock
+              heading="From the Blog"
+              posts={DEMO_POSTS}
+              topics={DEMO_TOPICS}
+              pageSize={9}
+              styleOptions={{ color: 'canvas', columns: 'col3', headingSize: 'headline' }}
+            />
+
+            {/* ── 02: Surface background, 2-column grid, display size ──────── */}
+            <div className="pt-lg px-md lg:px-lg pb-md">
+              <p className="text-label text-fg-muted uppercase tracking-label">
+                <code className="font-mono text-accent">surface · 2 columns · display · page size 4</code> — editorial, larger cards
+              </p>
+            </div>
+            <BlogFeedBlock
+              heading="Perspectives"
+              posts={DEMO_POSTS}
+              topics={DEMO_TOPICS}
+              pageSize={4}
+              styleOptions={{ color: 'surface', columns: 'col2', headingSize: 'display' }}
+            />
+
+            {/* ── 03: Brand background, 3-column, no heading ───────────────── */}
+            <div className="pt-lg px-md lg:px-lg pb-md">
+              <p className="text-label text-fg-muted uppercase tracking-label">
+                <code className="font-mono text-accent">brand · 3 columns · no heading · page size 6</code> — on-brand surface, chips adapt
+              </p>
+            </div>
+            <BlogFeedBlock
+              posts={DEMO_POSTS}
+              topics={DEMO_TOPICS}
+              pageSize={6}
+              styleOptions={{ color: 'brand', columns: 'col3', headingSize: 'headline' }}
+            />
+
+            {/* ── 04: Canvas, title-size heading, small page ───────────────── */}
+            <div className="pt-lg px-md lg:px-lg pb-md">
+              <p className="text-label text-fg-muted uppercase tracking-label">
+                <code className="font-mono text-accent">canvas · title heading · page size 3</code> — compact embedded variant
+              </p>
+            </div>
+            <BlogFeedBlock
+              heading="Latest Insights"
+              posts={DEMO_POSTS.slice(0, 3)}
+              topics={['insights', 'innovation', 'leadership']}
+              pageSize={3}
+              styleOptions={{ color: 'canvas', columns: 'col3', headingSize: 'title' }}
+            />
+
+            {/* ── 05: Empty state ──────────────────────────────────────────── */}
+            <div className="pt-lg px-md lg:px-lg pb-md">
+              <p className="text-label text-fg-muted uppercase tracking-label">
+                <code className="font-mono text-accent">empty state</code> — no posts returned (e.g. unpublished root or incorrect locale)
+              </p>
+            </div>
+            <BlogFeedBlock
+              heading="Industry News"
+              posts={[]}
+              topics={[]}
+              pageSize={9}
+              styleOptions={{ color: 'canvas', columns: 'col3', headingSize: 'headline' }}
+            />
+          </>
+        )
+      })()}
 
     </>
   );

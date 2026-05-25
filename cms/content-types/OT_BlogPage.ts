@@ -3,7 +3,7 @@ import { OT_Author } from './OT_Author'
 
 export const OT_BlogPage = contentType({
   key: 'OT_BlogPage',
-  displayName: 'Blog Article',
+  displayName: 'Blog Page',
   baseType: '_page',
   properties: {
     blogStyle: {

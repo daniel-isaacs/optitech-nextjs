@@ -56,7 +56,7 @@ async function CmsPage({ params, searchParams }: Props) {
       const blogContent = dm.isEnabled
         ? exp
         : (contentKey ? await getBlogPage(contentKey) : null)
-      const latestPosts = await getLatestBlogPosts(contentKey, locale)
+      const latestPosts = await getLatestBlogPosts(contentKey, locale, baseUrl)
 
       if (blogContent) {
         return (

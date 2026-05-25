@@ -3,6 +3,7 @@ import '@/cms/registry'
 import type { Metadata } from "next";
 import { Geist_Mono, Poppins, Syne } from "next/font/google";
 import "./globals.css";
+import Script from 'next/script'
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionObserver } from "@/components/providers/MotionObserver";
 import { getSiteSettings, getRequestDomain, buildThemeCSS, getRequestLocale } from '@/lib/optimizely'
@@ -49,7 +50,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />
         {themeCSS && <style dangerouslySetInnerHTML={{ __html: themeCSS }} suppressHydrationWarning />}
       </head>
       <body className="min-h-full flex flex-col">

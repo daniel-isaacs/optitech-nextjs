@@ -86,18 +86,19 @@ const AUTHOR_QUERY = `
  * Latest posts query fetches blog page metadata plus a parallel OT_Author
  * lookup so we can resolve author names without a per-item round-trip.
  * The ContentReference.item approach is avoided for the same reason as above.
- * Locale filtering ensures we get exactly one variant per post (mirrors the
- * pattern in blogFeed.ts) and avoids duplicates from multi-locale tenants.
+ * Locale filtering reduces cross-locale duplicates; site scoping (applied
+ * in getLatestBlogPosts below) eliminates cross-channel duplicates that arise
+ * when the same content is indexed for multiple Optimizely site channels.
  */
 const LATEST_POSTS_QUERY = `
   query GetLatestBlogPosts($locale: String!) {
     OT_BlogPage(
-      limit: 6,
+      limit: 12,
       where: { _metadata: { locale: { eq: $locale } } },
       orderBy: { _metadata: { published: DESC } }
     ) {
       items {
-        _metadata { key published url { default } }
+        _metadata { key published url { default base } }
         headline
         topic
         featuredImage { url { default } }
@@ -154,10 +155,11 @@ export async function getBlogPage(key: string): Promise<BlogPageContent | null> 
 export const getLatestBlogPosts = cache(async function getLatestBlogPosts(
   excludeKey?: string,
   locale = 'en',
+  siteBaseUrl?: string | null,
 ): Promise<BlogPostSummary[]> {
   try {
     const data = await getClient().request(LATEST_POSTS_QUERY, { locale })
-    const items: any[] = (data as any)?.OT_BlogPage?.items ?? []
+    let items: any[] = (data as any)?.OT_BlogPage?.items ?? []
 
     // Build key → name map from the parallel OT_Author query
     const authorItems: any[] = (data as any)?.OT_Author?.items ?? []
@@ -167,8 +169,27 @@ export const getLatestBlogPosts = cache(async function getLatestBlogPosts(
       if (ak && a.name) authorMap.set(ak, a.name as string)
     }
 
-    // The locale filter in the query ensures one variant per post, but
-    // keep a key-based dedup pass as a safety net.
+    // ── Site scoping ──────────────────────────────────────────────────────────
+    // Content Graph indexes all site channels in a tenant. Without scoping,
+    // the same post appears once per channel — each with a different key but
+    // identical content (the cross-channel duplicate the user sees).
+    // Mirror the same logic used in blogFeed.ts.
+    if (siteBaseUrl) {
+      const normalizedBase = siteBaseUrl.replace(/\/$/, '')
+      items = items.filter(p => {
+        const base       = p._metadata?.url?.base
+        const defaultUrl = p._metadata?.url?.default
+        if (typeof base === 'string' && base) {
+          return base.replace(/\/$/, '') === normalizedBase
+        }
+        if (typeof defaultUrl === 'string' && defaultUrl) {
+          return defaultUrl.startsWith(normalizedBase + '/') || defaultUrl === normalizedBase
+        }
+        return true // keep if URL info absent — over-include rather than drop
+      })
+    }
+
+    // Key-based dedup as a final safety net (covers remaining locale/version duplicates).
     const seen = new Set<string>()
     const unique = items.filter(p => {
       const k = p._metadata?.key as string | undefined

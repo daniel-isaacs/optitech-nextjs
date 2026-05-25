@@ -83,13 +83,18 @@ export default async function Footer() {
       {hasContent ? (
         <div className="px-md lg:px-lg">
 
-          {/* ── Description zone ──────────────────────────────────────────── */}
-          {descriptionHtml && (
-            <div className="pt-xl pb-lg border-b border-fg/8">
+          {/* ── Main content row — description left, nav right ────────────────
+               Description fills the remaining horizontal space so it doesn't
+               leave a column of dead whitespace on wide viewports. Nav links
+               shrink to their content on the right edge. ─────────────────── */}
+          <div className="pt-xl pb-lg border-b border-fg/8 flex flex-col gap-xl sm:flex-row sm:items-start sm:gap-2xl">
+
+            {/* Description — flexible, fills available space */}
+            {descriptionHtml && (
               <div
                 className="
+                  flex-1 min-w-0
                   text-[1.0625rem] font-medium leading-[1.65] text-fg
-                  max-w-[52ch]
                   [&_p]:m-0
                   [&_p+p]:mt-[0.75em]
                   [&_strong]:font-semibold
@@ -99,39 +104,11 @@ export default async function Footer() {
                 "
                 dangerouslySetInnerHTML={{ __html: descriptionHtml }}
               />
-            </div>
-          )}
+            )}
 
-          {/* ── Logo + navigation zone ────────────────────────────────────── */}
-          <div
-            className={`
-              flex flex-col gap-lg
-              sm:flex-row sm:items-start sm:justify-between
-              ${descriptionHtml ? 'py-lg' : 'pt-xl pb-lg'}
-            `}
-          >
-            {/* Logo — linked home, slightly muted at rest */}
-            <Link
-              href="/"
-              aria-label={`${logoAlt} — Home`}
-              className="
-                flex items-center h-9 shrink-0
-                opacity-70 hover:opacity-100
-                transition-opacity duration-200 ease-quick
-              "
-            >
-              <Image
-                src={logoSrc}
-                alt={logoAlt}
-                width={140}
-                height={36}
-                className={logoImgClass}
-              />
-            </Link>
-
-            {/* Navigation links */}
+            {/* Navigation links — pinned to the right, shrink to content */}
             {links.length > 0 && (
-              <nav aria-label="Footer navigation">
+              <nav aria-label="Footer navigation" className="shrink-0">
                 <ul
                   className={`
                     grid grid-cols-1 gap-x-xl gap-y-xs
@@ -155,6 +132,27 @@ export default async function Footer() {
                 </ul>
               </nav>
             )}
+          </div>
+
+          {/* ── Logo strip ────────────────────────────────────────────────── */}
+          <div className="py-lg">
+            <Link
+              href="/"
+              aria-label={`${logoAlt} — Home`}
+              className="
+                inline-flex items-center h-9
+                opacity-70 hover:opacity-100
+                transition-opacity duration-200 ease-quick
+              "
+            >
+              <Image
+                src={logoSrc}
+                alt={logoAlt}
+                width={140}
+                height={36}
+                className={logoImgClass}
+              />
+            </Link>
           </div>
 
         </div>

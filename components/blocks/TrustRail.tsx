@@ -291,6 +291,9 @@ export default function TrustRail({
               )}
               style={{
                 gap: `${railGap}px`,
+                // paddingRight = railGap ensures translateX(-50%) lands exactly
+                // at the seam between the two copies — no jitter on loop reset.
+                paddingRight: `${railGap}px`,
                 ['--trust-rail-duration' as string]: `${duration}s`,
               }}
               // Entire track is decorative; screen readers get the list below

@@ -53,7 +53,7 @@
   /* Shadows */
   --shadow-hover-lift: var(--ot-shadow-hover-lift);
 
-  /* Syne display weight */
+  /* Monoton display weight (single weight — always 400) */
   --font-weight-syne: var(--ot-weight-syne);
 
   /* Motion */
@@ -232,7 +232,7 @@ body {
   font-family: var(--ot-font-sans);
 }
 
-/* Syne hollow: wire letterforms — transparent fill, brand stroke */
+/* Monoton hollow: wire letterforms — transparent fill, brand stroke */
 .syne-hollow {
   -webkit-text-stroke: 2px var(--ot-brand);
   color: transparent;
@@ -748,7 +748,7 @@ body {
   }
 }
 
-/* ── Blog: Impact — hollow Syne display type with ambient glow ───────────────
+/* ── Blog: Impact — hollow Monoton display type with ambient glow ────────────
  * Outline-only letterforms using -webkit-text-stroke. The glow text-shadow
  * halo creates ambient brand light radiating from the stroke edges.
  * blog-impact-index is the ghost ordinal watermark behind the headline.
@@ -757,7 +757,7 @@ body {
 .blog-impact-hollow-text {
   font-family: var(--ot-font-syne);
   font-size: clamp(4.5rem, 13vw, 11rem);
-  font-weight: 450;
+  font-weight: 400;
   line-height: 0.88;
   letter-spacing: -0.04em;
   color: transparent;

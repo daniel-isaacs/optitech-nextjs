@@ -369,14 +369,14 @@ export default function ShowcaseTokensPage() {
           </div>
         </div>
 
-        {/* Syne accent header variants */}
+        {/* Monoton accent header variants */}
         <div className="mt-xl border-t border-fg/10 pt-lg">
           <div className="flex items-baseline gap-md mb-xs">
             <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
-              Syne
+              Monoton
             </p>
             <span className="font-mono text-label text-fg-muted/50">
-              Variable 400–800 · wght 450 · accent headers
+              Single weight · 400 · geometric display
             </span>
           </div>
           <p className="text-label text-fg-muted leading-body mb-lg max-w-[60ch]">

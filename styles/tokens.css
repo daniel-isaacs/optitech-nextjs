@@ -39,7 +39,7 @@
   /* ── Typography ─────────────────────────────────────────────────────────── */
   --ot-font-sans: var(--font-poppins), system-ui, sans-serif;
   --ot-font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --ot-font-syne: var(--font-syne), system-ui, sans-serif;
+  --ot-font-syne: var(--font-syne), system-ui, sans-serif; /* Monoton — geometric display */
 
   /* Scale */
   --ot-text-display:  clamp(3rem, 8vw, 6rem);
@@ -86,11 +86,11 @@
   --ot-ease-kinetic: cubic-bezier(0.16, 1, 0.3, 1); /* expo out — entrances     */
   --ot-ease-quick:   cubic-bezier(0.25, 1, 0.5, 1); /* quart out — UI states   */
 
-  /* ── Syne display weight ─────────────────────────────────────────────────
-   * Variable font: use 400–525 only. At higher weights the geometry bloats.
-   * Apply via font-weight CSS property or fontVariationSettings "'wght' 450".
+  /* ── Monoton display weight ──────────────────────────────────────────────
+   * Monoton is a single-weight font (Regular 400 only — no variable axis).
+   * Always renders at 400 regardless of font-weight value.
    * ──────────────────────────────────────────────────────────────────────── */
-  --ot-weight-syne: 450;
+  --ot-weight-syne: 400;
 
   /* ── Bloom / halo alpha variants ─────────────────────────────────────────
    * CSS Relative Color Syntax derives these from --ot-brand and --ot-accent.

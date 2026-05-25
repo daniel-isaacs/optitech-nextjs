@@ -50,7 +50,7 @@ function parseAcceptLanguage(header: string | null): Locale {
   return DEFAULT_LOCALE
 }
 
-export function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ── Normalize BCP-47 regional variants → canonical short codes ─────────

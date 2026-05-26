@@ -5,23 +5,24 @@
  *
  * Shown to external reviewers who open a blog post via an External Preview Link.
  * Appears as a fixed strip across the top of the viewport. Collapses to a small
- * floating button when dismissed; clicking it re-expands the banner.
+ * floating pill anchored to the bottom-left corner (clear of nav CTAs) when dismissed.
  *
- * Styled with the OptiTech design system tokens. Uses a warm amber accent to
- * signal "draft / unpublished" state — distinct from the brand teal and signal green.
+ * Styled with the OptiTech design system tokens. Uses a warm amber signal to
+ * indicate "draft / unpublished" state — distinct from brand teal and signal green.
  */
 
 import { useState } from 'react'
-import { Eye, X } from 'lucide-react'
+import { FileEdit, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Props = {
-  headline: string
-  topic?:   string
-  version?: string
-  locale?:  string
+  headline:    string
+  topic?:      string
+  version?:    string
+  locale?:     string
+  authorName?: string
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -37,20 +38,21 @@ const TOPIC_LABELS: Record<string, string> = {
   resources:  'Resources',
 }
 
-// Draft amber — warm signal, not part of brand palette.
-// Using inline oklch values so the component is self-contained and doesn't
-// pollute the design token namespace with a one-off utility color.
-const DRAFT_AMBER = 'oklch(78% 0.18 75)'
+// Warm amber — one-off signal color for draft state. Not a design token because
+// it only appears in this preview-only utility component, never on brand surfaces.
+const DRAFT_AMBER = 'oklch(76% 0.17 68)'
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function DraftStateBanner({ headline, topic, version, locale }: Props) {
+export function DraftStateBanner({ headline, topic, version, locale, authorName }: Props) {
   const [open, setOpen] = useState(true)
   const topicLabel = topic ? (TOPIC_LABELS[topic] ?? topic) : null
 
   return (
     <AnimatePresence initial={false} mode="wait">
       {open ? (
+
+        // ── Expanded strip ────────────────────────────────────────────────────
         <motion.div
           key="expanded"
           initial={{ y: '-100%' }}
@@ -62,11 +64,7 @@ export function DraftStateBanner({ headline, topic, version, locale }: Props) {
           aria-label="Draft preview notice"
         >
           {/* Amber top rule */}
-          <div
-            className="h-px w-full"
-            style={{ background: DRAFT_AMBER }}
-            aria-hidden
-          />
+          <div className="h-px w-full" style={{ background: DRAFT_AMBER }} aria-hidden />
 
           {/* Panel body */}
           <div className="bg-surface/[0.97] backdrop-blur-md border-b border-fg/8 shadow-[0_2px_24px_oklch(0_0_0/0.22)]">
@@ -84,26 +82,34 @@ export function DraftStateBanner({ headline, topic, version, locale }: Props) {
                 Draft
               </span>
 
-              {/* Topic */}
-              {topicLabel && (
-                <span className="shrink-0 text-label uppercase tracking-label font-semibold text-fg-muted/60 hidden sm:block">
-                  {topicLabel}
-                </span>
-              )}
+              {/* Topic + author — secondary meta, hidden on small screens */}
+              <div className="shrink-0 items-center gap-sm hidden sm:flex">
+                {topicLabel && (
+                  <span className="text-label uppercase tracking-label font-semibold text-fg-muted/55">
+                    {topicLabel}
+                  </span>
+                )}
+                {topicLabel && authorName && (
+                  <span className="text-fg-muted/30" aria-hidden>·</span>
+                )}
+                {authorName && (
+                  <span className="text-label text-fg-muted/55">{authorName}</span>
+                )}
+              </div>
 
-              {/* Headline — truncates on small screens */}
+              {/* Headline — takes remaining space, truncates */}
               <span className="truncate flex-1 text-body text-fg min-w-0">
                 {headline}
               </span>
 
-              {/* Locale / version meta */}
-              <div className="shrink-0 items-center gap-sm text-label text-fg-muted/50 hidden md:flex">
+              {/* Locale / version — right-aligned meta */}
+              <div className="shrink-0 items-center gap-sm text-label text-fg-muted/45 hidden md:flex">
                 {locale && <span>{locale.toUpperCase()}</span>}
                 {locale && version && <span aria-hidden>·</span>}
                 {version && <span>v{version}</span>}
               </div>
 
-              {/* Collapse button */}
+              {/* Collapse */}
               <button
                 onClick={() => setOpen(false)}
                 className="shrink-0 p-1 -mr-1 text-fg-muted hover:text-fg transition-colors"
@@ -118,23 +124,37 @@ export function DraftStateBanner({ headline, topic, version, locale }: Props) {
 
       ) : (
 
+        // ── Collapsed pill — bottom-left, clear of nav CTAs ───────────────────
         <motion.button
           key="collapsed"
-          initial={{ opacity: 0, scale: 0.88 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.88 }}
-          transition={{ ease: [0.25, 1, 0.5, 1], duration: 0.22 }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 8 }}
+          transition={{ ease: [0.25, 1, 0.5, 1], duration: 0.24 }}
           onClick={() => setOpen(true)}
-          className="fixed top-4 right-4 z-[9999] flex items-center gap-xs px-md py-2 bg-surface/95 backdrop-blur-sm border border-fg/10 text-fg-muted hover:text-fg shadow-[0_4px_20px_oklch(0_0_0/0.28)] transition-colors"
+          className="fixed bottom-6 left-6 z-[9999] flex items-center gap-sm px-md py-2 bg-surface/95 backdrop-blur-sm border border-fg/10 shadow-[0_4px_20px_oklch(0_0_0/0.28)] hover:border-fg/20 transition-colors group"
           aria-label="Show draft preview notice"
         >
-          <Eye className="w-3.5 h-3.5" aria-hidden />
+          {/* Amber indicator dot */}
+          <span
+            className="shrink-0 w-1.5 h-1.5 rounded-full"
+            style={{ backgroundColor: DRAFT_AMBER }}
+            aria-hidden
+          />
+
+          {/* Label */}
           <span
             className="text-label uppercase tracking-label font-semibold"
             style={{ color: DRAFT_AMBER }}
           >
-            Draft
+            Draft Preview
           </span>
+
+          {/* Icon */}
+          <FileEdit
+            className="w-3.5 h-3.5 text-fg-muted/50 group-hover:text-fg-muted transition-colors"
+            aria-hidden
+          />
         </motion.button>
 
       )}

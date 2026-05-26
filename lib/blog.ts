@@ -136,6 +136,19 @@ async function fetchAuthorByKey(key: string): Promise<AuthorData | null> {
   }
 }
 
+/**
+ * Returns just the author's display name for a given author content key.
+ * Used by the draft state banner to show the author without a full AuthorData fetch.
+ */
+export async function getAuthorName(key: string): Promise<string | null> {
+  try {
+    const data = await getClient().request(AUTHOR_QUERY, { key })
+    return (data as any)?.OT_Author?.items?.[0]?.name ?? null
+  } catch {
+    return null
+  }
+}
+
 export async function getBlogPage(key: string): Promise<BlogPageContent | null> {
   try {
     const data = await getClient().request(BLOG_PAGE_QUERY, { key })

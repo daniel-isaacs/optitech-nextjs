@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import { draftMode } from 'next/headers'
 import { getClient, getLocalizedContentByPath, getRequestBaseUrl, getRequestLocale, setRequestContext } from '@/lib/optimizely'
-import { getBlogPage, getLatestBlogPosts } from '@/lib/blog'
+import { getBlogPage, getLatestBlogPosts, getAuthorName } from '@/lib/blog'
 import { withAppContext } from '@optimizely/cms-sdk/react/server'
 import { PreviewComponent } from '@optimizely/cms-sdk/react/client'
 import type { PreviewParams } from '@optimizely/cms-sdk'
@@ -78,6 +78,19 @@ async function CmsPage({ params, searchParams }: Props) {
         const isExternalPreview = dm.isEnabled && sp_str('ext_preview') === '1'
         const isCmsEdit         = dm.isEnabled && !isExternalPreview
 
+        // ── Author name for the draft banner ────────────────────────────────────
+        // In preview mode blogContent comes from getPreviewContent which returns
+        // the raw ContentReference (just { key }), not the resolved AuthorData.
+        // We do a single targeted fetch here — only for external preview so the
+        // extra round-trip doesn't affect the CMS editor path.
+        let draftAuthorName: string | undefined
+        if (isExternalPreview) {
+          const authorKey = (blogContent.authorRef as any)?.key as string | undefined
+          if (authorKey) {
+            draftAuthorName = (await getAuthorName(authorKey)) ?? undefined
+          }
+        }
+
         // ── CMS-side external preview link ──────────────────────────────────────
         // Shown in the slug route when the CMS editor is viewing the blog page
         // in draft mode and the content has enableExternalPreview: true.
@@ -118,6 +131,7 @@ async function CmsPage({ params, searchParams }: Props) {
                 topic={blogContent.topic    ?? undefined}
                 version={sp_str('ver')      || undefined}
                 locale={sp_str('loc')       || locale}
+                authorName={draftAuthorName}
               />
             )}
 

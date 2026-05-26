@@ -16,8 +16,9 @@ export type BlogPageContent = {
   _metadata: {
     key: string
     published: string
-    url: { default: string | null }
+    url: { default: string | null; hierarchical?: string | null }
   }
+  enableExternalPreview?: boolean
   headline:      string
   subHeadline?:  string
   topic?:        string
@@ -130,6 +131,19 @@ async function fetchAuthorByKey(key: string): Promise<AuthorData | null> {
       linkedIn: item.linkedIn?.default ?? null,
       twitter:  item.twitter?.default  ?? null,
     }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Returns just the author's display name for a given author content key.
+ * Used by the draft state banner to show the author without a full AuthorData fetch.
+ */
+export async function getAuthorName(key: string): Promise<string | null> {
+  try {
+    const data = await getClient().request(AUTHOR_QUERY, { key })
+    return (data as any)?.OT_Author?.items?.[0]?.name ?? null
   } catch {
     return null
   }

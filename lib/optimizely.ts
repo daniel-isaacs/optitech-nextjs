@@ -156,7 +156,8 @@ export async function getLocalizedContentByPath(
   // CMS stores localized content URLs with the locale prefix (e.g. /es/insights/...).
   // Paths arriving here have the prefix stripped by middleware for Next.js routing,
   // so we restore it before querying Content Graph.
-  const queryPath = locale !== DEFAULT_LOCALE ? `/${locale}${path}` : path
+  const queryPath = locale !== DEFAULT_LOCALE ? `${path}/` : path
+  // console.log(`Fetching CMS content for path "${path}" with locale "${locale}" (querying "${queryPath}")`)
   const results = await getClient().getContentByPath(queryPath, { host: baseUrl || undefined })
   if (!results?.length) return null
   if (results.length === 1) return results[0]

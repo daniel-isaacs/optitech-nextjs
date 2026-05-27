@@ -157,17 +157,8 @@ export async function getLocalizedContentByPath(
   locale: Locale,
   baseUrl?: string,
 ): Promise<any | null> {
-  // Fetch WITHOUT locale context first so the SDK returns ALL published locale
-  // variants for this path. setRequestContext(locale) sets a global SDK context
-  // that can cause the underlying GraphQL client to filter results to a single
-  // locale — if the requested locale has no published content, results come back
-  // empty even when other locales exist. We set the context AFTER the fetch so
-  // it is available to the composition renderer (CompositionRenderer / withAppContext)
-  // that runs after this function returns.
-  const results = await getClient().getContentByPath(path, { host: baseUrl || undefined })
-
-  // Now set the rendering context so composition rendering uses the correct locale.
   await setRequestContext(locale)
+  const results = await getClient().getContentByPath(path, { host: baseUrl || undefined })
 
   if (!results?.length) return null
   if (results.length === 1) return results[0]

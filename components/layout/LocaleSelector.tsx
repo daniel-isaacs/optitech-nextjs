@@ -96,12 +96,19 @@ export function LocaleSelector({ enabledLocales }: LocaleSelectorProps) {
   function selectLocale(next: Locale) {
     close()
     if (next === locale) return
+    // Write the NEXT_LOCALE cookie BEFORE navigating. next-intl's middleware
+    // reads this cookie for locale detection. Without this, navigating back to
+    // English ('/') while a stale 'es' cookie is present causes the middleware
+    // to redirect the user back to '/es/' immediately, making English unreachable.
+    // Setting the cookie here ensures the middleware sees the new locale on the
+    // very next request, so no redirect loop occurs.
+    try {
+      document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000; SameSite=Lax`
+    } catch { /* private-mode or restricted context — safe to swallow */ }
     // Use the actual browser URL (window.location.pathname) not the Next.js
     // rewritten path (usePathname). next-intl middleware rewrites /es/about →
     // /about internally, so usePathname() returns '/about' — missing the prefix.
     // window.location.pathname always shows the real URL bar value.
-    // Full navigation (href assignment) lets next-intl middleware detect the new
-    // locale from the prefixed URL on the next request.
     window.location.href = localizedHref(getBrowserPathname(), next)
   }
 
@@ -202,6 +209,11 @@ export function LocaleSelectorMobile({
   function selectLocale(next: Locale) {
     if (next === locale) { onSelect?.(); return }
     onSelect?.()
+    // Write NEXT_LOCALE cookie before navigating — prevents stale-cookie redirect loop.
+    // See desktop selectLocale() above for full explanation.
+    try {
+      document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000; SameSite=Lax`
+    } catch { /* private-mode or restricted context — safe to swallow */ }
     window.location.href = localizedHref(getBrowserPathname(), next)
   }
 

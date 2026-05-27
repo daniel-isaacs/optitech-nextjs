@@ -28,16 +28,15 @@ export const routing = defineRouting({
   // Default locale uses no URL prefix; all others are prefixed.
   localePrefix: 'as-needed',
 
-  // URL is the single source of truth for locale.
-  // With localeDetection: true (the default), next-intl stores the locale in a
-  // NEXT_LOCALE cookie. When the user navigates to '/' (English, no prefix),
-  // the middleware reads the stale cookie (e.g. 'es') and redirects them back
-  // to '/es/' — making it impossible to return to English via the locale picker.
+  // Keep locale detection enabled (the default) so the middleware correctly
+  // rewrites locale-prefixed paths (/es/page → /page internally) and sets the
+  // locale context. Disabling it was causing the middleware to skip URL rewrites
+  // on Vercel, routing /es → /[...slug] instead of the home page.
   //
-  // Disabling detection means locale is read only from the URL prefix.
-  // First-time visitors always land on the default locale (English) at '/'.
-  // Non-English content is reached explicitly via the language switcher.
-  localeDetection: false,
+  // The "redirect back to /es" problem when switching to English is handled
+  // differently: LocaleSelector now writes the NEXT_LOCALE cookie before
+  // navigating, so the middleware sees the correct locale immediately and
+  // doesn't redirect based on a stale cookie.
 })
 
 export type Locale = (typeof routing.locales)[number]

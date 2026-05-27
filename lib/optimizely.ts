@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { config, getClient as _getClient } from '@optimizely/cms-sdk'
 import { isSupportedLocale, DEFAULT_LOCALE } from '@/lib/i18n/config'
 import type { Locale } from '@/lib/i18n/config'
+import { getLocale as getNextIntlLocale } from 'next-intl/server'
 
 // setContext is called per-request to tell the SDK the active locale.
 // Import lazily to avoid pulling in React server-only code at module init.
@@ -42,14 +43,18 @@ export async function setRequestContext(locale: Locale): Promise<void> {
 
 /**
  * Returns the active locale for the current request.
- * Reads the x-locale header set by middleware, falls back to DEFAULT_LOCALE.
+ *
+ * Delegates to next-intl's getLocale(), which reads the locale resolved by
+ * the next-intl middleware (stored internally via the next-intl plugin).
+ * Falls back to DEFAULT_LOCALE for routes excluded from the middleware
+ * (e.g. /preview, /api/*) where no locale context is available.
+ *
  * Safe to call from any server component or route handler.
  */
 export async function getRequestLocale(): Promise<Locale> {
   try {
-    const h      = await headers()
-    const locale = h.get('x-locale')
-    return isSupportedLocale(locale) ? locale : DEFAULT_LOCALE
+    const locale = await getNextIntlLocale()
+    return isSupportedLocale(locale) ? (locale as Locale) : DEFAULT_LOCALE
   } catch {
     return DEFAULT_LOCALE
   }
@@ -152,10 +157,21 @@ export async function getLocalizedContentByPath(
   locale: Locale,
   baseUrl?: string,
 ): Promise<any | null> {
-  await setRequestContext(locale)
+  // Fetch WITHOUT locale context first so the SDK returns ALL published locale
+  // variants for this path. setRequestContext(locale) sets a global SDK context
+  // that can cause the underlying GraphQL client to filter results to a single
+  // locale — if the requested locale has no published content, results come back
+  // empty even when other locales exist. We set the context AFTER the fetch so
+  // it is available to the composition renderer (CompositionRenderer / withAppContext)
+  // that runs after this function returns.
   const results = await getClient().getContentByPath(path, { host: baseUrl || undefined })
+
+  // Now set the rendering context so composition rendering uses the correct locale.
+  await setRequestContext(locale)
+
   if (!results?.length) return null
   if (results.length === 1) return results[0]
+
   // Multiple locale variants — prefer the requested locale.
   // Use prefix matching so app locale 'es' matches CMS locale 'es-MX', etc.
   const al = locale.toLowerCase()

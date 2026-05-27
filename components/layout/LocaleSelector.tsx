@@ -6,9 +6,9 @@
  * Desktop: compact globe + code trigger → glass dropdown with language options.
  * Mobile: inline grid of language buttons (used inside MobileMenu).
  *
- * On selection, writes the locale cookie then navigates to the locale-prefixed
- * equivalent of the current URL. The server middleware picks up the cookie on
- * the next request and renders in the new locale.
+ * On selection, navigates to the locale-prefixed equivalent of the current URL.
+ * next-intl middleware detects the locale from the URL prefix on every request,
+ * so no cookie is needed — the URL is the single source of truth for locale.
  *
  * Design constraints (DESIGN.md):
  *  - Sharp corners only (rounded-none)
@@ -26,12 +26,6 @@ import { SUPPORTED_LOCALES, getLocaleMeta, localizedHref, isSupportedLocale } fr
 import type { Locale } from '@/lib/i18n/config'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 import { useTranslation } from '@/lib/i18n/useTranslation'
-
-const LOCALE_COOKIE = 'optitech-locale'
-
-function setCookie(locale: string) {
-  document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`
-}
 
 /**
  * Returns the real browser URL path — important because Next.js proxy/middleware
@@ -102,14 +96,12 @@ export function LocaleSelector({ enabledLocales }: LocaleSelectorProps) {
   function selectLocale(next: Locale) {
     close()
     if (next === locale) return
-    setCookie(next)
-    // Use the actual browser URL (window.location.pathname) not the Next.js rewritten
-    // path (usePathname). The proxy rewrites /es/about → /about, so usePathname()
-    // returns '/about' — stripping the locale prefix. Switching back to English from
-    // '/es' would then call router.push('/') while already at '/' → no navigation.
-    // window.location.pathname always reflects what's in the browser URL bar.
-    // Full navigation (href assignment) also guarantees the proxy runs fresh and
-    // sets the x-locale header correctly.
+    // Use the actual browser URL (window.location.pathname) not the Next.js
+    // rewritten path (usePathname). next-intl middleware rewrites /es/about →
+    // /about internally, so usePathname() returns '/about' — missing the prefix.
+    // window.location.pathname always shows the real URL bar value.
+    // Full navigation (href assignment) lets next-intl middleware detect the new
+    // locale from the prefixed URL on the next request.
     window.location.href = localizedHref(getBrowserPathname(), next)
   }
 
@@ -209,7 +201,6 @@ export function LocaleSelectorMobile({
 
   function selectLocale(next: Locale) {
     if (next === locale) { onSelect?.(); return }
-    setCookie(next)
     onSelect?.()
     window.location.href = localizedHref(getBrowserPathname(), next)
   }

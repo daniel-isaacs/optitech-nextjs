@@ -58,7 +58,6 @@ export const OT_TabsDefault = displayTemplate({
     // ── Trigger alignment (top position only) ────────────────────────────────
     triggerAlign: {
       displayName: 'Trigger Alignment',
-      description: 'Applies to top position only.',
       editor:      'select',
       sortOrder:   50,
       choices: {
@@ -70,7 +69,6 @@ export const OT_TabsDefault = displayTemplate({
     // ── Auto-play ────────────────────────────────────────────────────────────
     autoPlay: {
       displayName: 'Auto-Play',
-      description: 'Automatically cycle through tabs. Shows a progress bar on the active tab trigger.',
       editor:      'select',
       sortOrder:   60,
       choices: {
@@ -82,13 +80,12 @@ export const OT_TabsDefault = displayTemplate({
     // ── Auto-play duration ───────────────────────────────────────────────────
     autoPlayDuration: {
       displayName: 'Auto-Play Duration',
-      description: 'Seconds each tab is shown before advancing. Only applies when Auto-Play is On.',
       editor:      'select',
       sortOrder:   70,
       choices: {
-        '3': { displayName: '3 seconds', sortOrder: 10 },
-        '5': { displayName: '5 seconds (Default)', sortOrder: 20 },
-        '7': { displayName: '7 seconds', sortOrder: 30 },
+        s3: { displayName: '3 seconds', sortOrder: 10 },
+        s5: { displayName: '5 seconds (Default)', sortOrder: 20 },
+        s7: { displayName: '7 seconds', sortOrder: 30 },
       },
     },
 

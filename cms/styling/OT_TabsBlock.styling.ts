@@ -16,6 +16,6 @@ export function getTabsStyles(s: Record<string, string | boolean>): TabsStyleOpt
     contentLayout:    (s.contentLayout ?? 'textOnly')  as TabsStyleOptions['contentLayout'],
     triggerAlign:     (s.triggerAlign  ?? 'left')      as TabsStyleOptions['triggerAlign'],
     autoPlay:         s.autoPlay === 'on' || s.autoPlay === true,
-    autoPlayDuration: (Number(s.autoPlayDuration ?? 5)) as 3 | 5 | 7,
+    autoPlayDuration: ({ s3: 3, s5: 5, s7: 7 }[s.autoPlayDuration as string] ?? 5) as 3 | 5 | 7,
   }
 }

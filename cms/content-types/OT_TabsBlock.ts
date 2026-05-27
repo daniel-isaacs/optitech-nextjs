@@ -5,7 +5,7 @@ export const OT_TabsBlock = contentType({
   key:                  'OT_TabsBlock',
   displayName:          'Tabs Block',
   baseType:             '_component',
-  compositionBehaviors: ['elementEnabled', 'sectionEnabled'],
+  compositionBehaviors: ['sectionEnabled'],
   properties: {
     eyebrow: {
       type:        'string',

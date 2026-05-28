@@ -109,26 +109,6 @@ export const OT_ThemeManager = contentType({
     colorFgMuted:      { type: 'string', displayName: 'Foreground Muted Dark — secondary text in dark mode (hex or oklch)',            group: 'OT_Theme', sortOrder: 170 },
     colorFgMutedLight: { type: 'string', displayName: 'Foreground Muted Light — secondary text in light mode (hex or oklch)',          group: 'OT_Theme', sortOrder: 175 },
 
-    // ── Typography ───────────────────────────────────────────────────────────
-    headingWeight: {
-      type:        'string',
-      format:      'selectOne',
-      displayName: 'Heading Weight',
-      group:       'OT_Theme',
-      sortOrder:   180,
-      enum: [
-        { value: 'w100', displayName: 'Thin — 100'          },
-        { value: 'w200', displayName: 'Extra Light — 200'   },
-        { value: 'w300', displayName: 'Light — 300'         },
-        { value: 'w400', displayName: 'Regular — 400'       },
-        { value: 'w500', displayName: 'Medium — 500'        },
-        { value: 'w600', displayName: 'SemiBold — 600'      },
-        { value: 'w700', displayName: 'Bold — 700 (default headline)' },
-        { value: 'w800', displayName: 'Extra Bold — 800 (default display)' },
-        { value: 'w900', displayName: 'Black — 900'         },
-      ],
-    },
-
     // ── SEO / Search & Discovery ──────────────────────────────────────────────
     siteName: {
       type: 'string',

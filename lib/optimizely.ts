@@ -123,6 +123,7 @@ const THEME_QUERY = `
         colorFgLight
         colorFgMuted
         colorFgMutedLight
+        headingWeight
         siteName
         defaultSeoDescription
         defaultSocialImage { url { default } }
@@ -433,6 +434,15 @@ export function buildThemeCSS(settings: any): string {
   const root: string[] = []   // :root — applies globally (dark mode default)
   const dark: string[] = []   // [data-theme="dark"] — nested dark surfaces
   const light: string[] = []  // [data-theme="light"] — light mode overrides
+
+  // Heading weight — overrides display + headline roles; mode-agnostic
+  if (settings.headingWeight) {
+    const w = ({ w100:'100',w200:'200',w300:'300',w400:'400',w500:'500',w600:'600',w700:'700',w800:'800',w900:'900' } as Record<string,string>)[settings.headingWeight]
+    if (w) {
+      root.push(`--ot-weight-display: ${w}`)
+      root.push(`--ot-weight-headline: ${w}`)
+    }
+  }
 
   // Brand & accent — constant across modes; :root only
   if (settings.colorBrand)        root.push(`--ot-brand: ${settings.colorBrand}`)

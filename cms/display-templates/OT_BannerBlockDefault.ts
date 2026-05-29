@@ -41,6 +41,7 @@ export const OT_BannerBlockDefault = displayTemplate({
       choices: {
         large:   { displayName: 'Large (Default)', sortOrder: 10 },
         compact: { displayName: 'Compact',         sortOrder: 20 },
+        display: { displayName: 'Display',         sortOrder: 30 },
       },
     },
     imageBlend: {

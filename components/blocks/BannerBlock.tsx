@@ -9,7 +9,7 @@ import BannerEntrance from './BannerEntrance'
 export type BannerStyleOptions = {
   color?:      'canvas' | 'surface' | 'brand'
   alignment?:  'center' | 'left'
-  size?:       'large'  | 'compact'
+  size?:       'large'  | 'compact' | 'display'
   treatment?:  'scrim'  | 'glass'
   imageBlend?: 'overlay' | 'multiply'
 }
@@ -23,6 +23,7 @@ const sectionCva = cva(
       size: {
         large:   'min-h-[clamp(400px,50vh,560px)] py-xl',
         compact: 'min-h-[clamp(240px,30vh,360px)] py-lg',
+        display: 'min-h-[clamp(480px,60vh,720px)] py-2xl',
       },
     },
     defaultVariants: { size: 'large' },
@@ -55,6 +56,9 @@ const headingCva = cva(
       size: {
         large:   'text-[clamp(2.5rem,5vw,3.75rem)]',
         compact: 'text-headline',
+        // leading-[1.05] overrides the leading-headline base — at display scale
+        // (up to 6rem) the 0.9 token would clip descenders against overflow-hidden.
+        display: 'text-display leading-[1.05] tracking-display font-extrabold',
       },
     },
     defaultVariants: { color: 'canvas', size: 'large' },
@@ -220,7 +224,8 @@ export default function BannerBlock({
     </div>
   ) : null
 
-  const gapClass = size === 'large' ? 'gap-lg' : 'gap-md'
+  const gapClass = size === 'large' || size === 'display' ? 'gap-lg' : 'gap-md'
+  const isDisplay = size === 'display'
 
   return (
     <section
@@ -270,10 +275,10 @@ export default function BannerBlock({
           <div className={cn(
             'flex flex-col',
             gapClass,
-            size === 'large' ? 'px-xl py-xl' : 'px-lg py-lg',
+            size === 'large' ? 'px-xl py-xl' : isDisplay ? 'px-xl py-2xl' : 'px-lg py-lg',
             isCentered
-              ? 'items-center text-center max-w-[640px] w-full'
-              : 'items-start text-left  max-w-[560px] w-full',
+              ? `items-center text-center ${isDisplay ? 'max-w-250' : 'max-w-160'} w-full`
+              : `items-start text-left  ${isDisplay ? 'max-w-225' : 'max-w-140'} w-full`,
             isBrand ? 'banner-glass-brand' : 'banner-glass',
           )}>
             {eyebrowEl}
@@ -287,8 +292,8 @@ export default function BannerBlock({
             'flex flex-col',
             gapClass,
             isCentered
-              ? 'items-center text-center max-w-[760px] w-full mx-auto'
-              : 'items-start text-left  max-w-[640px] w-full',
+              ? `items-center text-center ${isDisplay ? 'max-w-250' : 'max-w-190'} w-full mx-auto`
+              : `items-start text-left  ${isDisplay ? 'max-w-225' : 'max-w-160'} w-full`,
           )}>
             {eyebrowEl}
             {headingEl}

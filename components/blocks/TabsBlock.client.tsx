@@ -588,7 +588,7 @@ function PanelContent({ tab, color, contentLayout }: PanelContentProps) {
   )
 
   const bodyClass = cn(
-    'text-body leading-body text-pretty max-w-[65ch]',
+    'text-body leading-body text-pretty',
     color === 'brand'  ? 'text-fg-on-brand/80'
     : color === 'glass' ? 'text-white/75'
     : 'text-fg-muted',
@@ -604,6 +604,8 @@ function PanelContent({ tab, color, contentLayout }: PanelContentProps) {
       {tab.heading && <h3 className={headingClass}>{tab.heading}</h3>}
       {tab.body    && (
         <div
+          data-rich-text=""
+          data-color={color === 'brand' ? 'brand' : color === 'glass' ? 'glass' : undefined}
           className={bodyClass}
           dangerouslySetInnerHTML={{ __html: tab.body }}
         />
@@ -632,7 +634,7 @@ function PanelContent({ tab, color, contentLayout }: PanelContentProps) {
   return (
     <div className={cn(
       'flex flex-col gap-lg',
-      resolvedLayout === 'imageRight' ? 'md:flex-row'         : 'md:flex-row-reverse',
+      resolvedLayout === 'imageRight' ? 'md:flex-row md:items-center' : 'md:flex-row-reverse md:items-center',
     )}>
       <div className="flex-1 md:basis-[55%] md:max-w-[55%] min-w-0">
         {textContent}

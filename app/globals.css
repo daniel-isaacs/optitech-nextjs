@@ -510,6 +510,33 @@ body {
   border-top-color: oklch(97% 0.005 195 / 0.2);
 }
 
+/* ── Color: glass (dark surface, white text) ── */
+[data-rich-text][data-color="glass"] p,
+[data-rich-text][data-color="glass"] li {
+  color: oklch(97% 0.005 195 / 0.75);
+}
+[data-rich-text][data-color="glass"] h1,
+[data-rich-text][data-color="glass"] h2,
+[data-rich-text][data-color="glass"] h3,
+[data-rich-text][data-color="glass"] h4 {
+  color: oklch(97% 0.005 195 / 0.95);
+}
+[data-rich-text][data-color="glass"] a {
+  color: oklch(97% 0.005 195 / 0.9);
+  text-decoration-color: oklch(97% 0.005 195 / 0.4);
+}
+[data-rich-text][data-color="glass"] a:hover {
+  color: #fff;
+  text-decoration-color: #fff;
+}
+[data-rich-text][data-color="glass"] code {
+  background: oklch(97% 0.005 195 / 0.12);
+  color: oklch(97% 0.005 195 / 0.9);
+}
+[data-rich-text][data-color="glass"] hr {
+  border-top-color: oklch(97% 0.005 195 / 0.2);
+}
+
 /* ── Size: compact ── */
 [data-rich-text][data-size="compact"] p {
   font-size: 0.9375rem;

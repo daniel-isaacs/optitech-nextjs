@@ -12,7 +12,7 @@ export default function ShowcaseNav() {
   return (
     <nav
       aria-label="Showcase navigation"
-      className="sticky top-16 z-10 bg-canvas/92 backdrop-blur-md"
+      className="sticky top-16 z-20 bg-canvas/92 backdrop-blur-md"
     >
 
       {/* ── Tier 1: Category tabs ──────────────────────────────────────────── */}

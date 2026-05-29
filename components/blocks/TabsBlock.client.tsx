@@ -387,7 +387,7 @@ function TriggerButton({
         onClick={() => onSelect(index)}
         className={cn(
           baseClass,
-          'px-lg py-sm text-sm font-semibold',
+          'px-lg py-md text-base font-semibold',
           triggerTextClass(color, isActive ? 'active' : 'inactive'),
           // Glass active: frosted bg
           isActive && color === 'glass' && [
@@ -581,7 +581,7 @@ type PanelContentProps = {
 function PanelContent({ tab, color, contentLayout }: PanelContentProps) {
 
   const headingClass = cn(
-    'text-headline font-bold leading-headline tracking-headline text-balance',
+    'text-[clamp(1.5rem,3vw,2rem)] font-bold leading-[1.1] tracking-[-0.02em] text-balance',
     color === 'brand'  ? 'text-fg-on-brand'
     : color === 'glass' ? 'text-white'
     : 'text-fg',

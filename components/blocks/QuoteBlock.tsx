@@ -1,4 +1,5 @@
 import { cva } from "class-variance-authority";
+import LaserSignature from "./LaserSignature";
 
 // ─── Style option types (map 1:1 to CMS content properties) ─────────────────
 
@@ -165,7 +166,11 @@ export default function QuoteBlock({
             <p className={quoteTextCva({ color, size })} {...pa('quote')}>{quote}</p>
           </blockquote>
           <figcaption className="mt-lg flex flex-col gap-xs">
-            <p className={attributionNameCva({ color })} {...pa('attributionName')}>{attribution.name}</p>
+            <LaserSignature
+                name={attribution.name}
+                color={color}
+                epiProps={pa('attributionName')}
+              />
             {attribution.title && (
               <p className={attributionTitleCva({ color })} {...pa('attributionTitle')}>{attribution.title}</p>
             )}

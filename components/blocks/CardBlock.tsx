@@ -8,7 +8,7 @@ export type CardFill       = "ghost" | "surface" | "brand" | "light" | "glass";
 export type CardBorder     = "none" | "subtle" | "brand";
 export type CardImageStyle = "top" | "background" | "side" | "float";
 export type CardImageSide  = "left" | "right";
-export type CardHover      = "none" | "lift" | "glow";
+export type CardHover      = "none" | "lift" | "glow" | "tilt";
 export type CardDensity    = "compact" | "default" | "spacious";
 
 export type CardAspectRatio      = "auto" | "square" | "portrait" | "landscape" | "wide" | "cinema";
@@ -117,6 +117,7 @@ const HOVER_CLASS: Record<CardHover, string> = {
   none: "",
   lift: "card-hover-lift",
   glow: "card-hover-glow",
+  tilt: "card-hover-tilt",
 };
 
 // ─── Density ─────────────────────────────────────────────────────────────────

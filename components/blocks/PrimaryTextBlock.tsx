@@ -14,7 +14,7 @@ export type PrimaryTextStyleOptions = {
    * Only takes effect when size is "display"; ignored at all other scales.
    * Dark canvas background required (see DESIGN.md §6).
    */
-  gradient?: "none" | "brand" | "warm" | "luminous" | "ember";
+  gradient?: "none" | "brand" | "warm" | "luminous" | "ember" | "extrude";
 };
 
 // ─── CVA variant configs ─────────────────────────────────────────────────────
@@ -87,6 +87,7 @@ const headlineCva = cva("text-balance", {
       warm:     "",
       luminous: "",
       ember:    "",
+      extrude:  "",
     },
   },
   compoundVariants: [
@@ -94,6 +95,7 @@ const headlineCva = cva("text-balance", {
     { size: "display", gradient: "warm",     class: "display-gradient-warm" },
     { size: "display", gradient: "luminous", class: "display-gradient-luminous" },
     { size: "display", gradient: "ember",    class: "display-gradient-ember" },
+    { size: "display", gradient: "extrude",  class: "display-extrude" },
   ],
   defaultVariants: { size: "headline", color: "canvas", gradient: "none" },
 });

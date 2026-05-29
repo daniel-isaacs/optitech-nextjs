@@ -5,39 +5,33 @@ import { getSiteSettings, getRequestDomain, getRequestLocale } from '@/lib/optim
 /**
  * Footer — driven by OT_FooterBlock via ThemeManager.footerRef.
  *
- * Structure:
- *   [brand accent bar]
- *   [description zone — mission statement as editorial statement]
- *   [logo + navigation zone]
- *   [year mark]
- *
- * Logo is sourced from ThemeManager (same as header — single source of truth).
- * Description and links come from the referenced OT_FooterBlock.
- * Both are independently optional. Graceful null state when footerRef is absent.
- *
- * Link auto-column: ≤5 links → 1 column. 6–10 links → 2 columns (desktop+).
+ * Layout (redesigned with isometric depth system):
+ *   [2px gradient bar]
+ *   [diagonal isometric texture — 45° lines match extrude shadow direction]
+ *   [editorial wordmark — "OptiTech" in display-extrude at full size]
+ *   [content grid — description left, nav right, separated by border-t]
+ *   [bottom strip — logo + year]
  */
 export default async function Footer() {
   const settings = await getSiteSettings(await getRequestDomain(), await getRequestLocale())
 
-  // ── Logo (from ThemeManager — identical source to header) ──────────────────
+  // ── Logo ──────────────────────────────────────────────────────────────────
   const logoSrc        = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
   const logoAlt        = settings?.logoAlt ?? 'OptiTech'
   const logoFit        = (settings?.logoFit as string | undefined) ?? 'full'
   const logoInvertDark = settings?.logoInvertDark === true
 
   const LOGO_IMG_CLASS: Record<string, string> = {
-    full:    'max-h-9 w-auto',
-    icon:    'h-9 w-9 object-contain',
-    compact: 'max-h-7 w-auto max-w-[120px]',
+    full:    'max-h-8 w-auto',
+    icon:    'h-8 w-8 object-contain',
+    compact: 'max-h-6 w-auto max-w-[110px]',
   }
   const logoImgClass = [
     LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full,
     logoInvertDark ? 'logo-invert-dark' : '',
   ].filter(Boolean).join(' ')
 
-  // ── Footer block data (from OT_FooterBlock via contentReference) ───────────
-  // footerRef is a ContentReference — the actual block data lives in .item
+  // ── Footer block data ─────────────────────────────────────────────────────
   const footerRef       = (settings?.footerRef?.item ?? settings?.footerRef) as any | undefined
   const descriptionHtml = (footerRef?.description?.html as string | undefined) ?? null
 
@@ -51,45 +45,71 @@ export default async function Footer() {
 
   const hasContent     = !!descriptionHtml || links.length > 0
   const twoColumnLinks = links.length > 5
-
-  const year = new Date().getFullYear()
+  const year           = new Date().getFullYear()
 
   return (
-    <footer className="relative overflow-hidden isolate bg-surface border-t border-fg/10">
+    <footer className="relative overflow-hidden isolate bg-canvas">
 
-      {/* ── Background depth layer ───────────────────────────────────────────
-           Soft brand bloom from bottom-right: gives the footer a light-source
-           quality without pattern clutter. Static — no motion concern. ────── */}
+      {/* ── 2px gradient horizon — brand → accent ──────────────────────────── */}
       <div
-        className="absolute inset-0 pointer-events-none select-none"
-        aria-hidden="true"
-        style={{
-          zIndex: -1,
-          backgroundImage:
-            'radial-gradient(ellipse 60% 80% at 95% 110%, var(--ot-bloom-brand-faint) 0%, transparent 65%)',
-        }}
-      />
-
-      {/* ── Accent bar — 2 px gradient horizon: brand ➜ accent ──────────────
-           At 1 px the gradient disappeared entirely. 2 px makes it readable. */}
-      <div
+        aria-hidden
         className="h-0.5"
-        aria-hidden="true"
         style={{
           background: 'linear-gradient(to right, transparent, var(--ot-brand) 20%, var(--ot-accent) 80%, transparent)',
         }}
       />
 
-      {hasContent ? (
-        <div className="px-md lg:px-lg">
+      {/* ── Isometric diagonal texture — 45° lines match the extrude shadow ──
+           One-pixel lines every 48px. Uses CSS relative color so it follows
+           CMS theme overrides automatically. ─────────────────────────────── */}
+      <div
+        aria-hidden
+        className="pointer-events-none select-none absolute inset-0"
+        style={{
+          zIndex: 0,
+          backgroundImage:
+            'repeating-linear-gradient(45deg, oklch(from var(--ot-brand) l c h / 0.055) 0px, oklch(from var(--ot-brand) l c h / 0.055) 1px, transparent 1px, transparent 48px)',
+        }}
+      />
 
-          {/* ── Main content row — description left, nav right ────────────────
-               Description fills the remaining horizontal space so it doesn't
-               leave a column of dead whitespace on wide viewports. Nav links
-               shrink to their content on the right edge. ─────────────────── */}
-          <div className="pt-xl pb-lg border-b border-fg/8 flex flex-col gap-xl sm:flex-row sm:items-start sm:gap-2xl">
+      {/* ── Bottom-right ambient bloom — soft glow anchors the depth ─────── */}
+      <div
+        aria-hidden
+        className="pointer-events-none select-none absolute inset-0"
+        style={{
+          zIndex: 0,
+          backgroundImage:
+            'radial-gradient(ellipse 55% 70% at 92% 105%, var(--ot-bloom-brand-faint) 0%, transparent 65%)',
+        }}
+      />
 
-            {/* Description — flexible, fills available space */}
+      {/* ── Editorial wordmark — isometric extrude at display scale ──────────
+           The primary visual statement of the footer. Clips naturally at the
+           overflow-hidden boundary on narrow viewports — the bleed is intentional.
+           aria-hidden because the page already identifies the brand via the logo. */}
+      <div
+        aria-hidden
+        className="relative select-none pointer-events-none overflow-hidden px-md pt-xl pb-sm lg:px-lg"
+        style={{ zIndex: 1 }}
+      >
+        <p
+          className="display-extrude font-extrabold leading-none"
+          style={{
+            fontSize: 'clamp(4rem, 13vw, 13rem)',
+            letterSpacing: '-0.04em',
+          }}
+        >
+          OptiTech
+        </p>
+      </div>
+
+      {/* ── Content zone ─────────────────────────────────────────────────────
+           Only renders when footer block data is present. ───────────────── */}
+      {hasContent && (
+        <div className="relative px-md lg:px-lg" style={{ zIndex: 1 }}>
+          <div className="border-t border-fg/10 pt-xl pb-lg flex flex-col gap-xl sm:flex-row sm:items-start sm:gap-2xl">
+
+            {/* Description — flexible width */}
             {descriptionHtml && (
               <div
                 className="
@@ -106,7 +126,7 @@ export default async function Footer() {
               />
             )}
 
-            {/* Navigation links — pinned to the right, shrink to content */}
+            {/* Navigation links — pinned right */}
             {links.length > 0 && (
               <nav aria-label="Footer navigation" className="shrink-0">
                 <ul
@@ -132,52 +152,33 @@ export default async function Footer() {
                 </ul>
               </nav>
             )}
-          </div>
 
-          {/* ── Logo strip ────────────────────────────────────────────────── */}
-          <div className="py-lg">
-            <Link
-              href="/"
-              aria-label={`${logoAlt} — Home`}
-              className="
-                inline-flex items-center h-9
-                opacity-70 hover:opacity-100
-                transition-opacity duration-200 ease-quick
-              "
-            >
-              <Image
-                src={logoSrc}
-                alt={logoAlt}
-                width={140}
-                height={36}
-                className={logoImgClass}
-              />
-            </Link>
           </div>
-
-        </div>
-      ) : (
-        /* ── Null state — no footer block configured ─────────────────────── */
-        <div className="px-md lg:px-lg py-xl flex items-center justify-start">
-          <Link
-            href="/"
-            aria-label={`${logoAlt} — Home`}
-            className="opacity-40 hover:opacity-70 transition-opacity duration-200 ease-quick"
-          >
-            <Image
-              src={logoSrc}
-              alt={logoAlt}
-              width={120}
-              height={30}
-              className={logoImgClass}
-            />
-          </Link>
         </div>
       )}
 
-      {/* ── Year mark — label in brand color, quiet but present ──────────────── */}
-      <div className="border-t border-fg/5 px-md lg:px-lg py-sm">
-        <p className="text-label text-brand/50 tracking-label uppercase">
+      {/* ── Bottom strip — logo + year ────────────────────────────────────────
+           Sits on the deepest ground. Logo is at reduced opacity at rest,
+           brightens on hover. Year mark in brand/40 — quiet but present. ── */}
+      <div
+        className="relative border-t border-fg/8 px-md lg:px-lg py-md flex items-center justify-between gap-lg"
+        style={{ zIndex: 1 }}
+      >
+        <Link
+          href="/"
+          aria-label={`${logoAlt} — Home`}
+          className="inline-flex items-center opacity-55 hover:opacity-90 transition-opacity duration-200 ease-quick"
+        >
+          <Image
+            src={logoSrc}
+            alt={logoAlt}
+            width={130}
+            height={32}
+            className={logoImgClass}
+          />
+        </Link>
+
+        <p className="text-label text-brand/40 tracking-label uppercase">
           {year}
         </p>
       </div>

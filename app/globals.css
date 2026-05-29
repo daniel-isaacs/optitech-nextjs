@@ -309,7 +309,8 @@ body {
   .display-gradient-brand,
   .display-gradient-warm,
   .display-gradient-luminous,
-  .display-gradient-ember {
+  .display-gradient-ember,
+  .display-extrude {
     animation: depth-arrive 0.9s var(--ot-ease-kinetic) both;
   }
 }
@@ -360,6 +361,81 @@ body {
       oklch(from var(--ot-accent) calc(l * 0.54) calc(c * 0.9) calc(h * 0.5)),
     calc(var(--display-depth) * 0.1em)   calc(var(--display-depth) * 0.16em) 0
       oklch(from var(--ot-accent) calc(l * 0.33) calc(c * 0.75) calc(h * 0.25) / 0.75);
+}
+
+/* Extrude · fg (near-white) face + accent rim stroke + 12-layer 45° isometric shadow stack.
+ * Shadow progresses: accent-lit near-edge → full brand → darkening brand → near-black trailing.
+ * Direction: bottom-right (equal x/y offsets = true 45° isometric axis).
+ * Uses the same --display-depth @property animation as the other display depth classes. */
+.display-extrude {
+  color: var(--ot-fg);
+  -webkit-text-stroke: 1.5px oklch(from var(--ot-accent) l c h / 0.50);
+  paint-order: stroke fill;
+  text-shadow:
+    /* Accent glow bloom — the rim-light halo at origin */
+    0 0 0.6em oklch(from var(--ot-accent) l c h / 0.18),
+    /* Layers 1–2: accent-lit near-edge transition into brand */
+    calc(var(--display-depth) * 0.02em) calc(var(--display-depth) * 0.02em) 0
+      oklch(from var(--ot-accent) calc(l * 0.78) calc(c * 0.9) h),
+    calc(var(--display-depth) * 0.04em) calc(var(--display-depth) * 0.04em) 0
+      oklch(from var(--ot-brand) calc(l * 1.12) c h),
+    /* Layers 3–5: brand at full saturation, slightly darkening */
+    calc(var(--display-depth) * 0.07em) calc(var(--display-depth) * 0.07em) 0
+      oklch(from var(--ot-brand) l c h),
+    calc(var(--display-depth) * 0.10em) calc(var(--display-depth) * 0.10em) 0
+      oklch(from var(--ot-brand) calc(l * 0.88) c h),
+    calc(var(--display-depth) * 0.13em) calc(var(--display-depth) * 0.13em) 0
+      oklch(from var(--ot-brand) calc(l * 0.76) c h),
+    /* Layers 6–8: mid-dark brand */
+    calc(var(--display-depth) * 0.17em) calc(var(--display-depth) * 0.17em) 0
+      oklch(from var(--ot-brand) calc(l * 0.63) c h),
+    calc(var(--display-depth) * 0.21em) calc(var(--display-depth) * 0.21em) 0
+      oklch(from var(--ot-brand) calc(l * 0.51) c h),
+    calc(var(--display-depth) * 0.25em) calc(var(--display-depth) * 0.25em) 0
+      oklch(from var(--ot-brand) calc(l * 0.40) c h),
+    /* Layers 9–10: deep brand, chroma slightly pulls back */
+    calc(var(--display-depth) * 0.30em) calc(var(--display-depth) * 0.30em) 0
+      oklch(from var(--ot-brand) calc(l * 0.30) calc(c * 0.85) h / 0.92),
+    calc(var(--display-depth) * 0.34em) calc(var(--display-depth) * 0.34em) 0
+      oklch(from var(--ot-brand) calc(l * 0.20) calc(c * 0.70) h / 0.82),
+    /* Layers 11–12: near-black trailing, fading to invisible */
+    calc(var(--display-depth) * 0.38em) calc(var(--display-depth) * 0.38em) 0
+      oklch(from var(--ot-brand) calc(l * 0.13) calc(c * 0.55) h / 0.65),
+    calc(var(--display-depth) * 0.42em) calc(var(--display-depth) * 0.42em) 0
+      oklch(from var(--ot-brand) calc(l * 0.08) calc(c * 0.40) h / 0.40);
+}
+
+/* ── Card isometric tilt ──────────────────────────────────────────────────────
+ * Solid two-layer offset shadow creates a visible isometric "back face" at rest
+ * (depth is always present, not just on hover). On hover, perspective rotation
+ * activates and the shadow deepens. prefers-reduced-motion: skip the transform,
+ * shadow still signals the raised state. ────────────────────────────────────── */
+.card-hover-tilt {
+  box-shadow:
+    4px 4px 0 var(--ot-brand-hover),
+    7px 7px 0 oklch(from var(--ot-brand-hover) calc(l * 0.58) c h / 0.65),
+    0 8px 28px var(--ot-bloom-brand-faint);
+  transition: transform 280ms var(--ot-ease-quick), box-shadow 280ms var(--ot-ease-quick);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card-hover-tilt:hover {
+    transform: perspective(900px) rotateX(-3deg) rotateY(5deg) translateY(-3px);
+    box-shadow:
+      8px 8px 0 var(--ot-brand-hover),
+      14px 14px 0 oklch(from var(--ot-brand-hover) calc(l * 0.52) c h / 0.70),
+      0 16px 44px var(--ot-bloom-brand-faint),
+      0 6px 16px var(--ot-bloom-accent-faint);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover-tilt:hover {
+    box-shadow:
+      6px 6px 0 var(--ot-brand-hover),
+      10px 10px 0 oklch(from var(--ot-brand-hover) calc(l * 0.52) c h / 0.70),
+      0 12px 36px var(--ot-bloom-brand-faint);
+  }
 }
 
 /* ── Rich Text Prose ─────────────────────────────────────────────────────────

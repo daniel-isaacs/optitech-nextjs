@@ -324,6 +324,15 @@ function CardShowcase() {
         </div>
       </div>
 
+      <VariantGroup label="Isometric tilt · hover:tilt" note="Solid two-layer offset shadow creates a visible isometric back-face at rest. Perspective rotation activates on hover. prefers-reduced-motion: shadow depth only, no transform." />
+      <div className="px-md pb-xl lg:px-lg">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+          <OT_CardBlock content={{ Heading: 'Raised by design.', Eyebrow: 'hover:tilt · surface', Description: 'The isometric shadow is visible at rest — depth is structural, not just interactive.', ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', border: 'subtle', hover: 'tilt' }} />
+          <OT_CardBlock content={{ Heading: 'Volume from conviction.', Eyebrow: 'hover:tilt · image', Description: 'Top image card with perspective tilt. The 3D rotation compounds with the solid iso shadow on hover.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'top', hover: 'tilt' }} />
+          <OT_CardBlock content={{ Heading: 'Brand depth.', Eyebrow: 'hover:tilt · brand', Description: 'Brand fill with tilt interaction. The dark offset shadow reads as the back face of a raised brand slab.', ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'brand', hover: 'tilt' }} />
+        </div>
+      </div>
+
       <VariantGroup label="Detail options · accent line · noise texture" note="Accent line: 3px top edge using --ot-accent. Noise: SVG feTurbulence grain at 7% overlay opacity." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
@@ -358,6 +367,7 @@ function PrimaryTextShowcase() {
     { content: { eyebrow: 'Warm',     headline: 'Heat meets precision.'  }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'warm'     } },
     { content: { eyebrow: 'Luminous', headline: 'Lit from within.'       }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'luminous' } },
     { content: { eyebrow: 'Ember',    headline: 'Burn bright.'           }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'ember'    } },
+    { content: { eyebrow: 'Extrude',  headline: 'Depth is a statement.'  }, displaySettings: { size: 'display', color: 'canvas', alignment: 'left',   gradient: 'extrude'  } },
   ]
 
   return (

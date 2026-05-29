@@ -223,7 +223,10 @@ export default function BannerBlock({
   const gapClass = size === 'large' ? 'gap-lg' : 'gap-md'
 
   return (
-    <section className={sectionCva({ size })}>
+    <section
+      className={sectionCva({ size })}
+      data-theme={hasImage ? 'dark' : undefined}
+    >
 
       {/* ── Background layer (z-0, absolute inset) ─────────────────────── */}
       <div className="absolute inset-0 z-0" aria-hidden="true">

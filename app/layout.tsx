@@ -1,7 +1,7 @@
 import '@/lib/optimizely'
 import '@/cms/registry'
 import type { Metadata } from "next";
-import { Dancing_Script, Geist_Mono, Poppins, Syne } from "next/font/google";
+import { Caveat, Geist_Mono, Poppins, Syne } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionObserver } from "@/components/providers/MotionObserver";
@@ -25,12 +25,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Signature font — used exclusively by LaserSignature on the QuoteBlock.
-// Single weight (700) loaded on demand via display: swap.
-const dancingScript = Dancing_Script({
-  variable: "--font-dancing-script",
+// Signature font — Caveat 400: thin, handwriting feel, less calligraphic than
+// script fonts. Used exclusively by LaserSignature on the QuoteBlock.
+const caveat = Caveat({
+  variable: "--font-signature",
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["400"],
   display: "swap",
 });
 
@@ -79,7 +79,7 @@ export default async function RootLayout({
       // Consumed by /public/scripts/theme-init.js which runs before React hydration.
       // The script sets data-theme = localStorage value || this attribute || 'dark'.
       data-default-theme={defaultMode}
-      className={`${poppins.variable} ${geistMono.variable} ${syne.variable} ${dancingScript.variable} h-full antialiased`}
+      className={`${poppins.variable} ${geistMono.variable} ${syne.variable} ${caveat.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

@@ -3,24 +3,32 @@
 /**
  * LaserSignature
  *
- * Renders the attribution name as a large cursive SVG signature that appears to
- * be cut into metal by a laser beam. The animation has three visual moments:
+ * Renders the attribution name as a large thin-pen SVG signature that appears
+ * to be signed by a laser — the beam writes each letterform in real time as you
+ * scroll to the block.
  *
- *   1. Separator rule scores left → right (150ms) — the laser positioning
- *   2. Beam draws the letterforms via stroke-dashoffset (1.6s kinetic ease)
- *      Simultaneously, a white-hot tip circle traverses the drawn width
- *   3. Beam glow fades; cooled etched line + ghost fill remain
+ * Font: Caveat 400 — thin handwriting strokes, non-calligraphic, reads as a
+ * genuine personal signature rather than decorative script.
+ *
+ * Animation sequence (fires when 40% of the wrapper enters the viewport):
+ *
+ *   0ms    Separator rule scores left→right (180ms scaleX, ease-out)
+ *   180ms  Laser begins signing:
+ *            • stroke-dashoffset draws the letterforms (2.4s kinetic ease)
+ *            • White-hot tip circle traverses via Web Animations API (same curve)
+ *   2580ms Glow layers fade as beam shuts off (0.9s + 1.1s)
+ *   2580ms Incision fill rises via @property --ls-fill-a (0.9s)
  *
  * Layer stack (SVG, bottom → top):
- *   ls-bloom  — very wide stroke, high blur; the outer energy halo
- *   ls-glow   — medium stroke with chained drop-shadows; the beam itself
- *   ls-line   — 0.8px crisp stroke; the permanent incision
- *   ls-tip    — circle animated via Web Animations API; the white-hot cut point
+ *   ls-bloom  very wide blurred stroke — diffuse energy halo
+ *   ls-glow   medium stroke + 5-stop drop-shadow chain — the beam
+ *   ls-line   thin crisp stroke — the permanent etched mark
+ *   ls-tip    circle driven by Web Animations API — the white-hot cut point
  *
- * Font: Dancing Script 700 — connected script letterforms trace beautifully
- * with stroke-dashoffset (left-to-right glyph direction follows writing order).
+ * Caveat 400 has naturally thin strokes; the laser glow-to-line contrast is
+ * dramatic because the etched groove is delicate and the bloom is wide.
  *
- * prefers-reduced-motion: data-static skips all animation; static etch shown.
+ * prefers-reduced-motion: data-static reveals everything instantly, no beam.
  */
 
 import { useEffect, useRef } from 'react'
@@ -30,7 +38,6 @@ import { useEffect, useRef } from 'react'
 type Props = {
   name:      string
   color:     'none' | 'brand' | 'canvas' | 'surface'
-  /** Optimizely edit-mode attrs forwarded from the parent pa() call */
   epiProps?: { 'data-epi-property-name'?: string }
 }
 
@@ -38,55 +45,64 @@ type Props = {
 
 export default function LaserSignature({ name, color, epiProps }: Props) {
   const wrapRef = useRef<HTMLSpanElement>(null)
-  const svgRef  = useRef<SVGSVGElement>(null)
   const lineRef = useRef<SVGTextElement>(null)
   const tipRef  = useRef<SVGCircleElement>(null)
 
   useEffect(() => {
     const wrap = wrapRef.current
-    const svg  = svgRef.current
     const line = lineRef.current
     const tip  = tipRef.current
-    if (!wrap || !svg || !line || !tip) return
+    if (!wrap || !line || !tip) return
 
-    // ── Reduced-motion: static reveal, no beam ────────────────────────────
+    // Reduced-motion: no animation, reveal everything statically
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       wrap.dataset.static = 'true'
       return
     }
 
-    // ── Kinetic path: IO fires the sequence ───────────────────────────────
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return
         io.disconnect()
 
-        // Measure the text bounding box BEFORE activating CSS animations
-        // (getBBox works on SVG text once the font is loaded)
-        const bbox = line.getBBox()
-        const tipY = bbox.y + bbox.height * 0.42  // cap-height region
+        // Measure text BEFORE activating CSS. getBBox() needs the element
+        // to be rendered with the actual font loaded — Caveat uses display:swap
+        // so we defer by one rAF to ensure the font has applied.
+        requestAnimationFrame(() => {
+          const bbox = line.getBBox()
 
-        // Position tip at left edge of text, then animate it rightward
-        tip.setAttribute('cx', String(bbox.x))
-        tip.setAttribute('cy', String(tipY))
-        tip.setAttribute('r', String(Math.max(3, bbox.height * 0.12)))
-
-        tip.animate(
-          [
-            { transform: 'translateX(0px)',              opacity: '1' },
-            { transform: `translateX(${bbox.width * 0.82}px)`, opacity: '1', offset: 0.82 },
-            { transform: `translateX(${bbox.width}px)`,  opacity: '0' },
-          ],
-          {
-            duration: 1600,
-            delay: 150,           // matches the CSS animation-delay on ls-* layers
-            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-            fill: 'forwards',
+          // Guard against degenerate bbox (font not yet loaded)
+          if (bbox.width < 10) {
+            wrap.dataset.static = 'true'
+            return
           }
-        )
 
-        // Trigger CSS animations for rule + stroke layers
-        wrap.dataset.active = 'true'
+          const tipY = bbox.y + bbox.height * 0.44  // near cap-height
+
+          // Position tip at the very start of the letterforms
+          tip.setAttribute('cx', String(bbox.x))
+          tip.setAttribute('cy', String(tipY))
+          tip.setAttribute('r',  String(Math.max(2.5, bbox.height * 0.10)))
+
+          // Animate tip across the signature width, synchronized with the
+          // stroke-dashoffset draw (same easing + duration + delay)
+          tip.animate(
+            [
+              { transform: 'translateX(0px)',              opacity: '0.9' },
+              { transform: `translateX(${bbox.width * 0.78}px)`, opacity: '0.9', offset: 0.78 },
+              { transform: `translateX(${bbox.width}px)`,  opacity: '0' },
+            ],
+            {
+              duration: 2400,
+              delay:    180,     // matches CSS animation-delay on ls-* layers
+              easing:   'cubic-bezier(0.16, 1, 0.3, 1)',
+              fill:     'forwards',
+            }
+          )
+
+          // Trigger the CSS rule draw + stroke animations
+          wrap.dataset.active = 'true'
+        })
       },
       { threshold: 0.4 }
     )
@@ -104,24 +120,23 @@ export default function LaserSignature({ name, color, epiProps }: Props) {
       aria-label={name}
       {...epiProps}
     >
-      {/* Separator rule — scores left→right before the signature starts */}
+      {/* Separator rule: laser scores this line before signing begins */}
       <span className="ls-rule" aria-hidden="true" />
 
-      {/* Signature SVG — overflow:visible so the glow extends past bounds */}
+      {/* Signature SVG */}
       <svg
-        ref={svgRef}
         aria-hidden="true"
         className={`ls-svg${isBrand ? ' ls-svg--brand' : ''}`}
         style={{ display: 'block', width: '100%', overflow: 'visible' }}
       >
-        {/* Bloom — wide halo stroke, very blurred */}
+        {/* Bloom: wide halo stroke, CSS blur — outer energy field */}
         <text className="ls-bloom" x="0" y="1em">{name}</text>
-        {/* Glow — the laser beam itself, chained drop-shadows */}
+        {/* Glow: the laser beam — 5-stop drop-shadow chain */}
         <text className="ls-glow"  x="0" y="1em">{name}</text>
-        {/* Etch — crisp 0.8px line that persists after the beam fades */}
+        {/* Etch: crisp thin line that remains after beam shuts off */}
         <text ref={lineRef} className="ls-line" x="0" y="1em">{name}</text>
-        {/* Hot tip — positioned via JS; animates with Web Animations API */}
-        <circle ref={tipRef} className="ls-tip" cx="-40" cy="-40" r="4" />
+        {/* Hot tip: positioned + animated by JS via Web Animations API */}
+        <circle ref={tipRef} className="ls-tip" cx="-60" cy="-60" r="3" />
       </svg>
     </span>
   )

@@ -1,18 +1,16 @@
 import { cva } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 import LaserSignature from "./LaserSignature";
 
-// ─── Style option types (map 1:1 to CMS content properties) ─────────────────
+// ─── Style option types ───────────────────────────────────────────────────────
 
 export type QuoteStyleOptions = {
-  /** Background color of the block */
-  color?: "none" | "brand" | "canvas" | "surface";
-  /** Horizontal alignment of quote and attribution */
+  color?:     "none" | "brand" | "canvas" | "surface";
   alignment?: "left" | "center";
-  /** Quote text scale — large for anchor moments, small for lighter placement */
-  size?: "large" | "small";
+  size?:      "large" | "small";
 };
 
-// ─── CVA variant configs ─────────────────────────────────────────────────────
+// ─── CVA variants ─────────────────────────────────────────────────────────────
 
 const sectionCva = cva("px-md lg:px-lg", {
   variants: {
@@ -30,52 +28,23 @@ const sectionCva = cva("px-md lg:px-lg", {
   defaultVariants: { color: "canvas", size: "large" },
 });
 
-const figureCva = cva("relative", {
+const figureCva = cva("", {
   variants: {
     alignment: {
       left:   "max-w-screen-lg",
-      center: "mx-auto max-w-screen-md text-center",
+      center: "mx-auto max-w-screen-md",
     },
   },
   defaultVariants: { alignment: "left" },
 });
 
 /**
- * Opening quotation mark — a large typographic ornament sitting behind the text,
- * dissolving downward with a mask so it integrates rather than crowds.
- * Kept smaller than before so it defers to the signature as the focal element.
- */
-const quoteMarkCva = cva(
-  "absolute top-0 font-extrabold leading-none select-none pointer-events-none",
-  {
-    variants: {
-      color: {
-        none:    "text-brand opacity-[0.12]",
-        brand:   "text-fg-on-brand opacity-[0.10]",
-        canvas:  "text-brand opacity-[0.12]",
-        surface: "text-brand opacity-[0.12]",
-      },
-      size: {
-        large: "text-[7rem] lg:text-[9rem]",
-        small: "text-[5rem] lg:text-[7rem]",
-      },
-      alignment: {
-        left:   "left-0",
-        center: "left-1/2 -translate-x-1/2",
-      },
-    },
-    defaultVariants: { color: "canvas", size: "large", alignment: "left" },
-  }
-);
-
-/**
- * Quote text — italic, strong weight, headline scale.
- * The quote carries full visual weight; the signature below is the signature
- * of authorship that closes the statement. Both are prominent.
- * Capped at 55ch so lines never sprawl on wide viewports.
+ * Quote text: Syne 700, bold presence, no italic.
+ * Syne's letterforms carry the visual weight; the font is the drama.
+ * Capped at 52ch — keeps lines readable on wide viewports.
  */
 const quoteTextCva = cva(
-  "text-pretty max-w-[55ch] italic font-semibold",
+  "font-syne font-bold text-pretty max-w-[52ch] leading-[1.15] tracking-[-0.02em]",
   {
     variants: {
       color: {
@@ -85,31 +54,58 @@ const quoteTextCva = cva(
         surface: "text-fg",
       },
       size: {
-        large: "text-headline leading-headline tracking-headline",
-        small: "text-title leading-title tracking-title",
+        large: "text-headline",
+        small: "text-title",
       },
       alignment: {
         left:   "",
-        center: "mx-auto",
+        center: "mx-auto text-center",
       },
     },
     defaultVariants: { color: "canvas", size: "large", alignment: "left" },
   }
 );
 
-const attributionTitleCva = cva("text-label font-normal tracking-label", {
-  variants: {
-    color: {
-      none:    "text-fg-muted",
-      brand:   "text-fg-on-brand/55",
-      canvas:  "text-fg-muted",
-      surface: "text-fg-muted",
+/**
+ * Corner bracket mark — the opening quote signal.
+ * Two CSS lines (border-top + border-left) forming an L-shape.
+ * Graphic, not typographic. Scaled to the block size.
+ */
+const cornerMarkCva = cva(
+  "block select-none pointer-events-none border-t-2 border-l-2",
+  {
+    variants: {
+      color: {
+        none:    "border-brand/50",
+        brand:   "border-fg-on-brand/40",
+        canvas:  "border-brand/50",
+        surface: "border-brand/50",
+      },
+      size: {
+        large: "w-7 h-7 mb-lg",
+        small: "w-5 h-5 mb-md",
+      },
     },
-  },
-  defaultVariants: { color: "canvas" },
-});
+    defaultVariants: { color: "canvas", size: "large" },
+  }
+);
 
-// ─── Component ───────────────────────────────────────────────────────────────
+const attributionTitleCva = cva(
+  "text-label font-normal tracking-label uppercase",
+  {
+    variants: {
+      color: {
+        none:    "text-fg-muted",
+        brand:   "text-fg-on-brand/55",
+        canvas:  "text-fg-muted",
+        surface: "text-fg-muted",
+      },
+    },
+    defaultVariants: { color: "canvas" },
+  }
+);
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export type QuoteBlockProps = {
   quote: string;
@@ -134,46 +130,39 @@ export default function QuoteBlock({
     <section className={sectionCva({ color, size })}>
       <figure className={figureCva({ alignment })}>
 
-        {/* Recessed opening mark — ornamental, not structural */}
-        <span
-          aria-hidden="true"
-          className={quoteMarkCva({ color, size, alignment })}
-          style={{
-            WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent 72%)",
-            maskImage:        "linear-gradient(to bottom, black 20%, transparent 72%)",
-          }}
-        >
-          &ldquo;
-        </span>
+        {/* ── Corner-bracket quote mark ─────────────────────────────────── */}
+        {/* Two-line L-shape: brand teal lines, no typographic glyph */}
+        <span aria-hidden="true" className={cornerMarkCva({ color, size })} />
 
-        {/* ── Quote body ─────────────────────────────────────────────────── */}
-        <div className={size === "large" ? "pt-[3rem] lg:pt-[4rem]" : "pt-[2rem] lg:pt-[3rem]"}>
-          <blockquote>
+        {/* ── Quote body ────────────────────────────────────────────────── */}
+        <blockquote>
+          <p
+            className={quoteTextCva({ color, size, alignment })}
+            {...pa('quote')}
+          >
+            {quote}
+          </p>
+        </blockquote>
+
+        {/* ── Signature & attribution ───────────────────────────────────── */}
+        <figcaption className={cn(
+          "mt-xl",
+          alignment === "center" && "flex flex-col items-center"
+        )}>
+          <LaserSignature
+            name={attribution.name}
+            color={color}
+            epiProps={pa('attributionName')}
+          />
+          {attribution.title && (
             <p
-              className={quoteTextCva({ color, size, alignment })}
-              {...pa('quote')}
+              className={cn(attributionTitleCva({ color }), "mt-xs")}
+              {...pa('attributionTitle')}
             >
-              {quote}
+              {attribution.title}
             </p>
-          </blockquote>
-
-          {/* ── Signature block ──────────────────────────────────────────── */}
-          <figcaption className={`mt-xl ${alignment === 'center' ? 'flex flex-col items-center' : ''}`}>
-            <LaserSignature
-              name={attribution.name}
-              color={color}
-              epiProps={pa('attributionName')}
-            />
-            {attribution.title && (
-              <p
-                className={`${attributionTitleCva({ color })} mt-xs uppercase tracking-label`}
-                {...pa('attributionTitle')}
-              >
-                {attribution.title}
-              </p>
-            )}
-          </figcaption>
-        </div>
+          )}
+        </figcaption>
 
       </figure>
     </section>

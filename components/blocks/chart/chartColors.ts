@@ -1,10 +1,41 @@
 import type { ChartStyleOptions } from '@/cms/styling/OT_ChartBlock.styling'
 
 export const CHART_PALETTES: Record<string, string[]> = {
-  brand:     ['var(--ot-brand)', '#2dd4bf', '#0d9488', '#134e4a'],
-  warm:      ['#f59e0b', '#ef4444', '#f97316', '#dc2626'],
-  cool:      ['#3b82f6', '#6366f1', '#0ea5e9', '#8b5cf6'],
-  diverging: ['var(--ot-brand)', '#2dd4bf', '#f59e0b', '#ef4444'],
+  // Brand palette: primary token + accent token + two brand-family tones
+  brand: [
+    'var(--ot-brand)',
+    'var(--ot-accent)',
+    'oklch(72% 0.10 195)',   // lighter teal — brand family
+    'oklch(38% 0.12 195)',   // deep teal — brand family
+  ],
+
+  // Warm palette: amber-gold family in perceptually uniform OKLCH.
+  // Chosen to contrast with the teal brand without clashing.
+  warm: [
+    'oklch(78% 0.17 78)',    // warm amber-gold
+    'oklch(66% 0.20 52)',    // warm orange
+    'oklch(58% 0.18 38)',    // warm terracotta
+    'oklch(83% 0.14 90)',    // warm straw
+  ],
+
+  // Cool palette: blue-indigo family, harmonious with teal brand hue.
+  cool: [
+    'oklch(62% 0.18 240)',   // periwinkle blue
+    'oklch(55% 0.20 265)',   // deep indigo
+    'oklch(70% 0.15 225)',   // soft sky
+    'oklch(48% 0.14 280)',   // violet-indigo
+  ],
+
+  // Diverging: brand token at one pole, accent at the other,
+  // with two intermediate tones bridging the hue arc.
+  diverging: [
+    'var(--ot-brand)',
+    'oklch(62% 0.18 220)',   // blue-green transition
+    'oklch(70% 0.18 170)',   // yellow-green transition
+    'var(--ot-accent)',
+  ],
+
+  // Mono: white alphas — correct choice for brand and glass backgrounds.
   mono: [
     'rgba(255,255,255,0.95)',
     'rgba(255,255,255,0.65)',

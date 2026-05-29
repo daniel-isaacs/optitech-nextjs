@@ -15,6 +15,7 @@ import OT_FeatureGridBlock           from '@/cms/components/OT_FeatureGridBlock'
 import OT_AccordionBlock             from '@/cms/components/OT_AccordionBlock'
 import OT_TabsBlock                  from '@/cms/components/OT_TabsBlock'
 import OT_ChartBlock                 from '@/cms/components/OT_ChartBlock'
+import JsonCopyBlock                 from '@/components/blocks/chart/JsonCopyBlock'
 import TrustRail                     from '@/components/blocks/TrustRail'
 import Button                        from '@/components/ui/Button'
 import BlogFeedBlock                 from '@/components/blocks/BlogFeedBlock'
@@ -1067,40 +1068,6 @@ function ButtonShowcase() {
 
 // ─── Chart ────────────────────────────────────────────────────────────────────
 
-// Shared code-block component for CMS-ready JSON examples
-function JsonBlock({ json }: { json: string }) {
-  return (
-    <div style={{
-      background:   'var(--ot-canvas)',
-      border:       '1px solid rgba(255,255,255,0.08)',
-      padding:      '16px 20px',
-      marginTop:    16,
-    }}>
-      <p style={{
-        color:         'var(--ot-fg-muted)',
-        fontSize:      '0.75rem',
-        fontWeight:    600,
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        marginBottom:  10,
-        fontFamily:    'var(--font-poppins, system-ui, sans-serif)',
-      }}>
-        Copy this JSON into the Chart Data field in the CMS
-      </p>
-      <pre style={{
-        color:      'rgba(255,255,255,0.80)',
-        fontSize:   '0.75rem',
-        fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)',
-        lineHeight: 1.7,
-        margin:     0,
-        overflowX:  'auto',
-        whiteSpace: 'pre',
-      }}>
-        {json}
-      </pre>
-    </div>
-  )
-}
 
 // Variant 1 JSON — Line / Mortgage Rates
 const LINE_JSON = JSON.stringify({
@@ -1172,7 +1139,7 @@ function ChartShowcase() {
           displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
-          <JsonBlock json={LINE_JSON} />
+          <JsonCopyBlock json={LINE_JSON} />
         </div>
       </div>
 
@@ -1197,14 +1164,14 @@ function ChartShowcase() {
           displaySettings={{ color: 'surface', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
-          <JsonBlock json={AREA_JSON} />
+          <JsonCopyBlock json={AREA_JSON} />
         </div>
       </div>
 
       {/* ── Variant 3: Bar single-series / canvas / warm palette ──────────── */}
       <VariantGroup
         label="Bar — Comparison · canvas · warm palette · multi-color cells"
-        note="Single-series bars get per-category Cell coloring. Multi-series bars use one color per series."
+        note="Single-series bars get per-category Cell coloring. Warm palette uses OKLCH amber-gold tones, harmonious with the brand but offering hue contrast."
       />
       <div className="border-t border-fg/5">
         <VariantLabel label="chartType: bar · color: canvas · seriesColors: warm · height: md · valueSuffix: /100" />
@@ -1222,7 +1189,7 @@ function ChartShowcase() {
           displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
-          <JsonBlock json={BAR_JSON} />
+          <JsonCopyBlock json={BAR_JSON} />
         </div>
       </div>
 
@@ -1247,7 +1214,7 @@ function ChartShowcase() {
           displaySettings={{ color: 'surface', height: 'lg', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
-          <JsonBlock json={BAR_STACKED_JSON} />
+          <JsonCopyBlock json={BAR_STACKED_JSON} />
         </div>
       </div>
 
@@ -1277,7 +1244,7 @@ function ChartShowcase() {
           displaySettings={{ color: 'brand', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl" style={{ background: 'var(--ot-brand)' }}>
-          <JsonBlock json={RADIAL_JSON} />
+          <JsonCopyBlock json={RADIAL_JSON} />
         </div>
       </div>
 

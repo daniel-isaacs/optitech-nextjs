@@ -128,6 +128,7 @@ const THEME_QUERY = `
         defaultSocialImage { url { default } }
         twitterHandle
         organizationDescription
+        webExperimentationProjectId
         primaryNavigation {
           menuLink { text title target url { default } }
           subNavItems {

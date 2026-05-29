@@ -1275,3 +1275,91 @@ body {
     text-shadow: none;
   }
 }
+
+/* ── BannerBlock ──────────────────────────────────────────────────────────────
+ *
+ * Background image + scrim block with two rendering modes:
+ *
+ *   scrim    — full-bleed color scrim over the image; text sits directly on it
+ *   glass    — lighter scrim; content is placed inside a frosted glass panel
+ *
+ * Scrim is implemented as Tailwind opacity classes applied inline (see
+ * BannerBlock.tsx). These CSS rules handle the decorative layers and entrance.
+ *
+ * Entrance (IntersectionObserver → data-active on .banner-wrap, threshold 0.25):
+ *   0ms    Eyebrow fades in
+ *   120ms  Heading slides up
+ *   240ms  Body slides up (only in large size)
+ *   340ms  CTA group slides up
+ *
+ * prefers-reduced-motion → data-static: all elements visible instantly.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Vignette: radial corner darkening draws focus to center content ── */
+.banner-vignette {
+  background: radial-gradient(
+    ellipse 130% 140% at 50% 50%,
+    transparent 30%,
+    oklch(from var(--ot-canvas) l c h / 0.22) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Brand bloom: soft warm halo behind content on brand-colored banners ── */
+.banner-brand-bloom {
+  background: radial-gradient(
+    ellipse 50% 55% at 50% 50%,
+    oklch(from var(--ot-brand) l c h / 0.15) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* ── Glass panels: dark-tinted frost for scrim=glass treatment ── */
+.banner-glass {
+  background: oklch(from var(--ot-canvas) l c h / 0.75);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid oklch(from var(--ot-fg) l c h / 0.10);
+  box-shadow: 0 8px 40px oklch(from var(--ot-canvas) l c h / 0.50);
+}
+
+/* Brand-tinted glass: used when color=brand + treatment=glass */
+.banner-glass-brand {
+  background: oklch(from var(--ot-brand) l c h / 0.15);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid oklch(from var(--ot-brand) l c h / 0.25);
+  box-shadow: 0 8px 40px var(--ot-bloom-brand-faint);
+}
+
+/* ── Entrance: elements start invisible, animated to visible on data-active ── */
+.banner-eyebrow,
+.banner-heading,
+.banner-body,
+.banner-ctas {
+  opacity: 0;
+}
+
+/* Static fallback: prefers-reduced-motion or no JS */
+.banner-wrap[data-static] .banner-eyebrow,
+.banner-wrap[data-static] .banner-heading,
+.banner-wrap[data-static] .banner-body,
+.banner-wrap[data-static] .banner-ctas {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .banner-wrap[data-active] .banner-eyebrow {
+    animation: fadeIn  0.4s   0ms var(--ot-ease-kinetic) both;
+  }
+  .banner-wrap[data-active] .banner-heading {
+    animation: slideUp 0.6s 120ms var(--ot-ease-kinetic) both;
+  }
+  .banner-wrap[data-active] .banner-body {
+    animation: slideUp 0.5s 240ms var(--ot-ease-kinetic) both;
+  }
+  .banner-wrap[data-active] .banner-ctas {
+    animation: slideUp 0.5s 340ms var(--ot-ease-kinetic) both;
+  }
+}

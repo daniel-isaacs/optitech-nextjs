@@ -1,0 +1,36 @@
+import { getPreviewUtils }        from '@optimizely/cms-sdk/react/server'
+import { getBannerStyles }        from '@/cms/styling/OT_BannerBlock.styling'
+import BannerBlock                from '@/components/blocks/BannerBlock'
+
+type Props = {
+  content:          any
+  displaySettings?: Record<string, string | boolean>
+}
+
+export default function OT_BannerBlock({ content, displaySettings = {} }: Props) {
+  const { pa, src } = getPreviewUtils(content)
+  const styleOptions = getBannerStyles(displaySettings)
+
+  return (
+    <div {...pa(content.__composition)}>
+      <BannerBlock
+        heading={content.heading ?? ''}
+        eyebrow={content.eyebrow ?? undefined}
+        body={content.body?.html ?? undefined}
+        bgImageSrc={src(content.backgroundImage) ?? undefined}
+        primaryCta={
+          content.primaryCtaLabel
+            ? { label: content.primaryCtaLabel, href: content.primaryCtaUrl?.default ?? '#' }
+            : undefined
+        }
+        secondaryCta={
+          content.secondaryCtaLabel
+            ? { label: content.secondaryCtaLabel, href: content.secondaryCtaUrl?.default ?? '#' }
+            : undefined
+        }
+        styleOptions={styleOptions}
+        pa={pa}
+      />
+    </div>
+  )
+}

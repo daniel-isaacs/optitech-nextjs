@@ -15,6 +15,7 @@ import OT_FeatureGridBlock           from '@/cms/components/OT_FeatureGridBlock'
 import OT_AccordionBlock             from '@/cms/components/OT_AccordionBlock'
 import OT_TabsBlock                  from '@/cms/components/OT_TabsBlock'
 import OT_ChartBlock                 from '@/cms/components/OT_ChartBlock'
+import OT_BannerBlock                from '@/cms/components/OT_BannerBlock'
 import JsonCopyBlock                 from '@/components/blocks/chart/JsonCopyBlock'
 import TrustRail                     from '@/components/blocks/TrustRail'
 import Button                        from '@/components/ui/Button'
@@ -30,7 +31,7 @@ import type { BlogFeedPost }         from '@/lib/blogFeed'
 const BLOCK_SLUGS = [
   'hero', 'card', 'primary-text', 'quote', 'rich-text',
   'image', 'video', 'stat', 'feature-grid', 'trust-rail',
-  'accordion', 'tabs', 'blog-feed', 'button', 'chart',
+  'accordion', 'tabs', 'blog-feed', 'button', 'chart', 'banner',
 ] as const
 
 type BlockSlug = typeof BLOCK_SLUGS[number]
@@ -51,6 +52,7 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'blog-feed':    { label: 'BlogFeedBlock',       cmsKey: 'OT_BlogFeedBlock',    description: 'CMS-driven blog post grid. Posts are fetched at render time from the connected article root. Three color schemes, 2- or 3-column layout, and three heading sizes.' },
   'button':       { label: 'Button',              cmsKey: 'OT_ButtonBlock',      description: 'Six button variants, three sizes, optional icon slots (leading/trailing). Polymorphic — renders as <button> or <Link> based on the href prop.' },
   'chart':        { label: 'ChartBlock',          cmsKey: 'OT_ChartBlock',       description: 'CMS-driven data visualization block. Five chart types: line, area, bar, bar stacked, and radial gauge. Four color variants, five series color palettes, fully responsive via Recharts.' },
+  'banner':       { label: 'BannerBlock',         cmsKey: 'OT_BannerBlock',      description: 'Full-bleed background image with layered content: eyebrow, headline, optional body, and up to two CTAs. Two overlay modes: scrim (color overlay over the image) and glass (content inside a frosted panel). Three color variants, two alignment options, two height sizes, and two image blend modes.' },
 }
 
 export function generateStaticParams() {
@@ -1276,6 +1278,165 @@ function ChartShowcase() {
 
 type Props = { params: Promise<{ block: string }> }
 
+// ─── Banner ───────────────────────────────────────────────────────────────────
+
+const BANNER_IMG_A     = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80&fit=crop'
+const BANNER_IMG_B     = 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600&q=80&fit=crop'
+
+function BannerShowcase() {
+  const scrimVariants = [
+    {
+      label: 'Canvas · Center · Scrim · Large',
+      content: {
+        heading: 'Move at the speed of certainty.',
+        eyebrow: 'Ready when you are',
+        body: { html: '<p>OptiTech gives your teams the infrastructure to experiment continuously, ship confidently, and know whether it worked.</p>' },
+        backgroundImage: BANNER_IMG_A,
+        primaryCtaLabel: 'Book a demo', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'See pricing', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'canvas', treatment: 'scrim', alignment: 'center', size: 'large', imageBlend: 'overlay' },
+    },
+    {
+      label: 'Brand · Center · Scrim · Large',
+      content: {
+        heading: 'Every experiment. Every answer. One platform.',
+        eyebrow: 'The OptiTech advantage',
+        body: { html: '<p>Feature flags, A/B tests, and deployment telemetry unified so your team closes the loop between shipping and knowing.</p>' },
+        backgroundImage: BANNER_IMG_B,
+        primaryCtaLabel: 'Start free trial', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'View docs', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'brand', treatment: 'scrim', alignment: 'center', size: 'large', imageBlend: 'multiply' },
+    },
+    {
+      label: 'Surface · Left · Scrim · Large',
+      content: {
+        heading: 'Precision at every layer.',
+        eyebrow: 'The method',
+        body: { html: '<p>From the first feature flag to the thousandth experiment, OptiTech tracks what matters and surfaces it when you need it.</p>' },
+        backgroundImage: BANNER_IMG_A,
+        primaryCtaLabel: 'See how it works', primaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'surface', treatment: 'scrim', alignment: 'left', size: 'large', imageBlend: 'overlay' },
+    },
+    {
+      label: 'Canvas · Center · Scrim · Compact',
+      content: {
+        heading: 'Ship faster. Know sooner.',
+        eyebrow: 'Built for velocity',
+        backgroundImage: BANNER_IMG_B,
+        primaryCtaLabel: 'Get started', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'Learn more', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'canvas', treatment: 'scrim', alignment: 'center', size: 'compact', imageBlend: 'multiply' },
+    },
+  ]
+
+  const glassVariants = [
+    {
+      label: 'Canvas · Center · Glass · Large',
+      content: {
+        heading: 'Confidence is a competitive advantage.',
+        eyebrow: 'OptiTech platform',
+        body: { html: '<p>Stop shipping and hoping. Start shipping and knowing. Real-time experiment data means every decision is an informed one.</p>' },
+        backgroundImage: BANNER_IMG_A,
+        primaryCtaLabel: 'Book a demo', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'See pricing', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'canvas', treatment: 'glass', alignment: 'center', size: 'large', imageBlend: 'overlay' },
+    },
+    {
+      label: 'Brand · Center · Glass · Large',
+      content: {
+        heading: 'The platform your engineers have been asking for.',
+        eyebrow: 'Enterprise ready',
+        body: { html: '<p>SOC 2 Type II, 99.99% uptime SLA, and SDK support for every major language. Built for teams that can\'t afford to guess.</p>' },
+        backgroundImage: BANNER_IMG_B,
+        primaryCtaLabel: 'Talk to sales', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'Security overview', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'brand', treatment: 'glass', alignment: 'center', size: 'large', imageBlend: 'multiply' },
+    },
+    {
+      label: 'Canvas · Left · Glass · Large',
+      content: {
+        heading: 'From flag to finding in under an hour.',
+        eyebrow: 'Speed of certainty',
+        backgroundImage: BANNER_IMG_A,
+        primaryCtaLabel: 'Start experimenting', primaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'canvas', treatment: 'glass', alignment: 'left', size: 'large', imageBlend: 'overlay' },
+    },
+    {
+      label: 'Brand · Left · Glass · Compact',
+      content: {
+        heading: 'Deploy once. Learn forever.',
+        eyebrow: 'Continuous delivery',
+        backgroundImage: BANNER_IMG_B,
+        primaryCtaLabel: 'See a live demo', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'Read the docs', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'brand', treatment: 'glass', alignment: 'left', size: 'compact', imageBlend: 'multiply' },
+    },
+  ]
+
+  const noImageVariants = [
+    {
+      label: 'Canvas · No image · Scrim · Center',
+      content: {
+        heading: 'The clearest signal in the room.',
+        eyebrow: 'Data-driven teams',
+        primaryCtaLabel: 'Start free', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'View pricing', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'canvas', treatment: 'scrim', alignment: 'center', size: 'compact', imageBlend: 'overlay' },
+    },
+    {
+      label: 'Brand · No image · Scrim · Center',
+      content: {
+        heading: 'Ready when you are.',
+        eyebrow: 'Get started today',
+        primaryCtaLabel: 'Book a demo', primaryCtaUrl: { default: '#' },
+        secondaryCtaLabel: 'Talk to sales', secondaryCtaUrl: { default: '#' },
+      },
+      displaySettings: { color: 'brand', treatment: 'scrim', alignment: 'center', size: 'compact', imageBlend: 'overlay' },
+    },
+  ]
+
+  return (
+    <>
+      <BlockHeader slug="banner" />
+
+      <VariantGroup label="Scrim treatment · color variants · with background image" note="Full-bleed color overlay pressed directly over the image. Opacity scales with imageBlend: overlay is lighter (image reads as texture), multiply is heavier (image becomes an underpainting)." />
+      {scrimVariants.map(item => (
+        <div key={item.label} className="border-t border-fg/5">
+          <VariantLabel label={item.label} />
+          <OT_BannerBlock content={item.content} displaySettings={item.displaySettings} />
+        </div>
+      ))}
+
+      <VariantGroup label="Glass treatment · color variants · with background image" note="Lighter scrim lets the image breathe. Content sits inside a frosted glass panel. Brand variant uses teal-tinted glass." />
+      {glassVariants.map(item => (
+        <div key={item.label} className="border-t border-fg/5">
+          <VariantLabel label={item.label} />
+          <OT_BannerBlock content={item.content} displaySettings={item.displaySettings} />
+        </div>
+      ))}
+
+      <VariantGroup label="No image · flat color fallback" note="When no backgroundImage is provided the scrim fills the section as a flat color. Fully intentional — works as a standalone CTA section." />
+      {noImageVariants.map(item => (
+        <div key={item.label} className="border-t border-fg/5">
+          <VariantLabel label={item.label} />
+          <OT_BannerBlock content={item.content} displaySettings={item.displaySettings} />
+        </div>
+      ))}
+
+      <div className="pb-xl" />
+    </>
+  )
+}
+
 export default async function ShowcaseBlockPage({ params }: Props) {
   const { block } = await params
 
@@ -1295,6 +1456,7 @@ export default async function ShowcaseBlockPage({ params }: Props) {
     case 'blog-feed':    return <BlogFeedShowcase />
     case 'button':       return <ButtonShowcase />
     case 'chart':        return <ChartShowcase />
+    case 'banner':       return <BannerShowcase />
     default:             return notFound()
   }
 }

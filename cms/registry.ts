@@ -23,6 +23,7 @@ import { OptiFormsContainerDefault }  from '@/cms/display-templates/OptiFormsCon
 import { OT_BlogFeedDefault }         from '@/cms/display-templates/OT_BlogFeedDefault'
 import { OT_AccordionDefault }        from '@/cms/display-templates/OT_AccordionDefault'
 import { OT_TabsDefault }            from '@/cms/display-templates/OT_TabsDefault'
+import { OT_ChartDefault }           from '@/cms/display-templates/OT_ChartDefault'
 
 // Content type definitions — required at runtime so the SDK's query builder
 // can generate the correct GraphQL fragments for each type
@@ -56,6 +57,7 @@ import { OT_AccordionItem }    from '@/cms/content-types/OT_AccordionItem'
 import { OT_AccordionBlock }   from '@/cms/content-types/OT_AccordionBlock'
 import { OT_TabItem }          from '@/cms/content-types/OT_TabItem'
 import { OT_TabsBlock }        from '@/cms/content-types/OT_TabsBlock'
+import { OT_ChartBlock }       from '@/cms/content-types/OT_ChartBlock'
 
 // OptiForm content types — built-in Forms for Visual Builder element schemas
 import { OptiFormsContainerData }   from '@/cms/content-types/OptiFormsContainerData'
@@ -92,6 +94,7 @@ import ImageMediaAdapter          from '@/cms/components/ImageMedia'
 import OT_BlogFeedBlockAdapter    from '@/cms/components/OT_BlogFeedBlock'
 import OT_AccordionBlockAdapter   from '@/cms/components/OT_AccordionBlock'
 import OT_TabsBlockAdapter        from '@/cms/components/OT_TabsBlock'
+import OT_ChartBlockAdapter      from '@/cms/components/OT_ChartBlock'
 
 // OptiForm component adapters
 import OptiFormsContainerDataAdapter   from '@/cms/components/OptiFormsContainerData'
@@ -132,6 +135,7 @@ initDisplayTemplateRegistry([
   OT_BlogFeedDefault,
   OT_AccordionDefault,
   OT_TabsDefault,
+  OT_ChartDefault,
 ])
 
 initContentTypeRegistry([
@@ -165,6 +169,7 @@ initContentTypeRegistry([
   OT_AccordionBlock,
   OT_TabItem,
   OT_TabsBlock,
+  OT_ChartBlock,
   // OptiForm types
   OptiFormsContainerData,
   OptiFormsDependencyRule,
@@ -203,6 +208,7 @@ initReactComponentRegistry({
     OT_BlogFeedBlock:    OT_BlogFeedBlockAdapter,
     OT_AccordionBlock:   OT_AccordionBlockAdapter,
     OT_TabsBlock:        OT_TabsBlockAdapter,
+    OT_ChartBlock:       OT_ChartBlockAdapter,
     // Composition structure — 'BlankSection' is the SDK's built-in section type key;
     // '_Row' and '_Column' are the fixed registry keys OptimizelyGridSection resolves.
     BlankSection:       BlankSectionAdapter,

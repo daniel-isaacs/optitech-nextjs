@@ -14,6 +14,7 @@ import OT_StatBlock                  from '@/cms/components/OT_StatBlock'
 import OT_FeatureGridBlock           from '@/cms/components/OT_FeatureGridBlock'
 import OT_AccordionBlock             from '@/cms/components/OT_AccordionBlock'
 import OT_TabsBlock                  from '@/cms/components/OT_TabsBlock'
+import OT_ChartBlock                 from '@/cms/components/OT_ChartBlock'
 import TrustRail                     from '@/components/blocks/TrustRail'
 import Button                        from '@/components/ui/Button'
 import BlogFeedBlock                 from '@/components/blocks/BlogFeedBlock'
@@ -28,7 +29,7 @@ import type { BlogFeedPost }         from '@/lib/blogFeed'
 const BLOCK_SLUGS = [
   'hero', 'card', 'primary-text', 'quote', 'rich-text',
   'image', 'video', 'stat', 'feature-grid', 'trust-rail',
-  'accordion', 'tabs', 'blog-feed', 'button',
+  'accordion', 'tabs', 'blog-feed', 'button', 'chart',
 ] as const
 
 type BlockSlug = typeof BLOCK_SLUGS[number]
@@ -48,6 +49,7 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'tabs':         { label: 'TabsBlock',           cmsKey: 'OT_TabsBlock',        description: 'Tabbed content block with underline, pill, or button-group triggers. Top or side tab position. Optional image panel and auto-play.' },
   'blog-feed':    { label: 'BlogFeedBlock',       cmsKey: 'OT_BlogFeedBlock',    description: 'CMS-driven blog post grid. Posts are fetched at render time from the connected article root. Three color schemes, 2- or 3-column layout, and three heading sizes.' },
   'button':       { label: 'Button',              cmsKey: 'OT_ButtonBlock',      description: 'Six button variants, three sizes, optional icon slots (leading/trailing). Polymorphic — renders as <button> or <Link> based on the href prop.' },
+  'chart':        { label: 'ChartBlock',          cmsKey: 'OT_ChartBlock',       description: 'CMS-driven data visualization block. Five chart types: line, area, bar, bar stacked, and radial gauge. Four color variants, five series color palettes, fully responsive via Recharts.' },
 }
 
 export function generateStaticParams() {
@@ -1063,6 +1065,246 @@ function ButtonShowcase() {
   )
 }
 
+// ─── Chart ────────────────────────────────────────────────────────────────────
+
+// Shared code-block component for CMS-ready JSON examples
+function JsonBlock({ json }: { json: string }) {
+  return (
+    <div style={{
+      background:   'var(--ot-canvas)',
+      border:       '1px solid rgba(255,255,255,0.08)',
+      padding:      '16px 20px',
+      marginTop:    16,
+    }}>
+      <p style={{
+        color:         'var(--ot-fg-muted)',
+        fontSize:      '0.75rem',
+        fontWeight:    600,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        marginBottom:  10,
+        fontFamily:    'var(--font-poppins, system-ui, sans-serif)',
+      }}>
+        Copy this JSON into the Chart Data field in the CMS
+      </p>
+      <pre style={{
+        color:      'rgba(255,255,255,0.80)',
+        fontSize:   '0.75rem',
+        fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)',
+        lineHeight: 1.7,
+        margin:     0,
+        overflowX:  'auto',
+        whiteSpace: 'pre',
+      }}>
+        {json}
+      </pre>
+    </div>
+  )
+}
+
+// Variant 1 JSON — Line / Mortgage Rates
+const LINE_JSON = JSON.stringify({
+  series: [
+    { name: '30-Year Fixed', data: [6.62, 6.71, 6.94, 6.99, 7.09, 6.86, 6.73, 6.65, 6.20, 6.08, 6.78, 6.85] },
+    { name: '15-Year Fixed', data: [5.89, 5.96, 6.17, 6.29, 6.38, 6.16, 5.99, 5.90, 5.48, 5.41, 5.99, 6.00] },
+  ],
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+}, null, 2)
+
+// Variant 2 JSON — Area / API Volume
+const AREA_JSON = JSON.stringify({
+  series: [
+    { name: 'Requests (M)', data: [18.2, 21.4, 19.8, 24.1, 27.6, 31.2, 29.8, 33.4, 38.1, 42.7, 39.9, 47.3] },
+  ],
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+}, null, 2)
+
+// Variant 3 JSON — Bar / Patient Satisfaction
+const BAR_JSON = JSON.stringify({
+  series: [
+    { name: 'Satisfaction Score', data: [87, 92, 78, 95, 83, 89] },
+  ],
+  labels: ['Emergency', 'Cardiology', 'Oncology', 'Maternity', 'Orthopedics', 'Neurology'],
+}, null, 2)
+
+// Variant 4 JSON — Bar Stacked / Loan Portfolio
+const BAR_STACKED_JSON = JSON.stringify({
+  series: [
+    { name: 'Mortgage', data: [42, 44, 41, 45] },
+    { name: 'Auto',     data: [28, 26, 29, 27] },
+    { name: 'Personal', data: [30, 30, 30, 28] },
+  ],
+  labels: ['Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'],
+}, null, 2)
+
+// Variant 5 JSON — Radial / Patient Satisfaction Index
+const RADIAL_JSON = JSON.stringify({
+  series: [
+    { name: 'Satisfaction Index', data: [84] },
+  ],
+  labels: ['Score'],
+  max: 100,
+}, null, 2)
+
+function ChartShowcase() {
+  return (
+    <>
+      <BlockHeader slug="chart" />
+
+      {/* ── Variant 1: Line / canvas / brand palette ──────────────────────── */}
+      <VariantGroup
+        label="Line — Trend over time · canvas · brand palette"
+        note="Multi-series. Monotone curves, no dots at rest, activeDot on hover. Source: Freddie Mac 2024."
+      />
+      <div className="border-t border-fg/5">
+        <VariantLabel label="chartType: line · color: canvas · seriesColors: brand · showLegend: true · height: md · valueSuffix: %" />
+        <OT_ChartBlock
+          content={{
+            heading:      'Mortgage Rate Trends',
+            subtext:      'Source: Freddie Mac, 2024',
+            chartType:    'line',
+            chartData:    LINE_JSON,
+            seriesColors: 'brand',
+            valueSuffix:  '%',
+            showLegend:   true,
+            showGrid:     true,
+          }}
+          displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
+        />
+        <div className="px-lg pb-xl">
+          <JsonBlock json={LINE_JSON} />
+        </div>
+      </div>
+
+      {/* ── Variant 2: Area / surface / cool palette ──────────────────────── */}
+      <VariantGroup
+        label="Area — Volume or growth · surface · cool palette"
+        note="Single series with gradient fill. Fills from 30% → 0% opacity for depth without noise."
+      />
+      <div className="border-t border-fg/5">
+        <VariantLabel label="chartType: area · color: surface · seriesColors: cool · showLegend: false · height: md · valueSuffix: M" />
+        <OT_ChartBlock
+          content={{
+            heading:      'API Request Volume',
+            subtext:      'Trailing 12 months — all environments',
+            chartType:    'area',
+            chartData:    AREA_JSON,
+            seriesColors: 'cool',
+            valueSuffix:  'M',
+            showLegend:   false,
+            showGrid:     true,
+          }}
+          displaySettings={{ color: 'surface', height: 'md', aspectRatio: 'wide' }}
+        />
+        <div className="px-lg pb-xl">
+          <JsonBlock json={AREA_JSON} />
+        </div>
+      </div>
+
+      {/* ── Variant 3: Bar single-series / canvas / warm palette ──────────── */}
+      <VariantGroup
+        label="Bar — Comparison · canvas · warm palette · multi-color cells"
+        note="Single-series bars get per-category Cell coloring. Multi-series bars use one color per series."
+      />
+      <div className="border-t border-fg/5">
+        <VariantLabel label="chartType: bar · color: canvas · seriesColors: warm · height: md · valueSuffix: /100" />
+        <OT_ChartBlock
+          content={{
+            heading:      'Patient Satisfaction by Department',
+            subtext:      'Q4 2024 — Press Ganey scores',
+            chartType:    'bar',
+            chartData:    BAR_JSON,
+            seriesColors: 'warm',
+            valueSuffix:  '/100',
+            showLegend:   false,
+            showGrid:     true,
+          }}
+          displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
+        />
+        <div className="px-lg pb-xl">
+          <JsonBlock json={BAR_JSON} />
+        </div>
+      </div>
+
+      {/* ── Variant 4: Bar Stacked / surface / diverging ──────────────────── */}
+      <VariantGroup
+        label="Bar Stacked — Composition · surface · diverging palette"
+        note="Rounded top corners on the topmost series only. Each series gets its own palette color."
+      />
+      <div className="border-t border-fg/5">
+        <VariantLabel label="chartType: barStacked · color: surface · seriesColors: diverging · showLegend: true · height: lg · valueSuffix: %" />
+        <OT_ChartBlock
+          content={{
+            heading:      'Loan Portfolio Mix',
+            subtext:      'By product type — quarterly 2024',
+            chartType:    'barStacked',
+            chartData:    BAR_STACKED_JSON,
+            seriesColors: 'diverging',
+            valueSuffix:  '%',
+            showLegend:   true,
+            showGrid:     true,
+          }}
+          displaySettings={{ color: 'surface', height: 'lg', aspectRatio: 'wide' }}
+        />
+        <div className="px-lg pb-xl">
+          <JsonBlock json={BAR_STACKED_JSON} />
+        </div>
+      </div>
+
+      {/* ── Variant 5: Radial / brand / mono — the visual hero ────────────── */}
+      {/*
+        The mono palette is specifically designed for brand and glass backgrounds.
+        White arcs on teal are the most visually striking chart variant in the framework.
+        The count-up animation on mount is deliberate: 800ms expo-out, matching the gauge sweep.
+      */}
+      <VariantGroup
+        label="Radial — Single score or KPI · brand · mono palette (showcase hero)"
+        note="White gauge arc on brand background. 280° arc. Count-up animation on mount (expo-out, 800ms). Skipped under prefers-reduced-motion."
+      />
+      <div className="border-t border-fg/5">
+        <VariantLabel label="chartType: radial · color: brand · seriesColors: mono · height: md" />
+        <OT_ChartBlock
+          content={{
+            heading:      'Patient Satisfaction Index',
+            subtext:      'System-wide composite — FY2024',
+            chartType:    'radial',
+            chartData:    RADIAL_JSON,
+            seriesColors: 'mono',
+            valueSuffix:  '/100',
+            showLegend:   false,
+            showGrid:     false,
+          }}
+          displaySettings={{ color: 'brand', height: 'md', aspectRatio: 'wide' }}
+        />
+        <div className="px-lg pb-xl" style={{ background: 'var(--ot-brand)' }}>
+          <JsonBlock json={RADIAL_JSON} />
+        </div>
+      </div>
+
+      {/* ── Empty state ───────────────────────────────────────────────────── */}
+      <VariantGroup
+        label="Empty state — invalid or missing JSON"
+        note="Renders when parseChartData returns null. Sized to match configured height. Never collapses the layout."
+      />
+      <div className="border-t border-fg/5">
+        <VariantLabel label="chartData: null · color: canvas · height: md" />
+        <OT_ChartBlock
+          content={{
+            heading:   'Chart data unavailable',
+            chartType: 'bar',
+            chartData: null,
+            showGrid:  true,
+            showLegend: false,
+          }}
+          displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
+        />
+      </div>
+
+      <div className="pb-xl" />
+    </>
+  )
+}
+
 // ─── Page component ───────────────────────────────────────────────────────────
 
 type Props = { params: Promise<{ block: string }> }
@@ -1085,6 +1327,7 @@ export default async function ShowcaseBlockPage({ params }: Props) {
     case 'tabs':         return <TabsShowcase />
     case 'blog-feed':    return <BlogFeedShowcase />
     case 'button':       return <ButtonShowcase />
+    case 'chart':        return <ChartShowcase />
     default:             return notFound()
   }
 }

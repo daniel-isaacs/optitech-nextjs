@@ -56,10 +56,14 @@ export default function LaserSignature({ name, color, epiProps }: Props) {
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) return
-        io.disconnect()
-        // Trigger the CSS stagger animation
-        wrap.dataset.active = 'true'
+        if (entry.isIntersecting) {
+          // Remove first to reset mid-cycle; reflow forces browser to clear state
+          delete wrap.dataset.active
+          void wrap.offsetHeight
+          wrap.dataset.active = 'true'
+        } else {
+          delete wrap.dataset.active
+        }
       },
       { threshold: 0.4 }
     )

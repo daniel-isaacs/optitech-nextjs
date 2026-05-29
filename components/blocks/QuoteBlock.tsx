@@ -51,10 +51,10 @@ const quoteMarkBgCva = cva(
   {
     variants: {
       color: {
-        none:    "text-brand/[0.12]",
-        brand:   "text-fg-on-brand/[0.18]",
-        canvas:  "text-brand/[0.12]",
-        surface: "text-brand/[0.12]",
+        none:    "text-brand/[0.28]",
+        brand:   "text-fg-on-brand/[0.22]",
+        canvas:  "text-brand/[0.28]",
+        surface: "text-brand/[0.28]",
       },
       alignment: {
         left:   "",
@@ -131,8 +131,8 @@ export default function QuoteBlock({
 
   // Oversized background mark — large enough to dwarf the body text
   const bgMarkSize = size === "large"
-    ? "clamp(7rem, 13vw, 10rem)"
-    : "clamp(5rem, 10vw, 7.5rem)";
+    ? "clamp(9rem, 17vw, 13rem)"
+    : "clamp(6.5rem, 11vw, 9rem)";
 
   return (
     <section className={sectionCva({ color, size })}>
@@ -153,7 +153,7 @@ export default function QuoteBlock({
         </span>
 
         {/* ── All content sits above the background mark (z-10) ─────────── */}
-        <div className="relative z-10">
+        <div className={cn("relative z-10", alignment === "left" && "pl-10 sm:pl-14")}>
 
           {/* ── Quote body ──────────────────────────────────────────────── */}
           <blockquote>

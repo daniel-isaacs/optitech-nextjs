@@ -30,7 +30,7 @@ const sectionCva = cva("flex flex-col", {
 });
 
 const textPanelCva = cva(
-  "px-md py-xl lg:px-lg lg:py-2xl flex flex-col",
+  "px-md py-lg lg:px-lg lg:py-xl flex flex-col",
   {
     variants: {
       color: {

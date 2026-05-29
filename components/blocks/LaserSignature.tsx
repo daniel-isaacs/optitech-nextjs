@@ -82,7 +82,7 @@ export default function LaserSignature({ name, color, epiProps }: Props) {
           // Position tip at the very start of the letterforms
           tip.setAttribute('cx', String(bbox.x))
           tip.setAttribute('cy', String(tipY))
-          tip.setAttribute('r',  String(Math.max(2.5, bbox.height * 0.10)))
+          tip.setAttribute('r',  String(Math.max(3, bbox.height * 0.13)))
 
           // Animate tip across the signature width, synchronized with the
           // stroke-dashoffset draw (same easing + duration + delay)

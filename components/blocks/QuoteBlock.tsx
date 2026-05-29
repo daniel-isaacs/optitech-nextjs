@@ -39,9 +39,36 @@ const figureCva = cva("", {
 });
 
 /**
- * Quote text: Syne 700, bold presence, no italic.
- * Syne's letterforms carry the visual weight; the font is the drama.
- * Capped at 52ch — keeps lines readable on wide viewports.
+ * Quote mark: a large `"` glyph in Syne 700.
+ *
+ * Uses the same font as the quote body for visual continuity.
+ * Brand teal color with a layered text-shadow glow — same material language
+ * as the laser signature below. Unmistakably a quotation mark; never ornamental.
+ *
+ * On brand surface: near-white at 55% opacity (legible but recessed).
+ */
+const quoteMarkCva = cva(
+  "block select-none pointer-events-none font-syne font-bold leading-none",
+  {
+    variants: {
+      color: {
+        none:    "text-brand qm-glow",
+        brand:   "text-fg-on-brand/55",
+        canvas:  "text-brand qm-glow",
+        surface: "text-brand qm-glow",
+      },
+      alignment: {
+        left:   "",
+        center: "text-center",
+      },
+    },
+    defaultVariants: { color: "canvas", alignment: "left" },
+  }
+);
+
+/**
+ * Quote text: Syne 700 — the font's character carries the weight.
+ * No italic. Tight tracking. Capped at 52ch for readability.
  */
 const quoteTextCva = cva(
   "font-syne font-bold text-pretty max-w-[52ch] leading-[1.15] tracking-[-0.02em]",
@@ -63,30 +90,6 @@ const quoteTextCva = cva(
       },
     },
     defaultVariants: { color: "canvas", size: "large", alignment: "left" },
-  }
-);
-
-/**
- * Corner bracket mark — the opening quote signal.
- * Two CSS lines (border-top + border-left) forming an L-shape.
- * Graphic, not typographic. Scaled to the block size.
- */
-const cornerMarkCva = cva(
-  "block select-none pointer-events-none border-t-2 border-l-2",
-  {
-    variants: {
-      color: {
-        none:    "border-brand/50",
-        brand:   "border-fg-on-brand/40",
-        canvas:  "border-brand/50",
-        surface: "border-brand/50",
-      },
-      size: {
-        large: "w-7 h-7 mb-lg",
-        small: "w-5 h-5 mb-md",
-      },
-    },
-    defaultVariants: { color: "canvas", size: "large" },
   }
 );
 
@@ -126,13 +129,24 @@ export default function QuoteBlock({
     size      = "large",
   } = styleOptions;
 
+  const markSize = size === "large"
+    ? "clamp(3rem, 5.5vw, 4rem)"
+    : "clamp(2.2rem, 4vw, 3rem)";
+
   return (
     <section className={sectionCva({ color, size })}>
       <figure className={figureCva({ alignment })}>
 
-        {/* ── Corner-bracket quote mark ─────────────────────────────────── */}
-        {/* Two-line L-shape: brand teal lines, no typographic glyph */}
-        <span aria-hidden="true" className={cornerMarkCva({ color, size })} />
+        {/* ── Quote mark: Syne " with brand teal glow ─────────────────────
+          * Large, clearly a quotation mark. Teal text-shadow matches the
+          * laser aesthetic below — same material, same glow language. */}
+        <span
+          aria-hidden="true"
+          className={cn(quoteMarkCva({ color, alignment }), "mb-md")}
+          style={{ fontSize: markSize }}
+        >
+          &ldquo;
+        </span>
 
         {/* ── Quote body ────────────────────────────────────────────────── */}
         <blockquote>

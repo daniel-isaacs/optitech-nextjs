@@ -1001,6 +1001,18 @@ body {
   }
 }
 
+/* ── QuoteBlock — quote mark glyph glow ─────────────────────────────────────
+ * Large Syne " in brand teal. The layered text-shadow uses the same teal as
+ * the laser signature below, connecting the two visual elements into one system.
+ * Applied via .qm-glow class (only on canvas/surface/none — not brand bg).
+ * ─────────────────────────────────────────────────────────────────────────── */
+.qm-glow {
+  text-shadow:
+    0 0  8px oklch(55% 0.18 195 / 0.55),
+    0 0 22px oklch(55% 0.18 195 / 0.28),
+    0 0 48px oklch(55% 0.18 195 / 0.12);
+}
+
 /* ── LaserSignature — cinematic SVG signature etch ──────────────────────────
  *
  * Sequence (triggered by IntersectionObserver → data-active on .ls-wrap):
@@ -1059,47 +1071,46 @@ body {
   font-weight: 400;
 }
 
-/* ── Bloom: wide halo stroke, blurred — outer energy field ──
- * stroke-width 8 (not 14): Caveat has thin strokes; a 14px bloom overwhelms.
- * blur(8px) spreads enough to read as ambient energy without covering the glyph. */
+/* ── Bloom: wide halo stroke, blurred — diffuse outer energy field ──
+ * Slightly brighter/warmer than brand teal (hue 188 vs 195) to suggest heat.
+ * Kept subtle — the tip circle is the star; bloom is ambient atmosphere. */
 .ls-svg .ls-bloom {
   fill: transparent;
-  stroke: oklch(55% 0.18 195);
+  stroke: oklch(62% 0.18 188);
   stroke-width: 8;
-  filter: blur(8px);
+  filter: blur(9px);
   opacity: 0;
   stroke-dasharray: 12000;
   stroke-dashoffset: 12000;
 }
 .ls-svg--brand .ls-bloom { stroke: oklch(97% 0.005 195); }
 
-/* ── Glow: the beam itself — 5-stop drop-shadow chain ──
- * stroke-width 1.8 follows Caveat's thin outlines precisely. */
+/* ── Glow: drawn trail — deliberately subtle so the tip dominates ──
+ * The full drawn path has this glow applied equally. Keeping it dim lets the
+ * eye naturally perceive the tip area as the heat source. */
 .ls-svg .ls-glow {
   fill: transparent;
   stroke: oklch(55% 0.18 195);
-  stroke-width: 1.8;
+  stroke-width: 1.5;
   opacity: 0;
   stroke-dasharray: 12000;
   stroke-dashoffset: 12000;
   filter:
-    drop-shadow(0 0 1.5px oklch(95% 0.03  195 / 1.00))  /* white-hot core */
-    drop-shadow(0 0 5px   oklch(55% 0.18  195 / 0.95))  /* teal inner     */
-    drop-shadow(0 0 14px  oklch(55% 0.18  195 / 0.65))  /* teal mid       */
-    drop-shadow(0 0 28px  oklch(55% 0.18  195 / 0.38))  /* outer bloom    */
-    drop-shadow(0 0 52px  oklch(55% 0.18  195 / 0.18)); /* ambient spread */
+    drop-shadow(0 0 1px  oklch(80%  0.10  190 / 0.90))  /* faint warm core */
+    drop-shadow(0 0 4px  oklch(55%  0.18  195 / 0.60))  /* brand teal      */
+    drop-shadow(0 0 10px oklch(55%  0.18  195 / 0.30))  /* soft mid        */
+    drop-shadow(0 0 22px oklch(55%  0.18  195 / 0.14)); /* ambient         */
 }
 .ls-svg--brand .ls-glow {
   stroke: oklch(97% 0.005 195);
   filter:
-    drop-shadow(0 0 1.5px oklch(100% 0    0   / 1.00))
-    drop-shadow(0 0 5px   oklch(97%  0.005 195 / 0.95))
-    drop-shadow(0 0 14px  oklch(97%  0.005 195 / 0.65))
-    drop-shadow(0 0 28px  oklch(97%  0.005 195 / 0.38))
-    drop-shadow(0 0 52px  oklch(97%  0.005 195 / 0.18));
+    drop-shadow(0 0 1px  oklch(100% 0     0   / 0.90))
+    drop-shadow(0 0 4px  oklch(97%  0.005 195 / 0.60))
+    drop-shadow(0 0 10px oklch(97%  0.005 195 / 0.30))
+    drop-shadow(0 0 22px oklch(97%  0.005 195 / 0.14));
 }
 
-/* ── Etch: 0.6px crisp line — Caveat's thin strokes need a finer mark ── */
+/* ── Etch: 0.6px crisp line — permanent incision after beam shuts off ── */
 .ls-svg .ls-line {
   fill: oklch(55% 0.18 195 / var(--ls-fill-a));
   stroke: oklch(55% 0.18 195);
@@ -1113,25 +1124,32 @@ body {
   stroke: oklch(97% 0.005 195);
 }
 
-/* ── Hot tip: white-hot circle; moved by Web Animations API ── */
+/* ── Hot tip: the star of the show ──
+ * 6-stop drop-shadow chain: pure white → warm bright teal → brand teal → deep bloom.
+ * The warmth gradient (hue 182→188→192→195) creates a "cooling laser" temperature
+ * effect that reads as genuine heat even in a cold brand palette.
+ * Large outer radii (48px, 80px) make the tip visually dominate the drawn path,
+ * so the eye perceives the glow as concentrated at the cutting point. */
 .ls-svg .ls-tip {
-  fill: oklch(95% 0.02 195);
+  fill: oklch(99% 0.005 180);    /* white-hot, barely perceptible warm tint */
   filter:
-    drop-shadow(0 0 1px  oklch(100% 0    0   / 1.00))
-    drop-shadow(0 0 4px  oklch(55%  0.18 195 / 1.00))
-    drop-shadow(0 0 10px oklch(55%  0.18 195 / 0.75))
-    drop-shadow(0 0 22px oklch(55%  0.18 195 / 0.50))
-    drop-shadow(0 0 40px oklch(55%  0.18 195 / 0.28));
+    drop-shadow(0 0 0px  oklch(100% 0     0   / 1.00))  /* pure white core  */
+    drop-shadow(0 0 2px  oklch(90%  0.06  182 / 1.00))  /* warm bright teal */
+    drop-shadow(0 0 6px  oklch(68%  0.18  188 / 1.00))  /* hot teal         */
+    drop-shadow(0 0 16px oklch(55%  0.18  192 / 0.85))  /* brand teal       */
+    drop-shadow(0 0 36px oklch(55%  0.18  195 / 0.60))  /* outer bloom      */
+    drop-shadow(0 0 70px oklch(42%  0.14  195 / 0.35)); /* far ambient      */
   opacity: 0;
 }
 .ls-svg--brand .ls-tip {
   fill: oklch(100% 0 0);
   filter:
-    drop-shadow(0 0 1px  oklch(100% 0    0   / 1.00))
-    drop-shadow(0 0 4px  oklch(97%  0.005 195 / 1.00))
-    drop-shadow(0 0 10px oklch(97%  0.005 195 / 0.75))
-    drop-shadow(0 0 22px oklch(97%  0.005 195 / 0.50))
-    drop-shadow(0 0 40px oklch(97%  0.005 195 / 0.28));
+    drop-shadow(0 0 0px  oklch(100% 0     0   / 1.00))
+    drop-shadow(0 0 2px  oklch(98%  0.01  180 / 1.00))
+    drop-shadow(0 0 6px  oklch(97%  0.005 195 / 1.00))
+    drop-shadow(0 0 16px oklch(97%  0.005 195 / 0.85))
+    drop-shadow(0 0 36px oklch(97%  0.005 195 / 0.60))
+    drop-shadow(0 0 70px oklch(80%  0.005 195 / 0.35));
 }
 
 /* ── Static fallback (prefers-reduced-motion) ── */

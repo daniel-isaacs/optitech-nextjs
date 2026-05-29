@@ -15,7 +15,7 @@ function buildTabs(content: any, src: (ref: any) => string | undefined): TabItem
     tabLabel:  String(item.tabLabel  ?? ''),
     tabIcon:   item.tabIcon          ?? undefined,
     heading:   item.heading          ?? undefined,
-    body:      item.body             ?? undefined,
+    body:      item.body?.html        ?? undefined,
     imageSrc:  src(item.image)       ?? undefined,
     imageAlt:  item.imageAlt         ?? '',
     ctaLabel:  item.ctaLabel         ?? undefined,

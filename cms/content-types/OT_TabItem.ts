@@ -51,11 +51,10 @@ export const OT_TabItem = contentType({
       sortOrder:   30,
     },
     body: {
-      type:        'string',
+      type:        'richText',
       displayName: 'Panel Body',
-      description: 'Primary panel content. Plain text — keep concise. Tabs are not the place for long-form prose.',
+      description: 'Primary panel content. Supports bold, italic, links, and lists.',
       isLocalized: true,
-      maxLength:   400,
       group:       'OT_Content',
       sortOrder:   40,
     },

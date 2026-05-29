@@ -387,7 +387,7 @@ function TriggerButton({
         onClick={() => onSelect(index)}
         className={cn(
           baseClass,
-          'px-lg py-sm text-label font-semibold tracking-label uppercase',
+          'px-lg py-sm text-sm font-semibold tracking-label uppercase',
           triggerTextClass(color, isActive ? 'active' : 'inactive'),
           // Glass active: frosted bg
           isActive && color === 'glass' && [
@@ -494,7 +494,7 @@ function TriggerButton({
         onClick={() => onSelect(index)}
         className={cn(
           baseClass,
-          'px-md py-sm text-label font-semibold tracking-label uppercase',
+          'px-md py-sm text-sm font-semibold tracking-label uppercase',
           isActive ? pillActive : pillInactive,
         )}
       >
@@ -545,7 +545,7 @@ function TriggerButton({
       onClick={() => onSelect(index)}
       className={cn(
         baseClass,
-        'px-md py-sm text-label font-semibold tracking-label uppercase',
+        'px-md py-sm text-sm font-semibold tracking-label uppercase',
         separatorClass,
         isSide && 'md:w-full md:text-left md:border-r-0 md:border-b last:md:border-b-0',
         isSide && (color === 'glass' || color === 'brand') ? 'md:border-white/20' : isSide ? 'md:border-fg/15' : '',
@@ -602,7 +602,12 @@ function PanelContent({ tab, color, contentLayout }: PanelContentProps) {
   const textContent = (
     <div className="flex flex-col gap-sm flex-1">
       {tab.heading && <h3 className={headingClass}>{tab.heading}</h3>}
-      {tab.body    && <p  className={bodyClass}>{tab.body}</p>}
+      {tab.body    && (
+        <div
+          className={bodyClass}
+          dangerouslySetInnerHTML={{ __html: tab.body }}
+        />
+      )}
       {tab.ctaLabel && tab.ctaUrl && (
         <div className="mt-sm">
           <Button

@@ -5,12 +5,14 @@ import { getSiteSettings, getRequestDomain, getRequestLocale } from '@/lib/optim
 /**
  * Footer — driven by OT_FooterBlock via ThemeManager.footerRef.
  *
- * Layout (redesigned with isometric depth system):
+ * Layout:
  *   [2px gradient bar]
- *   [diagonal isometric texture — 45° lines match extrude shadow direction]
- *   [editorial wordmark — "OptiTech" in display-extrude at full size]
- *   [content grid — description left, nav right, separated by border-t]
- *   [bottom strip — logo + year]
+ *   [two-column main: left = angled brand panel + prominent logo + description;
+ *                     right = nav links, separated by a skewed brand divider]
+ *   [bottom strip — year]
+ *
+ * Depth: clip-path parallelogram on the left panel, skewed column divider,
+ *        45° diagonal line texture, bottom-right bloom.
  */
 export default async function Footer() {
   const settings = await getSiteSettings(await getRequestDomain(), await getRequestLocale())
@@ -21,10 +23,11 @@ export default async function Footer() {
   const logoFit        = (settings?.logoFit as string | undefined) ?? 'full'
   const logoInvertDark = settings?.logoInvertDark === true
 
+  // Larger sizes than the header — footer logo is a focal point, not a utility mark
   const LOGO_IMG_CLASS: Record<string, string> = {
-    full:    'max-h-8 w-auto',
-    icon:    'h-8 w-8 object-contain',
-    compact: 'max-h-6 w-auto max-w-[110px]',
+    full:    'max-h-14 w-auto',
+    icon:    'h-14 w-14 object-contain',
+    compact: 'max-h-10 w-auto max-w-[200px]',
   }
   const logoImgClass = [
     LOGO_IMG_CLASS[logoFit] ?? LOGO_IMG_CLASS.full,
@@ -43,7 +46,6 @@ export default async function Footer() {
         .slice(0, 10)
     : []
 
-  const hasContent     = !!descriptionHtml || links.length > 0
   const twoColumnLinks = links.length > 5
   const year           = new Date().getFullYear()
 
@@ -59,128 +61,137 @@ export default async function Footer() {
         }}
       />
 
-      {/* ── Isometric diagonal texture — 45° lines match the extrude shadow ──
-           One-pixel lines every 48px. Uses CSS relative color so it follows
-           CMS theme overrides automatically. ─────────────────────────────── */}
+      {/* ── 45° diagonal line texture — matches extrude shadow direction ──── */}
       <div
         aria-hidden
         className="pointer-events-none select-none absolute inset-0"
         style={{
           zIndex: 0,
           backgroundImage:
-            'repeating-linear-gradient(45deg, oklch(from var(--ot-brand) l c h / 0.055) 0px, oklch(from var(--ot-brand) l c h / 0.055) 1px, transparent 1px, transparent 48px)',
+            'repeating-linear-gradient(45deg, oklch(from var(--ot-brand) l c h / 0.04) 0px, oklch(from var(--ot-brand) l c h / 0.04) 1px, transparent 1px, transparent 52px)',
         }}
       />
 
-      {/* ── Bottom-right ambient bloom — soft glow anchors the depth ─────── */}
+      {/* ── Bottom-right ambient bloom ────────────────────────────────────── */}
       <div
         aria-hidden
         className="pointer-events-none select-none absolute inset-0"
         style={{
           zIndex: 0,
           backgroundImage:
-            'radial-gradient(ellipse 55% 70% at 92% 105%, var(--ot-bloom-brand-faint) 0%, transparent 65%)',
+            'radial-gradient(ellipse 60% 90% at 92% 110%, var(--ot-bloom-brand-faint) 0%, transparent 65%)',
         }}
       />
 
-      {/* ── Editorial wordmark — isometric extrude at display scale ──────────
-           The primary visual statement of the footer. Clips naturally at the
-           overflow-hidden boundary on narrow viewports — the bleed is intentional.
-           aria-hidden because the page already identifies the brand via the logo. */}
-      <div
-        aria-hidden
-        className="relative select-none pointer-events-none overflow-hidden px-md pt-xl pb-sm lg:px-lg"
-        style={{ zIndex: 1 }}
-      >
-        <p
-          className="display-extrude font-extrabold leading-none"
-          style={{
-            fontSize: 'clamp(4rem, 13vw, 13rem)',
-            letterSpacing: '-0.04em',
-          }}
-        >
-          OptiTech
-        </p>
+      {/* ── Main content — two columns ────────────────────────────────────────
+           Left (logo + description) and right (nav) sit side-by-side at lg+.
+           Below lg they stack: logo first, then links. ──────────────────── */}
+      <div className="relative flex flex-col lg:flex-row min-h-65" style={{ zIndex: 1 }}>
+
+        {/* ── Left column — logo anchor zone ─────────────────────────────── */}
+        <div className="relative lg:w-[58%] flex flex-col justify-center px-md py-xl lg:px-lg lg:pr-24">
+
+          {/* Angled brand panel — parallelogram: straight left edge,
+               diagonal right edge. The cut angle matches the extrude depth
+               direction, making both effects part of the same visual system. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              clipPath: 'polygon(0 0, 100% 0, calc(100% - 5rem) 100%, 0 100%)',
+              background: 'linear-gradient(120deg, oklch(from var(--ot-brand) l c h / 0.18) 0%, oklch(from var(--ot-brand) l c h / 0.04) 100%)',
+            }}
+          />
+
+          {/* Logo — primary focal point */}
+          <Link
+            href="/"
+            aria-label={`${logoAlt} — Home`}
+            className="relative inline-flex items-center hover:opacity-80 transition-opacity duration-200 ease-quick"
+            style={{
+              filter: 'drop-shadow(0 6px 24px var(--ot-bloom-brand-faint))',
+            }}
+          >
+            <Image
+              src={logoSrc}
+              alt={logoAlt}
+              width={260}
+              height={56}
+              className={logoImgClass}
+            />
+          </Link>
+
+          {/* Description */}
+          {descriptionHtml && (
+            <div
+              className="
+                relative mt-lg max-w-[46ch]
+                text-[0.9375rem] leading-[1.65] text-fg-muted
+                [&_p]:m-0
+                [&_p+p]:mt-[0.75em]
+                [&_strong]:font-semibold [&_strong]:text-fg
+                [&_em]:not-italic [&_em]:text-accent
+                [&_a]:text-fg-muted [&_a]:underline [&_a]:decoration-fg/20
+                [&_a:hover]:text-fg [&_a:hover]:decoration-fg/50
+                transition-colors duration-150
+              "
+              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+            />
+          )}
+        </div>
+
+        {/* ── Skewed column divider — 2px brand→accent gradient stripe ──────
+             skewX pulls the top of the line left, giving the separator the
+             same diagonal direction as the panel edge and the texture lines. */}
+        {links.length > 0 && (
+          <div
+            aria-hidden
+            className="hidden lg:block absolute top-0 bottom-0 pointer-events-none"
+            style={{
+              width: '2px',
+              left: '58%',
+              transform: 'skewX(-4deg)',
+              transformOrigin: 'top center',
+              background: 'linear-gradient(to bottom, transparent 0%, var(--ot-brand) 25%, var(--ot-accent) 75%, transparent 100%)',
+              opacity: 0.35,
+            }}
+          />
+        )}
+
+        {/* ── Right column — navigation ───────────────────────────────────── */}
+        {links.length > 0 && (
+          <div className="relative lg:w-[42%] flex flex-col justify-center px-md py-xl lg:px-lg border-t border-fg/8 lg:border-t-0">
+            {links.length >= 3 && (
+              <p className="text-label tracking-label uppercase text-fg-muted/40 font-semibold mb-md">
+                Navigation
+              </p>
+            )}
+            <nav aria-label="Footer navigation">
+              <ul className={`grid grid-cols-1 gap-y-xs ${twoColumnLinks ? 'sm:grid-cols-2 gap-x-xl' : ''}`}>
+                {links.map(link => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-label tracking-label uppercase text-fg-muted hover:text-fg transition-colors duration-150 ease-quick"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        )}
+
       </div>
 
-      {/* ── Content zone ─────────────────────────────────────────────────────
-           Only renders when footer block data is present. ───────────────── */}
-      {hasContent && (
-        <div className="relative px-md lg:px-lg" style={{ zIndex: 1 }}>
-          <div className="border-t border-fg/10 pt-xl pb-lg flex flex-col gap-xl sm:flex-row sm:items-start sm:gap-2xl">
-
-            {/* Description — flexible width */}
-            {descriptionHtml && (
-              <div
-                className="
-                  flex-1 min-w-0
-                  text-[1.0625rem] font-medium leading-[1.65] text-fg
-                  [&_p]:m-0
-                  [&_p+p]:mt-[0.75em]
-                  [&_strong]:font-semibold
-                  [&_em]:not-italic [&_em]:text-accent
-                  [&_a]:text-fg-muted [&_a]:underline [&_a]:decoration-fg/20
-                  [&_a:hover]:text-fg [&_a:hover]:decoration-fg/50
-                "
-                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-              />
-            )}
-
-            {/* Navigation links — pinned right */}
-            {links.length > 0 && (
-              <nav aria-label="Footer navigation" className="shrink-0">
-                <ul
-                  className={`
-                    grid grid-cols-1 gap-x-xl gap-y-xs
-                    ${twoColumnLinks ? 'sm:grid-cols-2' : ''}
-                  `}
-                >
-                  {links.map(link => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="
-                          text-label tracking-label uppercase
-                          text-fg-muted hover:text-fg
-                          transition-colors duration-150 ease-quick
-                        "
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            )}
-
-          </div>
-        </div>
-      )}
-
-      {/* ── Bottom strip — logo + year ────────────────────────────────────────
-           Sits on the deepest ground. Logo is at reduced opacity at rest,
-           brightens on hover. Year mark in brand/40 — quiet but present. ── */}
+      {/* ── Bottom strip — year mark ──────────────────────────────────────────
+           Minimal. The logo above already provides the brand close. ──────── */}
       <div
-        className="relative border-t border-fg/8 px-md lg:px-lg py-md flex items-center justify-between gap-lg"
+        className="relative border-t border-fg/8 px-md lg:px-lg py-sm flex items-center justify-between"
         style={{ zIndex: 1 }}
       >
-        <Link
-          href="/"
-          aria-label={`${logoAlt} — Home`}
-          className="inline-flex items-center opacity-55 hover:opacity-90 transition-opacity duration-200 ease-quick"
-        >
-          <Image
-            src={logoSrc}
-            alt={logoAlt}
-            width={130}
-            height={32}
-            className={logoImgClass}
-          />
-        </Link>
-
-        <p className="text-label text-brand/40 tracking-label uppercase">
-          {year}
-        </p>
+        <p className="text-label text-brand/40 tracking-label uppercase">{year}</p>
       </div>
 
     </footer>

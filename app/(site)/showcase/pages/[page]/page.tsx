@@ -131,7 +131,7 @@ function FolderPageShowcase() {
       <p className="text-body leading-body text-fg-muted max-w-[65ch]">
         Folder pages are structural navigation containers in the content hierarchy. They appear in the CMS as parent nodes for groups of blog articles or section collections, and render in the URL path without displaying UI of their own.
       </p>
-      <div className="mt-lg bg-surface border border-fg/10 px-lg py-xl max-w-2xl">
+      <div className="mt-lg bg-surface border border-fg/10 px-lg py-xl">
         <p className="text-label tracking-label uppercase text-brand font-semibold mb-sm">CMS key</p>
         <code className="font-mono text-title text-fg">OT_FolderPage</code>
         <p className="text-body text-fg-muted mt-md max-w-[50ch]">

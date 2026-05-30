@@ -88,19 +88,6 @@ export default async function Footer() {
         }}
       />
 
-      {/* z-2: Accent rim — crisp diagonal spine at 62%, fades top-to-bottom */}
-      <div
-        aria-hidden
-        className="hidden lg:block absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 2,
-          background:
-            'linear-gradient(to bottom, oklch(from var(--ot-accent) l c h / 0.92) 0%, oklch(from var(--ot-accent) l c h / 0.30) 100%)',
-          clipPath:
-            'polygon(calc(62% - 2px) 0, calc(62% + 2px) 0, calc(62% - 5rem + 2px) 100%, calc(62% - 5rem - 3px) 100%)',
-        }}
-      />
-
       {/* z-3: Right-column elevation — lighter top edge, makes brand side look raised */}
       <div
         aria-hidden

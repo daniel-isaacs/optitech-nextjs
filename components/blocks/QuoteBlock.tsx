@@ -153,9 +153,11 @@ export default function QuoteBlock({
     <section className={sectionCva({ color, size })}>
       <figure className={cn(figureCva({ alignment }), "relative")}>
 
-        {/* ── Left-aligned: absolute watermark in the margin ────────────────
-          * The content div below has pl-10/pl-14 which creates the gutter.
-          * The mark overflows into that gutter, sitting behind line 1. */}
+        {/* ── Left-aligned: pure watermark behind the text ─────────────────
+          * Absolutely positioned at z-0 so text flows naturally from the
+          * left edge at z-10, overlapping the mark. No gutter / padding
+          * is added to the content — the text sits on top of the mark,
+          * which reads as a large faded background character. */}
         {alignment === "left" && (
           <span
             aria-hidden="true"
@@ -167,7 +169,7 @@ export default function QuoteBlock({
         )}
 
         {/* ── All content (z-10) ────────────────────────────────────────── */}
-        <div className={cn("relative z-10", alignment === "left" && "pl-10 sm:pl-14")}>
+        <div className="relative z-10">
 
           {/* ── Quote body ────────────────────────────────────────────────── */}
           <blockquote>

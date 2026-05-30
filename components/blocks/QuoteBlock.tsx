@@ -70,10 +70,10 @@ const quoteMarkInlineCva = cva(
   {
     variants: {
       color: {
-        none:    "text-brand/[0.38]",
-        brand:   "text-fg-on-brand/[0.28]",
-        canvas:  "text-brand/[0.38]",
-        surface: "text-brand/[0.38]",
+        none:    "text-brand/[0.30]",
+        brand:   "text-fg-on-brand/[0.22]",
+        canvas:  "text-brand/[0.30]",
+        surface: "text-brand/[0.30]",
       },
     },
     defaultVariants: { color: "canvas" },
@@ -146,8 +146,8 @@ export default function QuoteBlock({
     : "clamp(6.5rem, 11vw, 9rem)";
 
   const inlineMarkSize = size === "large"
-    ? "clamp(2rem, 4vw, 3.25rem)"
-    : "clamp(1.5rem, 3vw, 2.25rem)";
+    ? "clamp(4rem, 8vw, 6rem)"
+    : "clamp(2.75rem, 5.5vw, 4rem)";
 
   return (
     <section className={sectionCva({ color, size })}>
@@ -185,8 +185,12 @@ export default function QuoteBlock({
                   className={quoteMarkInlineCva({ color })}
                   style={{
                     fontSize:      inlineMarkSize,
-                    verticalAlign: "-0.12em",
-                    marginRight:   "0.05em",
+                    /* Pull the oversized mark up so its cap sits level with
+                       the opening word — negative value is relative to the
+                       mark's own em, so it stays proportional across sizes */
+                    verticalAlign: "-0.55em",
+                    marginRight:   "0.12em",
+                    lineHeight:    1,
                   }}
                 >
                   &ldquo;

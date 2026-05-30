@@ -863,26 +863,22 @@ body {
   color: oklch(97% 0.005 195 / 0.80);
 }
 
-/* ── Treatment: dropcap — outlined hollow initial ───────────────────────────
+/* ── Treatment: dropcap — oversized accent initial ──────────────────────────
  *
  * Drop caps belong on body text, not headings. Applying ::first-letter to a
- * heading creates an orphaned letter beside the heading text, which breaks
- * both reading flow and visual hierarchy.
+ * heading creates an orphaned letter beside the heading text.
  *
  * Selectors target only paragraphs:
  *   p:first-child         content that opens directly with a paragraph
  *   h:first-child + p     first paragraph after an opening heading
  *
- * Visual approach: transparent fill + accent-color -webkit-text-stroke creates
- * a hollow outlined initial. Against the dark canvas it reads as an architectural
- * drawn letterform — more distinctive than a solid brand-teal fill. The subtle
- * text-shadow casts a diffused accent glow around the outline.
+ * Uses solid accent color (signal green) for the fill — guaranteed visible on
+ * both dark canvas and light backgrounds. The diffused text-shadow glow works
+ * because text-shadow follows the fill color, not a stroke.
  * ─────────────────────────────────────────────────────────────────────────── */
 [data-rich-text][data-treatment="dropcap"] > p:first-child::first-letter,
 [data-rich-text][data-treatment="dropcap"] > :is(h1, h2, h3, h4, h5, h6):first-child + p::first-letter {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--ot-accent);
-  paint-order: stroke fill;
+  color: var(--ot-accent);
   float: left;
   font-size: clamp(4rem, 9vw, 5.5rem);
   font-weight: 800;
@@ -890,21 +886,23 @@ body {
   margin-right: 0.10em;
   margin-top: 0.05em;
   letter-spacing: -0.04em;
-  text-shadow: 0 0 1.2em oklch(from var(--ot-accent) l c h / 0.30);
+  /* Glow: two-layer accent bloom — wide diffuse + tight halo */
+  text-shadow:
+    0 0 1.2em oklch(from var(--ot-accent) l c h / 0.45),
+    0 0 0.3em oklch(from var(--ot-accent) l c h / 0.20);
 }
 
-/* Light mode: thicker stroke (glow removed, contrast carries the letterform) */
+/* Light mode: no glow needed, accent reads clearly on near-white canvas */
 [data-theme="light"] [data-rich-text][data-treatment="dropcap"] > p:first-child::first-letter,
 [data-theme="light"] [data-rich-text][data-treatment="dropcap"] > :is(h1, h2, h3, h4, h5, h6):first-child + p::first-letter {
-  -webkit-text-stroke: 2px var(--ot-accent);
   text-shadow: none;
 }
 
-/* Brand background: outlined in fg-on-brand so it shows on teal */
+/* Brand background: use fg-on-brand (near-white) so the initial shows on teal */
 [data-rich-text][data-color="brand"][data-treatment="dropcap"] > p:first-child::first-letter,
 [data-rich-text][data-color="brand"][data-treatment="dropcap"] > :is(h1, h2, h3, h4, h5, h6):first-child + p::first-letter {
-  -webkit-text-stroke: 1.5px var(--ot-fg-on-brand);
-  text-shadow: 0 0 1em oklch(97% 0.005 195 / 0.15);
+  color: var(--ot-fg-on-brand);
+  text-shadow: 0 0 1em oklch(97% 0.005 195 / 0.20);
 }
 
 /* ── Ruled headings — 1px teal top-border as chapter divider ── */

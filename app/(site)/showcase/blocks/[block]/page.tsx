@@ -952,12 +952,12 @@ function TabsShowcase() {
 // ─── Blog Feed (simplified) ───────────────────────────────────────────────────
 
 const MOCK_POSTS: BlogFeedPost[] = [
-  { _metadata: { key: 'sc-post-1', published: '2026-05-15T09:00:00Z', url: { default: '/blog/architecture-sub-millisecond-delivery' } }, headline: 'How OptiTech Builds for Speed: Architecture Behind Sub-Millisecond Feature Delivery', topic: 'engineering', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '8 min read' },
+  { _metadata: { key: 'sc-post-1', published: '2026-05-15T09:00:00Z', url: { default: '/blog/architecture-sub-millisecond-delivery' } }, headline: 'How OptiTech Builds for Speed: Architecture Behind Sub-Millisecond Feature Delivery', topic: 'insights', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '8 min read' },
   { _metadata: { key: 'sc-post-2', published: '2026-05-10T08:00:00Z', url: { default: '/blog/future-of-personalization' } }, headline: 'The Future of Personalization: How AI Is Reshaping User Experiences', topic: 'innovation', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop' } }, authorRef: { name: 'Marcus Webb' }, readTime: '5 min read' },
-  { _metadata: { key: 'sc-post-3', published: '2026-05-06T10:30:00Z', url: { default: '/blog/zero-downtime-deployments' } }, headline: 'Why Feature Flags Are the Foundation of Modern Product Development', topic: 'product', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop' } }, authorRef: { name: 'Priya Nair' }, readTime: '6 min read' },
-  { _metadata: { key: 'sc-post-4', published: '2026-04-28T14:00:00Z', url: { default: '/blog/observability-trends-2026' } }, headline: 'Observability in 2026: Five Trends Redefining How Teams Monitor Production', topic: 'trends', featuredImage: undefined, authorRef: { name: 'James Okonkwo' }, readTime: '4 min read' },
-  { _metadata: { key: 'sc-post-5', published: '2026-04-20T11:00:00Z', url: { default: '/blog/experiment-design' } }, headline: 'Experiment Design That Actually Works: A Practical Guide for Product Teams', topic: 'product', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '7 min read' },
-  { _metadata: { key: 'sc-post-6', published: '2026-04-14T09:30:00Z', url: { default: '/blog/sdk-internals' } }, headline: 'Inside the OptiTech SDK: How We Cut Evaluation Latency by 60%', topic: 'engineering', featuredImage: undefined, authorRef: { name: 'Marcus Webb' }, readTime: '9 min read' },
+  { _metadata: { key: 'sc-post-3', published: '2026-05-06T10:30:00Z', url: { default: '/blog/zero-downtime-deployments' } }, headline: 'Why Feature Flags Are the Foundation of Modern Product Development', topic: 'resources', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop' } }, authorRef: { name: 'Priya Nair' }, readTime: '6 min read' },
+  { _metadata: { key: 'sc-post-4', published: '2026-04-28T14:00:00Z', url: { default: '/blog/observability-trends-2026' } }, headline: 'Observability in 2026: Five Trends Redefining How Teams Monitor Production', topic: 'news', featuredImage: undefined, authorRef: { name: 'James Okonkwo' }, readTime: '4 min read' },
+  { _metadata: { key: 'sc-post-5', published: '2026-04-20T11:00:00Z', url: { default: '/blog/experiment-design' } }, headline: 'Experiment Design That Actually Works: A Practical Guide for Product Teams', topic: 'leadership', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '7 min read' },
+  { _metadata: { key: 'sc-post-6', published: '2026-04-14T09:30:00Z', url: { default: '/blog/sdk-internals' } }, headline: 'Inside the OptiTech SDK: How We Cut Evaluation Latency by 60%', topic: 'stories', featuredImage: undefined, authorRef: { name: 'Marcus Webb' }, readTime: '9 min read' },
 ]
 
 function BlogFeedShowcase() {
@@ -975,13 +975,24 @@ function BlogFeedShowcase() {
       {(['canvas', 'surface', 'brand'] as const).map(color => (
         <div key={color} className="border-t border-fg/5">
           <VariantLabel label={`color: "${color}"`} />
-          <BlogFeedBlock posts={MOCK_POSTS} topics={['engineering', 'innovation', 'product', 'trends']} pageSize={6} styleOptions={{ color, columns: 'col3', headingSize: 'headline' }} />
+          <BlogFeedBlock posts={MOCK_POSTS} topics={['insights', 'innovation', 'resources', 'news', 'leadership', 'stories']} pageSize={6} styleOptions={{ color, columns: 'col3', headingSize: 'headline' }} />
         </div>
       ))}
 
       <VariantGroup label="2 columns · canvas · display heading" />
       <div className="border-t border-fg/5">
-        <BlogFeedBlock posts={MOCK_POSTS.slice(0, 4)} topics={['engineering', 'product']} pageSize={4} styleOptions={{ color: 'canvas', columns: 'col2', headingSize: 'display' }} />
+        <BlogFeedBlock posts={MOCK_POSTS.slice(0, 4)} topics={['insights', 'resources']} pageSize={4} styleOptions={{ color: 'canvas', columns: 'col2', headingSize: 'display' }} />
+      </div>
+
+      <VariantGroup label="Topic filter locked · innovation · surface" note="When topicFilter is set in the CMS, posts are pre-filtered server-side and the chip UI is replaced by a static topic label." />
+      <div className="border-t border-fg/5">
+        <BlogFeedBlock
+          posts={MOCK_POSTS.filter(p => p.topic === 'innovation')}
+          topics={['innovation']}
+          topicFilter="innovation"
+          pageSize={3}
+          styleOptions={{ color: 'surface', columns: 'col3', headingSize: 'headline' }}
+        />
       </div>
       <div className="pb-xl" />
     </>

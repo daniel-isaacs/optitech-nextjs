@@ -47,10 +47,18 @@ export default async function OT_BlogFeedBlockAdapter({
     ? Math.min(rawPageSize, 24)
     : 9
 
+  // ── Topic filter ─────────────────────────────────────────────────────────
+  // When the editor chooses a topic in the CMS, the feed is locked to that
+  // topic at render time. Null means "no filter — show all topics".
+  const topicFilter: string | null =
+    typeof content.topicFilter === 'string' && content.topicFilter
+      ? content.topicFilter
+      : null
+
   // ── Fetch posts ───────────────────────────────────────────────────────────
   // React cache() dedups this call if multiple Blog Feed blocks appear on the
-  // same page with the same locale + root (e.g. the same locale + no root).
-  const { posts, topics } = await getBlogFeedPosts(locale, articleRootPath, siteBaseUrl || null)
+  // same page with the same locale + root + filter combination.
+  const { posts, topics } = await getBlogFeedPosts(locale, articleRootPath, siteBaseUrl || null, topicFilter)
 
   // ── Display settings ──────────────────────────────────────────────────────
   const color       = String(displaySettings.color       ?? 'canvas')  as BlogFeedColor
@@ -69,6 +77,7 @@ export default async function OT_BlogFeedBlockAdapter({
         posts={posts}
         topics={topics}
         pageSize={pageSize}
+        topicFilter={topicFilter}
         styleOptions={{ color, columns, headingSize }}
         pa={pa}
       />

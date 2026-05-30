@@ -18,10 +18,10 @@ export default async function Footer() {
   const footerLogoSize     = (footerRef?.footerLogoSize as string | undefined) ?? 'md'
 
   const FOOTER_LOGO_SIZE: Record<string, string> = {
-    sm: 'max-h-10 w-auto',
-    md: 'max-h-14 w-auto',
-    lg: 'max-h-20 w-auto',
-    xl: 'max-h-28 w-auto',
+    sm: 'max-h-8 w-auto',
+    md: 'max-h-10 w-auto',
+    lg: 'max-h-14 w-auto',
+    xl: 'max-h-20 w-auto',
   }
   const logoSizeClass = FOOTER_LOGO_SIZE[footerLogoSize] ?? FOOTER_LOGO_SIZE.md
 
@@ -38,98 +38,109 @@ export default async function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    // data-theme="dark" forces dark tokens in both light and dark page modes.
-    // The [data-theme="dark"] rules in tokens.css re-assert dark canvas/fg values.
     <footer className="relative overflow-hidden isolate" data-theme="dark">
 
-      {/* Top gradient bar: brand → accent */}
+      {/* Top gradient bar */}
       <div
         aria-hidden
-        className="h-0.5"
+        className="h-px"
         style={{
           background: 'linear-gradient(to right, transparent, var(--ot-brand) 20%, var(--ot-accent) 80%, transparent)',
         }}
       />
 
-      {/* ── Background layers (absolute, stacked) ─────────────────────────────
-       * z-0  brand-hover fills everything (right column base, WCAG-safe for white text)
-       * z-1  canvas left panel with diagonal clip-path + drop-shadow depth (desktop)
-       * z-2  45° line texture over canvas side (desktop)
-       * z-3  accent rim strip at the diagonal boundary (desktop)
-       * z-4  ambient brand bloom on the right side
+      {/* ── Background layers (absolute, stacked) ──────────────────────────────
+       *
+       * z-0  brand-hover fills everything (right side base)
+       * z-1  canvas panel: clip-path extends past the mist zone; CSS mask creates
+       *      a soft angled right edge that dissolves into the brand colour below.
+       *      drop-shadow renders on the masked alpha edge → diffused depth shadow.
+       * z-2  accent rim — thin crisp parallelogram at the diagonal spine
+       * z-3  right-side elevation — subtle top-lit gradient makes the brand panel
+       *      appear slightly raised above the canvas side
+       * z-4  ambient brand bloom
+       *
        * ─────────────────────────────────────────────────────────────────────── */}
 
+      {/* z-0 */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{ zIndex: 0, background: 'var(--ot-brand-hover)' }}
       />
 
-      {/* Canvas panel — diagonal right edge; drop-shadow casts depth onto brand side */}
+      {/* z-1: Canvas panel — masked right edge creates the mist/dissolve blend */}
       <div
         aria-hidden
         className="hidden lg:block absolute inset-0 pointer-events-none"
         style={{
           zIndex: 1,
           background: 'var(--ot-canvas)',
-          clipPath: 'polygon(0 0, 57% 0, calc(57% - 5rem) 100%, 0 100%)',
-          filter: 'drop-shadow(8px 0 36px oklch(4% 0.005 195 / 0.65))',
+          /* Clip to a polygon wider than the visual diagonal so the mask has room to fade */
+          clipPath: 'polygon(0 0, 74% 0, calc(74% - 5rem) 100%, 0 100%)',
+          /* Mask gradient: solid canvas → soft dissolve into brand side */
+          WebkitMaskImage:
+            'linear-gradient(to right, black 0%, black 50%, rgba(0,0,0,0.80) 57%, rgba(0,0,0,0.50) 63%, rgba(0,0,0,0.18) 68%, transparent 73%)',
+          maskImage:
+            'linear-gradient(to right, black 0%, black 50%, rgba(0,0,0,0.80) 57%, rgba(0,0,0,0.50) 63%, rgba(0,0,0,0.18) 68%, transparent 73%)',
+          /* drop-shadow follows the mask's alpha edge — produces a soft depth shadow on the brand side */
+          filter: 'drop-shadow(12px 0 44px oklch(4% 0.005 195 / 0.65))',
         }}
       />
 
-      {/* Diagonal line texture over canvas side */}
+      {/* z-2: Accent rim — crisp diagonal spine at 62%, fades top-to-bottom */}
       <div
         aria-hidden
         className="hidden lg:block absolute inset-0 pointer-events-none"
         style={{
           zIndex: 2,
-          clipPath: 'polygon(0 0, 57% 0, calc(57% - 5rem) 100%, 0 100%)',
-          backgroundImage:
-            'repeating-linear-gradient(45deg, oklch(from var(--ot-brand) l c h / 0.04) 0px, oklch(from var(--ot-brand) l c h / 0.04) 1px, transparent 1px, transparent 52px)',
+          background:
+            'linear-gradient(to bottom, oklch(from var(--ot-accent) l c h / 0.92) 0%, oklch(from var(--ot-accent) l c h / 0.30) 100%)',
+          clipPath:
+            'polygon(calc(62% - 2px) 0, calc(62% + 2px) 0, calc(62% - 5rem + 2px) 100%, calc(62% - 5rem - 3px) 100%)',
         }}
       />
 
-      {/* Accent rim — thin parallelogram strip at the diagonal edge */}
+      {/* z-3: Right-column elevation — lighter top edge, makes brand side look raised */}
       <div
         aria-hidden
         className="hidden lg:block absolute inset-0 pointer-events-none"
         style={{
           zIndex: 3,
           background:
-            'linear-gradient(to bottom, oklch(from var(--ot-accent) l c h / 0.88) 0%, oklch(from var(--ot-accent) l c h / 0.40) 100%)',
-          clipPath:
-            'polygon(calc(57% - 2px) 0, calc(57% + 2px) 0, calc(57% - 5rem + 2px) 100%, calc(57% - 5rem - 3px) 100%)',
+            'linear-gradient(to bottom, oklch(from var(--ot-brand-hover) calc(l + 0.10) c h / 0.50) 0%, transparent 60%)',
+          clipPath: 'polygon(61% 0, 100% 0, 100% 100%, calc(61% - 5rem) 100%)',
         }}
       />
 
-      {/* Ambient bloom: soft halo on the brand side */}
+      {/* z-4: Ambient bloom on brand side */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
           zIndex: 4,
           backgroundImage:
-            'radial-gradient(ellipse 55% 75% at 92% 110%, var(--ot-bloom-brand-faint) 0%, transparent 65%)',
+            'radial-gradient(ellipse 50% 80% at 90% 115%, var(--ot-bloom-brand-faint) 0%, transparent 65%)',
         }}
       />
 
       {/* ── Main content ──────────────────────────────────────────────────────── */}
       {/*
-       * Each column carries its own background color for mobile (stacked layout).
-       * On desktop (lg:), the columns are transparent — the absolute panels above
-       * provide the correct background through the diagonal clip-path system.
-       * lg:bg-transparent overrides the mobile background at the lg breakpoint.
+       * Mobile: columns stack vertically, each carries its own background colour.
+       * Desktop (lg:): both columns are transparent — the absolute panels above
+       * show through. Left column naturally sits over the canvas region;
+       * right column sits over the brand-hover region.
        */}
-      <div className="relative flex flex-col lg:flex-row" style={{ zIndex: 10, minHeight: '300px' }}>
+      <div className="relative flex flex-col lg:flex-row" style={{ zIndex: 10 }}>
 
-        {/* ── Left: canvas — logo + description ──────────────────────────────── */}
-        <div className="bg-canvas lg:bg-transparent lg:w-[57%] flex flex-col justify-center px-md py-xl lg:px-lg lg:py-2xl lg:pr-28">
+        {/* ── Left: canvas — logo + description + copyright ──────────────────── */}
+        <div className="bg-canvas lg:bg-transparent lg:w-[62%] flex flex-col justify-center px-md py-md lg:px-lg lg:py-lg lg:pr-20">
 
           <Link
             href="/"
             aria-label={`${logoAlt} — Home`}
             className="inline-flex items-center hover:opacity-80 transition-opacity duration-200 ease-quick"
-            style={{ filter: 'drop-shadow(0 4px 20px var(--ot-bloom-brand-faint))' }}
+            style={{ filter: 'drop-shadow(0 4px 16px var(--ot-bloom-brand-faint))' }}
           >
             <Image
               src={footerLogoSrc}
@@ -143,31 +154,28 @@ export default async function Footer() {
 
           {descriptionHtml && (
             <div
-              className="mt-lg max-w-[44ch] text-[0.9375rem] leading-relaxed text-fg-muted [&_p]:m-0 [&_p+p]:mt-[0.75em] [&_strong]:font-semibold [&_strong]:text-fg [&_em]:not-italic [&_em]:text-accent [&_a]:text-fg-muted [&_a]:underline [&_a]:decoration-fg/20 [&_a:hover]:text-fg [&_a:hover]:decoration-fg/50 transition-colors duration-150"
+              className="mt-sm max-w-[58ch] text-[0.875rem] leading-relaxed text-fg-muted [&_p]:m-0 [&_p+p]:mt-[0.5em] [&_strong]:font-semibold [&_strong]:text-fg [&_em]:not-italic [&_em]:text-accent [&_a]:text-fg-muted [&_a]:underline [&_a]:decoration-fg/20 [&_a:hover]:text-fg [&_a:hover]:decoration-fg/50 transition-colors duration-150"
               dangerouslySetInnerHTML={{ __html: descriptionHtml }}
             />
           )}
 
+          <p className="text-label tracking-label uppercase text-fg-muted/60 mt-sm">
+            © {year}
+          </p>
+
         </div>
 
-        {/* ── Right: brand — nav links + copyright ───────────────────────────── */}
-        {/*
-         * brand-hover background provides sufficient contrast for white text (WCAG AA).
-         * On desktop the bg is transparent and the brand-hover absolute panel shows through.
-         * border-t separates sections on mobile; hidden on desktop (diagonal takes over).
-         */}
-        <div
-          className="bg-brand-hover lg:bg-transparent lg:w-[43%] flex flex-col justify-between px-md py-xl lg:px-lg lg:py-2xl border-t border-accent/20 lg:border-t-0"
-        >
+        {/* ── Right: brand — nav links, right-aligned ─────────────────────────── */}
+        <div className="bg-brand-hover lg:bg-transparent lg:w-[38%] flex flex-col justify-center items-end px-md py-md lg:px-lg lg:py-lg border-t border-accent/20 lg:border-t-0">
 
           {links.length > 0 && (
             <nav aria-label="Footer navigation">
-              <ul className="flex flex-col gap-y-4">
+              <ul className="flex flex-col gap-y-3 items-end">
                 {links.map(link => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-[0.9375rem] font-medium text-fg-on-brand underline-offset-2 hover:underline decoration-fg-on-brand/40 hover:opacity-80 transition-all duration-200 ease-quick"
+                      className="text-[0.875rem] font-medium text-fg-on-brand/80 underline-offset-2 hover:text-fg-on-brand hover:underline decoration-fg-on-brand/30 transition-all duration-200 ease-quick"
                     >
                       {link.label}
                     </Link>
@@ -176,10 +184,6 @@ export default async function Footer() {
               </ul>
             </nav>
           )}
-
-          <p className="text-label tracking-label uppercase text-fg-on-brand mt-xl lg:mt-0">
-            © {year}
-          </p>
 
         </div>
 

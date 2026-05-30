@@ -96,9 +96,12 @@
 
 /* Logo dark-mode invert — converts any dark/black logo to white.
  * Applied by Header/Footer when ThemeManager.logoInvertDark is true.
- * Removed in light mode so the original logo shows on the light canvas. */
+ * Removed in light mode so the original logo shows on the light canvas.
+ * The third rule re-asserts inversion when a dark-themed element (e.g. the
+ * footer with data-theme="dark") sits inside a light-mode page. */
 .logo-invert-dark { filter: brightness(0) invert(1); }
 [data-theme="light"] .logo-invert-dark { filter: none; }
+[data-theme="light"] [data-theme="dark"] .logo-invert-dark { filter: brightness(0) invert(1); }
 
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -403,6 +406,54 @@ body {
       oklch(from var(--ot-brand) calc(l * 0.13) calc(c * 0.55) h / 0.65),
     calc(var(--display-depth) * 0.42em) calc(var(--display-depth) * 0.42em) 0
       oklch(from var(--ot-brand) calc(l * 0.08) calc(c * 0.40) h / 0.40);
+}
+
+/* ── display-extrude: light-mode override ────────────────────────────────────
+ * In dark mode the near-white face + near-black shadow stack reads as a clean
+ * deep extrusion against the dark canvas. On a light canvas the same treatment
+ * is heavy — near-black text with near-black shadows at full opacity looks like
+ * a stacked-pixel mess.
+ *
+ * Light-mode fix: brand-teal face so each shadow step is just a progressively
+ * darker version of the same hue. The contrast between steps is gentle rather
+ * than jarring, and the teal extrusion reads as a confident brand moment rather
+ * than a clipped shadow error.
+ * ─────────────────────────────────────────────────────────────────────────── */
+[data-theme="light"] .display-extrude {
+  color: var(--ot-brand);
+  -webkit-text-stroke: 1px oklch(from var(--ot-brand) calc(l - 0.18) c h / 0.28);
+  paint-order: stroke fill;
+  text-shadow:
+    /* Soft brand halo — keeps the face from feeling flat on a light ground */
+    0 0 0.5em oklch(from var(--ot-brand) l c h / 0.10),
+    /* Layers 1–3: brand deepening toward brand-hover */
+    calc(var(--display-depth) * 0.02em) calc(var(--display-depth) * 0.02em) 0
+      oklch(from var(--ot-brand) calc(l - 0.06) c h),
+    calc(var(--display-depth) * 0.04em) calc(var(--display-depth) * 0.04em) 0
+      oklch(from var(--ot-brand) calc(l - 0.12) c h),
+    calc(var(--display-depth) * 0.07em) calc(var(--display-depth) * 0.07em) 0
+      oklch(from var(--ot-brand) calc(l - 0.17) c h),
+    /* Layers 4–6: mid-dark brand */
+    calc(var(--display-depth) * 0.10em) calc(var(--display-depth) * 0.10em) 0
+      oklch(from var(--ot-brand) calc(l - 0.21) c h),
+    calc(var(--display-depth) * 0.13em) calc(var(--display-depth) * 0.13em) 0
+      oklch(from var(--ot-brand) calc(l - 0.25) c h),
+    calc(var(--display-depth) * 0.17em) calc(var(--display-depth) * 0.17em) 0
+      oklch(from var(--ot-brand) calc(l - 0.28) c h),
+    /* Layers 7–9: deep brand, chroma pulls back */
+    calc(var(--display-depth) * 0.21em) calc(var(--display-depth) * 0.21em) 0
+      oklch(from var(--ot-brand) calc(l - 0.30) calc(c * 0.95) h / 0.92),
+    calc(var(--display-depth) * 0.25em) calc(var(--display-depth) * 0.25em) 0
+      oklch(from var(--ot-brand) calc(l - 0.32) calc(c * 0.85) h / 0.80),
+    calc(var(--display-depth) * 0.30em) calc(var(--display-depth) * 0.30em) 0
+      oklch(from var(--ot-brand) calc(l - 0.34) calc(c * 0.75) h / 0.65),
+    /* Layers 10–12: trailing fade to near-transparent */
+    calc(var(--display-depth) * 0.34em) calc(var(--display-depth) * 0.34em) 0
+      oklch(from var(--ot-brand) calc(l - 0.37) calc(c * 0.60) h / 0.45),
+    calc(var(--display-depth) * 0.38em) calc(var(--display-depth) * 0.38em) 0
+      oklch(from var(--ot-brand) calc(l - 0.39) calc(c * 0.45) h / 0.28),
+    calc(var(--display-depth) * 0.42em) calc(var(--display-depth) * 0.42em) 0
+      oklch(from var(--ot-brand) calc(l - 0.41) calc(c * 0.30) h / 0.13);
 }
 
 /* ── Card isometric tilt ──────────────────────────────────────────────────────

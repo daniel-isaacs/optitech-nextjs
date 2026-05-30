@@ -230,7 +230,7 @@ export default function BannerBlock({
   return (
     <section
       className={sectionCva({ size })}
-      data-theme={hasImage ? 'dark' : undefined}
+      data-theme={isBrand || hasImage ? 'dark' : undefined}
     >
 
       {/* ── Background layer (z-0, absolute inset) ─────────────────────── */}

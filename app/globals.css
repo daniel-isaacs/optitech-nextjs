@@ -125,6 +125,72 @@
   }
 }
 
+/* ── ScrollToTop ─────────────────────────────────────────────────────────────
+ *
+ * .scroll-top-btn
+ *   Hidden by default (opacity 0, translated down, pointer-events none).
+ *   [data-visible="true"] triggers the entrance: translate up + opacity in.
+ *   Transition uses kinetic ease-out for enter, ease-in for exit.
+ *
+ * .animate-scroll-top-orbit
+ *   Rotates the comet arc ring continuously at 4s/revolution.
+ *   Applied with motion-safe: in the component so it only runs when the
+ *   user has not requested reduced motion.
+ *
+ * Hover acceleration: [data-visible="true"]:hover .animate-scroll-top-orbit
+ *   shortens animation-duration to 1.2s for a kinetic speed-up.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@keyframes scrollTopOrbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.scroll-top-btn {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  pointer-events: none;
+  /* Enter: kinetic expo-out; exit: quart-in (faster) */
+  transition:
+    opacity     350ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform   350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-top-btn[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition:
+    opacity   350ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Exit is faster than entrance */
+.scroll-top-btn[data-visible="false"] {
+  transition:
+    opacity   220ms cubic-bezier(0.7, 0, 0.84, 0),
+    transform 220ms cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+/* prefers-reduced-motion: entrance is opacity-only, no translate */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top-btn,
+  .scroll-top-btn[data-visible="true"],
+  .scroll-top-btn[data-visible="false"] {
+    transform: none;
+    transition: opacity 200ms linear;
+  }
+}
+
+.animate-scroll-top-orbit {
+  animation: scrollTopOrbit 4s linear infinite;
+}
+
+/* On hover the arc accelerates — kinetic snap */
+.scroll-top-btn[data-visible="true"]:hover .animate-scroll-top-orbit {
+  animation-duration: 1.2s;
+}
+
 /* ── TrustRail marquee ────────────────────────────────────────────────────────
  * Infinite horizontal scroll. Duration is set via --trust-rail-duration on the
  * element itself, allowing the React component to tune speed per logo count.
@@ -745,37 +811,78 @@ body {
   font-size: 1rem;
 }
 
-/* ── Treatment: lead — first element as editorial deck (p or heading) ──────
- * Targets any first child — editors may start content with a p or an h2.
- * Weight 300 + size + teal-tinted colour create a clear "deck" impression
- * distinct from both body copy (fg, 1rem, 400) and headings (fg, bold).
- * Light mode flips to a dark teal so the colour reads on near-white canvas.
+/* ── Treatment: lead — intro section (first heading + first paragraph) ──────
+ *
+ * Three selectors cover every content opening pattern:
+ *
+ *   h:first-child        opening heading gets the lead tint; keeps its own
+ *                        size and weight so it reads as the section title.
+ *
+ *   p:first-child        content that opens directly with body text —
+ *                        full deck treatment (size, weight, color).
+ *
+ *   h:first-child + p    the paragraph immediately following the opening
+ *                        heading — full deck treatment.
+ *
+ * Together, heading + first paragraph are treated as one "intro section":
+ * the heading stays bold/large but is tinted, the paragraph becomes the
+ * editorial deck (enlarged, light weight, same tint).
+ *
+ * Light mode: color flips to dark teal so the tint reads on near-white canvas.
  * ─────────────────────────────────────────────────────────────────────────── */
-[data-rich-text][data-treatment="lead"] > :is(p, h1, h2, h3, h4, h5, h6):first-child {
+
+/* Opening heading — tinted, no top margin */
+[data-rich-text][data-treatment="lead"] > :is(h1, h2, h3, h4, h5, h6):first-child {
+  color: oklch(92% 0.075 195);
+  margin-top: 0;
+}
+
+/* Opening paragraph (standalone, or directly after the opening heading) */
+[data-rich-text][data-treatment="lead"] > p:first-child,
+[data-rich-text][data-treatment="lead"] > :is(h1, h2, h3, h4, h5, h6):first-child + p {
   font-size: clamp(1.375rem, 2.8vw, 1.75rem);
   font-weight: 300;
   line-height: 1.55;
   letter-spacing: -0.01em;
   color: oklch(92% 0.075 195);
-  margin-top: 0;
   margin-bottom: var(--ot-space-lg);
   text-wrap: balance;
 }
-[data-theme="light"] [data-rich-text][data-treatment="lead"] > :is(p, h1, h2, h3, h4, h5, h6):first-child {
+
+/* Light mode */
+[data-theme="light"] [data-rich-text][data-treatment="lead"] > :is(h1, h2, h3, h4, h5, h6):first-child,
+[data-theme="light"] [data-rich-text][data-treatment="lead"] > p:first-child,
+[data-theme="light"] [data-rich-text][data-treatment="lead"] > :is(h1, h2, h3, h4, h5, h6):first-child + p {
   color: oklch(36% 0.15 195);
 }
-[data-rich-text][data-color="brand"][data-treatment="lead"] > :is(p, h1, h2, h3, h4, h5, h6):first-child {
+
+/* Brand background */
+[data-rich-text][data-color="brand"][data-treatment="lead"] > :is(h1, h2, h3, h4, h5, h6):first-child,
+[data-rich-text][data-color="brand"][data-treatment="lead"] > p:first-child,
+[data-rich-text][data-color="brand"][data-treatment="lead"] > :is(h1, h2, h3, h4, h5, h6):first-child + p {
   color: oklch(97% 0.005 195 / 0.80);
 }
 
-/* ── Treatment: dropcap — oversized first letter (p or heading) ────────────
- * Uses clamp() so the drop cap scales with viewport rather than the
- * containing element's font-size — consistent visual weight whether the
- * first child is a <p> (1rem) or an <h2> (1.5rem).
- * Glow via text-shadow is suppressed in light mode (contrast carries it).
+/* ── Treatment: dropcap — outlined hollow initial ───────────────────────────
+ *
+ * Drop caps belong on body text, not headings. Applying ::first-letter to a
+ * heading creates an orphaned letter beside the heading text, which breaks
+ * both reading flow and visual hierarchy.
+ *
+ * Selectors target only paragraphs:
+ *   p:first-child         content that opens directly with a paragraph
+ *   h:first-child + p     first paragraph after an opening heading
+ *
+ * Visual approach: transparent fill + accent-color -webkit-text-stroke creates
+ * a hollow outlined initial. Against the dark canvas it reads as an architectural
+ * drawn letterform — more distinctive than a solid brand-teal fill. The subtle
+ * text-shadow casts a diffused accent glow around the outline.
  * ─────────────────────────────────────────────────────────────────────────── */
-[data-rich-text][data-treatment="dropcap"] > :is(p, h1, h2, h3, h4, h5, h6):first-child::first-letter {
-  color: var(--ot-brand);
+[data-rich-text][data-treatment="dropcap"] > p:first-child::first-letter,
+[data-rich-text][data-treatment="dropcap"] > :is(h1, h2, h3, h4, h5, h6):first-child + p::first-letter {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ot-accent);
+  paint-order: stroke fill;
   float: left;
   font-size: clamp(4rem, 9vw, 5.5rem);
   font-weight: 800;
@@ -783,16 +890,21 @@ body {
   margin-right: 0.10em;
   margin-top: 0.05em;
   letter-spacing: -0.04em;
-  text-shadow:
-    0 0 1em   oklch(from var(--ot-brand) l c h / 0.50),
-    0 0 0.3em oklch(from var(--ot-brand) l c h / 0.22);
+  text-shadow: 0 0 1.2em oklch(from var(--ot-accent) l c h / 0.30);
 }
-[data-theme="light"] [data-rich-text][data-treatment="dropcap"] > :is(p, h1, h2, h3, h4, h5, h6):first-child::first-letter {
+
+/* Light mode: thicker stroke (glow removed, contrast carries the letterform) */
+[data-theme="light"] [data-rich-text][data-treatment="dropcap"] > p:first-child::first-letter,
+[data-theme="light"] [data-rich-text][data-treatment="dropcap"] > :is(h1, h2, h3, h4, h5, h6):first-child + p::first-letter {
+  -webkit-text-stroke: 2px var(--ot-accent);
   text-shadow: none;
 }
-[data-rich-text][data-color="brand"][data-treatment="dropcap"] > :is(p, h1, h2, h3, h4, h5, h6):first-child::first-letter {
-  color: var(--ot-fg-on-brand);
-  text-shadow: 0 0 1em oklch(97% 0.005 195 / 0.20);
+
+/* Brand background: outlined in fg-on-brand so it shows on teal */
+[data-rich-text][data-color="brand"][data-treatment="dropcap"] > p:first-child::first-letter,
+[data-rich-text][data-color="brand"][data-treatment="dropcap"] > :is(h1, h2, h3, h4, h5, h6):first-child + p::first-letter {
+  -webkit-text-stroke: 1.5px var(--ot-fg-on-brand);
+  text-shadow: 0 0 1em oklch(97% 0.005 195 / 0.15);
 }
 
 /* ── Ruled headings — 1px teal top-border as chapter divider ── */

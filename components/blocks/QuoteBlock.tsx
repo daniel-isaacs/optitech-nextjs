@@ -171,7 +171,7 @@ export default function QuoteBlock({
         {/* ── All content (z-10) ────────────────────────────────────────── */}
         {/* Left-aligned: small indent so the watermark mark peeks visibly
             to the left of the text without creating a large block gutter. */}
-        <div className={cn("relative z-10", alignment === "left" && "pl-6 sm:pl-10")}>
+        <div className={cn("relative z-10", alignment === "left" && "pl-10 sm:pl-16")}>
 
           {/* ── Quote body ────────────────────────────────────────────────── */}
           <blockquote>

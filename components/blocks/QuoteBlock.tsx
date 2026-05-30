@@ -39,26 +39,37 @@ const figureCva = cva("", {
 });
 
 /**
- * Quote mark watermark — absolutely positioned behind the text at z-0.
- * Always anchors to the top-left corner of the figure regardless of alignment.
- * Center alignment centers the text, not the mark — the mark stays as a
- * fixed opening-quote anchor at the left edge.
+ * Quote mark: an oversized `"` in Syne 700, positioned absolutely behind the
+ * quote body at low opacity. Functions as a visual watermark — unmistakably a
+ * quotation mark, never competing with the text.
+ *
+ * On brand surface: slightly higher opacity (text is on a teal bg, mark can
+ * be more present). On dark/canvas: brand teal at 12%.
  */
-const quoteMarkCva = cva(
-  "absolute select-none pointer-events-none font-syne font-bold leading-none top-[-0.15em] z-0",
+const quoteMarkBgCva = cva(
+  "absolute select-none pointer-events-none font-syne font-bold leading-none",
   {
     variants: {
       color: {
-        none:    "text-brand/[0.28]",
-        brand:   "text-fg-on-brand/[0.22]",
-        canvas:  "text-brand/[0.28]",
-        surface: "text-brand/[0.28]",
+        none:    "text-brand/[0.12]",
+        brand:   "text-fg-on-brand/[0.18]",
+        canvas:  "text-brand/[0.12]",
+        surface: "text-brand/[0.12]",
+      },
+      alignment: {
+        left:   "",
+        center: "left-1/2 -translate-x-1/2",
       },
     },
-    defaultVariants: { color: "canvas" },
+    defaultVariants: { color: "canvas", alignment: "left" },
   }
 );
 
+/**
+ * Quote text: Poppins 300 at reading scale.
+ * The signature is the visual centrepiece; the quote should feel like something
+ * you read, not a headline you scan. Light weight, generous leading, relaxed.
+ */
 const quoteTextCva = cva(
   "font-sans font-light text-pretty max-w-[65ch] leading-[1.75] tracking-[0.003em]",
   {
@@ -118,33 +129,36 @@ export default function QuoteBlock({
     size      = "large",
   } = styleOptions;
 
+  // Oversized background mark — large enough to dwarf the body text
   const bgMarkSize = size === "large"
-    ? "clamp(9rem, 17vw, 13rem)"
-    : "clamp(6.5rem, 11vw, 9rem)";
+    ? "clamp(7rem, 13vw, 10rem)"
+    : "clamp(5rem, 10vw, 7.5rem)";
 
   return (
     <section className={sectionCva({ color, size })}>
+      {/* relative so the absolute background " is contained */}
       <figure className={cn(figureCva({ alignment }), "relative")}>
 
-        {/* ── Watermark mark — anchors top-left for both alignments ─────────
-          * The mark is always left-anchored. Center alignment centers the
-          * text beneath/around it, but the mark itself stays at the left
-          * edge so it reads as an opening quote, not a floating decoration. */}
+        {/* ── Background quote mark ─────────────────────────────────────────
+          * Absolutely positioned behind everything else (z-0). Large enough
+          * to read as a deliberate shape, low enough opacity to stay recessed.
+          * Left-aligned: sits at the top-left of the figure, partially behind
+          * the first line of the quote body. Center-aligned: centered via cva. */}
         <span
           aria-hidden="true"
-          className={cn(quoteMarkCva({ color }), "left-[-0.05em]")}
+          className={cn(quoteMarkBgCva({ color, alignment }), "top-[-0.15em] left-[-0.05em] z-0")}
           style={{ fontSize: bgMarkSize }}
         >
           &ldquo;
         </span>
 
-        {/* ── All content (z-10) ────────────────────────────────────────── */}
-        <div className={cn("relative z-10", alignment === "left" && "pl-10 sm:pl-14")}>
+        {/* ── All content sits above the background mark (z-10) ─────────── */}
+        <div className="relative z-10">
 
-          {/* ── Quote body ────────────────────────────────────────────────── */}
+          {/* ── Quote body ──────────────────────────────────────────────── */}
           <blockquote>
             <p
-              className={cn("relative z-10", quoteTextCva({ color, size, alignment }))}
+              className={quoteTextCva({ color, size, alignment })}
               {...pa('quote')}
             >
               {quote}

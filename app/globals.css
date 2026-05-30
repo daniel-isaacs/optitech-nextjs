@@ -745,31 +745,54 @@ body {
   font-size: 1rem;
 }
 
-/* ── Treatment: lead — first paragraph as editorial deck ── */
-[data-rich-text][data-treatment="lead"] > p:first-child {
-  font-size: 1.25rem;
-  line-height: 1.5;
-  color: var(--ot-fg-muted);
-  font-weight: 400;
-  letter-spacing: -0.005em;
+/* ── Treatment: lead — first element as editorial deck (p or heading) ──────
+ * Targets any first child — editors may start content with a p or an h2.
+ * Weight 300 + size + teal-tinted colour create a clear "deck" impression
+ * distinct from both body copy (fg, 1rem, 400) and headings (fg, bold).
+ * Light mode flips to a dark teal so the colour reads on near-white canvas.
+ * ─────────────────────────────────────────────────────────────────────────── */
+[data-rich-text][data-treatment="lead"] > :is(p, h1, h2, h3, h4, h5, h6):first-child {
+  font-size: clamp(1.375rem, 2.8vw, 1.75rem);
+  font-weight: 300;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: oklch(92% 0.075 195);
+  margin-top: 0;
   margin-bottom: var(--ot-space-lg);
+  text-wrap: balance;
 }
-[data-rich-text][data-color="brand"][data-treatment="lead"] > p:first-child {
-  color: oklch(97% 0.005 195 / 0.75);
+[data-theme="light"] [data-rich-text][data-treatment="lead"] > :is(p, h1, h2, h3, h4, h5, h6):first-child {
+  color: oklch(36% 0.15 195);
+}
+[data-rich-text][data-color="brand"][data-treatment="lead"] > :is(p, h1, h2, h3, h4, h5, h6):first-child {
+  color: oklch(97% 0.005 195 / 0.80);
 }
 
-/* ── Treatment: dropcap — brand-teal first letter, floated ── */
-[data-rich-text][data-treatment="dropcap"] > p:first-child::first-letter {
+/* ── Treatment: dropcap — oversized first letter (p or heading) ────────────
+ * Uses clamp() so the drop cap scales with viewport rather than the
+ * containing element's font-size — consistent visual weight whether the
+ * first child is a <p> (1rem) or an <h2> (1.5rem).
+ * Glow via text-shadow is suppressed in light mode (contrast carries it).
+ * ─────────────────────────────────────────────────────────────────────────── */
+[data-rich-text][data-treatment="dropcap"] > :is(p, h1, h2, h3, h4, h5, h6):first-child::first-letter {
   color: var(--ot-brand);
   float: left;
-  font-size: 3.75em;
+  font-size: clamp(4rem, 9vw, 5.5rem);
   font-weight: 800;
-  line-height: 0.82;
-  margin-right: 0.08em;
-  letter-spacing: -0.03em;
+  line-height: 0.80;
+  margin-right: 0.10em;
+  margin-top: 0.05em;
+  letter-spacing: -0.04em;
+  text-shadow:
+    0 0 1em   oklch(from var(--ot-brand) l c h / 0.50),
+    0 0 0.3em oklch(from var(--ot-brand) l c h / 0.22);
 }
-[data-rich-text][data-color="brand"][data-treatment="dropcap"] > p:first-child::first-letter {
+[data-theme="light"] [data-rich-text][data-treatment="dropcap"] > :is(p, h1, h2, h3, h4, h5, h6):first-child::first-letter {
+  text-shadow: none;
+}
+[data-rich-text][data-color="brand"][data-treatment="dropcap"] > :is(p, h1, h2, h3, h4, h5, h6):first-child::first-letter {
   color: var(--ot-fg-on-brand);
+  text-shadow: 0 0 1em oklch(97% 0.005 195 / 0.20);
 }
 
 /* ── Ruled headings — 1px teal top-border as chapter divider ── */

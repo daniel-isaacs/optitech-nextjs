@@ -492,9 +492,11 @@ function RichTextShowcase() {
   ]
 
   const treatments = [
-    { label: 'Standard', note: 'Faithful prose rendering (default)',                   content: { content: { html: RT_PROSE } }, displaySettings: { color: 'canvas', treatment: 'standard', size: 'editorial', alignment: 'left', ruledHeadings: false } },
-    { label: 'Lead',     note: 'First paragraph promoted to deck size in brand color',  content: { content: { html: RT_PROSE } }, displaySettings: { color: 'canvas', treatment: 'lead',     size: 'editorial', alignment: 'left', ruledHeadings: false } },
-    { label: 'Dropcap',  note: 'First letter enlarged in brand teal, floated left',     content: { content: { html: RT_PROSE } }, displaySettings: { color: 'canvas', treatment: 'dropcap',  size: 'editorial', alignment: 'left', ruledHeadings: false } },
+    { label: 'Standard',           note: 'Faithful prose rendering (default)',                           content: { content: { html: RT_PROSE } }, displaySettings: { color: 'canvas', treatment: 'standard', size: 'editorial', alignment: 'left', ruledHeadings: false } },
+    { label: 'Lead — p first',     note: 'First paragraph as editorial deck: larger, weight 300, teal',  content: { content: { html: RT_PROSE } }, displaySettings: { color: 'canvas', treatment: 'lead',     size: 'editorial', alignment: 'left', ruledHeadings: false } },
+    { label: 'Lead — h2 first',    note: 'Same treatment when content starts with a heading',            content: { content: { html: RT_FULL  } }, displaySettings: { color: 'canvas', treatment: 'lead',     size: 'editorial', alignment: 'left', ruledHeadings: false } },
+    { label: 'Dropcap — p first',  note: 'Oversized first letter in brand teal with chromatic glow',     content: { content: { html: RT_PROSE } }, displaySettings: { color: 'canvas', treatment: 'dropcap',  size: 'editorial', alignment: 'left', ruledHeadings: false } },
+    { label: 'Dropcap — h2 first', note: 'Same treatment when content starts with a heading',            content: { content: { html: RT_FULL  } }, displaySettings: { color: 'canvas', treatment: 'dropcap',  size: 'editorial', alignment: 'left', ruledHeadings: false } },
   ]
 
   const options: Array<{ label: string; note: string; content: any; displaySettings: DS }> = [

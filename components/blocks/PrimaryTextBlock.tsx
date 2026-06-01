@@ -105,6 +105,7 @@ const headlineCva = cva("text-balance", {
 export type PrimaryTextBlockProps = {
   eyebrow?: string;
   headline: string;
+  body?: string;
   styleOptions?: PrimaryTextStyleOptions;
   pa?: (prop: string) => { "data-epi-property-name"?: string };
 };
@@ -112,6 +113,7 @@ export type PrimaryTextBlockProps = {
 export default function PrimaryTextBlock({
   eyebrow,
   headline,
+  body,
   styleOptions = {},
   pa = () => ({}),
 }: PrimaryTextBlockProps) {
@@ -132,6 +134,14 @@ export default function PrimaryTextBlock({
           <h2 className={headlineCva({ size, color, gradient })} {...pa('headline')}>
             {headline}
           </h2>
+          {body && (
+            <div
+              data-rich-text=""
+              data-color={color}
+              {...pa('body')}
+              dangerouslySetInnerHTML={{ __html: body }}
+            />
+          )}
         </div>
       </div>
     </section>

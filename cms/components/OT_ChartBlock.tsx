@@ -12,7 +12,7 @@ export default function OT_ChartBlockAdapter({ content, displaySettings = {} }: 
   const styleOptions = getChartStyles(displaySettings)
 
   return (
-    <div {...pa(content.__composition)}>
+    <div style={{ width: '100%', minWidth: 0 }} {...pa(content.__composition)}>
       <ChartBlock
         heading={content.heading ?? ''}
         subtext={content.subtext ?? undefined}

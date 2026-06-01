@@ -35,7 +35,16 @@ export const CHART_PALETTES: Record<string, string[]> = {
     'var(--ot-accent)',
   ],
 
-  // Mono: white alphas — correct choice for brand and glass backgrounds.
+  // Categorical: diverse multi-hue ramp inspired by classic data viz standards
+  // (D3 category10 / Tableau 10) — steel blue, safety orange, olive green, brick red.
+  categorical: [
+    'oklch(52% 0.14 230)',   // steel blue
+    'oklch(72% 0.18 55)',    // safety orange
+    'oklch(58% 0.17 145)',   // olive green
+    'oklch(50% 0.20 25)',    // brick red
+  ],
+
+  // Mono: white alphas — retained for backward compatibility with brand/glass backgrounds.
   mono: [
     'rgba(255,255,255,0.95)',
     'rgba(255,255,255,0.65)',

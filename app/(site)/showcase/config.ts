@@ -32,7 +32,8 @@ export const CATEGORIES: ShowcaseCategory[] = [
       { label: 'Blog Feed',    slug: 'blog-feed'    },
       { label: 'Button',       slug: 'button'       },
       { label: 'Chart',        slug: 'chart'        },
-      { label: 'Banner',       slug: 'banner'       },
+      { label: 'Banner',            slug: 'banner'           },
+      { label: 'Resource Library', slug: 'resource-library' },
     ],
   },
   {

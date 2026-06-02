@@ -16,6 +16,7 @@ import OT_AccordionBlock             from '@/cms/components/OT_AccordionBlock'
 import OT_TabsBlock                  from '@/cms/components/OT_TabsBlock'
 import OT_ChartBlock                 from '@/cms/components/OT_ChartBlock'
 import OT_BannerBlock                from '@/cms/components/OT_BannerBlock'
+import ResourceLibraryBlock         from '@/components/blocks/ResourceLibraryBlock'
 import JsonCopyBlock                 from '@/components/blocks/chart/JsonCopyBlock'
 import TrustRail                     from '@/components/blocks/TrustRail'
 import Button                        from '@/components/ui/Button'
@@ -31,7 +32,7 @@ import type { BlogFeedPost }         from '@/lib/blogFeed'
 const BLOCK_SLUGS = [
   'hero', 'card', 'primary-text', 'quote', 'rich-text',
   'image', 'video', 'stat', 'feature-grid', 'trust-rail',
-  'accordion', 'tabs', 'blog-feed', 'button', 'chart', 'banner',
+  'accordion', 'tabs', 'blog-feed', 'button', 'chart', 'banner', 'resource-library',
 ] as const
 
 type BlockSlug = typeof BLOCK_SLUGS[number]
@@ -52,7 +53,8 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'blog-feed':    { label: 'BlogFeedBlock',       cmsKey: 'OT_BlogFeedBlock',    description: 'CMS-driven blog post grid. Posts are fetched at render time from the connected article root. Three color schemes, 2- or 3-column layout, and three heading sizes.' },
   'button':       { label: 'Button',              cmsKey: 'OT_ButtonBlock',      description: 'Six button variants, three sizes, optional icon slots (leading/trailing). Polymorphic — renders as <button> or <Link> based on the href prop.' },
   'chart':        { label: 'ChartBlock',          cmsKey: 'OT_ChartBlock',       description: 'CMS-driven data visualization block. Five chart types: line, area, bar, bar stacked, and radial gauge. Four color variants, five series color palettes, fully responsive via Recharts.' },
-  'banner':       { label: 'BannerBlock',         cmsKey: 'OT_BannerBlock',      description: 'Full-bleed background image with layered content: eyebrow, headline, optional body, and up to two CTAs. Two overlay modes: scrim (color overlay over the image) and glass (content inside a frosted panel). Three color variants, two alignment options, two height sizes, and two image blend modes.' },
+  'banner':           { label: 'BannerBlock',          cmsKey: 'OT_BannerBlock',          description: 'Full-bleed background image with layered content: eyebrow, headline, optional body, and up to two CTAs. Two overlay modes: scrim (color overlay over the image) and glass (content inside a frosted panel). Three color variants, two alignment options, two height sizes, and two image blend modes.' },
+  'resource-library': { label: 'ResourceLibraryBlock', cmsKey: 'OT_ResourceLibraryBlock', description: 'DAM-connected asset download list. The editor picks a single DAM asset as a collection anchor; the block fetches all assets in that collection via Optimizely Graph and renders them as a dense list or card grid with Lucide file-type iconography and native download links.' },
 }
 
 export function generateStaticParams() {
@@ -1461,6 +1463,91 @@ function BannerShowcase() {
   )
 }
 
+// ─── Resource Library ─────────────────────────────────────────────────────────
+
+const MOCK_ASSETS = [
+  { title: 'OptiTech Platform — Technical Overview',  url: '#', extension: 'pdf',  fileSize: 2_412_000, description: 'Architecture deep-dive for engineering teams.' },
+  { title: 'Q4 2024 Analyst Report',                  url: '#', extension: 'pdf',  fileSize: 890_000,   description: null },
+  { title: 'Integration Guide — REST & GraphQL APIs', url: '#', extension: 'docx', fileSize: 345_000,   description: null },
+  { title: 'Enterprise Pitch Deck',                   url: '#', extension: 'pptx', fileSize: 7_800_000, description: 'Slides for executive stakeholder presentations.' },
+  { title: 'Compliance & Security Datasheet',         url: '#', extension: 'pdf',  fileSize: 512_000,   description: null },
+  { title: 'Brand Asset Package',                     url: '#', extension: 'zip',  fileSize: 24_600_000, description: 'Logos, colour swatches, and typeface files.' },
+]
+
+function ResourceLibraryShowcase() {
+  return (
+    <>
+      <BlockHeader slug="resource-library" />
+
+      <VariantGroup
+        label="Dense list · canvas · all files"
+        note='Primary layout. File-type icon chip, title, extension badge, download arrow. Hover lifts row and nudges arrow right.'
+      />
+      <ResourceLibraryBlock
+        eyebrow="Download Center"
+        title="Resources"
+        assets={MOCK_ASSETS}
+        styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all' }}
+      />
+
+      <VariantGroup label="Dense list · file size visible" />
+      <ResourceLibraryBlock
+        eyebrow="Download Center"
+        title="Resources"
+        assets={MOCK_ASSETS}
+        styleOptions={{ layout: 'list', color: 'canvas', showFileSize: true, filterType: 'all' }}
+      />
+
+      <VariantGroup label="Dense list · surface background" />
+      <ResourceLibraryBlock
+        eyebrow="Documentation"
+        title="Technical Library"
+        assets={MOCK_ASSETS.slice(0, 4)}
+        styleOptions={{ layout: 'list', color: 'surface', showFileSize: true, filterType: 'all' }}
+      />
+
+      <VariantGroup
+        label="Card grid · canvas · all files"
+        note='Secondary layout. Brand-fill header band with oversized icon, full-width download CTA at card foot.'
+      />
+      <ResourceLibraryBlock
+        eyebrow="Downloads"
+        title="Resource Center"
+        assets={MOCK_ASSETS}
+        styleOptions={{ layout: 'grid', color: 'canvas', showFileSize: true, filterType: 'all' }}
+      />
+
+      <VariantGroup label="Card grid · surface background" />
+      <ResourceLibraryBlock
+        eyebrow="Press Kit"
+        title="Media Assets"
+        assets={MOCK_ASSETS.slice(0, 3)}
+        styleOptions={{ layout: 'grid', color: 'surface', showFileSize: false, filterType: 'all' }}
+      />
+
+      <VariantGroup label="Empty states" />
+      <div className="border-t border-fg/5">
+        <VariantLabel label="assets: null (anchor not configured)" />
+        <ResourceLibraryBlock
+          title="Resources"
+          assets={null}
+          styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all' }}
+        />
+      </div>
+      <div className="border-t border-fg/5">
+        <VariantLabel label="assets: [] (empty collection)" />
+        <ResourceLibraryBlock
+          title="Resources"
+          assets={[]}
+          styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all' }}
+        />
+      </div>
+
+      <div className="pb-xl" />
+    </>
+  )
+}
+
 export default async function ShowcaseBlockPage({ params }: Props) {
   const { block } = await params
 
@@ -1480,7 +1567,8 @@ export default async function ShowcaseBlockPage({ params }: Props) {
     case 'blog-feed':    return <BlogFeedShowcase />
     case 'button':       return <ButtonShowcase />
     case 'chart':        return <ChartShowcase />
-    case 'banner':       return <BannerShowcase />
-    default:             return notFound()
+    case 'banner':            return <BannerShowcase />
+    case 'resource-library': return <ResourceLibraryShowcase />
+    default:                 return notFound()
   }
 }

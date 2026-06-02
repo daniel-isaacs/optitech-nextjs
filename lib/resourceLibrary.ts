@@ -12,124 +12,171 @@ export type ResourceAsset = {
 
 // ─── GraphQL queries ────────────────────────────────────────────────────────────
 //
-// Two-step pattern:
-//   1. Fetch the anchor asset by its content key → extract _metadata.collectionId
-//      (falls back to _metadata.parent.key for CMS-media-tree DAM mappings).
-//   2. Fetch all assets sharing that collectionId, optionally filtered by assetType.
+// DAM assets in this Optimizely instance are indexed as cmp_Asset (Optimizely
+// CMP integration). The DAM folder is identified by ParentFolderGuid — the GUID
+// visible in the DAM URL bar (parentFolderGuid=...).
 //
-// The Optimizely Graph `Asset` type exposes:
-//   title, url, extension, fileSize, description, assetType
-// `_AssetItem` is the universal DAM base type used in step 1.
+// Three-step pattern:
+//   1. Resolve ParentFolderGuid from the anchor cmp_Asset (_itemMetadata.key
+//      is the same value as cmp_Asset.Id and as ContentReference.key in the CMS).
+//   2. Fetch all cmp_Asset siblings in that folder (Title, MimeType, keys).
+//   3. Batch-fetch CDN download URLs from _AssetItem using sibling keys.
+//      _assetMetadata.url on _AssetItem is the only place the CDN URL lives;
+//      cmp_Asset itself has no url field.
 
 const ANCHOR_QUERY = `
-  query GetAnchorAssetCollection($key: String!) {
-    _AssetItem(
-      where: { _metadata: { key: { eq: $key } } }
+  query GetAnchorCmpAsset($key: String!) {
+    cmp_Asset(
+      where: { _itemMetadata: { key: { eq: $key } } }
       limit: 1
     ) {
       items {
-        _metadata {
-          key
-          collectionId
-          parent { key }
-        }
+        ParentFolderGuid
       }
     }
   }
 `
 
-const COLLECTION_QUERY = `
-  query GetCollectionAssets($collectionId: String!) {
-    Asset(
-      where: { _metadata: { collectionId: { eq: $collectionId } } }
-      orderBy: { title: ASC }
+const SIBLINGS_QUERY = `
+  query GetFolderSiblings($parentFolderGuid: String!) {
+    cmp_Asset(
+      where: { ParentFolderGuid: { eq: $parentFolderGuid } }
+      orderBy: { Title: ASC }
       limit: 50
     ) {
       items {
-        title
-        url
-        extension
-        fileSize
-        description
+        _itemMetadata { key }
+        Title
+        MimeType
       }
     }
   }
 `
 
-const COLLECTION_TYPED_QUERY = `
-  query GetCollectionAssetsTyped($collectionId: String!, $assetType: String!) {
-    Asset(
-      where: {
-        _metadata: { collectionId: { eq: $collectionId } }
-        assetType: { eq: $assetType }
-      }
-      orderBy: { title: ASC }
+const ASSET_URLS_QUERY = `
+  query GetAssetUrls($keys: [String]) {
+    _AssetItem(
+      where: { _itemMetadata: { key: { in: $keys } } }
       limit: 50
     ) {
       items {
-        title
-        url
-        extension
-        fileSize
-        description
+        _itemMetadata { key }
+        _assetMetadata { fileSize url }
       }
     }
   }
 `
 
-// Display-template filterType values → Graph assetType values.
-// null means "no filter — return all asset types".
-const FILTER_TO_ASSET_TYPE: Record<string, string | null> = {
-  all:       null,
-  documents: 'document',
-  images:    'image',
-  video:     'video',
+// ─── Helpers ────────────────────────────────────────────────────────────────────
+
+const MIME_TO_EXT: Record<string, string> = {
+  'application/pdf':  'pdf',
+  'application/msword': 'doc',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+  'application/vnd.ms-excel': 'xls',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'application/vnd.ms-powerpoint': 'ppt',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+  'image/jpeg': 'jpg',
+  'image/png':  'png',
+  'image/gif':  'gif',
+  'image/webp': 'webp',
+  'image/svg+xml': 'svg',
+  'video/mp4':  'mp4',
+  'video/quicktime': 'mov',
+  'video/webm': 'webm',
+  'application/zip': 'zip',
+  'text/plain': 'txt',
+  'text/csv':   'csv',
+}
+
+function extFromMime(mime: string): string | null {
+  return MIME_TO_EXT[mime] ?? null
+}
+
+function extFromFilename(filename: string): string | null {
+  const dot = filename.lastIndexOf('.')
+  if (dot < 1 || dot === filename.length - 1) return null
+  return filename.slice(dot + 1).toLowerCase()
+}
+
+function titleWithoutExt(filename: string): string {
+  const dot = filename.lastIndexOf('.')
+  return dot > 0 ? filename.slice(0, dot) : filename
+}
+
+function matchesFilter(mime: string, filterType: string): boolean {
+  if (filterType === 'all') return true
+  if (filterType === 'images')    return mime.startsWith('image/')
+  if (filterType === 'video')     return mime.startsWith('video/')
+  if (filterType === 'documents') return mime.startsWith('application/') || mime.startsWith('text/')
+  return true
 }
 
 // ─── Data access ────────────────────────────────────────────────────────────────
 
 /**
- * Fetches all assets in the same DAM collection as the given anchor asset.
+ * Fetches all CMP assets in the same DAM folder as the given anchor asset.
  *
- * anchorAssetKey — the content key of the CMS asset selected by the editor
- * filterType     — display-template value; maps to an assetType Graph filter
+ * anchorAssetKey — ContentReference.key of the cmp_Asset selected by the editor
+ *                  (equals cmp_Asset._itemMetadata.key / cmp_Asset.Id)
+ * filterType     — display-template value; filters by MIME type category
  */
 export async function getResourceLibraryAssets(
   anchorAssetKey: string,
   filterType = 'all',
 ): Promise<ResourceAsset[]> {
   try {
-    // ── Step 1: resolve the collection ID from the anchor asset ───────────────
+    // ── Step 1: resolve the DAM folder GUID from the anchor CMP asset ─────────
     const anchorData = await getClient().request(ANCHOR_QUERY, { key: anchorAssetKey })
-    const anchorMeta = (anchorData as any)?._AssetItem?.items?.[0]?._metadata
+    const folderGuid = (anchorData as any)?.cmp_Asset?.items?.[0]?.ParentFolderGuid as string | undefined
+    if (!folderGuid) return []
 
-    // Prefer the DAM-native collectionId; fall back to the CMS parent folder key
-    const collectionId: string | undefined =
-      anchorMeta?.collectionId ?? anchorMeta?.parent?.key
+    // ── Step 2: fetch all cmp_Asset siblings in that DAM folder ───────────────
+    const siblingsData = await getClient().request(SIBLINGS_QUERY, { parentFolderGuid: folderGuid })
+    const siblings: Array<{ key: string; Title: string; MimeType: string }> =
+      ((siblingsData as any)?.cmp_Asset?.items ?? [])
+        .map((item: any) => ({
+          key:      String(item._itemMetadata?.key   ?? ''),
+          Title:    String(item.Title    ?? ''),
+          MimeType: String(item.MimeType ?? ''),
+        }))
+        .filter((s: { key: string; Title: string }) => s.key && s.Title)
+        .filter((s: { MimeType: string }) => matchesFilter(s.MimeType, filterType))
 
-    if (!collectionId) return []
+    if (!siblings.length) return []
 
-    // ── Step 2: fetch sibling assets, optionally filtered by type ─────────────
-    const assetType = FILTER_TO_ASSET_TYPE[filterType] ?? null
-    let raw: any[] = []
-
-    if (assetType) {
-      const data = await getClient().request(COLLECTION_TYPED_QUERY, { collectionId, assetType })
-      raw = (data as any)?.Asset?.items ?? []
-    } else {
-      const data = await getClient().request(COLLECTION_QUERY, { collectionId })
-      raw = (data as any)?.Asset?.items ?? []
+    // ── Step 3: batch-fetch CDN download URLs via _AssetItem ──────────────────
+    // cmp_Asset has no url field; _assetMetadata.url on _AssetItem is the source.
+    const keys    = siblings.map(s => s.key)
+    const urlData = await getClient().request(ASSET_URLS_QUERY, { keys })
+    const urlMap  = new Map<string, { url: string; fileSize: number | null }>()
+    for (const item of (urlData as any)?._AssetItem?.items ?? []) {
+      const k   = item._itemMetadata?.key as string | undefined
+      const url = item._assetMetadata?.url as string | undefined
+      if (k && url) {
+        urlMap.set(k, {
+          url,
+          fileSize: typeof item._assetMetadata?.fileSize === 'number'
+            ? item._assetMetadata.fileSize
+            : null,
+        })
+      }
     }
 
-    return raw
-      .filter((item: any) => item?.title && item?.url)
-      .map((item: any): ResourceAsset => ({
-        title:       String(item.title),
-        url:         String(item.url),
-        extension:   item.extension ? String(item.extension).replace(/^\./, '') : null,
-        fileSize:    typeof item.fileSize === 'number' ? item.fileSize : null,
-        description: item.description ? String(item.description) : null,
-      }))
+    // ── Merge and return ResourceAsset list ───────────────────────────────────
+    return siblings
+      .filter(s => urlMap.has(s.key))
+      .map(s => {
+        const { url, fileSize } = urlMap.get(s.key)!
+        return {
+          title:       titleWithoutExt(s.Title),
+          url,
+          extension:   extFromMime(s.MimeType) ?? extFromFilename(s.Title),
+          fileSize,
+          description: null,
+        }
+      })
   } catch {
     return []
   }

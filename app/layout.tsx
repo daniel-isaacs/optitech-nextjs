@@ -84,7 +84,14 @@ export default async function RootLayout({
       lang={locale}
       // Consumed by /public/scripts/theme-init.js which runs before React hydration.
       // The script sets data-theme = localStorage value || this attribute || 'dark'.
+      // data-theme is also declared here so React tracks it as a managed prop — if
+      // Optimizely causes a hydration mismatch (error #418) and React falls back to a
+      // full client re-render, React would otherwise strip data-theme (it only removes
+      // attributes it doesn't know about), leaving the CSS tokens without a theme
+      // anchor and falling back to dark. suppressHydrationWarning silences the
+      // client/server diff when localStorage overrides the CMS default.
       data-default-theme={defaultMode}
+      data-theme={defaultMode}
       className={`${poppins.variable} ${geistMono.variable} ${syne.variable} ${caveat.variable} h-full antialiased`}
       suppressHydrationWarning
     >

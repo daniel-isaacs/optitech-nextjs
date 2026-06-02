@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import Image from 'next/image'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import Button from '@/components/ui/Button'
@@ -120,7 +119,7 @@ export default async function Header() {
       <header className="sticky top-0 z-50 bg-canvas/80 backdrop-blur-md border-b border-fg/5">
         <div className="flex items-center justify-between px-md py-md lg:px-lg">
 
-          <Link href={localizedHref('/', locale)} aria-label={`${logoAlt} — ${t(locale, 'nav.home')}`} className="flex items-center h-12">
+          <a href={localizedHref('/', locale)} aria-label={`${logoAlt} — ${t(locale, 'nav.home')}`} className="flex items-center h-12">
             <Image
               src={logoSrc}
               alt={logoAlt}
@@ -129,7 +128,7 @@ export default async function Header() {
               className={logoImgClass}
               priority
             />
-          </Link>
+          </a>
 
           <DesktopNav navItems={navItems} />
 

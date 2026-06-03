@@ -55,20 +55,20 @@ function PageRow({ page }: { page: PageUsage }) {
               <span className="text-[0.8125rem] text-fg-muted font-mono truncate">{displayUrl}</span>
             )}
             {host && (
-              <span className="inline-flex items-center text-[0.6875rem] font-mono px-2 py-px bg-accent text-white shrink-0">
+              <span className="inline-flex items-center text-[0.6875rem] font-medium px-2.5 py-0.5 bg-accent text-white shrink-0">
                 {host}
               </span>
             )}
           </div>
           {publishedDate && (
-            <p className="text-[0.75rem] text-fg-muted/50 mt-1">
+            <p className="text-[0.75rem] text-fg mt-1">
               Published {publishedDate}
             </p>
           )}
         </div>
 
-        {/* Locale */}
-        <span className="text-[0.8125rem] text-fg-muted/60 font-medium w-10 text-center shrink-0 hidden sm:block">
+        {/* Language */}
+        <span className="text-[0.8125rem] text-fg-muted/60 font-medium w-16 text-center shrink-0 hidden sm:block">
           {page.locale ?? '—'}
         </span>
 
@@ -267,7 +267,7 @@ export default function ComponentUsageClient({
             {/* Header */}
             <div className="flex items-center gap-md px-lg py-2 bg-fg/2 border-b border-fg/6">
               <p className="flex-1 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70">Page</p>
-              <p className="w-10 text-center shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden sm:block">Locale</p>
+              <p className="w-16 text-center shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden sm:block">Language</p>
               <p className="shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden md:block">Status</p>
               <p className="w-14 text-right shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70">Uses</p>
               <div className="w-17.5 shrink-0" />

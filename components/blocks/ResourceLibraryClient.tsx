@@ -164,7 +164,7 @@ function GridCard({
       {/* Brand header band — scan-line sweeps on card hover (CSS .resource-card-band::after) */}
       <div className="resource-card-band bg-brand flex items-center justify-center h-20 shrink-0">
         <div
-          className="text-fg-on-brand opacity-70 group-hover:opacity-100 motion-safe:transition-[transform,opacity] motion-safe:duration-[240ms] motion-safe:ease-kinetic motion-safe:group-hover:-translate-y-[3px] motion-safe:group-hover:scale-110"
+          className="relative z-10 text-fg-on-brand opacity-70 group-hover:opacity-100 motion-safe:transition-[transform,opacity] motion-safe:duration-[240ms] motion-safe:ease-kinetic motion-safe:group-hover:-translate-y-[3px] motion-safe:group-hover:scale-110"
           aria-hidden="true"
         >
           <Icon className="w-9 h-9" />

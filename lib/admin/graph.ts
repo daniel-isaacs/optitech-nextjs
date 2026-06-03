@@ -3,52 +3,122 @@ import { ALLOWED_QUERY_KEYS } from './contentTypes'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type ContentInstance = {
-  key:         string
+export type PageUsage = {
+  pageKey:     string
   displayName: string
-  url: {
-    default:      string | null
-    hierarchical: string | null
-    base:         string | null
-  }
-  locale:    string | null
-  status:    string | null
-  published: string | null
+  url:         string | null
+  baseUrl:     string | null
+  locale:      string | null
+  status:      string | null
+  published:   string | null
+  count:       number
 }
 
 export type ComponentUsageResult = {
-  instances: ContentInstance[]
-  total:     number
+  pages: PageUsage[]
+  total: number
 }
 
 export type CalendarItem = {
   key:         string
   displayName: string
   url:         string | null
+  baseUrl:     string | null
   locale:      string | null
   status:      string | null
   published:   string | null
   type:        string
 }
 
-// ─── Component usage ──────────────────────────────────────────────────────────
+// ─── Composition traversal ────────────────────────────────────────────────────
 
-function mapInstance(item: Record<string, unknown>): ContentInstance {
-  const meta = (item._metadata ?? {}) as Record<string, unknown>
-  const url  = (meta.url ?? {}) as Record<string, unknown>
-  return {
-    key:         String(meta.key         ?? ''),
-    displayName: String(meta.displayName ?? ''),
-    url: {
-      default:      (url.default      as string | null) ?? null,
-      hierarchical: (url.hierarchical as string | null) ?? null,
-      base:         (url.base         as string | null) ?? null,
-    },
-    locale:    (meta.locale    as string | null) ?? null,
-    status:    (meta.status    as string | null) ?? null,
-    published: (meta.published as string | null) ?? null,
+// Counts occurrences of a content type key at any depth of a VB composition.
+// CompositionComponentNode.type is the block's content type key (e.g. "OT_HeroBlock").
+function countTypeInNodes(nodes: unknown[], targetType: string): number {
+  let count = 0
+  function visit(node: unknown) {
+    if (!node || typeof node !== 'object') return
+    const n = node as Record<string, unknown>
+    if (n.__typename === 'CompositionComponentNode' && n.type === targetType) count++
+    if (Array.isArray(n.nodes)) for (const child of n.nodes) visit(child)
   }
+  for (const node of nodes) visit(node)
+  return count
 }
+
+// ─── Component usage — experience/composition scan ────────────────────────────
+
+// 4 levels of nesting covers Section > Row > Column > Component
+const COMPOSITION_NODES_FRAGMENT = `
+  nodes {
+    __typename key type
+    ... on CompositionComponentNode { component { _metadata { key displayName } } }
+    ... on CompositionStructureNode {
+      nodes {
+        __typename key type
+        ... on CompositionComponentNode { component { _metadata { key displayName } } }
+        ... on CompositionStructureNode {
+          nodes {
+            __typename key type
+            ... on CompositionComponentNode { component { _metadata { key displayName } } }
+            ... on CompositionStructureNode {
+              nodes {
+                __typename key type
+                ... on CompositionComponentNode { component { _metadata { key displayName } } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+const COMPOSITION_QUERY = `
+  query GetAllCompositions($cursor: String) {
+    _Experience(limit: 100, cursor: $cursor) {
+      cursor
+      total(all: true)
+      items {
+        _metadata {
+          key
+          displayName
+          locale
+          url { base default }
+          status
+          published
+        }
+        ... on BlankExperience {
+          composition { ${COMPOSITION_NODES_FRAGMENT} }
+        }
+      }
+    }
+  }
+`
+
+// For page-type content (OT_BlogPage, BlankExperience itself used as a page list),
+// query instances directly rather than scanning compositions.
+const PAGE_TYPE_QUERY = (typeKey: string) => `
+  query GetPageTypeInstances($cursor: String) {
+    ${typeKey}(limit: 100, cursor: $cursor) {
+      cursor
+      total(all: true)
+      items {
+        _metadata {
+          key
+          displayName
+          locale
+          url { base default }
+          status
+          published
+        }
+      }
+    }
+  }
+`
+
+// Page-type keys are queried directly, not through composition scanning.
+const PAGE_TYPE_KEYS = new Set(['BlankExperience', 'OT_BlogPage'])
 
 export async function getComponentInstances(
   contentTypeKey: string,
@@ -57,62 +127,112 @@ export async function getComponentInstances(
     throw new Error(`Disallowed content type: ${contentTypeKey}`)
   }
 
-  const query = `
-    query GetComponentInstances {
-      ${contentTypeKey}(limit: 1000, orderBy: { _metadata: { published: DESC } }) {
-        items {
-          _metadata {
-            key
-            displayName
-            url { default hierarchical base }
-            locale
-            status
-            published
-          }
-        }
-        total
-      }
-    }
-  `
+  // ── Page types: query the type directly ──
+  if (PAGE_TYPE_KEYS.has(contentTypeKey)) {
+    return getPageTypeInstances(contentTypeKey)
+  }
+
+  // ── Block types: scan VB compositions ──
+  return getBlockTypeUsage(contentTypeKey)
+}
+
+async function getPageTypeInstances(typeKey: string): Promise<ComponentUsageResult> {
+  const pages: PageUsage[] = []
+  const seen = new Set<string>()
+  let cursor: string | null = null
 
   try {
-    const data   = await getClient().request(query, {})
-    const result = (data as Record<string, unknown>)[contentTypeKey] as
-      | { items: Record<string, unknown>[]; total: number }
-      | undefined
+    do {
+      const query = PAGE_TYPE_QUERY(typeKey)
+      const data  = await getClient().request(query, { cursor }) as Record<string, unknown>
+      const result = data[typeKey] as { cursor: string | null; items: Record<string, unknown>[] } | undefined
+      if (!result) break
+      cursor = result.cursor ?? null
 
-    return {
-      instances: (result?.items ?? []).map(mapInstance),
-      total:     result?.total ?? 0,
-    }
-  } catch {
-    return { instances: [], total: 0 }
+      for (const item of result.items) {
+        const meta = (item._metadata ?? {}) as Record<string, unknown>
+        const key  = String(meta.key ?? '')
+        if (!key || seen.has(key)) continue
+        seen.add(key)
+
+        const url = (meta.url ?? {}) as Record<string, unknown>
+        pages.push({
+          pageKey:     key,
+          displayName: String(meta.displayName ?? ''),
+          url:         (url.default   as string | null) ?? null,
+          baseUrl:     (url.base      as string | null) ?? null,
+          locale:      (meta.locale   as string | null) ?? null,
+          status:      (meta.status   as string | null) ?? null,
+          published:   (meta.published as string | null) ?? null,
+          count: 1,
+        })
+      }
+    } while (cursor)
+  } catch { /* return partial */ }
+
+  return { pages, total: pages.length }
+}
+
+async function getBlockTypeUsage(contentTypeKey: string): Promise<ComponentUsageResult> {
+  const pages: PageUsage[] = []
+  const seen = new Set<string>()
+  let cursor: string | null = null
+
+  try {
+    do {
+      const data       = await getClient().request(COMPOSITION_QUERY, { cursor }) as Record<string, unknown>
+      const experience = data._Experience as { cursor: string | null; items: Record<string, unknown>[] } | undefined
+      if (!experience) break
+      cursor = experience.cursor ?? null
+
+      for (const item of experience.items) {
+        const meta = (item._metadata ?? {}) as Record<string, unknown>
+        const key  = String(meta.key ?? '')
+        if (!key || seen.has(key)) continue
+        seen.add(key)
+
+        const url         = (meta.url ?? {}) as Record<string, unknown>
+        const composition = (item as Record<string, unknown>).composition as Record<string, unknown> | undefined
+        const nodes       = Array.isArray(composition?.nodes) ? (composition!.nodes as unknown[]) : []
+        const count       = countTypeInNodes(nodes, contentTypeKey)
+        if (count === 0) continue
+
+        pages.push({
+          pageKey:     key,
+          displayName: String(meta.displayName ?? ''),
+          url:         (url.default    as string | null) ?? null,
+          baseUrl:     (url.base       as string | null) ?? null,
+          locale:      (meta.locale    as string | null) ?? null,
+          status:      (meta.status    as string | null) ?? null,
+          published:   (meta.published as string | null) ?? null,
+          count,
+        })
+      }
+    } while (cursor)
+  } catch { /* return partial */ }
+
+  pages.sort((a, b) => b.count - a.count)
+
+  return {
+    pages,
+    total: pages.reduce((sum, p) => sum + p.count, 0),
   }
 }
 
 // ─── Content calendar ─────────────────────────────────────────────────────────
 
+// Queries _Page (covers BlankExperience + OT_BlogPage + any other _Page types).
+// Uses cursor pagination to retrieve all items.
 const CALENDAR_QUERY = `
-  query GetCalendarContent {
-    BlankExperience(limit: 200, orderBy: { _metadata: { published: ASC } }) {
+  query GetCalendarPages($cursor: String) {
+    _Page(limit: 100, cursor: $cursor, orderBy: { _metadata: { published: ASC } }) {
+      cursor
+      total(all: true)
       items {
         _metadata {
           key
           displayName
-          url { default }
-          locale
-          status
-          published
-          types
-        }
-      }
-    }
-    OT_BlogPage(limit: 100, orderBy: { _metadata: { published: ASC } }) {
-      items {
-        _metadata {
-          key
-          displayName
-          url { default }
+          url { base default }
           locale
           status
           published
@@ -123,51 +243,56 @@ const CALENDAR_QUERY = `
   }
 `
 
-function mapCalendarItem(
-  item: Record<string, unknown>,
-  type: string,
-): CalendarItem {
-  const meta = (item._metadata ?? {}) as Record<string, unknown>
-  const url  = (meta.url ?? {}) as Record<string, unknown>
-  return {
-    key:         String(meta.key         ?? ''),
-    displayName: String(meta.displayName ?? ''),
-    url:         (url.default as string | null) ?? null,
-    locale:      (meta.locale    as string | null) ?? null,
-    status:      (meta.status    as string | null) ?? null,
-    published:   (meta.published as string | null) ?? null,
-    type,
-  }
+function itemType(types: string[]): string {
+  if (types.includes('OT_BlogPage'))    return 'blog'
+  if (types.includes('BlankExperience')) return 'experience'
+  return 'page'
 }
 
 export async function getCalendarItems(): Promise<CalendarItem[]> {
+  const all: CalendarItem[] = []
+  const seen = new Set<string>()
+  let cursor: string | null = null
+
   try {
-    const data = await getClient().request(CALENDAR_QUERY, {}) as Record<string, unknown>
+    do {
+      const data   = await getClient().request(CALENDAR_QUERY, { cursor }) as Record<string, unknown>
+      const result = data._Page as { cursor: string | null; items: Record<string, unknown>[] } | undefined
+      if (!result) break
+      cursor = result.cursor ?? null
 
-    const experiences: CalendarItem[] = (
-      ((data.BlankExperience as { items?: Record<string, unknown>[] } | undefined)?.items) ?? []
-    ).map(item => mapCalendarItem(item, 'experience'))
+      for (const item of result.items) {
+        const meta  = (item._metadata ?? {}) as Record<string, unknown>
+        const key   = String(meta.key ?? '')
+        if (!key || seen.has(key)) continue
+        seen.add(key)
 
-    const blogPosts: CalendarItem[] = (
-      ((data.OT_BlogPage as { items?: Record<string, unknown>[] } | undefined)?.items) ?? []
-    ).map(item => mapCalendarItem(item, 'blog'))
+        const url   = (meta.url ?? {}) as Record<string, unknown>
+        const types = Array.isArray(meta.types) ? (meta.types as string[]) : []
 
-    // Merge and sort by published date ascending
-    const all = [...experiences, ...blogPosts].filter(i => Boolean(i.published))
-    all.sort((a, b) =>
-      new Date(a.published!).getTime() - new Date(b.published!).getTime()
-    )
+        all.push({
+          key,
+          displayName: String(meta.displayName ?? ''),
+          url:         (url.default    as string | null) ?? null,
+          baseUrl:     (url.base       as string | null) ?? null,
+          locale:      (meta.locale    as string | null) ?? null,
+          status:      (meta.status    as string | null) ?? null,
+          published:   (meta.published as string | null) ?? null,
+          type:        itemType(types),
+        })
+      }
+    } while (cursor)
+  } catch { /* return partial */ }
 
-    return all
-  } catch {
-    return []
-  }
+  return all.filter(i => Boolean(i.published))
 }
 
-// ─── Recent content (dashboard home) ─────────────────────────────────────────
+// ─── Recent content (dashboard) ──────────────────────────────────────────────
 
 export async function getRecentContent(limit = 8): Promise<CalendarItem[]> {
   const all = await getCalendarItems()
-  // Most recently published first
-  return [...all].reverse().slice(0, limit)
+  return all
+    .filter(i => i.status === 'Published' || i.status === 'Previous' || i.status === 'Scheduled')
+    .sort((a, b) => new Date(b.published!).getTime() - new Date(a.published!).getTime())
+    .slice(0, limit)
 }

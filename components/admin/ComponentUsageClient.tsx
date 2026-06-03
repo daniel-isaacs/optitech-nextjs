@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Search, ExternalLink, Globe, FileBox, ChevronDown } from 'lucide-react'
 import { ADMIN_BLOCK_TYPES } from '@/lib/admin/contentTypes'
 import type { ComponentUsageResult, PageUsage } from '@/lib/admin/graph'
@@ -91,22 +91,42 @@ function PageRow({ page }: { page: PageUsage }) {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-export default function ComponentUsageClient({ initialType }: { initialType?: string }) {
+type SiteFilter = 'current' | 'all'
+
+export default function ComponentUsageClient({
+  initialType,
+  currentSiteBase,
+}: {
+  initialType?:     string
+  currentSiteBase?: string | null
+}) {
   const [selectedType, setSelectedType] = useState(initialType ?? ADMIN_BLOCK_TYPES[0].key)
+  const [siteFilter,   setSiteFilter]   = useState<SiteFilter>(currentSiteBase ? 'current' : 'all')
   const [loading,      setLoading]      = useState(false)
-  const [result,       setResult]       = useState<ComponentUsageResult | null>(null)
+  const [rawResult,    setRawResult]    = useState<ComponentUsageResult | null>(null)
   const [error,        setError]        = useState<string | null>(null)
+
+  // Client-side site filtering — the API always returns all sites, we filter here.
+  const result = useMemo<ComponentUsageResult | null>(() => {
+    if (!rawResult) return null
+    if (siteFilter === 'all' || !currentSiteBase) return rawResult
+    const normalizedBase = currentSiteBase.replace(/\/$/, '')
+    const pages = rawResult.pages.filter(p =>
+      p.baseUrl ? p.baseUrl.replace(/\/$/, '') === normalizedBase : false
+    )
+    return { pages, total: pages.reduce((s, p) => s + p.count, 0) }
+  }, [rawResult, siteFilter, currentSiteBase])
 
   const handleSearch = useCallback(async () => {
     setLoading(true)
     setError(null)
-    setResult(null)
+    setRawResult(null)
 
     try {
       const res  = await fetch(`/api/opti-admin/component-usage?type=${encodeURIComponent(selectedType)}`)
       const data = await res.json() as ComponentUsageResult & { error?: string }
       if (!res.ok) { setError(data.error ?? 'Search failed.'); return }
-      setResult(data)
+      setRawResult(data)
     } catch {
       setError('Could not reach the server.')
     } finally {
@@ -174,8 +194,35 @@ export default function ComponentUsageClient({ initialType }: { initialType?: st
         </button>
       </div>
 
+      {/* Site filter */}
+      {currentSiteBase && (
+        <div className="flex items-center gap-xs mt-sm">
+          <span className="text-[0.75rem] text-fg-muted/60 mr-xs">Scope:</span>
+          {([['current', 'This site'], ['all', 'All sites']] as const).map(([val, label]) => (
+            <button
+              key={val}
+              type="button"
+              onClick={() => setSiteFilter(val)}
+              className={[
+                'px-sm py-[3px] text-[0.75rem] font-medium border transition-colors duration-100',
+                siteFilter === val
+                  ? 'bg-brand/[0.08] border-brand/20 text-brand'
+                  : 'border-fg/[0.10] text-fg-muted hover:text-fg hover:border-fg/20',
+              ].join(' ')}
+            >
+              {label}
+            </button>
+          ))}
+          {siteFilter === 'current' && (
+            <span className="text-[0.6875rem] text-fg-muted/50 font-mono ml-xs truncate max-w-[260px]">
+              {currentSiteBase.replace(/^https?:\/\//, '')}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Note for block types */}
-      <p className="mt-sm text-[0.75rem] text-fg-muted/60">
+      <p className="mt-xs text-[0.75rem] text-fg-muted/60">
         Block types are found by scanning Visual Builder experience compositions.
       </p>
 

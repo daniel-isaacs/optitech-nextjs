@@ -8,6 +8,9 @@ export type ResourceAsset = {
   extension:   string | null
   fileSize:    number | null
   description: string | null
+  // Populated when the CMP schema exposes a Tags field on cmp_Asset.
+  // Add `Tags` to SIBLINGS_QUERY and map it in the merge step to enable.
+  tags:        string[] | null
 }
 
 // ─── GraphQL queries ────────────────────────────────────────────────────────────
@@ -175,6 +178,7 @@ export async function getResourceLibraryAssets(
           extension:   extFromMime(s.MimeType) ?? extFromFilename(s.Title),
           fileSize,
           description: null,
+          tags:        null,
         }
       })
   } catch {

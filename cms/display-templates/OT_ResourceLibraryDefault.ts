@@ -44,5 +44,16 @@ export const OT_ResourceLibraryDefault = displayTemplate({
         show: { displayName: 'Visible',          sortOrder: 20 },
       },
     },
+    pageSize: {
+      displayName: 'Items per page',
+      editor:      'select',
+      sortOrder:   50,
+      choices: {
+        '6':  { displayName: '6 per page',            sortOrder: 10 },
+        '9':  { displayName: '9 per page',             sortOrder: 20 },
+        '12': { displayName: '12 per page (Default)',  sortOrder: 30 },
+        '24': { displayName: '24 per page',            sortOrder: 40 },
+      },
+    },
   },
 })

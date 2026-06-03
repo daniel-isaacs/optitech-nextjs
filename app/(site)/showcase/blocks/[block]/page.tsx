@@ -1466,12 +1466,12 @@ function BannerShowcase() {
 // ─── Resource Library ─────────────────────────────────────────────────────────
 
 const MOCK_ASSETS = [
-  { title: 'OptiTech Platform — Technical Overview',  url: '#', extension: 'pdf',  fileSize: 2_412_000, description: 'Architecture deep-dive for engineering teams.' },
-  { title: 'Q4 2024 Analyst Report',                  url: '#', extension: 'pdf',  fileSize: 890_000,   description: null },
-  { title: 'Integration Guide — REST & GraphQL APIs', url: '#', extension: 'docx', fileSize: 345_000,   description: null },
-  { title: 'Enterprise Pitch Deck',                   url: '#', extension: 'pptx', fileSize: 7_800_000, description: 'Slides for executive stakeholder presentations.' },
-  { title: 'Compliance & Security Datasheet',         url: '#', extension: 'pdf',  fileSize: 512_000,   description: null },
-  { title: 'Brand Asset Package',                     url: '#', extension: 'zip',  fileSize: 24_600_000, description: 'Logos, colour swatches, and typeface files.' },
+  { title: 'OptiTech Platform — Technical Overview and Architecture Reference',  url: '#', extension: 'pdf',  fileSize: 2_412_000, description: 'Architecture deep-dive for engineering teams.', tags: ['Engineering', 'Platform'] },
+  { title: 'Q4 2024 Analyst Report',                  url: '#', extension: 'pdf',  fileSize: 890_000,   description: null, tags: ['Finance', 'Report'] },
+  { title: 'Integration Guide — REST & GraphQL APIs', url: '#', extension: 'docx', fileSize: 345_000,   description: null, tags: ['Developer', 'APIs'] },
+  { title: 'Enterprise Pitch Deck',                   url: '#', extension: 'pptx', fileSize: 7_800_000, description: 'Slides for executive stakeholder presentations.', tags: ['Sales'] },
+  { title: 'Compliance & Security Datasheet',         url: '#', extension: 'pdf',  fileSize: 512_000,   description: null, tags: null },
+  { title: 'Brand Asset Package',                     url: '#', extension: 'zip',  fileSize: 24_600_000, description: 'Logos, colour swatches, and typeface files.', tags: ['Brand', 'Design'] },
 ]
 
 function ResourceLibraryShowcase() {
@@ -1480,14 +1480,14 @@ function ResourceLibraryShowcase() {
       <BlockHeader slug="resource-library" />
 
       <VariantGroup
-        label="Dense list · canvas · all files"
-        note='Primary layout. File-type icon chip, title, extension badge, download arrow. Hover lifts row and nudges arrow right.'
+        label="Dense list · canvas · all files · pagination 3"
+        note='Default layout. File-type icon chip, smaller title with hover tooltip, extension badge, tags, download arrow. View toggle switches to grid.'
       />
       <ResourceLibraryBlock
         eyebrow="Download Center"
         title="Resources"
         assets={MOCK_ASSETS}
-        styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all' }}
+        styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all', pageSize: 3 }}
       />
 
       <VariantGroup label="Dense list · file size visible" />
@@ -1495,7 +1495,7 @@ function ResourceLibraryShowcase() {
         eyebrow="Download Center"
         title="Resources"
         assets={MOCK_ASSETS}
-        styleOptions={{ layout: 'list', color: 'canvas', showFileSize: true, filterType: 'all' }}
+        styleOptions={{ layout: 'list', color: 'canvas', showFileSize: true, filterType: 'all', pageSize: 12 }}
       />
 
       <VariantGroup label="Dense list · surface background" />
@@ -1503,18 +1503,18 @@ function ResourceLibraryShowcase() {
         eyebrow="Documentation"
         title="Technical Library"
         assets={MOCK_ASSETS.slice(0, 4)}
-        styleOptions={{ layout: 'list', color: 'surface', showFileSize: true, filterType: 'all' }}
+        styleOptions={{ layout: 'list', color: 'surface', showFileSize: true, filterType: 'all', pageSize: 12 }}
       />
 
       <VariantGroup
-        label="Card grid · canvas · all files"
-        note='Secondary layout. Brand-fill header band with oversized icon, full-width download CTA at card foot.'
+        label="Card grid · canvas · all files · pagination 3"
+        note='Grid layout default. Brand-fill header band with oversized icon, smaller title with tooltip, tags, full-width download CTA.'
       />
       <ResourceLibraryBlock
         eyebrow="Downloads"
         title="Resource Center"
         assets={MOCK_ASSETS}
-        styleOptions={{ layout: 'grid', color: 'canvas', showFileSize: true, filterType: 'all' }}
+        styleOptions={{ layout: 'grid', color: 'canvas', showFileSize: true, filterType: 'all', pageSize: 3 }}
       />
 
       <VariantGroup label="Card grid · surface background" />
@@ -1522,7 +1522,7 @@ function ResourceLibraryShowcase() {
         eyebrow="Press Kit"
         title="Media Assets"
         assets={MOCK_ASSETS.slice(0, 3)}
-        styleOptions={{ layout: 'grid', color: 'surface', showFileSize: false, filterType: 'all' }}
+        styleOptions={{ layout: 'grid', color: 'surface', showFileSize: false, filterType: 'all', pageSize: 12 }}
       />
 
       <VariantGroup label="Empty states" />
@@ -1531,7 +1531,7 @@ function ResourceLibraryShowcase() {
         <ResourceLibraryBlock
           title="Resources"
           assets={null}
-          styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all' }}
+          styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all', pageSize: 12 }}
         />
       </div>
       <div className="border-t border-fg/5">
@@ -1539,7 +1539,7 @@ function ResourceLibraryShowcase() {
         <ResourceLibraryBlock
           title="Resources"
           assets={[]}
-          styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all' }}
+          styleOptions={{ layout: 'list', color: 'canvas', showFileSize: false, filterType: 'all', pageSize: 12 }}
         />
       </div>
 

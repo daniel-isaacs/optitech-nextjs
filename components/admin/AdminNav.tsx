@@ -6,45 +6,40 @@ import { LayoutDashboard, BarChart3, CalendarDays } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 type NavItem = {
-  href:  string
-  label: string
-  icon:  LucideIcon
+  href:   string
+  label:  string
+  icon:   LucideIcon
   exact?: boolean
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: '/opti-admin',                 label: 'Dashboard',        icon: LayoutDashboard, exact: true },
-  { href: '/opti-admin/component-usage', label: 'Component Usage',  icon: BarChart3        },
-  { href: '/opti-admin/calendar',        label: 'Content Calendar', icon: CalendarDays     },
+  { href: '/opti-admin',                 label: 'Dashboard',       icon: LayoutDashboard, exact: true },
+  { href: '/opti-admin/component-usage', label: 'Component Usage', icon: BarChart3        },
+  { href: '/opti-admin/calendar',        label: 'Calendar',        icon: CalendarDays     },
 ]
 
 export default function AdminNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="flex-1 px-sm py-md overflow-y-auto">
-      <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-fg-muted/50 px-sm mb-sm select-none">
+    <nav className="flex-1 px-[10px] py-[18px] overflow-y-auto">
+      <p className="oa-section-label text-[0.6rem] font-bold uppercase tracking-[0.14em] px-[8px] mb-[8px] select-none">
         Tools
       </p>
-      <ul>
+      <ul className="flex flex-col gap-[2px]">
         {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href)
           return (
             <li key={href}>
               <Link
                 href={href}
-                className={[
-                  'flex items-center gap-[10px] px-sm py-[7px] text-[0.8125rem] font-medium',
-                  'transition-colors duration-150 select-none',
-                  active
-                    ? 'bg-brand/[0.09] text-brand font-semibold'
-                    : 'text-fg-muted hover:text-fg hover:bg-fg/[0.045]',
-                ].join(' ')}
+                className={`oa-sb-nav-item flex items-center gap-[10px] px-[8px] py-[8px] text-[0.8125rem] select-none ${active ? 'oa-active' : ''}`}
               >
                 <Icon
-                  size={14}
-                  strokeWidth={active ? 2.25 : 1.75}
+                  size={15}
+                  strokeWidth={active ? 2 : 1.5}
                   className="shrink-0"
+                  aria-hidden="true"
                 />
                 {label}
               </Link>

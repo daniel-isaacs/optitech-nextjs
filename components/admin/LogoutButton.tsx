@@ -16,9 +16,9 @@ export default function LogoutButton() {
     <button
       type="button"
       onClick={handleLogout}
-      className="flex items-center gap-sm text-[0.8125rem] text-fg-muted hover:text-fg transition-colors duration-150 w-full px-sm py-[7px]"
+      className="oa-sb-logout flex items-center gap-[10px] text-[0.8125rem] w-full px-[18px] py-[12px]"
     >
-      <LogOut size={14} strokeWidth={1.75} className="shrink-0" />
+      <LogOut size={14} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
       Sign out
     </button>
   )

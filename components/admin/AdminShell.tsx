@@ -1,31 +1,40 @@
 import { Settings2 } from 'lucide-react'
 import AdminNav from './AdminNav'
 import LogoutButton from './LogoutButton'
-import { getSiteSettings, getRequestDomain, getRequestLocale } from '@/lib/optimizely'
+import AdminHeaderTitle from './AdminHeaderTitle'
+import { getSiteSettings, getRequestDomain, getRequestLocale, getRequestBaseUrl } from '@/lib/optimizely'
 
 export default async function AdminShell({ children }: { children: React.ReactNode }) {
   const domain   = await getRequestDomain()
   const locale   = await getRequestLocale()
   const settings = await getSiteSettings(domain, locale)
   const siteName = (settings?.siteName as string | undefined) ?? 'OptiTech'
+  const baseUrl  = await getRequestBaseUrl()
+  const hostname = baseUrl ? baseUrl.replace(/^https?:\/\//, '') : domain
 
   return (
     <div className="flex h-full min-h-screen">
-      {/* ── Sidebar ── */}
-      <aside
-        className="w-[220px] shrink-0 flex flex-col bg-surface border-r border-fg/[0.07]"
-        style={{ boxShadow: '1px 0 0 var(--ot-bloom-brand-border)' }}
-      >
-        {/* Logo / wordmark */}
-        <div className="h-[54px] flex items-center gap-[9px] px-md border-b border-fg/[0.07] shrink-0">
-          <div className="w-6 h-6 bg-brand flex items-center justify-center shrink-0">
-            <Settings2 size={13} strokeWidth={2} className="text-fg-on-brand" aria-hidden="true" />
+      {/* ── Sidebar ─────────────────────────────────────────────────────────── */}
+      <aside className="oa-sidebar w-[220px] shrink-0 flex flex-col border-r">
+        {/* Wordmark */}
+        <div className="oa-wordmark-border h-[58px] flex items-center gap-[10px] px-md border-b shrink-0">
+          <div
+            className="w-7 h-7 flex items-center justify-center shrink-0"
+            style={{ background: 'oklch(50% 0.12 248)', boxShadow: '0 2px 8px oklch(50% 0.12 248 / 0.40)' }}
+          >
+            <Settings2 size={14} strokeWidth={2.25} style={{ color: 'oklch(96% 0.004 252)' }} aria-hidden="true" />
           </div>
-          <div>
-            <span className="text-[0.75rem] font-semibold tracking-[0.04em] uppercase text-fg leading-none">
+          <div className="flex flex-col leading-none gap-[1px]">
+            <span
+              className="text-[0.6875rem] font-bold tracking-[0.12em] uppercase leading-none"
+              style={{ color: 'oklch(82% 0.008 252)' }}
+            >
               Opti
             </span>
-            <span className="text-[0.75rem] font-semibold tracking-[0.04em] uppercase text-brand leading-none">
+            <span
+              className="text-[0.6875rem] font-bold tracking-[0.12em] uppercase leading-none"
+              style={{ color: 'oklch(72% 0.10 248)' }}
+            >
               Admin
             </span>
           </div>
@@ -34,23 +43,26 @@ export default async function AdminShell({ children }: { children: React.ReactNo
         {/* Navigation */}
         <AdminNav />
 
-        {/* Footer */}
-        <div className="shrink-0 border-t border-fg/[0.07]">
+        {/* Sign out */}
+        <div className="oa-sb-divider shrink-0 border-t">
           <LogoutButton />
         </div>
       </aside>
 
-      {/* ── Main ── */}
+      {/* ── Main ─────────────────────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <header className="h-[54px] shrink-0 flex items-center justify-between px-lg border-b border-fg/[0.07] bg-canvas">
-          <div />
+        <header className="oa-topbar h-[58px] shrink-0 flex items-center justify-between px-lg bg-canvas relative z-10">
+          {/* Page title — resolved client-side from route */}
+          <AdminHeaderTitle />
+
+          {/* Site context */}
           <div className="flex items-center gap-sm">
-            <span className="text-[0.6875rem] text-fg-muted/50 uppercase tracking-[0.08em] font-semibold select-none">
-              Site
-            </span>
-            <span className="text-[0.8125rem] font-medium text-fg-muted">
+            <span className="text-[0.6875rem] font-medium text-fg-muted/50 uppercase tracking-[0.07em] select-none">
               {siteName}
+            </span>
+            <span className="oa-site-badge text-[0.6875rem] font-mono px-[7px] py-[3px] select-all">
+              {hostname}
             </span>
           </div>
         </header>

@@ -27,9 +27,9 @@ export default async function DashboardPage() {
   const recentItems = await getRecentContent(8)
 
   return (
-    <div className="px-xl py-xl max-w-[1100px]">
+    <div className="px-lg py-lg max-w-[1100px]">
       {/* ── Page header ── */}
-      <div className="mb-2xl">
+      <div className="mb-lg">
         <p className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-fg-muted/50 mb-xs">
           {siteName}
         </p>
@@ -39,7 +39,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Tool shortcuts ── */}
-      <section className="mb-2xl" aria-labelledby="tools-heading">
+      <section className="mb-lg" aria-labelledby="tools-heading">
         <h2 id="tools-heading" className="text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-fg-muted/50 mb-md">
           Tools
         </h2>

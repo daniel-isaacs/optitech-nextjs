@@ -10,9 +10,9 @@ export default async function CalendarPage() {
   const items = await getCalendarItems()
 
   return (
-    <div className="px-xl py-xl max-w-[1300px]">
+    <div className="px-lg py-lg max-w-[1300px]">
       {/* ── Page header ── */}
-      <div className="mb-xl">
+      <div className="mb-md">
         <h1 className="text-[1.5rem] font-semibold text-fg tracking-[-0.02em] leading-tight">
           Content Calendar
         </h1>
@@ -21,7 +21,7 @@ export default async function CalendarPage() {
         </p>
       </div>
 
-      <div className="border-t border-fg/[0.07] pt-xl">
+      <div className="border-t border-fg/[0.07] pt-lg">
         <ContentCalendarClient items={items} />
       </div>
     </div>

@@ -1996,6 +1996,77 @@ body {
   }
 }
 
+/* ── OptiAdmin sidebar dark panel ────────────────────────────────────────────
+ * Class-based styles targeting components within the dark sidebar.
+ * The sidebar uses .oa-sidebar on the <aside> and passes dark context to child
+ * components through CSS class targeting, avoiding prop drilling.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* Sidebar container */
+.oa-sidebar {
+  background: linear-gradient(
+    168deg,
+    oklch(21% 0.026 252) 0%,
+    oklch(15.5% 0.018 252) 100%
+  );
+  border-right-color: oklch(27% 0.022 252);
+  box-shadow:
+    1px 0 0 oklch(30% 0.022 252 / 0.4),
+    6px 0 24px oklch(8% 0.010 252 / 0.45);
+}
+
+/* Wordmark area border */
+.oa-sidebar .oa-wordmark-border {
+  border-bottom-color: oklch(27% 0.022 252);
+}
+
+/* Section label */
+.oa-sidebar .oa-section-label {
+  color: oklch(36% 0.012 252);
+}
+
+/* Nav items */
+.oa-sb-nav-item {
+  color: oklch(56% 0.012 252);
+  transition: color 120ms ease, background-color 120ms ease;
+}
+.oa-sb-nav-item:hover {
+  color: oklch(82% 0.009 252);
+  background-color: oklch(100% 0 0 / 0.07);
+}
+.oa-sb-nav-item.oa-active {
+  color: oklch(83% 0.075 248);
+  background-color: oklch(50% 0.12 248 / 0.22);
+  font-weight: 600;
+}
+
+/* Sidebar footer */
+.oa-sidebar .oa-sb-divider {
+  border-top-color: oklch(27% 0.022 252);
+}
+.oa-sb-logout {
+  color: oklch(44% 0.010 252);
+  transition: color 120ms ease, background-color 120ms ease;
+}
+.oa-sb-logout:hover {
+  color: oklch(72% 0.010 252);
+  background-color: oklch(100% 0 0 / 0.07);
+}
+
+/* Top-bar header */
+.oa-topbar {
+  box-shadow:
+    0 1px 0 oklch(0% 0 0 / 0.07),
+    0 2px 8px oklch(0% 0 0 / 0.04);
+}
+
+/* Site badge in the header */
+.oa-site-badge {
+  color: oklch(44% 0.016 252);
+  background: oklch(94% 0.007 252);
+  border: 1px solid oklch(88% 0.008 252);
+}
+
 /* ── OptiAdmin shell — independent neutral token scope ───────────────────────
  * Applied via class="opti-admin" on the admin layout root. Overrides the
  * marketing site tokens so the admin palette is fully decoupled from whatever

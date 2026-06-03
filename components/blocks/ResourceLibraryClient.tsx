@@ -48,7 +48,7 @@ function downloadFilename(asset: ResourceAsset): string {
 // ─── CVA ──────────────────────────────────────────────────────────────────────
 
 const cardCva = cva(
-  'flex flex-col overflow-hidden border border-fg/8 motion-safe:transition-shadow motion-safe:duration-200',
+  'resource-card group h-full flex flex-col overflow-hidden border border-fg/8',
   {
     variants: {
       color: {
@@ -161,14 +161,18 @@ function GridCard({
 
   return (
     <div className={cardCva({ color })}>
-      <div className="bg-brand flex items-center justify-center h-20 shrink-0">
-        <div className="text-fg-on-brand opacity-80" aria-hidden="true">
+      {/* Brand header band — scan-line sweeps on card hover (CSS .resource-card-band::after) */}
+      <div className="resource-card-band bg-brand flex items-center justify-center h-20 shrink-0">
+        <div
+          className="text-fg-on-brand opacity-70 group-hover:opacity-100 motion-safe:transition-[transform,opacity] motion-safe:duration-[240ms] motion-safe:ease-kinetic motion-safe:group-hover:-translate-y-[3px] motion-safe:group-hover:scale-110"
+          aria-hidden="true"
+        >
           <Icon className="w-9 h-9" />
         </div>
       </div>
 
+      {/* Body — flex-1 ensures the download CTA always sits at the card foot */}
       <div className="flex flex-col gap-sm px-md pt-md pb-md flex-1">
-        {/* Smaller title with native tooltip for full name on hover */}
         <p
           className="text-body font-semibold text-fg leading-snug line-clamp-3"
           title={asset.title}
@@ -196,15 +200,24 @@ function GridCard({
         )}
       </div>
 
+      {/* Download CTA — pre-activates on card group-hover, deeper on direct hover */}
       <a
         href={asset.url}
         download={filename}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-sm px-md py-sm border-t border-fg/8 text-label font-semibold tracking-label uppercase text-fg-muted hover:text-fg hover:bg-fg/5 motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand"
+        className="flex items-center justify-center gap-sm px-md py-sm border-t border-fg/8
+          text-label font-semibold tracking-label uppercase text-fg-muted
+          group-hover:text-fg group-hover:bg-brand/[0.08]
+          hover:text-fg-on-brand hover:bg-brand hover:border-brand
+          motion-safe:transition-[color,background-color,border-color] motion-safe:duration-[220ms] motion-safe:ease-quick
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand"
         aria-label={`Download ${asset.title} (${label}${size ? `, ${size}` : ''})`}
       >
-        <ArrowDownToLine className="w-4 h-4" aria-hidden="true" />
+        <ArrowDownToLine
+          className="w-4 h-4 motion-safe:transition-transform motion-safe:duration-[220ms] motion-safe:ease-kinetic motion-safe:group-hover:translate-y-[2px] motion-safe:hover:translate-y-[4px]"
+          aria-hidden="true"
+        />
         Download
       </a>
     </div>
@@ -374,7 +387,7 @@ export default function ResourceLibraryClient({
           aria-label={label ?? 'Resource library'}
         >
           {pageAssets.map((asset, i) => (
-            <div key={`${asset.url}-${i}`} role="listitem">
+            <div key={`${asset.url}-${i}`} role="listitem" className="flex flex-col">
               <GridCard asset={asset} color={color} showFileSize={showFileSize} />
             </div>
           ))}

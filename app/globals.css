@@ -1239,6 +1239,56 @@ body {
     0 16px 52px oklch(from var(--ot-accent) l c h / 0.13);
 }
 
+/* ── Resource Library grid card ───────────────────────────────────────────────
+ * Chromatic lift on hover (translateY + shadow intensification) plus a one-shot
+ * scan-line that sweeps the brand band — the card reads itself as you hover.
+ * All transforms are guarded by prefers-reduced-motion; the shadow deepening
+ * applies in both modes. Bloom tokens follow CMS theme overrides automatically.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.resource-card {
+  box-shadow: 0 2px 18px var(--ot-bloom-brand-faint);
+  transition:
+    transform 300ms var(--ot-ease-quick),
+    box-shadow 300ms var(--ot-ease-quick);
+}
+.resource-card:hover {
+  box-shadow:
+    0 12px 40px var(--ot-bloom-brand-faint),
+    0 4px 16px var(--ot-bloom-accent-faint);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .resource-card:hover {
+    transform: translateY(-5px);
+  }
+  .resource-card:hover .resource-card-band::after {
+    animation: resourceCardScan 0.42s var(--ot-ease-kinetic) forwards;
+  }
+}
+
+/* Header band — scan line sweeps on card hover */
+.resource-card-band {
+  position: relative;
+  overflow: hidden;
+}
+.resource-card-band::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  top: -2px;
+  opacity: 0;
+  background: oklch(from var(--ot-fg-on-brand) l c h / 0.55);
+  pointer-events: none;
+}
+
+@keyframes resourceCardScan {
+  0%   { top: -2px;             opacity: 0;   }
+  8%   {                        opacity: 0.8; }
+  88%  {                        opacity: 0.4; }
+  100% { top: calc(100% + 2px); opacity: 0;   }
+}
+
 /* ── Glass panel — true frosted-glass overlay for rows, sections, and stat panels
  * True glassmorphism: backdrop-filter is the frost — the background MUST be
  * near-transparent so blur of whatever is behind shows through.

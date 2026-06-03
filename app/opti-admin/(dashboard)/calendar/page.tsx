@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import { getCalendarItems } from '@/lib/admin/graph'
 import ContentCalendarClient from '@/components/admin/ContentCalendarClient'

@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { BarChart3, CalendarDays, ArrowRight, Clock } from 'lucide-react'
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import { ADMIN_BLOCK_TYPES } from '@/lib/admin/contentTypes'
 import { getRecentContent } from '@/lib/admin/graph'

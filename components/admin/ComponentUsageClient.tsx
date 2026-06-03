@@ -9,7 +9,7 @@ import type { ComponentUsageResult, PageUsage } from '@/lib/admin/graph'
 
 function CountBadge({ count }: { count: number }) {
   return (
-    <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-[6px] bg-brand/[0.09] text-brand text-[0.6875rem] font-semibold tabular-nums">
+    <span className="inline-flex items-center justify-center min-w-[26px] h-[26px] px-2 bg-brand/10 text-brand text-[0.75rem] font-semibold tabular-nums">
       {count}
     </span>
   )
@@ -18,12 +18,12 @@ function CountBadge({ count }: { count: number }) {
 function StatusChip({ status }: { status: string | null }) {
   const s = (status ?? '').toLowerCase()
   const cls =
-    s === 'published' ? 'text-accent bg-accent/[0.10]' :
-    s === 'scheduled' ? 'text-brand bg-brand/[0.10]'  :
-    s === 'previous'  ? 'text-fg-muted bg-fg/6'  :
-                        'text-fg-muted/60 bg-fg/[0.04]'
+    s === 'published' ? 'text-accent bg-accent/10' :
+    s === 'scheduled' ? 'text-brand bg-brand/10'   :
+    s === 'previous'  ? 'text-fg-muted bg-fg/6'    :
+                        'text-fg-muted/60 bg-fg/4'
   return (
-    <span className={`text-[0.65rem] font-semibold uppercase tracking-[0.05em] px-1.25 py-0.5 ${cls}`}>
+    <span className={`text-[0.75rem] font-semibold uppercase tracking-[0.05em] px-2 py-0.5 ${cls}`}>
       {status ?? '—'}
     </span>
   )
@@ -44,31 +44,31 @@ function PageRow({ page }: { page: PageUsage }) {
 
   return (
     <li className="border-b border-fg/6 last:border-none">
-      <div className="flex items-center gap-md px-lg py-3 hover:bg-fg/2.5 transition-colors duration-100">
+      <div className="flex items-center gap-md px-lg py-4 hover:bg-fg/2.5 transition-colors duration-100">
         {/* Title + path + site pill */}
         <div className="flex-1 min-w-0">
-          <p className="text-[0.875rem] font-semibold text-fg leading-snug truncate">
+          <p className="text-[1rem] font-semibold text-fg leading-snug truncate">
             {page.displayName || displayUrl || page.pageKey}
           </p>
-          <div className="flex items-center gap-2 mt-0.75 flex-wrap">
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
             {displayUrl && (
-              <span className="text-[0.75rem] text-fg-muted font-mono truncate">{displayUrl}</span>
+              <span className="text-[0.8125rem] text-fg-muted font-mono truncate">{displayUrl}</span>
             )}
             {host && (
-              <span className="inline-flex items-center text-[0.6rem] font-mono px-1.25 py-px bg-fg/6 text-fg-muted/70 border border-fg/8 shrink-0">
+              <span className="inline-flex items-center text-[0.6875rem] font-mono px-2 py-px bg-accent text-white shrink-0">
                 {host}
               </span>
             )}
           </div>
           {publishedDate && (
-            <p className="text-[0.7rem] text-fg-muted/45 mt-0.75">
+            <p className="text-[0.75rem] text-fg-muted/50 mt-1">
               Published {publishedDate}
             </p>
           )}
         </div>
 
         {/* Locale */}
-        <span className="text-[0.75rem] text-fg-muted/60 font-medium w-10 text-center shrink-0 hidden sm:block">
+        <span className="text-[0.8125rem] text-fg-muted/60 font-medium w-10 text-center shrink-0 hidden sm:block">
           {page.locale ?? '—'}
         </span>
 
@@ -89,12 +89,13 @@ function PageRow({ page }: { page: PageUsage }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open ${page.displayName || 'page'} in new tab`}
-            className="shrink-0 flex items-center justify-center w-7 h-7 text-fg-muted/50 hover:text-brand hover:bg-brand/10 transition-colors duration-100"
+            className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-[0.75rem] font-semibold text-fg-muted border border-fg/10 hover:text-brand hover:border-brand/30 hover:bg-brand/5 transition-colors duration-100"
           >
-            <ExternalLink size={14} strokeWidth={2} />
+            <ExternalLink size={13} strokeWidth={2} aria-hidden="true" />
+            Open
           </a>
         ) : (
-          <div className="w-7 shrink-0" />
+          <div className="w-17.5 shrink-0" />
         )}
       </div>
     </li>
@@ -264,12 +265,12 @@ export default function ComponentUsageClient({
           {/* Table */}
           <div className="border border-fg/[0.08]">
             {/* Header */}
-            <div className="flex items-center gap-md px-lg py-[8px] bg-fg/[0.02] border-b border-fg/[0.06]">
+            <div className="flex items-center gap-md px-lg py-2 bg-fg/2 border-b border-fg/6">
               <p className="flex-1 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70">Page</p>
               <p className="w-10 text-center shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden sm:block">Locale</p>
               <p className="shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden md:block">Status</p>
               <p className="w-14 text-right shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70">Uses</p>
-              <div className="w-5 shrink-0" />
+              <div className="w-17.5 shrink-0" />
             </div>
 
             {/* Rows */}

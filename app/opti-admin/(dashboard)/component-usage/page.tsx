@@ -25,7 +25,7 @@ export default async function ComponentUsagePage({ searchParams }: Props) {
   const currentSiteBase = host ? `${proto}://${host}` : null
 
   return (
-    <div className="px-lg py-lg max-w-[1100px]">
+    <div className="px-lg py-lg">
       <div className="mb-md">
         <h1 className="text-[1.5rem] font-semibold text-fg tracking-[-0.02em] leading-tight">
           Component Usage

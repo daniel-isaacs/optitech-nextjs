@@ -10,7 +10,7 @@ export default async function CalendarPage() {
   const items = await getCalendarItems()
 
   return (
-    <div className="px-lg py-lg max-w-[1300px]">
+    <div className="px-lg py-lg">
       {/* ── Page header ── */}
       <div className="mb-md">
         <h1 className="text-[1.5rem] font-semibold text-fg tracking-[-0.02em] leading-tight">

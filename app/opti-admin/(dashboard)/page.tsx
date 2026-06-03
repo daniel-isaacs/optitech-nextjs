@@ -27,7 +27,7 @@ export default async function DashboardPage() {
   const recentItems = await getRecentContent(8)
 
   return (
-    <div className="px-lg py-lg max-w-[1100px]">
+    <div className="px-lg py-lg">
       {/* ── Page header ── */}
       <div className="mb-lg">
         <p className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-fg-muted/50 mb-xs">

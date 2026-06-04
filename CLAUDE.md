@@ -144,6 +144,7 @@ These are non-obvious SDK constraints. Getting them wrong causes TypeScript buil
 | Rich text GraphQL shape | Returns `{ html, json }` — render via `<RichText content={content.body?.json} />` | Treating it as a plain string, or using `.html` with `dangerouslySetInnerHTML` |
 | Link type shape | `type: 'link'` returns `{ url, text, title, target }` — render each field explicitly | Treating it as a plain string URL |
 | URL vs link | `type: 'url'` is a plain string; `type: 'link'` has metadata | Using `.url` on a `'url'` type property |
+| `link` type: do NOT use for CTAs | Use `type: 'url'` + separate `type: 'string'` label instead. `type: 'link'` with `isLocalized: true` causes a 500 on `config push`; `link` is only reliable for navigation types (`_component` nav items) | `ctaLink: { type: 'link', isLocalized: true }` — crashes the CMS CLI push |
 | `mayContainTypes` | Available on `_page`, `_experience`, `_folder` base types | Not available on `_component` |
 | Child type self-reference | Use `'_self'` string | Circular import of the same file |
 ```

@@ -1,5 +1,6 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { RichText } from '@optimizely/cms-sdk/react/richText'
 import { OT_ImageBlock as OT_ImageBlockContentType } from '@/cms/content-types/OT_ImageBlock'
 import { getImageStyles } from '@/cms/styling/OT_ImageBlock.styling'
 import ImageBlock from '@/components/blocks/ImageBlock'
@@ -14,29 +15,100 @@ export default function OT_ImageBlock({ content, displaySettings = {} }: Props) 
   const styleOptions = getImageStyles(displaySettings)
   const imageSrc = src(content.image)
 
-  if (!imageSrc) {
+  const mediaSide = (displaySettings?.mediaSide ?? 'right') as 'left' | 'right'
+  const hasEditorial = Boolean(
+    content.eyebrow || content.heading || content.body || content.ctaUrl?.default
+  )
+
+  const mediaEl = !imageSrc ? (
+    <div
+      className="w-full flex items-center justify-center bg-surface border border-fg/10"
+      style={{ minHeight: 200 }}
+    >
+      <p className="text-label text-fg-muted/60 font-mono">
+        Image not available — publish the asset in CMS to display it
+      </p>
+    </div>
+  ) : (
+    <ImageBlock
+      src={imageSrc}
+      alt={content.alt ?? ''}
+      caption={content.caption ?? undefined}
+      styleOptions={styleOptions}
+      previewAttrs={{ image: pa('image'), caption: pa('caption') }}
+    />
+  )
+
+  if (!hasEditorial) {
     return (
-      <div
-        {...pa(content.__composition)}
-        className="w-full flex items-center justify-center bg-surface border border-fg/10"
-        style={{ minHeight: 200 }}
-      >
-        <p className="text-label text-fg-muted/60 font-mono">
-          Image not available — publish the asset in CMS to display it
-        </p>
+      <div {...pa(content.__composition)} className="w-full">
+        {mediaEl}
       </div>
     )
   }
 
+  // 55/45 split: when mediaSide=left the media column is first and wider;
+  // when mediaSide=right the text column is first (left) and the wider media column is second.
+  const gridCols =
+    mediaSide === 'right'
+      ? 'md:grid-cols-[45fr_55fr]'
+      : 'md:grid-cols-[55fr_45fr]'
+
+  // CSS order: text always renders first in DOM on mobile (order-1) so it
+  // stacks on top. On desktop the order follows mediaSide.
+  const mediaOrder =
+    mediaSide === 'right' ? 'order-2' : 'order-2 md:order-1'
+  const textOrder =
+    mediaSide === 'right' ? 'order-1' : 'order-1 md:order-2'
+
   return (
-    <div {...pa(content.__composition)} className="w-full">
-      <ImageBlock
-        src={imageSrc}
-        alt={content.alt ?? ''}
-        caption={content.caption ?? undefined}
-        styleOptions={styleOptions}
-        previewAttrs={{ image: pa('image'), caption: pa('caption') }}
-      />
+    <div
+      {...pa(content.__composition)}
+      className={`w-full grid grid-cols-1 ${gridCols} gap-lg md:gap-xl items-center`}
+    >
+      <div className={`min-w-0 ${mediaOrder}`}>
+        {mediaEl}
+      </div>
+
+      <div className={`min-w-0 flex flex-col gap-md ${textOrder}`}>
+        {content.eyebrow && (
+          <span
+            {...pa('eyebrow')}
+            className="text-label uppercase tracking-wide text-brand font-semibold"
+          >
+            {content.eyebrow}
+          </span>
+        )}
+
+        {content.heading && (
+          <h2
+            {...pa('heading')}
+            className="text-headline font-bold text-fg text-wrap-balance leading-tight"
+          >
+            {content.heading}
+          </h2>
+        )}
+
+        {content.body && (
+          <div
+            {...pa('body')}
+            className="text-body text-fg-muted leading-relaxed max-w-[60ch]"
+          >
+            <RichText content={content.body.json ?? undefined} />
+          </div>
+        )}
+
+        {content.ctaUrl?.default && (
+          <div className="mt-sm">
+            <a
+              href={content.ctaUrl.default}
+              className="btn-signal inline-flex items-center gap-sm px-lg py-sm bg-brand text-fg-on-brand text-label font-semibold uppercase tracking-wide motion-safe:transition-colors motion-safe:duration-200 ease-quick"
+            >
+              {content.ctaLabel || 'Learn more'}
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

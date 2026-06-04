@@ -43,8 +43,8 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'primary-text': { label: 'PrimaryTextBlock',  cmsKey: 'OT_PrimaryTextBlock', description: 'Typographic accent block for section openers, pacing moments, and statement callouts. Eyebrow label and headline only — Poppins throughout.' },
   'quote':        { label: 'QuoteBlock',         cmsKey: 'OT_QuoteBlock',       description: 'Typographic anchor moment for customer social proof and editorial pull quotes. The large quotation mark is a Poppins 800 letterform, not an icon.' },
   'rich-text':    { label: 'RichTextBlock',      cmsKey: 'OT_RichTextBlock',    description: 'Full-width prose section rendering TinyMCE WYSIWYG HTML output: headings, paragraphs, lists, blockquotes, and inline elements.' },
-  'image':        { label: 'ImageBlock',         cmsKey: 'OT_ImageBlock',       description: 'Flexible image block with two frame modes, teal brand overlay, inset or below caption, chromatic shadow bloom, and a scroll-triggered wipe reveal.' },
-  'video':        { label: 'VideoBlock',         cmsKey: 'OT_VideoBlock',       description: 'YouTube and Vimeo embeds with a branded poster state. Platform thumbnails are auto-fetched; a teal play button replaces the iframe until clicked.' },
+  'image':        { label: 'ImageBlock',         cmsKey: 'OT_ImageBlock',       description: 'Flexible image block with two frame modes, teal brand overlay, inset or below caption, chromatic shadow bloom, and a scroll-triggered wipe reveal. Populate any editorial field (eyebrow, heading, body, CTA) to auto-enable a 55/45 two-column editorial layout with configurable media side.' },
+  'video':        { label: 'VideoBlock',         cmsKey: 'OT_VideoBlock',       description: 'YouTube and Vimeo embeds with a branded poster state. Platform thumbnails are auto-fetched; a teal play button replaces the iframe until clicked. Populate any editorial field to auto-enable a 55/45 two-column editorial layout with configurable media side.' },
   'stat':         { label: 'StatBlock',          cmsKey: 'OT_StatBlock',        description: 'Horizontal row of metric callouts. Numbers animate on scroll with a staggered entrance and easeOutQuart count-up. Three color schemes and two layout modes.' },
   'feature-grid': { label: 'FeatureGridBlock',   cmsKey: 'OT_FeatureGridBlock', description: 'Grid of feature tiles with optional eyebrow, heading, and CTA. Supports grid and ruled layouts, 2–4 columns, optional icon slots, and stagger entrance animation.' },
   'trust-rail':   { label: 'TrustRail',          cmsKey: 'OT_TrustRail',        description: 'Logo trust strip with seamless marquee, staggered fade, or static grid. Mono grayscale + color-on-hover treatment. Logos are CMS-managed content references.' },
@@ -649,6 +649,40 @@ function ImageShowcase() {
       <div className="px-md pb-xl lg:px-lg">
         <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'OptiTech. Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', animate: true, frame: 'offset', captionPosition: 'inset' }} />
       </div>
+
+      <VariantGroup label="Editorial layout · 2-column" note="Populate any editorial field (eyebrow, heading, body, CTA) and the block auto-switches to a 55/45 two-column grid. All frame and overlay treatments still apply. Text always stacks above media on mobile." />
+      <div className="px-md pb-xl lg:px-lg flex flex-col gap-2xl">
+        <div>
+          <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-md">
+            <span className="text-label tracking-label uppercase text-brand font-semibold">Media right (Default)</span>
+            <span className="text-label text-fg-muted/60">mediaSide: right · frame: glow · shadow</span>
+          </div>
+          <OT_ImageBlock
+            content={{ image: IMG_SRC, alt: IMG_ALT, eyebrow: 'Infrastructure', heading: 'Precision at every layer, at any scale.', ctaUrl: { default: '#' }, ctaLabel: 'View architecture' } as any}
+            displaySettings={{ ratio: 'r16_9', frame: 'glow', shadow: true, mediaSide: 'right' }}
+          />
+        </div>
+        <div>
+          <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-md">
+            <span className="text-label tracking-label uppercase text-brand font-semibold">Media left</span>
+            <span className="text-label text-fg-muted/60">mediaSide: left · frame: offset</span>
+          </div>
+          <OT_ImageBlock
+            content={{ image: IMG_SRC, alt: IMG_ALT, eyebrow: 'Platform', heading: 'Visual quality that validates itself.', ctaUrl: { default: '#' }, ctaLabel: 'See the platform' } as any}
+            displaySettings={{ ratio: 'r16_9', frame: 'offset', mediaSide: 'left' }}
+          />
+        </div>
+        <div>
+          <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-md">
+            <span className="text-label tracking-label uppercase text-brand font-semibold">Eyebrow + heading only · no CTA</span>
+            <span className="text-label text-fg-muted/60">Minimal editorial — CTA is optional</span>
+          </div>
+          <OT_ImageBlock
+            content={{ image: IMG_SRC, alt: IMG_ALT, eyebrow: 'Analytics', heading: 'Every signal. Every layer. Real time.' } as any}
+            displaySettings={{ ratio: 'r16_9', mediaSide: 'left' }}
+          />
+        </div>
+      </div>
     </>
   )
 }
@@ -727,6 +761,30 @@ function VideoShowcase() {
         </div>
       </div>
       <div className="pb-xl" />
+
+      <VariantGroup label="Editorial layout · 2-column" note="Populate any editorial field and the block switches to a 55/45 two-column grid. The video thumbnail, play button, and frame treatments all apply unchanged. Text stacks above media on mobile." />
+      <div className="px-md pb-xl lg:px-lg flex flex-col gap-2xl">
+        <div>
+          <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-md">
+            <span className="text-label tracking-label uppercase text-brand font-semibold">Media left</span>
+            <span className="text-label text-fg-muted/60">mediaSide: left · frame: offset</span>
+          </div>
+          <OT_VideoBlock
+            content={{ videoUrl: VIDEO_YT, title: 'OptiTech Platform Overview', eyebrow: 'Platform', heading: 'See it in motion, not just on paper.', ctaUrl: { default: '#' }, ctaLabel: 'Watch overview' } as any}
+            displaySettings={{ ratio: 'r16_9', frame: 'offset', mediaSide: 'left' }}
+          />
+        </div>
+        <div>
+          <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-md">
+            <span className="text-label tracking-label uppercase text-brand font-semibold">Media right</span>
+            <span className="text-label text-fg-muted/60">mediaSide: right · overlay · glow</span>
+          </div>
+          <OT_VideoBlock
+            content={{ videoUrl: VIDEO_YT, title: 'OptiTech Platform Overview', eyebrow: 'Case Study', heading: 'How Meridian cut deployment time by 40%.', ctaUrl: { default: '#' }, ctaLabel: 'Read the story' } as any}
+            displaySettings={{ ratio: 'r16_9', frame: 'glow', overlay: true, mediaSide: 'right' }}
+          />
+        </div>
+      </div>
     </>
   )
 }

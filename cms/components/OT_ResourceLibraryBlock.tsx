@@ -1,12 +1,12 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils }             from '@optimizely/cms-sdk/react/server'
-import { OT_ResourceLibraryBlock } from '@/cms/content-types/OT_ResourceLibraryBlock'
+import { OT_ResourceLibraryBlock as OT_ResourceLibraryBlockContentType } from '@/cms/content-types/OT_ResourceLibraryBlock'
 import { getResourceLibraryStyles }    from '@/cms/styling/OT_ResourceLibraryBlock.styling'
 import { getResourceLibraryAssets }    from '@/lib/resourceLibrary'
 import ResourceLibraryBlock, { ErrorState } from '@/components/blocks/ResourceLibraryBlock'
 
 type Props = {
-  content:          ContentProps<typeof OT_ResourceLibraryBlock>
+  content:          ContentProps<typeof OT_ResourceLibraryBlockContentType>
   displaySettings?: Record<string, string | boolean>
 }
 

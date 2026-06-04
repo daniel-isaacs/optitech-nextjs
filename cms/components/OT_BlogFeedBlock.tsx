@@ -1,6 +1,6 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
-import { OT_BlogFeedBlock } from '@/cms/content-types/OT_BlogFeedBlock'
+import { OT_BlogFeedBlock as OT_BlogFeedBlockContentType } from '@/cms/content-types/OT_BlogFeedBlock'
 import { getRequestLocale, getRequestBaseUrl } from '@/lib/optimizely'
 import { getBlogFeedPosts }  from '@/lib/blogFeed'
 import BlogFeedBlock         from '@/components/blocks/BlogFeedBlock'
@@ -9,7 +9,7 @@ import type { BlogFeedColor, BlogFeedColumns, BlogFeedHeadingSize } from '@/comp
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
 type Props = {
-  content:          ContentProps<typeof OT_BlogFeedBlock>
+  content:          ContentProps<typeof OT_BlogFeedBlockContentType>
   displaySettings?: Record<string, string | boolean>
 }
 
@@ -41,10 +41,10 @@ export default async function OT_BlogFeedBlockAdapter({
   // The SDK's generated fragment includes _metadata.url.hierarchical for
   // contentReference fields, so we can read it directly from content.articleRoot.
   const articleRootPath: string | null =
-    content.articleRoot?._metadata?.url?.hierarchical ?? null
+    content.articleRoot?.url?.hierarchical ?? null
 
   // ── Page size ─────────────────────────────────────────────────────────────
-  const rawPageSize = content.pageSize
+  const rawPageSize = content.pageSize ?? 0
   const pageSize    = Number.isInteger(rawPageSize) && rawPageSize >= 1
     ? Math.min(rawPageSize, 24)
     : 9

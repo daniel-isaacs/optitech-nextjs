@@ -1,11 +1,11 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils }       from '@optimizely/cms-sdk/react/server'
-import { OT_TrustRail } from '@/cms/content-types/OT_TrustRail'
+import { OT_TrustRail as OT_TrustRailContentType } from '@/cms/content-types/OT_TrustRail'
 import { getTrustRailStyles }    from '@/cms/styling/OT_TrustRail.styling'
 import TrustRail, { type LogoItem } from '@/components/blocks/TrustRail'
 
 type Props = {
-  content:          ContentProps<typeof OT_TrustRail>
+  content:          ContentProps<typeof OT_TrustRailContentType>
   displaySettings?: Record<string, string | boolean>
 }
 

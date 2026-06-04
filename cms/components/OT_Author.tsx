@@ -1,12 +1,12 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
 import { RichText } from '@optimizely/cms-sdk/react/richText'
-import { OT_Author } from '@/cms/content-types/OT_Author'
+import { OT_Author as OT_AuthorContentType } from '@/cms/content-types/OT_Author'
 import Image from 'next/image'
 import { User } from 'lucide-react'
 
 type Props = {
-  content: ContentProps<typeof OT_Author>
+  content: ContentProps<typeof OT_AuthorContentType>
   displaySettings?: Record<string, string | boolean>
 }
 
@@ -24,12 +24,12 @@ function authorInitials(name: string): string {
 export default function OT_Author({ content }: Props) {
   const { pa } = getPreviewUtils(content)
 
-  const photoUrl: string | undefined = content.photo?.url?.default
-  const name:     string = content.name ?? ''
-  const role:     string = content.role ?? ''
-  const bioJson          = content.bio?.json ?? undefined
-  const linkedIn: string = content.linkedIn?.default ?? content.linkedIn ?? ''
-  const twitter:  string = content.twitter?.default  ?? content.twitter  ?? ''
+  const photoUrl = content.photo?.url?.default ?? undefined
+  const name     = content.name ?? ''
+  const role     = content.role ?? ''
+  const bioJson  = content.bio?.json ?? undefined
+  const linkedIn = content.linkedIn?.default ?? ''
+  const twitter  = content.twitter?.default  ?? ''
   const initials: string = name ? authorInitials(name) : ''
 
   return (

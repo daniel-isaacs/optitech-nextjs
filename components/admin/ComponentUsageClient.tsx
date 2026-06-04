@@ -68,35 +68,35 @@ function PageRow({ page }: { page: PageUsage }) {
         </div>
 
         {/* Language */}
-        <span className="text-[0.8125rem] text-fg-muted/60 font-medium w-16 text-center shrink-0 hidden sm:block">
+        <span className="w-16 shrink-0 text-[0.8125rem] text-fg-muted/60 font-medium text-center hidden sm:block">
           {page.locale ?? '—'}
         </span>
 
         {/* Status */}
-        <div className="shrink-0 hidden md:flex">
+        <div className="w-28 shrink-0 hidden md:flex items-center">
           <StatusChip status={page.status} />
         </div>
 
         {/* Count */}
-        <div className="shrink-0 w-14 flex justify-end">
+        <div className="w-12 shrink-0 flex justify-end">
           <CountBadge count={page.count} />
         </div>
 
         {/* Open button */}
-        {page.url ? (
-          <a
-            href={page.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Open ${page.displayName || 'page'} in new tab`}
-            className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-[0.75rem] font-semibold text-fg-muted border border-fg/10 hover:text-brand hover:border-brand/30 hover:bg-brand/5 transition-colors duration-100"
-          >
-            <ExternalLink size={13} strokeWidth={2} aria-hidden="true" />
-            Open
-          </a>
-        ) : (
-          <div className="w-17.5 shrink-0" />
-        )}
+        <div className="w-[76px] shrink-0 flex justify-end">
+          {page.url ? (
+            <a
+              href={page.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open ${page.displayName || 'page'} in new tab`}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-[0.75rem] font-semibold text-fg-muted border border-fg/10 hover:text-brand hover:border-brand/30 hover:bg-brand/5 transition-colors duration-100"
+            >
+              <ExternalLink size={13} strokeWidth={2} aria-hidden="true" />
+              Open
+            </a>
+          ) : null}
+        </div>
       </div>
     </li>
   )
@@ -268,9 +268,9 @@ export default function ComponentUsageClient({
             <div className="flex items-center gap-md px-lg py-2 bg-fg/2 border-b border-fg/6">
               <p className="flex-1 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70">Page</p>
               <p className="w-16 text-center shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden sm:block">Language</p>
-              <p className="shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden md:block">Status</p>
-              <p className="w-14 text-right shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70">Uses</p>
-              <div className="w-17.5 shrink-0" />
+              <p className="w-28 shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70 hidden md:block">Status</p>
+              <p className="w-12 text-right shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-fg-muted/70">Uses</p>
+              <div className="w-19 shrink-0" />
             </div>
 
             {/* Rows */}

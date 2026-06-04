@@ -1,12 +1,12 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils }   from '@optimizely/cms-sdk/react/server'
-import { OT_TabsBlock } from '@/cms/content-types/OT_TabsBlock'
+import { OT_TabsBlock as OT_TabsBlockContentType } from '@/cms/content-types/OT_TabsBlock'
 import { getTabsStyles }     from '@/cms/styling/OT_TabsBlock.styling'
 import TabsBlock             from '@/components/blocks/TabsBlock'
 import type { TabItemData }  from '@/components/blocks/TabsBlock'
 
 type Props = {
-  content:          ContentProps<typeof OT_TabsBlock>
+  content:          ContentProps<typeof OT_TabsBlockContentType>
   displaySettings?: Record<string, string | boolean>
 }
 

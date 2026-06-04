@@ -196,7 +196,7 @@ function HeroShowcase() {
       {colorSchemes.map(item => (
         <div key={item.label} className="border-t border-fg/5">
           <VariantLabel label={item.label} />
-          <OT_HeroBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_HeroBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -204,7 +204,7 @@ function HeroShowcase() {
       {noImage.map(item => (
         <div key={item.label} className="border-t border-fg/5">
           <VariantLabel label={item.label} />
-          <OT_HeroBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_HeroBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -215,7 +215,7 @@ function HeroShowcase() {
             <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
             <span className="text-label text-fg-muted/60">{item.note}</span>
           </div>
-          <OT_HeroBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_HeroBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
       <div className="pb-xl" />
@@ -240,10 +240,10 @@ function CardShowcase() {
       <VariantGroup label="Fill variants · no image · with CTA" />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
-          <OT_CardBlock content={{ Heading: 'Targeted Rollouts', Eyebrow: 'Deployment', Description: 'Deploy to any user segment with a single API call. Real-time, without a redeploy.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'ghost', border: 'subtle' }} />
-          <OT_CardBlock content={{ Heading: 'Experiment Engine', Eyebrow: 'Analytics', Description: 'Concurrent A/B tests with automatic interaction detection. Results in hours, not weeks.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface' }} />
-          <OT_CardBlock content={{ Heading: 'Statistical Confidence', Eyebrow: 'Insights', Description: 'Power calculations and confidence intervals are built into the platform. No spreadsheets.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'brand' }} />
-          <OT_CardBlock content={{ Heading: 'Instant Rollback', Eyebrow: 'Safety', Description: 'One flag, one API call. Revert any change across every deployment in seconds.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'light' }} />
+          <OT_CardBlock content={{ Heading: 'Targeted Rollouts', Eyebrow: 'Deployment', Description: 'Deploy to any user segment with a single API call. Real-time, without a redeploy.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'ghost', border: 'subtle' }} />
+          <OT_CardBlock content={{ Heading: 'Experiment Engine', Eyebrow: 'Analytics', Description: 'Concurrent A/B tests with automatic interaction detection. Results in hours, not weeks.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface' }} />
+          <OT_CardBlock content={{ Heading: 'Statistical Confidence', Eyebrow: 'Insights', Description: 'Power calculations and confidence intervals are built into the platform. No spreadsheets.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'brand' }} />
+          <OT_CardBlock content={{ Heading: 'Instant Rollback', Eyebrow: 'Safety', Description: 'One flag, one API call. Revert any change across every deployment in seconds.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'light' }} />
         </div>
       </div>
 
@@ -252,15 +252,15 @@ function CardShowcase() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
           <div>
             <span className="font-mono text-label text-fg-muted/50">surface · border: none</span>
-            <div className="mt-sm"><OT_CardBlock content={{ Heading: 'No Border', Eyebrow: 'Surface', Description: 'Surface fill with no border. Content is defined by background contrast, not a frame.', ctaLabel: 'Explore', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', border: 'none' }} /></div>
+            <div className="mt-sm"><OT_CardBlock content={{ Heading: 'No Border', Eyebrow: 'Surface', Description: 'Surface fill with no border. Content is defined by background contrast, not a frame.', ctaLabel: 'Explore', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', border: 'none' }} /></div>
           </div>
           <div>
             <span className="font-mono text-label text-fg-muted/50">surface · border: subtle</span>
-            <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Subtle Border', Eyebrow: 'Surface', Description: '1px at 10% foreground opacity. Barely-there definition for cards that float over dark grounds.', ctaLabel: 'Explore', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', border: 'subtle' }} /></div>
+            <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Subtle Border', Eyebrow: 'Surface', Description: '1px at 10% foreground opacity. Barely-there definition for cards that float over dark grounds.', ctaLabel: 'Explore', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', border: 'subtle' }} /></div>
           </div>
           <div>
             <span className="font-mono text-label text-fg-muted/50">ghost · border: brand</span>
-            <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Brand Border', Eyebrow: 'Ghost', Description: '1px teal border signals selection or attention. Works best on ghost fill over a dark section.', ctaLabel: 'Explore', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'ghost', border: 'brand' }} /></div>
+            <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Brand Border', Eyebrow: 'Ghost', Description: '1px teal border signals selection or attention. Works best on ghost fill over a dark section.', ctaLabel: 'Explore', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'ghost', border: 'brand' }} /></div>
           </div>
         </div>
       </div>
@@ -268,18 +268,18 @@ function CardShowcase() {
       <VariantGroup label="Image: top · 4:3 aspect · surface fill" />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Feature Flags at Scale', Eyebrow: 'Platform', Description: 'Ship to any segment with a kill switch on every flag. The safest way to deploy at velocity.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
-          <OT_CardBlock content={{ Heading: 'Precision-Grade Telemetry', Eyebrow: 'Infrastructure', Description: 'Every signal, every layer. OptiTech ingests data from flag changes, deploys, and user events in real time.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
-          <OT_CardBlock content={{ Heading: 'Results You Can Act On', Eyebrow: 'Analytics', Description: 'Statistical significance checks, interaction effects, and automatic stopping rules. No guesswork.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Feature Flags at Scale', Eyebrow: 'Platform', Description: 'Ship to any segment with a kill switch on every flag. The safest way to deploy at velocity.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Precision-Grade Telemetry', Eyebrow: 'Infrastructure', Description: 'Every signal, every layer. OptiTech ingests data from flag changes, deploys, and user events in real time.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Results You Can Act On', Eyebrow: 'Analytics', Description: 'Statistical significance checks, interaction effects, and automatic stopping rules. No guesswork.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
         </div>
       </div>
 
       <VariantGroup label="Image: background · scrim · content at bottom" note="Dark gradient from bottom. Text always press-white regardless of fill." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Ship with confidence.', Eyebrow: 'Deployment', Description: 'Every flag tracked. Every change reversible.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'Get started', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
-          <OT_CardBlock content={{ Heading: 'Measure what matters.', Eyebrow: 'Analytics', Description: 'Real signals, not approximations.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT }} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
-          <OT_CardBlock content={{ Heading: 'Iterate faster.', Eyebrow: 'Velocity', Description: 'From hypothesis to result in hours.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the platform', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
+          <OT_CardBlock content={{ Heading: 'Ship with confidence.', Eyebrow: 'Deployment', Description: 'Every flag tracked. Every change reversible.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'Get started', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
+          <OT_CardBlock content={{ Heading: 'Measure what matters.', Eyebrow: 'Analytics', Description: 'Real signals, not approximations.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
+          <OT_CardBlock content={{ Heading: 'Iterate faster.', Eyebrow: 'Velocity', Description: 'From hypothesis to result in hours.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the platform', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
         </div>
       </div>
 
@@ -287,11 +287,11 @@ function CardShowcase() {
       <div className="px-md pb-xl lg:px-lg flex flex-col gap-lg">
         <div>
           <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;left&rdquo;</span>
-          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Infrastructure built for continuous delivery.', Eyebrow: 'Platform', Description: 'OptiTech gives engineering teams the tooling to ship incrementally, measure precisely, and respond in real time.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View the platform', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'left' }} /></div>
+          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Infrastructure built for continuous delivery.', Eyebrow: 'Platform', Description: 'OptiTech gives engineering teams the tooling to ship incrementally, measure precisely, and respond in real time.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View the platform', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'left' }} /></div>
         </div>
         <div>
           <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;right&rdquo;</span>
-          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Statistical confidence at every decision point.', Eyebrow: 'Analytics', Description: 'Every experiment runs with power calculations, automatic stopping rules, and interaction effect detection.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore analytics', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'right' }} /></div>
+          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Statistical confidence at every decision point.', Eyebrow: 'Analytics', Description: 'Every experiment runs with power calculations, automatic stopping rules, and interaction effect detection.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore analytics', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'right' }} /></div>
         </div>
       </div>
 
@@ -301,9 +301,9 @@ function CardShowcase() {
         <div className="absolute inset-0 bg-canvas/40" />
         <div className="relative z-10 px-md py-xl lg:px-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-            <OT_CardBlock content={{ Heading: 'Edges computed at the edge.', Eyebrow: 'Edge Network', Description: 'OptiTech routes intelligence to where your users are — 200ms becomes 20ms without changing a line of application code.', ctaLabel: 'See coverage', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'glass', hover: 'glow' }} />
-            <OT_CardBlock content={{ Heading: 'Flags ship features safely.', Eyebrow: 'Feature Flags', Description: 'Controlled rollouts, instant kill-switches, and audience targeting — all without a deployment cycle.', ctaLabel: 'Read the docs', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'glass', hover: 'glow' }} />
-            <OT_CardBlock content={{ Heading: 'Every experiment tells a story.', Eyebrow: 'Experimentation', Description: 'Statistical rigor built in. Run A/B tests and multivariate experiments with automatic significance detection.', ctaLabel: 'Start experimenting', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'glass', hover: 'glow' }} />
+            <OT_CardBlock content={{ Heading: 'Edges computed at the edge.', Eyebrow: 'Edge Network', Description: 'OptiTech routes intelligence to where your users are — 200ms becomes 20ms without changing a line of application code.', ctaLabel: 'See coverage', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'glass', hover: 'glow' }} />
+            <OT_CardBlock content={{ Heading: 'Flags ship features safely.', Eyebrow: 'Feature Flags', Description: 'Controlled rollouts, instant kill-switches, and audience targeting — all without a deployment cycle.', ctaLabel: 'Read the docs', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'glass', hover: 'glow' }} />
+            <OT_CardBlock content={{ Heading: 'Every experiment tells a story.', Eyebrow: 'Experimentation', Description: 'Statistical rigor built in. Run A/B tests and multivariate experiments with automatic significance detection.', ctaLabel: 'Start experimenting', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'glass', hover: 'glow' }} />
           </div>
         </div>
       </div>
@@ -311,36 +311,36 @@ function CardShowcase() {
       <VariantGroup label="image:float · content slides up over the image bottom" note="Content box overlaps the lower portion of the image with the card's fill background." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Infrastructure that never sleeps.', Eyebrow: 'Platform', Description: '99.99% uptime across every region, backed by automated failover.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View SLA', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'float' }} />
-          <OT_CardBlock content={{ Heading: 'Signal in the noise.', Eyebrow: 'Analytics', Description: 'Our engine sifts millions of events per second so your team sees what matters.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the dashboard', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'brand', imageStyle: 'float' }} />
-          <OT_CardBlock content={{ Heading: 'Hardware meets intelligence.', Eyebrow: 'Edge compute', Description: 'Push logic to the edge. OptiTech runs where your users are, cutting round-trip latency by 80%.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore edge', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'float', border: 'subtle' }} />
+          <OT_CardBlock content={{ Heading: 'Infrastructure that never sleeps.', Eyebrow: 'Platform', Description: '99.99% uptime across every region, backed by automated failover.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View SLA', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'float' }} />
+          <OT_CardBlock content={{ Heading: 'Signal in the noise.', Eyebrow: 'Analytics', Description: 'Our engine sifts millions of events per second so your team sees what matters.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the dashboard', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'brand', imageStyle: 'float' }} />
+          <OT_CardBlock content={{ Heading: 'Hardware meets intelligence.', Eyebrow: 'Edge compute', Description: 'Push logic to the edge. OptiTech runs where your users are, cutting round-trip latency by 80%.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore edge', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'float', border: 'subtle' }} />
         </div>
       </div>
 
       <VariantGroup label="Hover interactions · lift · glow · image zoom" note="Depth appears in motion, not at rest. All effects use transform and box-shadow only." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Lift on hover.', Eyebrow: 'hover:lift', Description: 'Card rises 4px with a faint teal ambient shadow.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'top', hover: 'lift' }} />
-          <OT_CardBlock content={{ Heading: 'Glow on hover.', Eyebrow: 'hover:glow', Description: 'Teal shadow blooms beneath the card on hover — no translate, pure atmospheric depth.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'top', hover: 'glow' }} />
-          <OT_CardBlock content={{ Heading: 'Float + lift.', Eyebrow: 'float · hover:lift', Description: 'Float layout with lift interaction — the content overlap and the hover rise compound.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'float', hover: 'lift' }} />
+          <OT_CardBlock content={{ Heading: 'Lift on hover.', Eyebrow: 'hover:lift', Description: 'Card rises 4px with a faint teal ambient shadow.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top', hover: 'lift' }} />
+          <OT_CardBlock content={{ Heading: 'Glow on hover.', Eyebrow: 'hover:glow', Description: 'Teal shadow blooms beneath the card on hover — no translate, pure atmospheric depth.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top', hover: 'glow' }} />
+          <OT_CardBlock content={{ Heading: 'Float + lift.', Eyebrow: 'float · hover:lift', Description: 'Float layout with lift interaction — the content overlap and the hover rise compound.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'float', hover: 'lift' }} />
         </div>
       </div>
 
       <VariantGroup label="Isometric tilt · hover:tilt" note="Solid two-layer offset shadow creates a visible isometric back-face at rest. Perspective rotation activates on hover. prefers-reduced-motion: shadow depth only, no transform." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Raised by design.', Eyebrow: 'hover:tilt · surface', Description: 'The isometric shadow is visible at rest — depth is structural, not just interactive.', ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', border: 'subtle', hover: 'tilt' }} />
-          <OT_CardBlock content={{ Heading: 'Volume from conviction.', Eyebrow: 'hover:tilt · image', Description: 'Top image card with perspective tilt. The 3D rotation compounds with the solid iso shadow on hover.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'surface', imageStyle: 'top', hover: 'tilt' }} />
-          <OT_CardBlock content={{ Heading: 'Brand depth.', Eyebrow: 'hover:tilt · brand', Description: 'Brand fill with tilt interaction. The dark offset shadow reads as the back face of a raised brand slab.', ctaLabel: 'Interact', ctaUrl: { default: '#' } }} displaySettings={{ fill: 'brand', hover: 'tilt' }} />
+          <OT_CardBlock content={{ Heading: 'Raised by design.', Eyebrow: 'hover:tilt · surface', Description: 'The isometric shadow is visible at rest — depth is structural, not just interactive.', ctaLabel: 'Interact', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', border: 'subtle', hover: 'tilt' }} />
+          <OT_CardBlock content={{ Heading: 'Volume from conviction.', Eyebrow: 'hover:tilt · image', Description: 'Top image card with perspective tilt. The 3D rotation compounds with the solid iso shadow on hover.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Interact', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top', hover: 'tilt' }} />
+          <OT_CardBlock content={{ Heading: 'Brand depth.', Eyebrow: 'hover:tilt · brand', Description: 'Brand fill with tilt interaction. The dark offset shadow reads as the back face of a raised brand slab.', ctaLabel: 'Interact', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'brand', hover: 'tilt' }} />
         </div>
       </div>
 
       <VariantGroup label="Detail options · accent line · noise texture" note="Accent line: 3px top edge using --ot-accent. Noise: SVG feTurbulence grain at 7% overlay opacity." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Top accent, surface fill.', Eyebrow: 'accentLine:top', Description: 'A 3px brand-teal rule on the top edge anchors the card\'s hierarchy.' }} displaySettings={{ fill: 'surface', accentLine: 'top' }} />
-          <OT_CardBlock content={{ Heading: 'Top accent, brand fill.', Eyebrow: 'accentLine:top · fill:brand', Description: 'On brand panels the accent shifts to press-white at 40% — still readable.' }} displaySettings={{ fill: 'brand', accentLine: 'top' }} />
-          <OT_CardBlock content={{ Heading: 'Noise on dark.', Eyebrow: 'noise:true · fill:surface', Description: 'Grain overlay at 7% via mix-blend-mode: overlay. Tactile mineral depth.' }} displaySettings={{ fill: 'surface', border: 'subtle', noise: true }} />
+          <OT_CardBlock content={{ Heading: 'Top accent, surface fill.', Eyebrow: 'accentLine:top', Description: 'A 3px brand-teal rule on the top edge anchors the card\'s hierarchy.' } as any} displaySettings={{ fill: 'surface', accentLine: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Top accent, brand fill.', Eyebrow: 'accentLine:top · fill:brand', Description: 'On brand panels the accent shifts to press-white at 40% — still readable.' } as any} displaySettings={{ fill: 'brand', accentLine: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Noise on dark.', Eyebrow: 'noise:true · fill:surface', Description: 'Grain overlay at 7% via mix-blend-mode: overlay. Tactile mineral depth.' } as any} displaySettings={{ fill: 'surface', border: 'subtle', noise: true }} />
         </div>
       </div>
       <div className="pb-xl" />
@@ -381,7 +381,7 @@ function PrimaryTextShowcase() {
       {sizes.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
           <VariantLabel label={`size: "${item.displaySettings.size}"`} />
-          <OT_PrimaryTextBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_PrimaryTextBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -389,7 +389,7 @@ function PrimaryTextShowcase() {
       {colors.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
           <VariantLabel label={`color: "${item.displaySettings.color}"`} />
-          <OT_PrimaryTextBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_PrimaryTextBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -397,7 +397,7 @@ function PrimaryTextShowcase() {
       {depths.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
           <VariantLabel label={`gradient: "${item.displaySettings.gradient}"`} />
-          <OT_PrimaryTextBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_PrimaryTextBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
       <div className="pb-xl" />
@@ -432,7 +432,7 @@ function QuoteShowcase() {
       {colors.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
           <VariantLabel label={`color: "${item.displaySettings.color}"`} />
-          <OT_QuoteBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_QuoteBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -440,7 +440,7 @@ function QuoteShowcase() {
       {sizes.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
           <VariantLabel label={`size: "${item.displaySettings.size}"`} />
-          <OT_QuoteBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_QuoteBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -448,7 +448,7 @@ function QuoteShowcase() {
       {alignments.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
           <VariantLabel label={`alignment: "${item.displaySettings.alignment}"`} />
-          <OT_QuoteBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_QuoteBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
       <div className="pb-xl" />
@@ -516,7 +516,7 @@ function RichTextShowcase() {
       {colorSchemes.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
           <VariantLabel label={`color: "${item.displaySettings.color}"`} />
-          <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_RichTextBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -527,7 +527,7 @@ function RichTextShowcase() {
             <span className="font-mono text-label text-fg-muted/50">treatment: &ldquo;{item.displaySettings.treatment}&rdquo;</span>
             <span className="text-label text-fg-muted/40">{item.note}</span>
           </div>
-          <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_RichTextBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -538,7 +538,7 @@ function RichTextShowcase() {
             <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
             <span className="text-label text-fg-muted/60">{item.note}</span>
           </div>
-          <OT_RichTextBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_RichTextBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
       <div className="pb-xl" />
@@ -581,7 +581,7 @@ function ImageShowcase() {
                 <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                 <span className="text-label text-fg-muted/60">{item.note}</span>
               </div>
-              <OT_ImageBlock content={item.content} displaySettings={item.displaySettings} />
+              <OT_ImageBlock content={item.content as any} displaySettings={item.displaySettings} />
             </div>
           ))}
         </div>
@@ -595,14 +595,14 @@ function ImageShowcase() {
               <span className="text-label tracking-label uppercase text-brand font-semibold">Caption inset</span>
               <span className="text-label text-fg-muted/60">Badge floats over bottom-left corner</span>
             </div>
-            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'Precision-manufactured circuit board — OptiTech hardware layer.' }} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
+            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'Precision-manufactured circuit board — OptiTech hardware layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
               <span className="text-label tracking-label uppercase text-brand font-semibold">Caption below</span>
               <span className="text-label text-fg-muted/60">Label-scale text beneath the image</span>
             </div>
-            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'Precision-manufactured circuit board — OptiTech hardware layer.' }} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
+            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'Precision-manufactured circuit board — OptiTech hardware layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
           </div>
         </div>
       </div>
@@ -613,7 +613,7 @@ function ImageShowcase() {
           {(['r16_9', 'r4_3', 'r3_2', 'r1_1'] as const).map(ratio => (
             <div key={ratio}>
               <p className="text-label tracking-label uppercase text-brand font-semibold mb-sm">{ratio.replace('r', '').replace('_', ':')}</p>
-              <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT }} displaySettings={{ ratio }} />
+              <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT } as any} displaySettings={{ ratio }} />
             </div>
           ))}
         </div>
@@ -628,7 +628,7 @@ function ImageShowcase() {
                 <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                 <span className="text-label text-fg-muted/60">{item.note}</span>
               </div>
-              <OT_ImageBlock content={item.content} displaySettings={item.displaySettings} />
+              <OT_ImageBlock content={item.content as any} displaySettings={item.displaySettings} />
             </div>
           ))}
         </div>
@@ -636,7 +636,7 @@ function ImageShowcase() {
 
       <VariantGroup label="Animate · scroll-triggered wipe reveal" note="Teal bar sweeps right; image follows on its heels via clip-path. Fires once on IntersectionObserver entry. Respects prefers-reduced-motion." />
       <div className="px-md pb-xl lg:px-lg">
-        <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'OptiTech. Precision at every layer.' }} displaySettings={{ ratio: 'r16_9', animate: true, frame: 'offset', captionPosition: 'inset' }} />
+        <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'OptiTech. Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', animate: true, frame: 'offset', captionPosition: 'inset' }} />
       </div>
     </>
   )
@@ -669,14 +669,14 @@ function VideoShowcase() {
               <span className="text-label tracking-label uppercase text-brand font-semibold">YouTube</span>
               <span className="text-label text-fg-muted/60">Platform thumbnail + branded play button</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' }} displaySettings={{ ratio: 'r16_9' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' } as any} displaySettings={{ ratio: 'r16_9' }} />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
               <span className="text-label tracking-label uppercase text-brand font-semibold">Vimeo</span>
               <span className="text-label text-fg-muted/60">oEmbed thumbnail fetched on mount — shimmer while loading</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_VM }, title: 'OptiTech Case Study: Meridian Engineering' }} displaySettings={{ ratio: 'r16_9' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_VM }, title: 'OptiTech Case Study: Meridian Engineering' } as any} displaySettings={{ ratio: 'r16_9' }} />
           </div>
         </div>
       </div>
@@ -690,7 +690,7 @@ function VideoShowcase() {
                 <span className="text-label tracking-label uppercase text-brand font-semibold">{item.label}</span>
                 <span className="text-label text-fg-muted/60">{item.note}</span>
               </div>
-              <OT_VideoBlock content={item.content} displaySettings={item.displaySettings} />
+              <OT_VideoBlock content={item.content as any} displaySettings={item.displaySettings} />
             </div>
           ))}
         </div>
@@ -704,14 +704,14 @@ function VideoShowcase() {
               <span className="text-label tracking-label uppercase text-brand font-semibold">Inset</span>
               <span className="text-label text-fg-muted/60">Badge floats over bottom-left corner of the poster</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview', caption: 'OptiTech. Precision at every layer.' }} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview', caption: 'OptiTech. Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
               <span className="text-label tracking-label uppercase text-brand font-semibold">Below</span>
               <span className="text-label text-fg-muted/60">Label-scale text beneath the video</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview', caption: 'OptiTech. Precision at every layer.' }} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview', caption: 'OptiTech. Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
           </div>
         </div>
       </div>
@@ -737,28 +737,28 @@ function StatShowcase() {
       {(['brand', 'canvas', 'surface'] as const).map(color => (
         <div key={color} className="border-t border-fg/5">
           <VariantLabel label={`color: "${color}"`} />
-          <OT_StatBlock content={{ items: THREE_STATS }} displaySettings={{ color, columns: '3', animate: false }} />
+          <OT_StatBlock content={{ stats: THREE_STATS } as any} displaySettings={{ color, columns: '3', animate: false }} />
         </div>
       ))}
 
       <VariantGroup label="Column counts · brand · static" note="2-col uses the full display scale — heroic presence for anchor stat moments." />
       <div className="border-t border-fg/5">
         <VariantLabel label='columns: "2"' />
-        <OT_StatBlock content={{ items: [{ value: '$6.4B', label: 'Total loan volume', context: 'originated this year' }, { value: '312K', label: 'Member accounts', context: 'across all regions' }] }} displaySettings={{ color: 'brand', columns: '2', animate: false }} />
+        <OT_StatBlock content={{ stats: [{ value: '$6.4B', label: 'Total loan volume', context: 'originated this year' }, { value: '312K', label: 'Member accounts', context: 'across all regions' }] } as any} displaySettings={{ color: 'brand', columns: '2', animate: false }} />
       </div>
       <div className="border-t border-fg/5">
         <VariantLabel label='columns: "4"' />
-        <OT_StatBlock content={{ items: [{ value: '1.2M', label: 'Claims processed', context: 'last 12 months' }, { value: '98.3%', label: 'Satisfaction rate', context: 'post-claim survey' }, { value: '4.8hr', label: 'Avg. resolution', context: 'from first contact' }, { value: '340+', label: 'Partner carriers', context: 'in our network' }] }} displaySettings={{ color: 'brand', columns: '4', animate: false }} />
+        <OT_StatBlock content={{ stats: [{ value: '1.2M', label: 'Claims processed', context: 'last 12 months' }, { value: '98.3%', label: 'Satisfaction rate', context: 'post-claim survey' }, { value: '4.8hr', label: 'Avg. resolution', context: 'from first contact' }, { value: '340+', label: 'Partner carriers', context: 'in our network' }] } as any} displaySettings={{ color: 'brand', columns: '4', animate: false }} />
       </div>
 
       <VariantGroup label="With icons · brand · 3 columns" note="Icons sit above the value at 28px / strokeWidth 1.5. Muted to 55% opacity on brand surfaces." />
       <div className="border-t border-fg/5">
-        <OT_StatBlock content={{ items: [{ value: '40%', label: 'Faster deployment', context: 'vs. baseline', icon: 'zap' }, { value: '99.99%', label: 'Uptime SLA', context: 'across all regions', icon: 'shield' }, { value: '2M+', label: 'Active users', context: 'and growing', icon: 'users' }] }} displaySettings={{ color: 'brand', columns: '3', showIcons: true, animate: false }} />
+        <OT_StatBlock content={{ stats: [{ value: '40%', label: 'Faster deployment', context: 'vs. baseline', icon: 'zap' }, { value: '99.99%', label: 'Uptime SLA', context: 'across all regions', icon: 'shield' }, { value: '2M+', label: 'Active users', context: 'and growing', icon: 'users' }] } as any} displaySettings={{ color: 'brand', columns: '3', showIcons: true, animate: false }} />
       </div>
 
       <VariantGroup label="Animated · brand · 3 columns · icons on" note="Scroll into view to trigger. Sequence: stagger slide-up → dividers draw in → numbers count 0→target over 1.4s → completion pulse." />
       <div className="border-t border-fg/5">
-        <OT_StatBlock content={{ items: [{ value: '40%', label: 'Faster deployment', context: 'vs. baseline', icon: 'zap' }, { value: '99.99%', label: 'Uptime SLA', context: 'across all regions', icon: 'shield' }, { value: '2M+', label: 'Active users', context: 'and growing', icon: 'users' }] }} displaySettings={{ color: 'brand', columns: '3', showIcons: true, animate: true }} />
+        <OT_StatBlock content={{ stats: [{ value: '40%', label: 'Faster deployment', context: 'vs. baseline', icon: 'zap' }, { value: '99.99%', label: 'Uptime SLA', context: 'across all regions', icon: 'shield' }, { value: '2M+', label: 'Active users', context: 'and growing', icon: 'users' }] } as any} displaySettings={{ color: 'brand', columns: '3', showIcons: true, animate: true }} />
       </div>
       <div className="pb-xl" />
     </>
@@ -785,19 +785,19 @@ function FeatureGridShowcase() {
       {(['canvas', 'surface', 'brand'] as const).map(color => (
         <div key={color} className="border-t border-fg/5">
           <VariantLabel label={`color: "${color}"`} />
-          <OT_FeatureGridBlock content={{ items: FG_ITEMS }} displaySettings={{ color, layout: 'grid', columns: 'col3', iconStyle: 'none', animate: false }} />
+          <OT_FeatureGridBlock content={{ features: FG_ITEMS } as any} displaySettings={{ color, layout: 'grid', columns: 'col3', iconStyle: 'none', animate: false }} />
         </div>
       ))}
 
       <VariantGroup label="Ruled layout · canvas · 2 columns" note="Ruled — 2-col with horizontal divider lines between items." />
       <div className="border-t border-fg/5">
-        <OT_FeatureGridBlock content={{ items: FG_ITEMS }} displaySettings={{ color: 'canvas', layout: 'ruled', columns: 'col2', iconStyle: 'none', animate: false }} />
+        <OT_FeatureGridBlock content={{ features: FG_ITEMS } as any} displaySettings={{ color: 'canvas', layout: 'ruled', columns: 'col2', iconStyle: 'none', animate: false }} />
       </div>
 
       <VariantGroup label="With icons · structural style · 3 columns · brand" note="Icons sit above the headline in the structural position." />
       <div className="border-t border-fg/5">
         <OT_FeatureGridBlock
-          content={{ items: FG_ITEMS.map((item, i) => ({ ...item })) }}
+          content={{ features: FG_ITEMS.map((item) => ({ ...item })) } as any}
           displaySettings={{ color: 'brand', layout: 'grid', columns: 'col3', iconStyle: 'structural', feature1Icon: 'zap', feature2Icon: 'globe', feature3Icon: 'bar-chart', feature4Icon: 'sparkles', feature5Icon: 'shield', feature6Icon: 'check-circle', animate: false }}
         />
       </div>
@@ -805,7 +805,7 @@ function FeatureGridShowcase() {
       <VariantGroup label="4 columns · canvas · icon: accent · animated" note="Scroll into view to trigger stagger entrance." />
       <div className="border-t border-fg/5">
         <OT_FeatureGridBlock
-          content={{ items: FG_ITEMS }}
+          content={{ features: FG_ITEMS } as any}
           displaySettings={{ color: 'canvas', layout: 'grid', columns: 'col4', iconStyle: 'accent', feature1Icon: 'zap', feature2Icon: 'globe', feature3Icon: 'bar-chart', feature4Icon: 'sparkles', feature5Icon: 'shield', feature6Icon: 'check-circle', animate: true }}
         />
       </div>
@@ -887,7 +887,7 @@ function AccordionShowcase() {
       {(['ruled', 'boxed', 'clean'] as const).map(borderStyle => (
         <div key={borderStyle} className="border-t border-fg/5">
           <VariantLabel label={`borderStyle: "${borderStyle}"`} />
-          <OT_AccordionBlock content={{ items: ACCORDION_ITEMS.slice(0, 3) }} displaySettings={{ color: 'canvas', borderStyle, openMode: 'single', defaultOpen: false }} />
+          <OT_AccordionBlock content={{ items: ACCORDION_ITEMS.slice(0, 3) } as any} displaySettings={{ color: 'canvas', borderStyle, openMode: 'single', defaultOpen: false }} />
         </div>
       ))}
 
@@ -895,13 +895,13 @@ function AccordionShowcase() {
       {(['canvas', 'surface', 'brand'] as const).map(color => (
         <div key={color} className="border-t border-fg/5">
           <VariantLabel label={`color: "${color}"`} />
-          <OT_AccordionBlock content={{ items: ACCORDION_ITEMS.slice(0, 3) }} displaySettings={{ color, borderStyle: 'ruled', openMode: 'single', defaultOpen: true }} />
+          <OT_AccordionBlock content={{ items: ACCORDION_ITEMS.slice(0, 3) } as any} displaySettings={{ color, borderStyle: 'ruled', openMode: 'single', defaultOpen: true }} />
         </div>
       ))}
 
       <VariantGroup label="Multiple open mode · boxed · canvas" note="Items open and close independently — multiple can be open at once." />
       <div className="border-t border-fg/5">
-        <OT_AccordionBlock content={{ headline: 'Frequently asked questions', items: ACCORDION_ITEMS }} displaySettings={{ color: 'canvas', borderStyle: 'boxed', openMode: 'multiple', defaultOpen: false }} />
+        <OT_AccordionBlock content={{ headline: 'Frequently asked questions', items: ACCORDION_ITEMS } as any} displaySettings={{ color: 'canvas', borderStyle: 'boxed', openMode: 'multiple', defaultOpen: false }} />
       </div>
       <div className="pb-xl" />
     </>
@@ -926,7 +926,7 @@ function TabsShowcase() {
       {(['underline', 'pill', 'buttonGroup'] as const).map(tabStyle => (
         <div key={tabStyle} className="border-t border-fg/5">
           <VariantLabel label={`tabStyle: "${tabStyle}"`} />
-          <OT_TabsBlock content={{ tabs: TABS_CONTENT }} displaySettings={{ tabStyle, tabPosition: 'top', color: 'canvas', contentLayout: 'textOnly', triggerAlign: 'left', autoPlay: 'off' }} />
+          <OT_TabsBlock content={{ tabs: TABS_CONTENT } as any} displaySettings={{ tabStyle, tabPosition: 'top', color: 'canvas', contentLayout: 'textOnly', triggerAlign: 'left', autoPlay: 'off' }} />
         </div>
       ))}
 
@@ -934,18 +934,18 @@ function TabsShowcase() {
       {(['canvas', 'surface', 'brand'] as const).map(color => (
         <div key={color} className="border-t border-fg/5">
           <VariantLabel label={`color: "${color}"`} />
-          <OT_TabsBlock content={{ tabs: TABS_CONTENT.slice(0, 3) }} displaySettings={{ tabStyle: 'underline', tabPosition: 'top', color, contentLayout: 'textOnly', triggerAlign: 'left', autoPlay: 'off' }} />
+          <OT_TabsBlock content={{ tabs: TABS_CONTENT.slice(0, 3) } as any} displaySettings={{ tabStyle: 'underline', tabPosition: 'top', color, contentLayout: 'textOnly', triggerAlign: 'left', autoPlay: 'off' }} />
         </div>
       ))}
 
       <VariantGroup label="Image right · underline · canvas" note="Content layout with image panel on the right side of the tab panel." />
       <div className="border-t border-fg/5">
-        <OT_TabsBlock content={{ tabs: TABS_CONTENT }} displaySettings={{ tabStyle: 'underline', tabPosition: 'top', color: 'canvas', contentLayout: 'imageRight', triggerAlign: 'left', autoPlay: 'off' }} />
+        <OT_TabsBlock content={{ tabs: TABS_CONTENT } as any} displaySettings={{ tabStyle: 'underline', tabPosition: 'top', color: 'canvas', contentLayout: 'imageRight', triggerAlign: 'left', autoPlay: 'off' }} />
       </div>
 
       <VariantGroup label="Side position · pill · canvas" note="Tab triggers stack vertically on the left side of the panel." />
       <div className="border-t border-fg/5">
-        <OT_TabsBlock content={{ tabs: TABS_CONTENT }} displaySettings={{ tabStyle: 'pill', tabPosition: 'side', color: 'canvas', contentLayout: 'textOnly', triggerAlign: 'left', autoPlay: 'off' }} />
+        <OT_TabsBlock content={{ tabs: TABS_CONTENT } as any} displaySettings={{ tabStyle: 'pill', tabPosition: 'side', color: 'canvas', contentLayout: 'textOnly', triggerAlign: 'left', autoPlay: 'off' }} />
       </div>
       <div className="pb-xl" />
     </>
@@ -1085,7 +1085,7 @@ function ButtonShowcase() {
         {(['brand', 'accent', 'ghost', 'signal', 'hover-fill', 'glass'] as const).map(v => (
           <div key={v} className="flex flex-col gap-sm">
             <span className="font-mono text-label text-fg-muted/50">{v}</span>
-            <OT_ButtonBlock content={{ label: v === 'brand' ? 'Get started' : v === 'accent' ? 'Explore' : v === 'ghost' ? 'Learn more' : v === 'signal' ? 'See it' : v === 'hover-fill' ? 'Free trial' : 'Platform', url: { default: '#' } }} displaySettings={{ variant: v }} />
+            <OT_ButtonBlock content={{ label: v === 'brand' ? 'Get started' : v === 'accent' ? 'Explore' : v === 'ghost' ? 'Learn more' : v === 'signal' ? 'See it' : v === 'hover-fill' ? 'Free trial' : 'Platform', url: { default: '#' } } as any} displaySettings={{ variant: v }} />
           </div>
         ))}
       </div>
@@ -1163,7 +1163,7 @@ function ChartShowcase() {
             valueSuffix:  '%',
             showLegend:   true,
             showGrid:     true,
-          }}
+          } as any}
           displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
@@ -1188,7 +1188,7 @@ function ChartShowcase() {
             valueSuffix:  'M',
             showLegend:   false,
             showGrid:     true,
-          }}
+          } as any}
           displaySettings={{ color: 'surface', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
@@ -1213,7 +1213,7 @@ function ChartShowcase() {
             valueSuffix:  '/100',
             showLegend:   false,
             showGrid:     true,
-          }}
+          } as any}
           displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
@@ -1238,7 +1238,7 @@ function ChartShowcase() {
             valueSuffix:  '%',
             showLegend:   true,
             showGrid:     true,
-          }}
+          } as any}
           displaySettings={{ color: 'surface', height: 'lg', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl">
@@ -1268,7 +1268,7 @@ function ChartShowcase() {
             valueSuffix:  '/100',
             showLegend:   false,
             showGrid:     false,
-          }}
+          } as any}
           displaySettings={{ color: 'brand', height: 'md', aspectRatio: 'wide' }}
         />
         <div className="px-lg pb-xl" style={{ background: 'var(--ot-brand)' }}>
@@ -1290,7 +1290,7 @@ function ChartShowcase() {
             chartData: null,
             showGrid:  true,
             showLegend: false,
-          }}
+          } as any}
           displaySettings={{ color: 'canvas', height: 'md', aspectRatio: 'wide' }}
         />
       </div>
@@ -1438,7 +1438,7 @@ function BannerShowcase() {
       {scrimVariants.map(item => (
         <div key={item.label} className="border-t border-fg/5">
           <VariantLabel label={item.label} />
-          <OT_BannerBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_BannerBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -1446,7 +1446,7 @@ function BannerShowcase() {
       {glassVariants.map(item => (
         <div key={item.label} className="border-t border-fg/5">
           <VariantLabel label={item.label} />
-          <OT_BannerBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_BannerBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 
@@ -1454,7 +1454,7 @@ function BannerShowcase() {
       {noImageVariants.map(item => (
         <div key={item.label} className="border-t border-fg/5">
           <VariantLabel label={item.label} />
-          <OT_BannerBlock content={item.content} displaySettings={item.displaySettings} />
+          <OT_BannerBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}
 

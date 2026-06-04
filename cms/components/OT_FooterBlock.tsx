@@ -1,12 +1,12 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
 import { RichText } from '@optimizely/cms-sdk/react/richText'
-import { OT_FooterBlock } from '@/cms/content-types/OT_FooterBlock'
+import { OT_FooterBlock as OT_FooterBlockContentType } from '@/cms/content-types/OT_FooterBlock'
 import Image from 'next/image'
 import Link from 'next/link'
 
 type Props = {
-  content: ContentProps<typeof OT_FooterBlock>
+  content: ContentProps<typeof OT_FooterBlockContentType>
   displaySettings?: Record<string, string | boolean>
 }
 

@@ -1,11 +1,11 @@
 import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils }                                from '@optimizely/cms-sdk/react/server'
-import { OT_FeatureGridBlock } from '@/cms/content-types/OT_FeatureGridBlock'
+import { OT_FeatureGridBlock as OT_FeatureGridBlockContentType } from '@/cms/content-types/OT_FeatureGridBlock'
 import { getFeatureGridStyles, getFeatureGridIcons }      from '@/cms/styling/OT_FeatureGridBlock.styling'
 import FeatureGridBlock, { type FeatureItem }             from '@/components/blocks/FeatureGridBlock'
 
 type Props = {
-  content:          ContentProps<typeof OT_FeatureGridBlock>
+  content:          ContentProps<typeof OT_FeatureGridBlockContentType>
   displaySettings?: Record<string, string | boolean>
 }
 
@@ -32,18 +32,6 @@ function buildFeatures(content: any): Omit<FeatureItem, 'icon'>[] {
       .map(item => ({
         headline: String(item.headline),
         body:     item.body?.json ?? undefined,
-        ctaLabel: item.ctaLabel ? String(item.ctaLabel) : undefined,
-        ctaUrl:   resolveUrl(item.ctaUrl),
-      }))
-  }
-
-  // Format 2: showcase / test format
-  if (Array.isArray(content.items)) {
-    return (content.items as any[])
-      .filter(item => item?.headline)
-      .map(item => ({
-        headline: String(item.headline),
-        body:     item.body     ? String(item.body)     : undefined,
         ctaLabel: item.ctaLabel ? String(item.ctaLabel) : undefined,
         ctaUrl:   resolveUrl(item.ctaUrl),
       }))

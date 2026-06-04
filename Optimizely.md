@@ -96,10 +96,10 @@ export const OT_HeroBlock = contentType({
 | `type` | GraphQL shape | Notes |
 |---|---|---|
 | `string` | plain scalar | Also supports `format: 'selectOne'` with an `enum` list for dropdowns |
-| `richText` | `{ html, json }` | Full rich-text editor (TinyMCE). Access `.html` in adapters for rendering. Toolbar preset is configured in the CMS admin, not in code. |
-| `url` | `{ default }` | The `default` key holds the resolved URL string |
-| `contentReference` | expanded object with `url { default }` | Use `src(field)` from `getPreviewUtils` to extract the URL |
-| `link` | `{ text, title, target, url { default } }` | Used for navigation links |
+| `richText` | `{ html, json }` | Full rich-text editor (TinyMCE). Access `.json` in adapters and render with `<RichText content={content.body?.json ?? undefined} />` from `@optimizely/cms-sdk/react/richText`. Never use `.html` with `dangerouslySetInnerHTML`. |
+| `url` | `InferredUrl` object | Shape: `{ default, hierarchical, internal, graph, base, type }` — all string or null. Use `content.myField?.default` for the plain URL string. Never treat this as a plain string; accessing it as `String(content.myField)` will give `[object Object]`. |
+| `contentReference` | `InferredContentReference` object | Shape: `{ url: InferredUrl, item, key }`. Use `src(field)` from `getPreviewUtils` to extract the URL, or access `.url?.default` directly. For content references that have sub-item metadata (e.g. `articleRoot`), the URL is at `.url?.hierarchical`, not `._metadata.url`. |
+| `link` | `{ text, title, target, url: InferredUrl }` | For CTAs and navigation links. The href is `field?.url?.default`; always add `rel="noopener noreferrer"` when `target === '_blank'`. |
 | `boolean` | plain scalar | |
 | `integer` | plain scalar | |
 | `json` | plain scalar | Stored and returned as a raw JSON string — parse on the client |
@@ -199,12 +199,14 @@ Adapters are the bridge between what the CMS returns and what the React componen
 Every adapter follows the same pattern:
 
 ```tsx
+import { ContentProps } from '@optimizely/cms-sdk'
 import { getPreviewUtils } from '@optimizely/cms-sdk/react/server'
+import { OT_HeroBlock as OT_HeroBlockContentType } from '@/cms/content-types/OT_HeroBlock'
 import { getHeroStyles } from '@/cms/styling/OT_HeroBlock.styling'
 import HeroBlock from '@/components/blocks/HeroBlock'
 
 type Props = {
-  content: any
+  content: ContentProps<typeof OT_HeroBlockContentType>
   displaySettings?: Record<string, string | boolean>
 }
 
@@ -224,6 +226,12 @@ export default function OT_HeroBlock({ content, displaySettings = {} }: Props) {
   )
 }
 ```
+
+**Import aliasing:** The content type export name (`OT_HeroBlock`) collides with the adapter's default export function name. Always import the content type with a `...ContentType` alias: `import { OT_HeroBlock as OT_HeroBlockContentType }`.
+
+**`ContentProps<typeof OT_HeroBlockContentType>`** generates a typed interface from the content type definition. Each property is typed according to its SDK property type — e.g. `string | null`, `InferredUrl | null`, `InferredRichText | null`. This catches incorrect field access at build time.
+
+**Note on `displaySettings`:** This remains `Record<string, string | boolean>` because the styling helpers (`cms/styling/`) accept that broad type. The trade-off is intentional — updating the styling helper signatures to accept `ContentProps<typeof OT_HeroDefault>` would cascade changes through many files for little practical benefit.
 
 **`getPreviewUtils(content)`** returns two helpers:
 
@@ -517,10 +525,15 @@ export default {
   components: [
     'cms/content-types/*.ts',
     'cms/display-templates/*.ts',
+    // Exclude built-in OptiForms types — owned by the Forms product,
+    // cannot be modified via the CLI.
+    '!cms/content-types/OptiForms*.ts',
   ],
   propertyGroups: [
-    { key: 'OT_Content', displayName: 'Content', sortOrder: 100 },
-    { key: 'OT_Theme',   displayName: 'Theme',   sortOrder: 200 },
+    { key: 'OT_Content',      displayName: 'Content',           sortOrder: 100 },
+    { key: 'OT_Theme',        displayName: 'Theme',             sortOrder: 200 },
+    { key: 'OT_SEO',          displayName: 'Search & Discovery', sortOrder: 300 },
+    { key: 'OT_Integrations', displayName: 'Integrations',      sortOrder: 400 },
   ],
 }
 ```
@@ -659,11 +672,28 @@ The correct command is `npx @optimizely/cms-cli config push`. Running `npx @opti
 
 ### `richText` fields return an object, not a string
 
-A `type: 'richText'` property returns `{ html, json }` from GraphQL. In adapters, access `.html`:
-```ts
-body: item.body?.html ?? undefined
+A `type: 'richText'` property returns `{ html, json }` from GraphQL. Always use the `.json` field and render with the SDK's `<RichText>` component — never use `.html` with `dangerouslySetInnerHTML`:
+
+```tsx
+// In the adapter — pass json to the UI component:
+body={content.body?.json ?? undefined}
+
+// In the React component — render with the SDK component:
+import { RichText } from '@optimizely/cms-sdk/react/richText'
+
+{body && (
+  <div className="your-prose-styles" {...pa('body')}>
+    <RichText content={body} />
+  </div>
+)}
 ```
-Then render it in the React component with `dangerouslySetInnerHTML={{ __html: body }}`, never as a plain text node.
+
+The wrapping `<div>` provides the styling context (Tailwind classes, `data-rich-text` attributes). `<RichText>` renders Slate JSON nodes inside it.
+
+The UI component's prop type for a rich text field should be:
+```ts
+body?: Parameters<typeof RichText>[0]['content'] | null
+```
 
 ### Server adapters cannot be imported in client components
 

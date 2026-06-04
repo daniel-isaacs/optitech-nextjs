@@ -11,9 +11,9 @@ export const OT_QuoteDefault = displayTemplate({
       editor: 'select',
       sortOrder: 10,
       choices: {
-        none:    { displayName: 'Transparent (inherit row/section)', sortOrder: 5  },
-        canvas:  { displayName: 'Canvas (Default)',                  sortOrder: 10 },
-        brand:   { displayName: 'Brand',                             sortOrder: 20 },
+        brand:   { displayName: 'Brand (Default)',                    sortOrder: 5  },
+        none:    { displayName: 'Transparent (inherit row/section)', sortOrder: 10 },
+        canvas:  { displayName: 'Canvas',                            sortOrder: 20 },
         surface: { displayName: 'Surface',                           sortOrder: 30 },
       },
     },
@@ -22,8 +22,8 @@ export const OT_QuoteDefault = displayTemplate({
       editor: 'select',
       sortOrder: 20,
       choices: {
-        left:   { displayName: 'Left (Default)', sortOrder: 10 },
-        center: { displayName: 'Centered',        sortOrder: 20 },
+        center: { displayName: 'Centered (Default)', sortOrder: 10 },
+        left:   { displayName: 'Left',               sortOrder: 20 },
       },
     },
     size: {

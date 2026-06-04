@@ -159,7 +159,32 @@ async function CmsPage({ params, searchParams }: Props) {
       ver:           sp_str('ver'),
       loc:           previewLocale,
     }
-    exp = await getClient().getPreviewContent(previewParams, { cache: false })
+    try {
+      exp = await getClient().getPreviewContent(previewParams, { cache: false })
+    } catch {
+      // The SDK auto-generates a preview query that fails for page types using
+      // content-area arrays (type:'content' items) because the preview API
+      // resolves those fields differently than the public Content Graph.
+      // Fall back to a minimal identification query so we can still route to
+      // the correct page component and fetch the published content normally.
+      const fallbackKey = sp_str('key')
+      if (fallbackKey) {
+        try {
+          const fallback = await getClient().request(
+            `query FallbackPreview($key: String!) {
+               OT_CampaignPage(where: { _metadata: { key: { eq: $key } } }, limit: 1) {
+                 items { __typename _metadata { key url { default } } }
+               }
+             }`,
+            { key: fallbackKey },
+          )
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          exp = (fallback as any)?.OT_CampaignPage?.items?.[0] ?? null
+        } catch {
+          exp = null
+        }
+      }
+    }
   } else {
     // Shared cache with generateMetadata when both run in the same render.
     exp = await fetchPageContent(path, locale, baseUrl)

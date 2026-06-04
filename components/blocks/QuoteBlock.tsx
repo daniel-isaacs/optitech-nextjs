@@ -25,7 +25,7 @@ const sectionCva = cva("px-md lg:px-lg", {
       small: "py-lg",
     },
   },
-  defaultVariants: { color: "canvas", size: "large" },
+  defaultVariants: { color: "brand", size: "large" },
 });
 
 const figureCva = cva("", {
@@ -35,7 +35,7 @@ const figureCva = cva("", {
       center: "mx-auto max-w-screen-md",
     },
   },
-  defaultVariants: { alignment: "left" },
+  defaultVariants: { alignment: "center" },
 });
 
 /**

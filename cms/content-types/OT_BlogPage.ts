@@ -5,6 +5,7 @@ export const OT_BlogPage = contentType({
   key: 'OT_BlogPage',
   displayName: 'Blog Page',
   baseType: '_page',
+  mayContainTypes: ['OT_CampaignPage'],
   properties: {
     enableExternalPreview: {
       type: 'boolean',

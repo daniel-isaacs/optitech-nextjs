@@ -8,46 +8,33 @@ import { OT_VideoBlock }       from './OT_VideoBlock'
 import { OT_ImageBlock }       from './OT_ImageBlock'
 
 export const OT_CampaignPage = contentType({
-  key:         'OT_CampaignPage',
-  displayName: 'Campaign Page',
-  description: 'Slotted landing page with three constrained content sections: hero, body, and closing. Each slot references a shared block of a specific type.',
-  baseType:    '_page',
+  key:             'OT_CampaignPage',
+  displayName:     'Campaign Page',
+  description:     'Slotted landing page with three constrained content sections: hero, body, and closing. Each slot references a shared block of a specific type.',
+  baseType:        '_page',
+  mayContainTypes: ['BlankExperience', 'OT_FolderPage', 'OT_BlogPage'],
   properties: {
 
     // ── Content slots ─────────────────────────────────────────────────────────
 
-    pageTitle: {
-      type:        'string',
-      isLocalized: true,
-      maxLength:   80,
-      displayName: 'Page Title',
-      description: 'Internal title — used as a label in the CMS tree. Not rendered on the live page.',
+    heroSection: {
+      type:        'array',
+      displayName: 'Hero',
+      description: 'Add one Hero block. Editors can create a new block or select an existing one. Limited to one item.',
       group:       'OT_Content',
       sortOrder:   10,
-    },
-    pageSubtitle: {
-      type:        'string',
-      isLocalized: true,
-      maxLength:   160,
-      displayName: 'Page Subtitle',
-      description: 'Optional internal subtitle for editorial context.',
-      group:       'OT_Content',
-      sortOrder:   20,
-    },
-    heroSection: {
-      type:         'contentReference',
-      displayName:  'Hero',
-      description:  'Select an OT_HeroBlock to populate the page hero. The block renders full-width at the top of the page.',
-      allowedTypes: [OT_HeroBlock],
-      group:        'OT_Content',
-      sortOrder:    30,
+      maxItems:    1,
+      items: {
+        type:         'content',
+        allowedTypes: [OT_HeroBlock],
+      },
     },
     bodySection: {
       type:        'array',
       displayName: 'Body',
       description: 'Add one or more blocks: Primary Text, Feature Grid, or Tabs. Editors control order. Renders below the hero.',
       group:       'OT_Content',
-      sortOrder:   40,
+      sortOrder:   20,
       items: {
         type:         'content',
         allowedTypes: [OT_PrimaryTextBlock, OT_FeatureGridBlock, OT_TabsBlock],
@@ -58,7 +45,7 @@ export const OT_CampaignPage = contentType({
       displayName: 'Closing',
       description: 'Add one or more closing blocks: Quote, Video, or Image. Renders on an elevated surface as the page finale.',
       group:       'OT_Content',
-      sortOrder:   50,
+      sortOrder:   30,
       items: {
         type:         'content',
         allowedTypes: [OT_QuoteBlock, OT_VideoBlock, OT_ImageBlock],

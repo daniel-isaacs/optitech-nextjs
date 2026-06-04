@@ -82,8 +82,6 @@ export type CampaignPageContent = {
     published: string
     url:       { default: string | null }
   }
-  pageTitle?:    string | null
-  pageSubtitle?: string | null
   heroSection?:    CampaignHeroSlot    | null
   bodySection?:    CampaignBodyItem[]
   closingSection?: CampaignClosingItem[]
@@ -105,13 +103,9 @@ export type CampaignPageMeta = Pick<
 
 // ─── GraphQL queries ──────────────────────────────────────────────────────────
 
-// heroSection is a single contentReference — only the key is reliably accessible
-// (ContentReference to _component returns "Data" for the resolved item in Content Graph).
-// Hero data is fetched separately using that key.
-//
-// bodySection and closingSection are content-area arrays (type: 'content' items).
-// Content areas in Content Graph support inline fragment resolution, so we can
-// query the actual typed fields directly without a separate round-trip.
+// All three sections are content-area arrays (type: 'content' items with maxItems: 1
+// for hero). Content areas in Content Graph support inline fragment resolution —
+// a single query covers everything without a separate hero round-trip.
 const PAGE_QUERY = `
   query GetCampaignPage($key: String!) {
     OT_CampaignPage(
@@ -120,9 +114,20 @@ const PAGE_QUERY = `
     ) {
       items {
         _metadata { key published url { default } }
-        pageTitle
-        pageSubtitle
-        heroSection { key }
+        heroSection {
+          __typename
+          ... on OT_HeroBlock {
+            eyebrow
+            headline
+            body
+            primaryCtaLabel
+            primaryCtaUrl    { default }
+            secondaryCtaLabel
+            secondaryCtaUrl  { default }
+            visual           { url { default } }
+            visualAlt
+          }
+        }
         bodySection {
           __typename
           ... on OT_PrimaryTextBlock {
@@ -209,30 +214,23 @@ const META_QUERY = `
   }
 `
 
-// Hero uses a separate query because heroSection is a single contentReference
-// and _component types don't resolve via inline fragments in Content Graph.
-const HERO_QUERY = `
-  query GetCampaignHero($key: String!) {
-    OT_HeroBlock(
-      where: { _metadata: { key: { eq: $key } } }
-      limit: 1
-    ) {
-      items {
-        eyebrow
-        headline
-        body
-        primaryCtaLabel
-        primaryCtaUrl    { default }
-        secondaryCtaLabel
-        secondaryCtaUrl  { default }
-        visual           { url { default } }
-        visualAlt
-      }
-    }
-  }
-`
-
 // ─── Raw item mappers ─────────────────────────────────────────────────────────
+
+function mapHeroItem(raw: any): CampaignHeroSlot | null {
+  if (!raw || raw.__typename !== 'OT_HeroBlock') return null
+  return {
+    __typename:        'OT_HeroBlock',
+    eyebrow:           raw.eyebrow           ?? null,
+    headline:          raw.headline          ?? '',
+    body:              raw.body              ?? null,
+    primaryCtaLabel:   raw.primaryCtaLabel   ?? null,
+    primaryCtaUrl:     raw.primaryCtaUrl?.default  ?? null,
+    secondaryCtaLabel: raw.secondaryCtaLabel ?? null,
+    secondaryCtaUrl:   raw.secondaryCtaUrl?.default ?? null,
+    visualSrc:         raw.visual?.url?.default ?? null,
+    visualAlt:         raw.visualAlt         ?? null,
+  }
+}
 
 function mapBodyItem(raw: any): CampaignBodyItem {
   switch (raw.__typename) {
@@ -317,29 +315,8 @@ export const getCampaignPage = cache(async function getCampaignPage(
     const item = (data as any)?.OT_CampaignPage?.items?.[0] ?? null
     if (!item) return null
 
-    // Fetch hero separately (single contentReference → Content Graph "Data" issue)
-    const heroKey = item.heroSection?.key as string | undefined
-    let heroSection: CampaignHeroSlot | null = null
-    if (heroKey) {
-      try {
-        const heroData = await getClient().request(HERO_QUERY, { key: heroKey })
-        const raw = (heroData as any)?.OT_HeroBlock?.items?.[0]
-        if (raw) {
-          heroSection = {
-            __typename:        'OT_HeroBlock',
-            eyebrow:           raw.eyebrow           ?? null,
-            headline:          raw.headline          ?? '',
-            body:              raw.body              ?? null,
-            primaryCtaLabel:   raw.primaryCtaLabel   ?? null,
-            primaryCtaUrl:     raw.primaryCtaUrl?.default ?? null,
-            secondaryCtaLabel: raw.secondaryCtaLabel ?? null,
-            secondaryCtaUrl:   raw.secondaryCtaUrl?.default ?? null,
-            visualSrc:         raw.visual?.url?.default ?? null,
-            visualAlt:         raw.visualAlt         ?? null,
-          }
-        }
-      } catch { /* hero fetch failed — render without it */ }
-    }
+    // heroSection is an array with maxItems: 1 — take the first element
+    const heroSection = mapHeroItem((item.heroSection ?? [])[0] ?? null)
 
     const bodySection: CampaignBodyItem[] =
       (item.bodySection ?? []).map(mapBodyItem)

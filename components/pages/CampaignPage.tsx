@@ -123,7 +123,7 @@ function renderClosingItem(item: CampaignClosingItem, index: number) {
             name:  item.attributionName  ?? '',
             title: item.attributionTitle ?? undefined,
           }}
-          styleOptions={{ color: 'canvas', alignment: 'center', size: 'large' }}
+          styleOptions={{ color: 'canvas', alignment: 'left', size: 'large' }}
         />
       )
 
@@ -146,7 +146,7 @@ function renderClosingItem(item: CampaignClosingItem, index: number) {
               ? { label: item.secondaryCtaLabel ?? 'Learn more', href: item.secondaryCtaUrl }
               : undefined
           }
-          styleOptions={{ color: 'canvas', treatment: 'scrim', alignment: 'center', size: 'compact', imageBlend: 'overlay' }}
+          styleOptions={{ color: 'surface', treatment: 'scrim', alignment: 'center', size: 'compact', imageBlend: 'overlay' }}
         />
       )
 

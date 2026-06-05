@@ -75,6 +75,7 @@ function renderBodyItem(item: CampaignBodyItem, index: number) {
             ctaLabel: f.ctaLabel ?? undefined,
             ctaUrl:   f.ctaUrl   ?? undefined,
           }))}
+          styleOptions={{ color: 'brand' }}
         />
       )
 
@@ -122,7 +123,7 @@ function renderClosingItem(item: CampaignClosingItem, index: number) {
             name:  item.attributionName  ?? '',
             title: item.attributionTitle ?? undefined,
           }}
-          styleOptions={{ color: 'brand', alignment: 'center', size: 'large' }}
+          styleOptions={{ color: 'canvas', alignment: 'center', size: 'large' }}
         />
       )
 
@@ -276,7 +277,7 @@ export default function CampaignPage({
       {hasClosing && (
         <section
           aria-label="Closing"
-          className="bg-surface/50 py-xl"
+          className="bg-surface/50 py-xl flex flex-col gap-xl"
         >
           {closingSection.map((item, i) => renderClosingItem(item, i))}
         </section>

@@ -207,7 +207,7 @@ async function CmsPage({ params, searchParams }: Props) {
         // (the reviewer followed the shareable URL, not the CMS editor's own
         // preview frame). Without this flag, dm.isEnabled means CMS edit mode.
         const isExternalPreview = dm.isEnabled && sp_str('ext_preview') === '1'
-        const isCmsEdit         = dm.isEnabled && !isExternalPreview
+        const isCmsEdit         = dm.isEnabled && !!sp_str('preview_token') && !isExternalPreview
 
         // ── Author name for the draft banner ────────────────────────────────────
         // In preview mode blogContent comes from getPreviewContent which returns
@@ -290,16 +290,26 @@ async function CmsPage({ params, searchParams }: Props) {
     // Campaign page — three-slot landing page type
     if (exp?.__typename === 'OT_CampaignPage') {
       const contentKey = exp._metadata?.key as string | undefined
-      // In preview/draft mode, exp was already fetched with the preview client
-      // (cache:false, draft-aware). Map it directly instead of re-fetching via
-      // the public cached client, which only sees published content.
-      const campaignContent = dm.isEnabled
-        ? mapCampaignPageRaw(exp)
-        : (contentKey ? await getCampaignPage(contentKey) : null)
+
+      // In preview mode, map the preview response first. getPreviewContent may
+      // not fully resolve slot items for unpublished content (they're not yet
+      // indexed in Content Graph), so fall back to the published page query when
+      // the preview mapping yields no sections.
+      let campaignContent = dm.isEnabled ? mapCampaignPageRaw(exp) : null
+      const previewHasContent = !!(
+        campaignContent?.heroSection ||
+        (campaignContent?.bodySection?.length ?? 0) > 0 ||
+        (campaignContent?.closingSection?.length ?? 0) > 0
+      )
+      if (!previewHasContent && contentKey) {
+        campaignContent = await getCampaignPage(contentKey)
+      }
       if (!campaignContent) return notFound()
 
+      // Require an actual preview_token so a stale draft-mode cookie on the
+      // public site never triggers editor-only UI (ExternalPreviewLinkPanel).
       const isExternalPreview = dm.isEnabled && sp_str('ext_preview') === '1'
-      const isCmsEdit         = dm.isEnabled && !isExternalPreview
+      const isCmsEdit         = dm.isEnabled && !!sp_str('preview_token') && !isExternalPreview
 
       let externalPreviewUrl: string | null = null
       if (isCmsEdit && campaignContent.enableExternalPreview === true) {

@@ -9,6 +9,7 @@ import { CompositionRenderer } from '@/lib/CompositionRenderer'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Script from 'next/script'
+import { redirect } from 'next/navigation'
 import { ExternalPreviewLinkPanel } from '@/components/preview/ExternalPreviewLinkPanel'
 
 export const dynamic  = 'force-dynamic'
@@ -57,6 +58,49 @@ async function PreviewPage({ searchParams }: Props) {
         continue
       }
       break
+    }
+  }
+
+  // ── Page type redirect ────────────────────────────────────────────────────────
+  // _page content types (OT_CampaignPage, OT_BlogPage, etc.) are not registered
+  // in initReactComponentRegistry and cannot be rendered by OptimizelyComponent.
+  // They also fail getPreviewContent because the SDK auto-generates inline
+  // fragments for content-area arrays that the preview API doesn't support.
+  // Detect the page type via a minimal fallback query and redirect through
+  // /api/draft so draft mode is activated before the slug route handles the page.
+  const isPageType =
+    content?._metadata?.types?.includes('_Page') ||
+    (lastErr && !content)
+
+  if (isPageType) {
+    const fallbackKey = sp('key')
+    if (fallbackKey) {
+      try {
+        const fallback = await getClient().request(
+          `query PreviewPageFallback($key: String!) {
+             OT_CampaignPage(where: { _metadata: { key: { eq: $key } } }, limit: 1) {
+               items { _metadata { url { default hierarchical } } }
+             }
+           }`,
+          { key: fallbackKey },
+        )
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const meta = (fallback as any)?.OT_CampaignPage?.items?.[0]?._metadata
+        const pageUrl = toPathname(meta?.url?.hierarchical ?? meta?.url?.default)
+        if (pageUrl) {
+          const baseUrl = await getRequestBaseUrl()
+          const qs = new URLSearchParams({
+            preview_token: sp('preview_token'),
+            key:           fallbackKey,
+            ver:           sp('ver'),
+            loc:           sp('loc'),
+            ctx:           pageUrl,
+          })
+          redirect(`${baseUrl}/api/draft?${qs}`)
+        }
+      } catch {
+        // Fallback failed — fall through to the error display below
+      }
     }
   }
 

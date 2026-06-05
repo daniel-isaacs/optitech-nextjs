@@ -225,7 +225,7 @@ export default function CampaignPage({
     // Ambient brand tint layers behind all sections — the page reads as one
     // cohesive surface rather than disconnected blocks.
     <div
-      className="relative min-h-screen"
+      className="relative"
       style={{
         background:
           'radial-gradient(ellipse at 60% 0%, var(--ot-bloom-brand-faint) 0%, transparent 55%)',

@@ -38,6 +38,16 @@ const figureCva = cva("", {
   defaultVariants: { alignment: "center" },
 });
 
+const blockquoteCva = cva("", {
+  variants: {
+    alignment: {
+      left:   "ml-[3.1em]",
+      center: "ml-[2em]",
+    },
+  },
+  defaultVariants: { alignment: "center" },
+});
+
 /**
  * Quote mark: an oversized `"` in Syne 700, positioned absolutely behind the
  * quote body at low opacity. Functions as a visual watermark — unmistakably a
@@ -86,7 +96,7 @@ const quoteTextCva = cva(
       },
       alignment: {
         left:   "",
-        center: "mx-auto text-center",
+        center: "",
       },
     },
     defaultVariants: { color: "canvas", size: "large", alignment: "left" },
@@ -156,7 +166,7 @@ export default function QuoteBlock({
         <div className="relative z-10">
 
           {/* ── Quote body ──────────────────────────────────────────────── */}
-          <blockquote>
+          <blockquote className={blockquoteCva({ alignment })}>
             <p
               className={quoteTextCva({ color, size, alignment })}
               {...pa('quote')}
@@ -167,7 +177,7 @@ export default function QuoteBlock({
 
           {/* ── Signature & attribution ─────────────────────────────────── */}
           <figcaption className={cn(
-            "mt-xl",
+            "mt-lg",
             alignment === "center" && "flex flex-col items-center"
           )}>
             <LaserSignature

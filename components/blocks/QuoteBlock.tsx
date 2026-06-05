@@ -68,7 +68,7 @@ const quoteMarkBgCva = cva(
       },
       alignment: {
         left:   "",
-        center: "left-1/2 -translate-x-1/2",
+        center: "",
       },
     },
     defaultVariants: { color: "canvas", alignment: "left" },

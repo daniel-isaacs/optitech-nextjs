@@ -18,6 +18,13 @@ export const OT_CampaignPage = contentType({
 
     // ── Content slots ─────────────────────────────────────────────────────────
 
+    enableExternalPreview: {
+      type:        'boolean',
+      displayName: 'Enable External Preview Link',
+      description: 'When enabled, a shareable preview link is generated in the CMS editor so reviewers can view this draft in the live front-end without a CMS login.',
+      group:       'OT_Content',
+      sortOrder:   5,
+    },
     heroSection: {
       type:        'array',
       displayName: 'Hero',

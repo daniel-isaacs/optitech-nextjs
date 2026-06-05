@@ -104,6 +104,7 @@ export type CampaignPageContent = {
     published: string
     url:       { default: string | null }
   }
+  enableExternalPreview?: boolean | null
   heroSection?:    CampaignHeroSlot    | null
   bodySection?:    CampaignBodyItem[]
   closingSection?: CampaignClosingItem[]
@@ -136,6 +137,7 @@ const PAGE_QUERY = `
     ) {
       items {
         _metadata { key published url { default } }
+        enableExternalPreview
         heroSection {
           __typename
           ... on OT_HeroBlock {

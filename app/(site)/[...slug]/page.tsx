@@ -298,6 +298,28 @@ async function CmsPage({ params, searchParams }: Props) {
         : (contentKey ? await getCampaignPage(contentKey) : null)
       if (!campaignContent) return notFound()
 
+      const isExternalPreview = dm.isEnabled && sp_str('ext_preview') === '1'
+      const isCmsEdit         = dm.isEnabled && !isExternalPreview
+
+      let externalPreviewUrl: string | null = null
+      if (isCmsEdit && campaignContent.enableExternalPreview === true) {
+        const contentSlug = toPathname(
+          campaignContent._metadata?.url?.default
+        ) ?? path
+
+        const qs = new URLSearchParams({
+          preview_token: sp_str('preview_token'),
+          key:           sp_str('key'),
+          ver:           sp_str('ver'),
+          loc:           sp_str('loc') || locale,
+          ctx:           contentSlug,
+          ext_preview:   '1',
+        })
+        if (baseUrl) {
+          externalPreviewUrl = `${baseUrl}/api/draft?${qs}`
+        }
+      }
+
       const campaignJsonLd = buildJsonLd(
         campaignContent as PageSeoFields,
         settings ?? {},
@@ -311,6 +333,19 @@ async function CmsPage({ params, searchParams }: Props) {
             <Script src={`${cmsUrl}/util/javascript/communicationinjector.js`} />
           )}
           {dm.isEnabled && <PreviewComponent />}
+
+          {isExternalPreview && (
+            <DraftStateBanner
+              headline={campaignContent.seoTitle ?? campaignContent.heroSection?.headline ?? ''}
+              version={sp_str('ver') || undefined}
+              locale={sp_str('loc')  || locale}
+            />
+          )}
+
+          {externalPreviewUrl && (
+            <ExternalPreviewLinkPanel url={externalPreviewUrl} />
+          )}
+
           <CampaignPage
             heroSection={campaignContent.heroSection ?? undefined}
             bodySection={campaignContent.bodySection ?? undefined}

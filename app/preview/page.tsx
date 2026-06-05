@@ -76,31 +76,47 @@ async function PreviewPage({ searchParams }: Props) {
     const fallbackKey = sp('key')
     let pageRedirectUrl: string | null = null
     if (fallbackKey) {
-      try {
-        const fallback = await getClient().request(
-          `query PreviewPageFallback($key: String!) {
-             OT_CampaignPage(where: { _metadata: { key: { eq: $key } } }, limit: 1) {
-               items { _metadata { url { default hierarchical } } }
-             }
-           }`,
-          { key: fallbackKey },
-        )
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const meta = (fallback as any)?.OT_CampaignPage?.items?.[0]?._metadata
-        const pageUrl = toPathname(meta?.url?.hierarchical ?? meta?.url?.default)
-        if (pageUrl) {
-          const baseUrl = await getRequestBaseUrl()
-          const qs = new URLSearchParams({
-            preview_token: sp('preview_token'),
-            key:           fallbackKey,
-            ver:           sp('ver'),
-            loc:           sp('loc'),
-            ctx:           pageUrl,
-          })
-          pageRedirectUrl = `${baseUrl}/api/draft?${qs}`
+      // 1. Use the URL already present in the preview-fetched content — this
+      //    works for draft-only pages because getPreviewContent (with preview_token)
+      //    returns _metadata.url even before first publish.
+      let pageUrl = toPathname(
+        content?._metadata?.url?.hierarchical ?? content?._metadata?.url?.default
+      )
+
+      // 2. Fall back to Content Graph for published pages whose URL wasn't
+      //    present in the preview response. Use _Content (generic) rather than
+      //    OT_CampaignPage so this covers blog pages and any future page type.
+      if (!pageUrl) {
+        try {
+          const fallback = await getClient().request(
+            `query PreviewPageFallback($key: String!) {
+               _Content(
+                 where: { _metadata: { key: { eq: $key } } }
+                 limit: 1
+               ) {
+                 items { _metadata { url { default hierarchical } } }
+               }
+             }`,
+            { key: fallbackKey },
+          )
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const meta = (fallback as any)?._Content?.items?.[0]?._metadata
+          pageUrl = toPathname(meta?.url?.hierarchical ?? meta?.url?.default)
+        } catch {
+          // Fallback query failed — fall through to the error display below
         }
-      } catch {
-        // Fallback query failed — fall through to the error display below
+      }
+
+      if (pageUrl) {
+        const baseUrl = await getRequestBaseUrl()
+        const qs = new URLSearchParams({
+          preview_token: sp('preview_token'),
+          key:           fallbackKey,
+          ver:           sp('ver'),
+          loc:           sp('loc'),
+          ctx:           pageUrl,
+        })
+        pageRedirectUrl = `${baseUrl}/api/draft?${qs}`
       }
     }
     // redirect() throws a special Next.js error — must be called outside try/catch

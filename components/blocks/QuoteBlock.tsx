@@ -32,7 +32,7 @@ const figureCva = cva("", {
   variants: {
     alignment: {
       left:   "max-w-[64rem]",
-      center: "mx-auto max-w-[48rem]",
+      center: "",
     },
   },
   defaultVariants: { alignment: "center" },

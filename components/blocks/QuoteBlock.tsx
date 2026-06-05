@@ -42,7 +42,7 @@ const blockquoteCva = cva("", {
   variants: {
     alignment: {
       left:   "ml-[3.1em]",
-      center: "ml-[2em]",
+      center: "ml-16",
     },
   },
   defaultVariants: { alignment: "center" },
@@ -178,7 +178,7 @@ export default function QuoteBlock({
           {/* ── Signature & attribution ─────────────────────────────────── */}
           <figcaption className={cn(
             "mt-lg",
-            alignment === "center" && "flex flex-col items-center"
+            alignment === "center" && "ml-16 flex flex-col items-center"
           )}>
             <LaserSignature
               name={attribution.name}

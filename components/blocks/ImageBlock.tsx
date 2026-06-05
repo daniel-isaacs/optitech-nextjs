@@ -277,7 +277,7 @@ export default function ImageBlock({
         >
           {/* Image — click stops propagation so only backdrop click closes */}
           <div
-            className="relative max-w-[92vw] max-h-[92vh]"
+            className="relative max-w-[96vw] max-h-[96vh]"
             onClick={e => e.stopPropagation()}
           >
             <Image
@@ -285,9 +285,9 @@ export default function ImageBlock({
               alt={alt}
               width={0}
               height={0}
-              sizes="92vw"
+              sizes="96vw"
               quality={95}
-              className="w-auto h-auto max-w-[92vw] max-h-[92vh] object-contain"
+              className="w-auto h-auto max-w-[96vw] max-h-[96vh] object-contain"
               style={{ width: 'auto', height: 'auto' }}
             />
             {caption && (

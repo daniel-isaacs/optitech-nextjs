@@ -189,7 +189,7 @@ function renderClosingItem(item: CampaignClosingItem, index: number) {
           src={item.src}
           alt={item.alt}
           caption={item.caption ?? undefined}
-          styleOptions={{ ratio: '16:9', frame: 'glow', animate: true, shadow: true, captionPosition: 'below' }}
+          styleOptions={{ ratio: '16:9', frame: 'glow', animate: true, shadow: true, captionPosition: 'below', lightbox: true }}
         />
       )
       if (!hasEditorial) {

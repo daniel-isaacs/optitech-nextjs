@@ -47,7 +47,6 @@ export const OT_TabItem = contentType({
       displayName: 'Panel Heading',
       description: 'Optional headline inside the tab panel. Leave blank for body-only panels.',
       isLocalized: true,
-      maxLength:   80,
       group:       'OT_Content',
       sortOrder:   30,
       indexingType: 'searchable',

@@ -232,7 +232,7 @@ Use these exact property key names when building the `properties` object. Keys a
 ### OT_HeroBlock
 
 ```
-{ "displayTemplate": "OT_HeroDefault", "settings": { "layout": "imageRight", "color": "brand", "animation": "none" } }
+{ "displayTemplate": "OT_HeroDefault", "settings": { "layout": "imageRight", "color": "brand", "animation": "fade" } }
 ```
 
 ### OT_PrimaryTextBlock
@@ -240,7 +240,7 @@ Use these exact property key names when building the `properties` object. Keys a
 Default (body section):
 
 ```
-{ "displayTemplate": "OT_PrimaryTextDefault", "settings": { "alignment": "left", "color": "canvas", "size": "headline", "gradient": "none", "depth": "none" } }
+{ "displayTemplate": "OT_PrimaryTextDefault", "settings": { "alignment": "center", "color": "canvas", "size": "headline", "gradient": "none", "depth": "none" } }
 ```
 
 Opening text statement (Zone 1 — when used instead of a hero):

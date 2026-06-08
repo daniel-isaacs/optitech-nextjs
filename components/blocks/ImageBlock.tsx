@@ -271,27 +271,27 @@ export default function ImageBlock({
           role="dialog"
           aria-modal="true"
           aria-label={alt || 'Full size image'}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-canvas/92 backdrop-blur-md"
+          className="fixed inset-0 z-[9999] bg-canvas/95 backdrop-blur-md"
           style={{ animation: 'fadeIn 0.15s cubic-bezier(0.16,1,0.3,1) both' }}
           onClick={() => setLightboxOpen(false)}
         >
-          {/* Image — click stops propagation so only backdrop click closes */}
+          {/* Image fills the full viewport — click stops propagation so only backdrop click closes */}
           <div
-            className="relative max-w-[96vw] max-h-[96vh]"
+            className="absolute inset-0 p-4"
             onClick={e => e.stopPropagation()}
           >
-            <Image
-              src={src}
-              alt={alt}
-              width={0}
-              height={0}
-              sizes="96vw"
-              quality={95}
-              className="w-auto h-auto max-w-[96vw] max-h-[96vh] object-contain"
-              style={{ width: 'auto', height: 'auto' }}
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={src}
+                alt={alt}
+                fill
+                sizes="100vw"
+                quality={95}
+                className="object-contain"
+              />
+            </div>
             {caption && (
-              <p className="mt-sm text-label text-fg-muted text-center">{caption}</p>
+              <p className="absolute bottom-6 left-0 right-0 text-center text-label text-fg-muted">{caption}</p>
             )}
           </div>
 
@@ -300,7 +300,7 @@ export default function ImageBlock({
             type="button"
             onClick={() => setLightboxOpen(false)}
             aria-label="Close full size image"
-            className="absolute top-4 right-4 p-2 bg-surface/80 hover:bg-surface text-fg transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-brand"
+            className="absolute top-4 right-4 z-10 p-2 bg-surface/80 hover:bg-surface text-fg transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-brand"
           >
             <X className="w-5 h-5" />
           </button>

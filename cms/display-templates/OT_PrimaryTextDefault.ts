@@ -62,5 +62,16 @@ export const OT_PrimaryTextDefault = displayTemplate({
         outline: { displayName: 'Chromatic Outline Pulse', sortOrder: 40 },
       },
     },
+    entranceAnimation: {
+      displayName: 'Entrance animation',
+      editor:      'select',
+      sortOrder:   60,
+      choices: {
+        none:     { displayName: 'None (Default)', sortOrder: 10 },
+        fade:     { displayName: 'Fade in',        sortOrder: 20 },
+        slide:    { displayName: 'Slide up',       sortOrder: 30 },
+        parallax: { displayName: 'Parallax',       sortOrder: 40 },
+      },
+    },
   },
 })

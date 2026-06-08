@@ -89,5 +89,18 @@ export const OT_TabsDefault = displayTemplate({
       },
     },
 
+    // ── Entrance animation ───────────────────────────────────────────────────
+    entranceAnimation: {
+      displayName: 'Entrance animation',
+      editor:      'select',
+      sortOrder:   80,
+      choices: {
+        none:     { displayName: 'None (Default)', sortOrder: 10 },
+        fade:     { displayName: 'Fade in',        sortOrder: 20 },
+        slide:    { displayName: 'Slide up',       sortOrder: 30 },
+        parallax: { displayName: 'Parallax',       sortOrder: 40 },
+      },
+    },
+
   },
 })

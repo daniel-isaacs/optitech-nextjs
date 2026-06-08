@@ -25,8 +25,9 @@ export default async function OT_ResourceLibraryBlockAdapter({
   content,
   displaySettings = {},
 }: Props) {
-  const { pa }         = getPreviewUtils(content)
-  const styleOptions   = getResourceLibraryStyles(displaySettings)
+  const { pa }            = getPreviewUtils(content)
+  const styleOptions      = getResourceLibraryStyles(displaySettings)
+  const entranceAnimation = String(displaySettings?.entranceAnimation ?? 'none')
 
   // Extract text fields
   const eyebrow = content.eyebrow ?? undefined
@@ -44,7 +45,11 @@ export default async function OT_ResourceLibraryBlockAdapter({
     : null
 
   return (
-    <div {...pa(content.__composition)} className="w-full">
+    <div
+      {...pa(content.__composition)}
+      className="w-full"
+      data-stagger={entranceAnimation !== 'none' ? entranceAnimation : undefined}
+    >
       <ResourceLibraryBlock
         eyebrow={eyebrow}
         title={title}

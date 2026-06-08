@@ -33,12 +33,17 @@ function buildLogos(content: any): LogoItem[] {
 }
 
 export default function OT_TrustRailAdapter({ content, displaySettings = {} }: Props) {
-  const { pa }       = getPreviewUtils(content)
-  const styleOptions = getTrustRailStyles(displaySettings)
-  const logos        = buildLogos(content)
+  const { pa }            = getPreviewUtils(content)
+  const styleOptions      = getTrustRailStyles(displaySettings)
+  const logos             = buildLogos(content)
+  const entranceAnimation = String(displaySettings?.entranceAnimation ?? 'none')
 
   return (
-    <div {...pa(content.__composition)} className="w-full">
+    <div
+      {...pa(content.__composition)}
+      className="w-full"
+      data-stagger={entranceAnimation !== 'none' ? entranceAnimation : undefined}
+    >
       <TrustRail
         headline={content.headline ?? undefined}
         logos={logos}

@@ -63,5 +63,16 @@ export const OT_VideoDefault = displayTemplate({
         true:  { displayName: 'Chromatic bloom',      sortOrder: 20 },
       },
     },
+    entranceAnimation: {
+      displayName: 'Entrance animation',
+      editor:      'select',
+      sortOrder:   60,
+      choices: {
+        none:     { displayName: 'None (Default)', sortOrder: 10 },
+        fade:     { displayName: 'Fade in',        sortOrder: 20 },
+        slide:    { displayName: 'Slide up',       sortOrder: 30 },
+        parallax: { displayName: 'Parallax',       sortOrder: 40 },
+      },
+    },
   },
 })

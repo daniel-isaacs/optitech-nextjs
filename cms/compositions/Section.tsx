@@ -36,19 +36,23 @@ const DARK_BG = new Set(['brand', 'brandDeep', 'glass'])
 export default function Section({ content, displaySettings = {} }: Props) {
   const { pa } = getPreviewUtils(content)
 
-  const width   = String(displaySettings.gridWidth       ?? 'default')
-  const vSpace  = String(displaySettings.verticalSpacing ?? 'large')
-  const bgColor = String(displaySettings.backgroundColor ?? 'none')
+  const width              = String(displaySettings.gridWidth          ?? 'default')
+  const vSpace             = String(displaySettings.verticalSpacing    ?? 'large')
+  const bgColor            = String(displaySettings.backgroundColor    ?? 'none')
+  const entranceAnimation  = String(displaySettings.entranceAnimation  ?? 'none')
 
   const widthClass   = widthClasses[width]              ?? widthClasses.default
   const vSpaceClass  = verticalSpacingClasses[vSpace]   ?? verticalSpacingClasses.large
   const bgColorClass = bgColorClasses[bgColor]          ?? ''
+
+  const isAnimated   = entranceAnimation !== 'none'
 
   return (
     <section
       className={`vb:section flex flex-col w-full ${bgColorClass}`}
       data-theme={DARK_BG.has(bgColor) ? 'dark' : undefined}
       {...pa(content)}
+      data-stagger={isAnimated ? entranceAnimation : undefined}
     >
       <div className={`flex flex-col flex-1 ${widthClass} ${vSpaceClass}`}>
         <OptimizelyGridSection nodes={content.nodes ?? []} />

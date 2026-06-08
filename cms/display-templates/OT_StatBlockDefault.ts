@@ -59,5 +59,17 @@ export const OT_StatBlockDefault = displayTemplate({
     stat2Icon: { displayName: 'Stat 2 — Icon', editor: 'select', sortOrder: 60, choices: ICON_CHOICES_WITH_NONE },
     stat3Icon: { displayName: 'Stat 3 — Icon', editor: 'select', sortOrder: 70, choices: ICON_CHOICES_WITH_NONE },
     stat4Icon: { displayName: 'Stat 4 — Icon', editor: 'select', sortOrder: 80, choices: ICON_CHOICES_WITH_NONE },
+
+    entranceAnimation: {
+      displayName: 'Entrance animation',
+      editor:      'select',
+      sortOrder:   90,
+      choices: {
+        none:     { displayName: 'None (Default)', sortOrder: 10 },
+        fade:     { displayName: 'Fade in',        sortOrder: 20 },
+        slide:    { displayName: 'Slide up',       sortOrder: 30 },
+        parallax: { displayName: 'Parallax',       sortOrder: 40 },
+      },
+    },
   },
 })

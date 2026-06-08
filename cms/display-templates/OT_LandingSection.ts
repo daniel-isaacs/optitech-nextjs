@@ -42,5 +42,16 @@ export const OT_LandingSection = displayTemplate({
         glass:     { displayName: 'Glass (frosted)', sortOrder: 60 },
       },
     },
+    entranceAnimation: {
+      displayName: 'Entrance animation',
+      editor: 'select',
+      sortOrder: 40,
+      choices: {
+        none:     { displayName: 'None (Default)', sortOrder: 10 },
+        fade:     { displayName: 'Fade in',        sortOrder: 20 },
+        slide:    { displayName: 'Slide up',       sortOrder: 30 },
+        parallax: { displayName: 'Parallax',       sortOrder: 40 },
+      },
+    },
   },
 })

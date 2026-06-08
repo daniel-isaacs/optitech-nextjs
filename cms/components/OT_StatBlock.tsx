@@ -48,9 +48,10 @@ function buildStats(content: any): StatItem[] {
 }
 
 export default function OT_StatBlockAdapter({ content, displaySettings = {} }: Props) {
-  const { pa }       = getPreviewUtils(content)
-  const styleOptions = getStatBlockStyles(displaySettings)
-  const slotIcons    = getStatBlockIcons(displaySettings)
+  const { pa }            = getPreviewUtils(content)
+  const styleOptions      = getStatBlockStyles(displaySettings)
+  const slotIcons         = getStatBlockIcons(displaySettings)
+  const entranceAnimation = String(displaySettings?.entranceAnimation ?? 'none')
 
   // Slot icons (display settings) take precedence; content icon is the fallback
   const stats: StatItem[] = buildStats(content).map((stat, i) => ({
@@ -59,7 +60,11 @@ export default function OT_StatBlockAdapter({ content, displaySettings = {} }: P
   }))
 
   return (
-    <div {...pa(content.__composition)} className="w-full">
+    <div
+      {...pa(content.__composition)}
+      className="w-full"
+      data-stagger={entranceAnimation !== 'none' ? entranceAnimation : undefined}
+    >
       <StatBlock
         stats={stats}
         styleOptions={styleOptions}

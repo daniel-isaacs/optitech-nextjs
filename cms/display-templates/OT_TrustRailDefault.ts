@@ -75,5 +75,17 @@ export const OT_TrustRailDefault = displayTemplate({
         true:  { displayName: 'On — frosted panel over bg colour',    sortOrder: 20 },
       },
     },
+
+    entranceAnimation: {
+      displayName: 'Entrance animation',
+      editor:      'select',
+      sortOrder:   70,
+      choices: {
+        none:     { displayName: 'None (Default)', sortOrder: 10 },
+        fade:     { displayName: 'Fade in',        sortOrder: 20 },
+        slide:    { displayName: 'Slide up',       sortOrder: 30 },
+        parallax: { displayName: 'Parallax',       sortOrder: 40 },
+      },
+    },
   },
 })

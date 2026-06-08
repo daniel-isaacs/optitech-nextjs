@@ -26,12 +26,16 @@ function buildTabs(content: any, src: (ref: any) => string | undefined): TabItem
 }
 
 export default function OT_TabsBlockAdapter({ content, displaySettings = {} }: Props) {
-  const { pa, src } = getPreviewUtils(content)
-  const styleOptions = getTabsStyles(displaySettings)
-  const tabs         = buildTabs(content, src)
+  const { pa, src }       = getPreviewUtils(content)
+  const styleOptions      = getTabsStyles(displaySettings)
+  const tabs              = buildTabs(content, src)
+  const entranceAnimation = String(displaySettings?.entranceAnimation ?? 'none')
 
   return (
-    <div {...pa(content.__composition)}>
+    <div
+      {...pa(content.__composition)}
+      data-stagger={entranceAnimation !== 'none' ? entranceAnimation : undefined}
+    >
       <TabsBlock
         eyebrow={content.eyebrow ?? undefined}
         heading={content.heading ?? undefined}

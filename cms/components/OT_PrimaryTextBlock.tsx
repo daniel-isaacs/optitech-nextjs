@@ -10,11 +10,16 @@ type Props = {
 }
 
 export default function OT_PrimaryTextBlock({ content, displaySettings = {} }: Props) {
-  const { pa } = getPreviewUtils(content)
-  const styleOptions = getPrimaryTextStyles(displaySettings)
+  const { pa }            = getPreviewUtils(content)
+  const styleOptions      = getPrimaryTextStyles(displaySettings)
+  const entranceAnimation = String(displaySettings?.entranceAnimation ?? 'none')
 
   return (
-    <div {...pa(content.__composition)} className="w-full">
+    <div
+      {...pa(content.__composition)}
+      className="w-full"
+      data-stagger={entranceAnimation !== 'none' ? entranceAnimation : undefined}
+    >
       <PrimaryTextBlock
         eyebrow={content.eyebrow ?? undefined}
         headline={content.headline ?? ''}

@@ -11,9 +11,11 @@ type Props = {
 }
 
 export default function OT_ImageBlock({ content, displaySettings = {} }: Props) {
-  const { pa, src } = getPreviewUtils(content)
-  const styleOptions = getImageStyles(displaySettings)
-  const imageSrc = src(content.image)
+  const { pa, src }       = getPreviewUtils(content)
+  const styleOptions      = getImageStyles(displaySettings)
+  const imageSrc          = src(content.image)
+  const entranceAnimation = String(displaySettings?.entranceAnimation ?? 'none')
+  const staggerAttr       = entranceAnimation !== 'none' ? entranceAnimation : undefined
 
   const mediaSide = (displaySettings?.mediaSide ?? 'right') as 'left' | 'right'
   const hasEditorial = Boolean(
@@ -41,7 +43,7 @@ export default function OT_ImageBlock({ content, displaySettings = {} }: Props) 
 
   if (!hasEditorial) {
     return (
-      <div {...pa(content.__composition)} className="w-full">
+      <div {...pa(content.__composition)} className="w-full" data-stagger={staggerAttr}>
         {mediaEl}
       </div>
     )
@@ -68,6 +70,7 @@ export default function OT_ImageBlock({ content, displaySettings = {} }: Props) 
     <div
       {...pa(content.__composition)}
       className={`w-full grid grid-cols-1 ${gridCols} gap-lg md:gap-xl items-center`}
+      data-stagger={staggerAttr}
     >
       <div className={`min-w-0 ${mediaOrder}`}>
         {mediaEl}

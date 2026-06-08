@@ -34,7 +34,7 @@ export default function ChartTooltip({
         backdropFilter:      'blur(12px)',
         WebkitBackdropFilter:'blur(12px)',
         padding:             '8px 12px',
-        boxShadow:           '0 8px 32px rgba(0,0,0,0.40)',
+        boxShadow:           '0 8px 32px var(--ot-bloom-brand-faint)',
         minWidth:            120,
       }}
     >

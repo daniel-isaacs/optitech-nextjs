@@ -54,7 +54,7 @@ function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolea
 function TopicPill({ topic }: { topic: string }) {
   const label = TOPIC_LABELS[topic] ?? topic
   return (
-    <span className="inline-flex items-center px-sm py-0.75 rounded-sm bg-accent text-fg-on-accent text-label uppercase tracking-label font-semibold">
+    <span className="inline-flex items-center px-sm py-0.75 bg-accent text-fg-on-accent text-label uppercase tracking-label font-semibold">
       {label}
     </span>
   )

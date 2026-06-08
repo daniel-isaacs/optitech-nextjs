@@ -148,7 +148,7 @@ function EmptyState() {
         {[1, 0.6, 0.35].map((op, i) => (
           <div
             key={i}
-            className="h-7 bg-fg/8 rounded-sm"
+            className="h-7 bg-fg/8"
             style={{ width: `${60 + i * 20}px`, opacity: op }}
             aria-hidden
           />

@@ -884,8 +884,8 @@ body {
 
 /* Blockquote — full border + background tint; no side stripe */
 [data-rich-text] blockquote {
-  border: 1px solid oklch(55% 0.18 195 / 0.35);
-  background: oklch(55% 0.18 195 / 0.07);
+  border: 1px solid oklch(from var(--ot-brand) l c h / 0.35);
+  background: oklch(from var(--ot-brand) l c h / 0.07);
   padding: var(--ot-space-lg);
   margin: var(--ot-space-lg) 0;
 }
@@ -912,7 +912,7 @@ body {
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  text-decoration-color: oklch(55% 0.18 195 / 0.4);
+  text-decoration-color: oklch(from var(--ot-brand) l c h / 0.4);
   transition: color 0.15s var(--ot-ease-quick),
               text-decoration-color 0.15s var(--ot-ease-quick);
 }
@@ -955,7 +955,7 @@ body {
 /* Horizontal rule */
 [data-rich-text] hr {
   border: none;
-  border-top: 1px solid oklch(55% 0.18 195 / 0.25);
+  border-top: 1px solid oklch(from var(--ot-brand) l c h / 0.25);
   margin: var(--ot-space-lg) 0;
 }
 
@@ -1009,8 +1009,8 @@ body {
   text-decoration-color: oklch(97% 0.005 195 / 0.4);
 }
 [data-rich-text][data-color="glass"] a:hover {
-  color: #fff;
-  text-decoration-color: #fff;
+  color: oklch(97% 0.005 195);
+  text-decoration-color: oklch(97% 0.005 195);
 }
 [data-rich-text][data-color="glass"] code {
   background: oklch(97% 0.005 195 / 0.12);
@@ -1147,7 +1147,7 @@ body {
 [data-rich-text][data-ruled-headings] h1,
 [data-rich-text][data-ruled-headings] h2,
 [data-rich-text][data-ruled-headings] h3 {
-  border-top: 1px solid oklch(55% 0.18 195 / 0.4);
+  border-top: 1px solid oklch(from var(--ot-brand) l c h / 0.4);
   padding-top: var(--ot-space-md);
   margin-top: var(--ot-space-xl);
 }
@@ -1316,8 +1316,8 @@ body {
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.20);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    0 8px 32px var(--ot-bloom-brand-faint),
+    inset 0 1px 0 oklch(97% 0.005 195 / 0.25);
 }
 
 .bg-glass::before {
@@ -2032,7 +2032,7 @@ body {
 /* Nav items */
 .oa-sb-nav-item {
   color: oklch(54% 0.018 175);
-  transition: color 120ms ease, background-color 120ms ease;
+  transition: color 120ms var(--ot-ease-quick), background-color 120ms var(--ot-ease-quick);
 }
 .oa-sb-nav-item:hover {
   color: oklch(80% 0.012 165);
@@ -2050,7 +2050,7 @@ body {
 }
 .oa-sb-logout {
   color: oklch(42% 0.014 175);
-  transition: color 120ms ease, background-color 120ms ease;
+  transition: color 120ms var(--ot-ease-quick), background-color 120ms var(--ot-ease-quick);
 }
 .oa-sb-logout:hover {
   color: oklch(70% 0.012 165);

@@ -94,7 +94,7 @@ const sectionCva = cva('px-md lg:px-lg', {
  * The outer section drops to a tighter frame gap so the bg-color peeks
  * around the edges of the glass, creating a layered, elevated look.
  */
-const glassPanelCva = cva('bg-glass rounded-sm', {
+const glassPanelCva = cva('bg-glass rounded-none', {
   variants: {
     columns: {
       2: 'px-md lg:px-xl py-sm lg:py-md',

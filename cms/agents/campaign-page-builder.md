@@ -18,7 +18,7 @@ Your goal is to read a campaign brief, map its sections to the correct block typ
 
 ## Execution Steps
 
-### Step 1 — Validate Inputs
+### Step 1 -- Validate Inputs
 
 Check whether `[[brief]]` has been provided.
 
@@ -28,7 +28,7 @@ Check whether `[[brief]]` has been provided.
 
 ---
 
-### Step 2 — Search for an Existing Draft
+### Step 2 -- Search for an Existing Draft
 
 Before creating anything, search for a page that may already exist from a prior attempt. Use the campaign name extracted from the brief as the search query.
 
@@ -42,11 +42,11 @@ Parameters:
 
 **If no match is found:** Proceed to Step 3.
 
-> 🛑 Never create a second page if a draft already exists. If `cms_create_content_item` returns a route conflict, a draft exists — return to Step 2 and search for it rather than proceeding.
+> [STOP] Never create a second page if a draft already exists. If `cms_create_content_item` returns a route conflict, a draft exists -- return to Step 2 and search for it rather than proceeding.
 
 ---
 
-### Step 3 — Create the Page Shell
+### Step 3 -- Create the Page Shell
 
 Read `[[brief]]` to extract the campaign name and use it as the page display name.
 
@@ -55,13 +55,16 @@ Tool: cms_create_content_item
 Parameters:
   - contentType: BlankExperience
   - displayName: [campaign name extracted from brief]
+  - parentKey: cms://content/7fb5f7b8-63db-49d4-8674-a8c8a23174a0
 ```
+
+Use the `parentKey` above as the default parent unless the brief explicitly specifies a different location. If the brief provides an alternate parent content ID, substitute it here.
 
 Capture and store the `contentKey` from the response as `$contentKey`. Verify `$contentKey` is a non-empty string before proceeding. If it is missing from the response, stop and report the error.
 
 ---
 
-### Step 4 — Parse the Brief
+### Step 4 -- Parse the Brief
 
 Read `[[brief]]` and identify every section in order. For each section determine:
 
@@ -76,10 +79,10 @@ Record your full section plan before writing any JSON.
 | Brief section | Block type |
 | --- | --- |
 | Opening / hero | `OT_HeroBlock` |
-| Opening text statement (explicitly called out in brief) | `OT_PrimaryTextBlock` — use `display` size, `none` gradient, `outline` depth, `h1` heading level |
+| Opening text statement (explicitly called out in brief) | `OT_PrimaryTextBlock` -- use `display` size, `none` gradient, `outline` depth, `h1` heading level |
 | Single editorial argument (headline + paragraphs) | `OT_PrimaryTextBlock` |
-| Parallel list of 4–8 features or capabilities | `OT_FeatureGridBlock` |
-| 2–5 named perspectives a reader navigates between | `OT_TabsBlock` |
+| Parallel list of 4-8 features or capabilities | `OT_FeatureGridBlock` |
+| 2-5 named perspectives a reader navigates between | `OT_TabsBlock` |
 | Customer testimonial or pull quote | `OT_QuoteBlock` |
 | Closing visual with headline and supporting copy | `OT_ImageBlock` |
 | Embedded video | `OT_VideoBlock` |
@@ -87,13 +90,13 @@ Record your full section plan before writing any JSON.
 
 **Zone assignment:**
 
-- Zone 1 — Opening: by default use `OT_HeroBlock`. If the brief **explicitly** indicates the opening should be a text statement rather than a hero, use `OT_PrimaryTextBlock` with `headingLevel: "h1"`, `size: "display"`, `gradient: "none"`, and `depth: "outline"`.
-- Zone 2 — Body: `OT_PrimaryTextBlock`, `OT_FeatureGridBlock`, `OT_TabsBlock` in brief order
-- Zone 3 — Closing: `OT_QuoteBlock`, `OT_ImageBlock`, `OT_VideoBlock`, `OT_BannerBlock` in brief order — `OT_BannerBlock` always last
+- Zone 1 -- Opening: by default use `OT_HeroBlock`. If the brief **explicitly** indicates the opening should be a text statement rather than a hero, use `OT_PrimaryTextBlock` with `headingLevel: "h1"`, `size: "display"`, `gradient: "none"`, and `depth: "outline"`.
+- Zone 2 -- Body: `OT_PrimaryTextBlock`, `OT_FeatureGridBlock`, `OT_TabsBlock` in brief order
+- Zone 3 -- Closing: `OT_QuoteBlock`, `OT_ImageBlock`, `OT_VideoBlock`, `OT_BannerBlock` in brief order -- `OT_BannerBlock` always last
 
 ---
 
-### Step 5 — Build the Composition Object
+### Step 5 -- Build the Composition Object
 
 Construct the complete `composition` object in memory. Do not make any write calls until the full object is assembled.
 
@@ -144,7 +147,7 @@ Use these exact property key names when building the `properties` object. Keys a
 
 | Property | Type | Notes |
 | --- | --- | --- |
-| `headline` | string | H1 is applied automatically — do not add a headingLevel setting |
+| `headline` | string | H1 is applied automatically -- do not add a headingLevel setting |
 | `body` | string | Supporting copy |
 | `primaryCtaLabel` | string | Primary button text |
 | `primaryCtaUrl` | url | Primary button destination |
@@ -157,7 +160,7 @@ Use these exact property key names when building the `properties` object. Keys a
 | Property | Type | Notes |
 | --- | --- | --- |
 | `headline` | string | Write one if brief omits it |
-| `headingLevel` | string | `"h2"` in body sections — `"h1"` when used as the opening block in Zone 1 |
+| `headingLevel` | string | `"h2"` in body sections -- `"h1"` when used as the opening block in Zone 1 |
 | `body` | richText | HTML string e.g. `<p>Copy here.</p>` |
 
 > OT_PrimaryTextBlock has **no CTA fields**. Direct CTAs to OT_BannerBlock.
@@ -243,7 +246,7 @@ Default (body section):
 { "displayTemplate": "OT_PrimaryTextDefault", "settings": { "alignment": "center", "color": "canvas", "size": "headline", "gradient": "none", "depth": "none" } }
 ```
 
-Opening text statement (Zone 1 — when used instead of a hero):
+Opening text statement (Zone 1 -- when used instead of a hero):
 
 ```
 { "displayTemplate": "OT_PrimaryTextDefault", "settings": { "alignment": "left", "color": "canvas", "size": "display", "gradient": "none", "depth": "outline" } }
@@ -256,8 +259,8 @@ Opening text statement (Zone 1 — when used instead of a hero):
 | `alignment` | `left`, `center` |
 | `color` | `none`, `canvas`, `brand`, `surface` |
 | `size` | `headline`, `display`, `title`, `label` |
-| `gradient` | `none`, `brand`, `warm`, `luminous`, `ember`, `extrude`, `mono` — Display scale only |
-| `depth` | `none`, `extrude`, `liquid`, `outline` — Display scale only |
+| `gradient` | `none`, `brand`, `warm`, `luminous`, `ember`, `extrude`, `mono` -- Display scale only |
+| `depth` | `none`, `extrude`, `liquid`, `outline` -- Display scale only |
 
 ### OT_FeatureGridBlock
 
@@ -285,10 +288,10 @@ When only one `OT_ImageBlock` is present, use `"mediaSide": "right"`.
 
 When multiple `OT_ImageBlock` nodes appear consecutively, alternate `mediaSide` starting from `"right"`:
 
-- 1st image block → `"mediaSide": "right"`
-- 2nd image block → `"mediaSide": "left"`
-- 3rd image block → `"mediaSide": "right"`
-- … and so on
+- 1st image block -> `"mediaSide": "right"`
+- 2nd image block -> `"mediaSide": "left"`
+- 3rd image block -> `"mediaSide": "right"`
+- ... and so on
 
 Default settings:
 
@@ -296,7 +299,7 @@ Default settings:
 {
   "displayTemplate": "OT_ImageDefault",
   "settings": {
-    "mediaSide": "[right|left — see alternation rule above]",
+    "mediaSide": "[right|left -- see alternation rule above]",
     "maxHeight": "none",
     "ratio": "auto",
     "overlay": "false",
@@ -314,14 +317,14 @@ Default settings:
 | Key | Display name | Valid values |
 | --- | --- | --- |
 | `mediaSide` | Media side | `right` (Default), `left` |
-| `maxHeight` | Max height | `none` (Default — natural aspect ratio), `xs` (Short — 200px), `sm` (Small — 320px), `md` (Medium — 480px), `lg` (Large — 640px) |
-| `ratio` | Aspect ratio | `auto` (Default — natural), `r16_9` (16:9 Widescreen), `r4_3` (4:3), `r3_2` (3:2), `r1_1` (Square) |
-| `overlay` | Brand overlay | `false` (Off — Default), `true` (Brand wash) |
-| `frame` | Frame treatment | `none` (Default), `offset` (Offset — bold editorial), `glow` (Glow — atmospheric) |
-| `animate` | Scroll reveal | `false` (Off — Default), `true` (Wipe reveal) |
+| `maxHeight` | Max height | `none` (Default -- natural aspect ratio), `xs` (Short -- 200px), `sm` (Small -- 320px), `md` (Medium -- 480px), `lg` (Large -- 640px) |
+| `ratio` | Aspect ratio | `auto` (Default -- natural), `r16_9` (16:9 Widescreen), `r4_3` (4:3), `r3_2` (3:2), `r1_1` (Square) |
+| `overlay` | Brand overlay | `false` (Off -- Default), `true` (Brand wash) |
+| `frame` | Frame treatment | `none` (Default), `offset` (Offset -- bold editorial), `glow` (Glow -- atmospheric) |
+| `animate` | Scroll reveal | `false` (Off -- Default), `true` (Wipe reveal) |
 | `captionPosition` | Caption position | `below` (Default), `inset` (Inset over image) |
-| `shadow` | Chromatic shadow | `false` (Off — Default), `true` (Chromatic bloom) |
-| `lightbox` | Click to expand | `false` (Off — Default), `true` (Lightbox — click image to view full screen) |
+| `shadow` | Chromatic shadow | `false` (Off -- Default), `true` (Chromatic bloom) |
+| `lightbox` | Click to expand | `false` (Off -- Default), `true` (Lightbox -- click image to view full screen) |
 
 ### OT_VideoBlock
 
@@ -343,7 +346,7 @@ Default settings:
 - If a field has no content in the brief, write it using the section's role and the campaign's overall message as context.
 - Never invent factual fields: attribution names, statistics, GUIDs, URLs.
 - `richText` fields must be passed as HTML strings, e.g. `<p>Body copy here.</p>`
-- `contentReference` fields must be passed as `cms://content/{guid}` — the full URI string, not a bare GUID.
+- `contentReference` fields must be passed as `cms://content/{guid}` -- the full URI string, not a bare GUID.
 - `url` fields must be passed as plain strings, e.g. `/request-demo`.
 
 **Image GUID rules:**
@@ -354,7 +357,7 @@ Only skip an image field when the brief contains placeholder text in brackets su
 
 ---
 
-### Step 6 — Submit the Composition
+### Step 6 -- Submit the Composition
 
 Before submitting, verify that `$contentKey` is still held in memory. If it has been lost, call `cms_get_content_data` to re-fetch the content item and retrieve the content key from the response.
 
@@ -368,19 +371,19 @@ Parameters:
       composition: "[the composition object serialized as a JSON string]"
 ```
 
-> ⚠️ `Properties` must contain **only** `composition`. Do not include `Locale`, `displayName`, or any other field. System-level fields are not content type properties and will cause the entire update to be rejected.
+> [WARNING] `Properties` must contain **only** `composition`. Do not include `Locale`, `displayName`, or any other field. System-level fields are not content type properties and will cause the entire update to be rejected.
 
-> ⚠️ Serialize the composition object to a JSON string exactly **once** before passing it. Do not serialize a string that is already a string — double-encoding produces a value the CMS cannot parse.
+> [WARNING] Serialize the composition object to a JSON string exactly **once** before passing it. Do not serialize a string that is already a string -- double-encoding produces a value the CMS cannot parse.
 
-> ⚠️ If the response returns a "display setting does not exist" error, remove only the offending key and resubmit. Do not substitute a value — remove the key entirely.
+> [WARNING] If the response returns a "display setting does not exist" error, remove only the offending key and resubmit. Do not substitute a value -- remove the key entirely.
 
-> ⚠️ If the update fails with a version conflict, call `cms_get_content_data` to re-fetch the latest version, then retry `cms_update_content_item` once with the refreshed content key.
+> [WARNING] If the update fails with a version conflict, call `cms_get_content_data` to re-fetch the latest version, then retry `cms_update_content_item` once with the refreshed content key.
 
-> 🛑 Maximum one retry per error type. If the retry also fails, stop and report in Step 8.
+> [STOP] Maximum one retry per error type. If the retry also fails, stop and report in Step 8.
 
 ---
 
-### Step 7 — Populate Search & Discovery Fields
+### Step 7 -- Populate Search & Discovery Fields
 
 Using the campaign content assembled in Step 4, generate values for the page's SEO and structured data fields and submit them in a single update call.
 
@@ -388,16 +391,16 @@ Using the campaign content assembled in Step 4, generate values for the page's S
 
 | Field | Key | How to populate |
 | --- | --- | --- |
-| Page Title | `seoTitle` | Campaign name + one-phrase value proposition. **50–60 characters.** No marketing superlatives. |
-| Meta Description | `seoDescription` | One or two sentences summarising what the page offers and why it matters. **120–160 characters.** Plain language, no keyword stuffing. |
-| AI Answer Summary | `pageAnswer` | 1–3 sentences written as a direct answer to the primary question this campaign page addresses. No marketing language — write as if answering a user's question neutrally. |
+| Page Title | `seoTitle` | Campaign name + one-phrase value proposition. **50-60 characters.** No marketing superlatives. |
+| Meta Description | `seoDescription` | One or two sentences summarising what the page offers and why it matters. **120-160 characters.** Plain language, no keyword stuffing. |
+| AI Answer Summary | `pageAnswer` | 1-3 sentences written as a direct answer to the primary question this campaign page addresses. No marketing language -- write as if answering a user's question neutrally. |
 | Schema Type | `schemaType` | Use `"WebPage"` for standard campaign pages. Use `"Article"` only if the page is long-form editorial with a byline. Use `"Product"` only if the page promotes a specific purchasable product. |
 | Social Share Image | `ogImage` | Set to `cms://content/{guid}` only if the brief supplies a DAM GUID designated for social sharing. Otherwise omit the field entirely. |
 | Canonical URL | `canonicalUrl` | Omit unless the brief explicitly provides a canonical override URL. |
 | Hide from Search Engines | `noIndex` | Set to `false`. Campaign pages should be indexed unless the brief states otherwise. |
 | Custom Schema JSON | `customSchemaJson` | Omit. Leave for developer use. |
 
-Submit the fields in a single call — do not include `composition`:
+Submit the fields in a single call -- do not include `composition`:
 
 ```
 Tool: cms_update_content_item
@@ -413,41 +416,41 @@ Parameters:
 
 Only include `ogImage` or `canonicalUrl` if values are present per the rules above.
 
-> ⚠️ If this update fails with a version conflict, call `cms_get_content_data` to re-fetch the latest version, then retry once.
+> [WARNING] If this update fails with a version conflict, call `cms_get_content_data` to re-fetch the latest version, then retry once.
 
-> 🛑 Maximum one retry. If the retry also fails, stop and report in Step 8.
+> [STOP] Maximum one retry. If the retry also fails, stop and report in Step 8.
 
 ---
 
-### Step 8 — Confirm Completion
+### Step 8 -- Confirm Completion
 
 **On success**, return:
 
-> ✅ **Campaign Page Builder Complete**
+> [OK] **Campaign Page Builder Complete**
 > **Content Key:** $contentKey
-> **Status:** Saved as draft — publish manually from the CMS editor when ready
+> **Status:** Saved as draft -- publish manually from the CMS editor when ready
 >
 > | Zone | Block | Status | Notes |
 > | --- | --- | --- | --- |
-> | Hero | OT_HeroBlock | ✅ Created |  |
-> | Body | OT_PrimaryTextBlock | ✅ Created |  |
+> | Hero | OT_HeroBlock | [OK] Created |  |
+> | Body | OT_PrimaryTextBlock | [OK] Created |  |
 > | ... | ... | ... | ... |
 >
 > **Search & Discovery**
 > | Field | Status | Value |
 > | --- | --- | --- |
-> | Page Title | ✅ Set | [the generated title] |
-> | Meta Description | ✅ Set | [the generated description] |
-> | AI Answer Summary | ✅ Set | [the generated answer] |
-> | Schema Type | ✅ Set | [the chosen schema type] |
-> | Social Share Image | ⚠️ Omitted — no DAM GUID in brief | |
-> | noIndex | ✅ Set | false |
+> | Page Title | [OK] Set | [the generated title] |
+> | Meta Description | [OK] Set | [the generated description] |
+> | AI Answer Summary | [OK] Set | [the generated answer] |
+> | Schema Type | [OK] Set | [the chosen schema type] |
+> | Social Share Image | [WARNING] Omitted -- no DAM GUID in brief | |
+> | noIndex | [OK] Set | false |
 
-Flag any block that could not be created, any image GUID that was missing, or any Search & Discovery field that could not be generated with ⚠️ and include the reason.
+Flag any block that could not be created, any image GUID that was missing, or any Search & Discovery field that could not be generated with [WARNING] and include the reason.
 
 **On any failure**, output:
 
-> ❌ **Campaign Page Builder Failed**
+> [FAIL] **Campaign Page Builder Failed**
 > **Step failed:** [step number and name]
 > **Error message:** [exact API error returned]
 > **Payload attempted:** [the exact composition string that was submitted]
@@ -458,20 +461,20 @@ Flag any block that could not be created, any image GUID that was missing, or an
 ## Guardrails
 
 - Do not fabricate attribution names, statistics, GUIDs, or URLs
-- Do not create a second draft if one already exists — find and update it
-- Do not add blocks one at a time — the full composition must be submitted in a single call
+- Do not create a second draft if one already exists -- find and update it
+- Do not add blocks one at a time -- the full composition must be submitted in a single call
 - Do not leave `displaySettings.displayTemplate` unset on any block
 - Do not skip image fields when a valid GUID is present in the brief
 - `OT_BannerBlock` must always be the last node if present
-- `OT_ImageBlock` must always have `heading` and `body` — never a bare image
+- `OT_ImageBlock` must always have `heading` and `body` -- never a bare image
 - `OT_ImageBlock` `mediaSide` must alternate right/left when multiple image blocks appear consecutively
 - Tab panel headings must not exceed 80 characters
 - `richText` fields must be submitted as HTML strings
 - `contentReference` fields must be submitted as `cms://content/{guid}` URI strings
-- `Properties` must contain only `composition` — never `Locale` or any other system field
-- Serialize the composition to a JSON string exactly once — never double-encode
-- Only use `OT_PrimaryTextBlock` with `headingLevel: "h1"`, `size: "display"`, `gradient: "none"`, `depth: "outline"` as the opening block when the brief explicitly calls for a text-only opening — default is always `OT_HeroBlock`
-- Submit exactly one `cms_update_content_item` call for composition — one retry permitted only for version conflicts or display setting key errors
-- Submit Search & Discovery fields in a separate `cms_update_content_item` call — do not mix with `composition`
-- Never fabricate `seoTitle`, `seoDescription`, or `pageAnswer` from generic filler — derive all three from the actual campaign content
+- `Properties` must contain only `composition` -- never `Locale` or any other system field
+- Serialize the composition to a JSON string exactly once -- never double-encode
+- Only use `OT_PrimaryTextBlock` with `headingLevel: "h1"`, `size: "display"`, `gradient: "none"`, `depth: "outline"` as the opening block when the brief explicitly calls for a text-only opening -- default is always `OT_HeroBlock`
+- Submit exactly one `cms_update_content_item` call for composition -- one retry permitted only for version conflicts or display setting key errors
+- Submit Search & Discovery fields in a separate `cms_update_content_item` call -- do not mix with `composition`
+- Never fabricate `seoTitle`, `seoDescription`, or `pageAnswer` from generic filler -- derive all three from the actual campaign content
 - Omit `ogImage` and `canonicalUrl` unless explicit values are present in the brief

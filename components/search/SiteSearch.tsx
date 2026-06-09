@@ -147,10 +147,15 @@ export default function SiteSearch() {
     })
   }
 
-  const handleResultClick = (url: string) => {
-    router.push(url)
+  const handleResultClick = useCallback((result: SearchResult) => {
+    if (result._track) {
+      // Fire-and-forget beacon — keepalive ensures it survives the navigation.
+      // mode: no-cors because the tracking endpoint is cross-origin and needs no response.
+      fetch(result._track, { method: 'GET', mode: 'no-cors', keepalive: true }).catch(() => {})
+    }
+    router.push(result.url)
     closeSearch()
-  }
+  }, [router, closeSearch])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const items = resultsRef.current?.querySelectorAll<HTMLElement>('[data-result-item]')
@@ -387,7 +392,7 @@ export default function SiteSearch() {
           data-result-item
           tabIndex={isFocused ? 0 : -1}
           type="button"
-          onClick={() => handleResultClick(result.url)}
+          onClick={() => handleResultClick(result)}
           className={[
             'group w-full text-left flex items-start gap-md',
             isCompact ? 'px-md py-[12px]' : 'py-[18px]',
@@ -477,7 +482,7 @@ export default function SiteSearch() {
           data-result-item
           tabIndex={isFocused ? 0 : -1}
           type="button"
-          onClick={() => handleResultClick(result.url)}
+          onClick={() => handleResultClick(result)}
           className={[
             'group w-full text-left overflow-hidden',
             'border border-fg/8',

@@ -43,8 +43,10 @@ function buildBlogQuery(withDomain: boolean, semantic: boolean): string {
           ${metaFilter}
         }
         limit: $limit
+        tracking: { phrase: $query, source: "/search" }
       ) {
         items {
+          _track
           _metadata { key published url { default } }
           headline
           subHeadline
@@ -70,8 +72,10 @@ function buildContentQuery(withDomain: boolean): string {
           ${metaFilter}
         }
         limit: $limit
+        tracking: { phrase: $query, source: "/search" }
       ) {
         items {
+          _track
           _metadata { key url { default } types }
           name
         }
@@ -93,8 +97,10 @@ function buildExperienceQuery(withDomain: boolean): string {
           ${metaFilter}
         }
         limit: $limit
+        tracking: { phrase: $query, source: "/search" }
       ) {
         items {
+          _track
           _metadata { key url { default } }
           name
         }
@@ -181,6 +187,7 @@ export async function GET(req: NextRequest) {
           published: item._metadata.published || undefined,
           excerpt,
           imageUrl:  item.featuredImage?.url?.default || undefined,
+          _track:    item._track || null,
         })
       }
     } catch (err) {
@@ -201,10 +208,11 @@ export async function GET(req: NextRequest) {
         if (types.some(t => SETTINGS_TYPES.has(t))) continue
         if (!item._metadata?.url?.default) continue
         results.push({
-          id:    item._metadata.key,
-          title: item.name ?? 'Untitled',
-          url:   item._metadata.url.default,
-          type:  'Page',
+          id:     item._metadata.key,
+          title:  item.name ?? 'Untitled',
+          url:    item._metadata.url.default,
+          type:   'Page',
+          _track: item._track || null,
         })
       }
     } catch {
@@ -218,10 +226,11 @@ export async function GET(req: NextRequest) {
       for (const item of items) {
         if (!item._metadata?.url?.default) continue
         results.push({
-          id:    item._metadata.key,
-          title: item.name ?? 'Untitled',
-          url:   item._metadata.url.default,
-          type:  'Page',
+          id:     item._metadata.key,
+          title:  item.name ?? 'Untitled',
+          url:    item._metadata.url.default,
+          type:   'Page',
+          _track: item._track || null,
         })
       }
     } catch {

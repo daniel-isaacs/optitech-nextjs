@@ -54,7 +54,7 @@ export type BlogPostSummary = {
 const BLOG_PAGE_QUERY = `
   query GetBlogPage($key: String!, $locale: String) {
     OT_BlogPage(
-      where: { _metadata: { key: { eq: $key }, locale: { eq: $locale } } }
+      where: { _metadata: { key: { eq: $key }, locale: { eq: $locale }, status: { eq: "Published" } } }
       limit: 1
     ) {
       items {
@@ -115,7 +115,7 @@ const LATEST_POSTS_QUERY = `
   query GetLatestBlogPosts($locale: String!) {
     OT_BlogPage(
       limit: 12,
-      where: { _metadata: { locale: { eq: $locale } } },
+      where: { _metadata: { locale: { eq: $locale }, status: { eq: "Published" } } },
       orderBy: { _metadata: { published: DESC } }
     ) {
       items {

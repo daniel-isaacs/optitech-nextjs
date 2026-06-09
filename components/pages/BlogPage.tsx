@@ -466,7 +466,7 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
                   <div
                     className="w-32 h-32 overflow-hidden bg-canvas flex-none"
                     style={{
-                      boxShadow: '0 0 0 2px var(--ot-bloom-brand-ring), 0 0 0 5px var(--ot-canvas), 0 16px 48px var(--ot-bloom-brand-faint)',
+                      boxShadow: '0 16px 48px var(--ot-bloom-brand-faint)',
                     }}
                     {...pa?.('authorRef')}
                   >
@@ -492,18 +492,18 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
 
                   {/* Social links — desktop: stacked under photo */}
                   {(authorRef.linkedIn || authorRef.twitter) && (
-                    <div className="hidden sm:flex flex-col gap-1.5">
+                    <div className="hidden sm:flex flex-col gap-sm">
                       {authorRef.linkedIn && (
                         <a
                           href={authorRef.linkedIn}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted/60 hover:text-brand transition-colors duration-150 ease-quick"
+                          className="group inline-flex items-center gap-xs text-[13px] font-medium text-fg-muted/60 hover:text-brand transition-colors duration-150 ease-quick"
                         >
                           LinkedIn
                           <span
                             aria-hidden
-                            className="text-accent text-[0.65rem] motion-safe:transition-transform duration-150 ease-quick group-hover:translate-x-0.75"
+                            className="text-accent motion-safe:transition-transform duration-150 ease-quick group-hover:translate-x-0.75"
                           >
                             ↗
                           </span>
@@ -514,12 +514,12 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
                           href={authorRef.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted/60 hover:text-brand transition-colors duration-150 ease-quick"
+                          className="group inline-flex items-center gap-xs text-[13px] font-medium text-fg-muted/60 hover:text-brand transition-colors duration-150 ease-quick"
                         >
-                          X&hairsp;/&hairsp;Twitter
+                          X / Twitter
                           <span
                             aria-hidden
-                            className="text-accent text-[0.65rem] motion-safe:transition-transform duration-150 ease-quick group-hover:translate-x-0.75"
+                            className="text-accent motion-safe:transition-transform duration-150 ease-quick group-hover:translate-x-0.75"
                           >
                             ↗
                           </span>
@@ -558,10 +558,10 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
                           href={authorRef.linkedIn}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted hover:text-fg transition-colors duration-150 ease-quick"
+                          className="group inline-flex items-center gap-xs text-[13px] font-medium text-fg-muted hover:text-brand transition-colors duration-150 ease-quick"
                         >
                           LinkedIn
-                          <span aria-hidden className="text-accent text-[0.7rem]">↗</span>
+                          <span aria-hidden className="text-accent group-hover:translate-x-0.75 motion-safe:transition-transform duration-150 ease-quick">↗</span>
                         </a>
                       )}
                       {authorRef.twitter && (
@@ -569,10 +569,10 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
                           href={authorRef.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted hover:text-fg transition-colors duration-150 ease-quick"
+                          className="group inline-flex items-center gap-xs text-[13px] font-medium text-fg-muted hover:text-brand transition-colors duration-150 ease-quick"
                         >
-                          X&hairsp;/&hairsp;Twitter
-                          <span aria-hidden className="text-accent text-[0.7rem]">↗</span>
+                          X / Twitter
+                          <span aria-hidden className="text-accent group-hover:translate-x-0.75 motion-safe:transition-transform duration-150 ease-quick">↗</span>
                         </a>
                       )}
                     </div>

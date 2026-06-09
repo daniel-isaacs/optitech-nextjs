@@ -442,69 +442,123 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
       {/* ── Author bio ───────────────────────────────────────────────────── */}
       {authorRef?.name && (
         <>
-          {/* Brand-tinted separator — marks the article boundary */}
-          <div className="h-px bg-brand/30" aria-hidden="true" />
+          {/* 3px brand bar replaces the thin separator — stronger material boundary */}
+          <section
+            className="relative bg-brand/10 border-t-[3px] border-brand py-xl overflow-hidden"
+            aria-label="About the author"
+          >
+            {/* Radial bloom anchored to the photo column position */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              aria-hidden
+              style={{
+                background: 'radial-gradient(ellipse 400px 340px at 80px 55%, oklch(from var(--ot-brand) l c h / 0.15) 0%, transparent 68%)',
+              }}
+            />
 
-          <section className="bg-surface py-xl" aria-label="About the author">
-            <div className="mx-auto max-w-5xl px-md">
-              <div className="grid grid-cols-1 sm:grid-cols-[3.5rem_1fr] gap-lg items-start">
+            <div className="relative mx-auto max-w-5xl px-md">
+              <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-lg lg:gap-xl items-start">
 
-                {/* Photo — square crop; initials monogram or neutral box when absent */}
-                <div className="flex-none w-14 h-14 overflow-hidden border border-fg/10 bg-canvas">
-                  {authorPhotoUrl ? (
-                    <img
-                      src={authorPhotoUrl}
-                      alt={authorName ?? ''}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : initials ? (
-                    <div className="w-full h-full bg-brand/20 flex items-center justify-center">
-                      <span className="text-title font-bold text-fg select-none">
-                        {initials}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="w-full h-full bg-fg/5" aria-hidden />
-                  )}
-                </div>
+                {/* ── Left column: photo + social ──────────────────── */}
+                <div className="flex flex-col items-start gap-md">
 
-                {/* Text content — always renders regardless of photo availability */}
-                <div>
-                  <p className="text-label uppercase tracking-label text-fg-muted/60 mb-xs">
-                    About the author
-                  </p>
-                  <p className="text-title font-semibold text-fg leading-tight">
-                    {authorName}
-                  </p>
-                  {authorRole && (
-                    <p className="text-label text-fg-muted mt-0.75">{authorRole}</p>
-                  )}
+                  {/* Photo — 128px with chromatic bloom ring */}
+                  <div
+                    className="w-32 h-32 overflow-hidden bg-canvas flex-none"
+                    style={{
+                      boxShadow: '0 0 0 2px var(--ot-bloom-brand-ring), 0 0 0 5px var(--ot-canvas), 0 16px 48px var(--ot-bloom-brand-faint)',
+                    }}
+                    {...pa?.('authorRef')}
+                  >
+                    {authorPhotoUrl ? (
+                      <img
+                        src={authorPhotoUrl}
+                        alt={authorName ?? ''}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : initials ? (
+                      <div className="w-full h-full bg-brand/20 flex items-center justify-center">
+                        <span
+                          className="font-syne text-[2rem] font-bold text-brand select-none"
+                          style={{ fontVariationSettings: "'wght' 500" }}
+                        >
+                          {initials}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full bg-fg/5" aria-hidden />
+                    )}
+                  </div>
 
-                  {authorRef.bio?.html && (
-                    <div
-                      className="
-                        mt-md text-body leading-[1.65] text-fg-muted max-w-[52ch]
-                        [&_p]:m-0 [&_p+p]:mt-[0.75em]
-                        [&_strong]:font-semibold [&_strong]:text-fg
-                        [&_em]:not-italic [&_em]:text-accent
-                      "
-                      dangerouslySetInnerHTML={{ __html: authorRef.bio.html }}
-                    />
-                  )}
-
+                  {/* Social links — desktop: stacked under photo */}
                   {(authorRef.linkedIn || authorRef.twitter) && (
-                    <div className="mt-md flex items-center gap-md">
+                    <div className="hidden sm:flex flex-col gap-1.5">
                       {authorRef.linkedIn && (
                         <a
                           href={authorRef.linkedIn}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="
-                            inline-flex items-center gap-xs
-                            text-label uppercase tracking-label
-                            text-fg-muted hover:text-fg
-                            transition-colors duration-150 ease-quick
-                          "
+                          className="group inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted/60 hover:text-brand transition-colors duration-150 ease-quick"
+                        >
+                          LinkedIn
+                          <span
+                            aria-hidden
+                            className="text-accent text-[0.65rem] motion-safe:transition-transform duration-150 ease-quick group-hover:translate-x-0.75"
+                          >
+                            ↗
+                          </span>
+                        </a>
+                      )}
+                      {authorRef.twitter && (
+                        <a
+                          href={authorRef.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted/60 hover:text-brand transition-colors duration-150 ease-quick"
+                        >
+                          X&hairsp;/&hairsp;Twitter
+                          <span
+                            aria-hidden
+                            className="text-accent text-[0.65rem] motion-safe:transition-transform duration-150 ease-quick group-hover:translate-x-0.75"
+                          >
+                            ↗
+                          </span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* ── Right column: identity + bio ─────────────────── */}
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.14em] font-semibold text-brand/70 mb-xs">
+                    Written by
+                  </p>
+                  <p className="text-headline leading-headline font-bold text-fg tracking-headline">
+                    {authorName}
+                  </p>
+                  {authorRole && (
+                    <p className="text-label uppercase tracking-label font-semibold text-accent/80 mt-xs">
+                      {authorRole}
+                    </p>
+                  )}
+
+                  {authorRef.bio?.html && (
+                    <div
+                      className="mt-md text-body leading-[1.65] text-fg-muted max-w-[52ch] [&_p]:m-0 [&_p+p]:mt-[0.75em] [&_strong]:font-semibold [&_strong]:text-fg [&_em]:not-italic [&_em]:text-accent"
+                      dangerouslySetInnerHTML={{ __html: authorRef.bio.html }}
+                    />
+                  )}
+
+                  {/* Social links — mobile only (desktop shows in left column) */}
+                  {(authorRef.linkedIn || authorRef.twitter) && (
+                    <div className="mt-md sm:hidden flex items-center gap-md">
+                      {authorRef.linkedIn && (
+                        <a
+                          href={authorRef.linkedIn}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted hover:text-fg transition-colors duration-150 ease-quick"
                         >
                           LinkedIn
                           <span aria-hidden className="text-accent text-[0.7rem]">↗</span>
@@ -515,12 +569,7 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
                           href={authorRef.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="
-                            inline-flex items-center gap-xs
-                            text-label uppercase tracking-label
-                            text-fg-muted hover:text-fg
-                            transition-colors duration-150 ease-quick
-                          "
+                          className="inline-flex items-center gap-xs text-label uppercase tracking-label text-fg-muted hover:text-fg transition-colors duration-150 ease-quick"
                         >
                           X&hairsp;/&hairsp;Twitter
                           <span aria-hidden className="text-accent text-[0.7rem]">↗</span>

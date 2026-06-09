@@ -523,71 +523,18 @@ export default function SiteSearch() {
       : t('search.result')
 
     return (
-      <div className="flex flex-col h-full overflow-hidden relative isolate">
-
-        {/* ── Background layers (absolute, stacked) ──────────────────────────────
-         *
-         * Adapted from the footer's angled brand/canvas split technique.
-         * The diagonal runs from the top-right toward the lower-left, placing
-         * brand energy behind the /SEARCH wordmark and input area, then
-         * dissolving into clean canvas for the results region below.
-         *
-         * z-0  brand-hover fills everything (the brand zone base)
-         * z-1  canvas panel: diagonal clip leaves the top brand band exposed;
-         *      CSS mask creates a soft angled dissolve at the boundary.
-         *      drop-shadow casts upward into the brand zone → diffused depth.
-         * z-3  top-right elevation — lighter gradient on the brand side corner
-         * z-4  ambient brand bloom in the top-right corner
-         * ─────────────────────────────────────────────────────────────────────── */}
-
-        {/* z-0 */}
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 0, background: 'var(--ot-brand-hover)' }}
-        />
-
-        {/* z-1: Canvas panel — masked top edge creates the mist/dissolve blend */}
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            zIndex: 1,
-            background: 'var(--ot-canvas)',
-            clipPath: 'polygon(0 38%, 100% 22%, 100% 100%, 0 100%)',
-            WebkitMaskImage:
-              'linear-gradient(to bottom, transparent 0%, transparent 16%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0.55) 27%, rgba(0,0,0,0.84) 33%, black 42%)',
-            maskImage:
-              'linear-gradient(to bottom, transparent 0%, transparent 16%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0.55) 27%, rgba(0,0,0,0.84) 33%, black 42%)',
-            filter: 'drop-shadow(0 -14px 44px oklch(4% 0.005 195 / 0.62))',
-          }}
-        />
-
-        {/* z-3: Top-right elevation — lighter top lit on the brand zone corner */}
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            zIndex: 3,
-            background:
-              'linear-gradient(to bottom, oklch(from var(--ot-brand-hover) calc(l + 0.10) c h / 0.48) 0%, transparent 65%)',
-            clipPath: 'polygon(44% 0, 100% 0, 100% 22%, calc(44% + 7rem) 0)',
-          }}
-        />
-
-        {/* z-4: Ambient bloom on brand zone corner */}
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            zIndex: 4,
-            backgroundImage:
-              'radial-gradient(ellipse 52% 48% at 90% -6%, var(--ot-bloom-brand-faint) 0%, transparent 65%)',
-          }}
-        />
+      <div
+        className="flex flex-col h-full overflow-hidden"
+        style={{
+          background: [
+            'radial-gradient(ellipse 75% 52% at 8% -4%, oklch(from var(--ot-brand) l c h / 0.26) 0%, transparent 65%)',
+            'var(--ot-canvas)',
+          ].join(', '),
+        }}
+      >
 
         {/* Top bar — controls only, no "OptiTech Search" wordmark */}
-        <div className="relative flex items-center justify-end px-md lg:px-2xl py-2.5 border-b border-fg/8 shrink-0 gap-xs" style={{ zIndex: 10 }}>
+        <div className="flex items-center justify-end px-md lg:px-2xl py-2.5 border-b border-fg/8 shrink-0 gap-xs">
           <button
             type="button"
             onClick={toggleMode}
@@ -614,8 +561,7 @@ export default function SiteSearch() {
           role="region"
           aria-label={t('search.searchResults')}
           aria-live="polite"
-          className="flex-1 overflow-y-auto relative"
-          style={{ zIndex: 10 }}
+          className="flex-1 overflow-y-auto"
         >
           <div className="px-md lg:px-2xl xl:px-[8vw] pt-lg pb-2xl">
 

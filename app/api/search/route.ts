@@ -83,14 +83,15 @@ function buildContentQuery(withDomain: boolean): string {
   `
 }
 
-function buildExperienceQuery(withDomain: boolean): string {
+function buildBlankExperienceQuery(withDomain: boolean): string {
   const domainVar    = withDomain ? ', $domain: String' : ''
   const metaFilter   = withDomain
     ? '_metadata: { locale: { eq: $locale }, url: { base: { eq: $domain } } }'
     : '_metadata: { locale: { eq: $locale } }'
   return `
-    query SearchExperiences($query: String!, $limit: Int!, $locale: String!${domainVar}) {
-      _Experience(
+    query SearchBlankExperiences($query: String!, $limit: Int!, $locale: String!${domainVar}) {
+      BlankExperience(
+        orderBy: { _ranking: RELEVANCE }
         where: {
           _fulltext: { match: $query, fuzzy: true, synonyms: ONE }
           ${metaFilter}
@@ -100,7 +101,9 @@ function buildExperienceQuery(withDomain: boolean): string {
       ) {
         items {
           _track
-          _metadata { key url { default } displayName }
+          _metadata { key url { default } published displayName }
+          seoDescription
+          ogImage { url { default } }
         }
       }
     }
@@ -202,8 +205,35 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // ── Generic page + experience results ────────────────────────────────────
+  // ── Experience results (typed — enriched with seoDescription / ogImage) ──
+  // Runs before the generic _Content query so enriched data wins the seen-Set
+  // deduplication; _Content then fills in any remaining non-experience pages.
   if (type !== 'Blog') {
+    try {
+      const expQuery = buildBlankExperienceQuery(withDomain)
+      const data = await getClient().request(expQuery, baseVars)
+      const items: any[] = (data as any)?.BlankExperience?.items ?? []
+      for (const item of items) {
+        if (!item._metadata?.url?.default) continue
+        if (seen.has(item._metadata.key)) continue
+        seen.add(item._metadata.key)
+        results.push({
+          id:        item._metadata.key,
+          title:     item._metadata.displayName ?? 'Untitled',
+          url:       item._metadata.url.default,
+          type:      'Page',
+          published: item._metadata.published || undefined,
+          excerpt:   (item.seoDescription as string | undefined) || undefined,
+          imageUrl:  item.ogImage?.url?.default || undefined,
+          _track:    withTrackAuth(item._track),
+        })
+      }
+    } catch (err) {
+      console.error('[search] BlankExperience query failed:', err)
+    }
+
+    // ── Generic page fallback (_Content) ────────────────────────────────────
+    // Catches _page-typed content not covered by the typed query above.
     try {
       const contentQuery = buildContentQuery(withDomain)
       const data = await getClient().request(contentQuery, baseVars)
@@ -226,26 +256,6 @@ export async function GET(req: NextRequest) {
       }
     } catch (err) {
       console.error('[search] content query failed:', err)
-    }
-
-    try {
-      const expQuery = buildExperienceQuery(withDomain)
-      const data = await getClient().request(expQuery, baseVars)
-      const items: any[] = (data as any)?._Experience?.items ?? []
-      for (const item of items) {
-        if (!item._metadata?.url?.default) continue
-        if (seen.has(item._metadata.key)) continue
-        seen.add(item._metadata.key)
-        results.push({
-          id:     item._metadata.key,
-          title:  item._metadata.displayName ?? 'Untitled',
-          url:    item._metadata.url.default,
-          type:   'Page',
-          _track: withTrackAuth(item._track),
-        })
-      }
-    } catch (err) {
-      console.error('[search] experience query failed:', err)
     }
   }
 

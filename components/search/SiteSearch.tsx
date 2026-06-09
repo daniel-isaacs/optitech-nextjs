@@ -771,39 +771,41 @@ export default function SiteSearch() {
           </div>
         </div>
 
-        {/* Input row */}
-        <div className="flex items-center gap-sm px-md py-[10px] border-b border-fg/8 shrink-0">
-          <Search size={14} className="shrink-0 text-fg-muted/50" aria-hidden />
+        {/* Input area — visually boxed so it reads as a text field, not a label row */}
+        <div className="px-md pt-[8px] pb-[10px] border-b border-fg/8 shrink-0">
           <label htmlFor="search-input-compact" className="sr-only">{t('search.inputLabel')}</label>
-          <input
-            ref={inputRef}
-            id="search-input-compact"
-            type="search"
-            value={query}
-            onChange={e => handleQueryChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t('search.placeholderCompact')}
-            autoComplete="off"
-            spellCheck={false}
-            aria-label={t('search.inputLabel')}
-            aria-controls="search-results-compact"
-            aria-autocomplete="list"
-            className={[
-              'flex-1 bg-transparent text-fg placeholder:text-fg-muted/40',
-              'text-[15px] font-medium outline-none leading-none py-[2px]',
-              '[&::-webkit-search-cancel-button]:hidden',
-            ].join(' ')}
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => handleQueryChange('')}
-              aria-label={t('search.clearFilter')}
-              className="shrink-0 p-[5px] text-fg-muted/45 hover:text-fg transition-colors"
-            >
-              <X size={12} />
-            </button>
-          )}
+          <div className="flex items-center gap-[8px] rounded-[4px] border border-fg/18 bg-fg/5 focus-within:border-brand/55 focus-within:bg-brand/5 px-[10px] py-[9px] transition-colors duration-150">
+            <Search size={14} className="shrink-0 text-fg-muted/45" aria-hidden />
+            <input
+              ref={inputRef}
+              id="search-input-compact"
+              type="search"
+              value={query}
+              onChange={e => handleQueryChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={t('search.placeholderCompact')}
+              autoComplete="off"
+              spellCheck={false}
+              aria-label={t('search.inputLabel')}
+              aria-controls="search-results-compact"
+              aria-autocomplete="list"
+              className={[
+                'flex-1 bg-transparent text-fg placeholder:text-fg-muted/35',
+                'text-[14px] font-medium outline-none leading-none',
+                '[&::-webkit-search-cancel-button]:hidden',
+              ].join(' ')}
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => handleQueryChange('')}
+                aria-label={t('search.clearFilter')}
+                className="shrink-0 p-[3px] text-fg-muted/40 hover:text-fg transition-colors"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Filter row — compact pills */}

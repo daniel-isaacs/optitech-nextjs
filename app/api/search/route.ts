@@ -172,6 +172,7 @@ export async function GET(req: NextRequest) {
   const baseVars = { query: q, limit, locale, ...domainVars }
 
   const results: SearchResult[] = []
+  const seen = new Set<string>()
 
   // ── Blog results ─────────────────────────────────────────────────────────
   if (type !== 'Page') {
@@ -181,6 +182,8 @@ export async function GET(req: NextRequest) {
       const items: any[] = (data as any)?.OT_BlogPage?.items ?? []
       for (const item of items) {
         if (!item._metadata?.url?.default) continue
+        if (seen.has(item._metadata.key)) continue
+        seen.add(item._metadata.key)
         const subHead  = (item.subHeadline as string | undefined) || undefined
         const bodyHtml = (item.body?.html  as string | undefined) || undefined
         const excerpt  = subHead ?? (bodyHtml ? stripHtml(bodyHtml) : undefined)
@@ -201,7 +204,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // ── Generic page results ──────────────────────────────────────────────────
+  // ── Generic page + experience results ────────────────────────────────────
   if (type !== 'Blog') {
     try {
       const contentQuery = buildContentQuery(withDomain)
@@ -209,10 +212,12 @@ export async function GET(req: NextRequest) {
       const items: any[] = (data as any)?._Content?.items ?? []
       for (const item of items) {
         const types: string[] = item._metadata?.types ?? []
-        if (!types.includes('_Page')) continue
+        if (!types.includes('_Page') && !types.includes('_Experience')) continue
         if (types.includes('OT_BlogPage')) continue
         if (types.some(t => SETTINGS_TYPES.has(t))) continue
         if (!item._metadata?.url?.default) continue
+        if (seen.has(item._metadata.key)) continue
+        seen.add(item._metadata.key)
         results.push({
           id:     item._metadata.key,
           title:  item.name ?? 'Untitled',
@@ -231,6 +236,8 @@ export async function GET(req: NextRequest) {
       const items: any[] = (data as any)?._Experience?.items ?? []
       for (const item of items) {
         if (!item._metadata?.url?.default) continue
+        if (seen.has(item._metadata.key)) continue
+        seen.add(item._metadata.key)
         results.push({
           id:     item._metadata.key,
           title:  item.name ?? 'Untitled',

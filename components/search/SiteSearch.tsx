@@ -530,19 +530,19 @@ export default function SiteSearch() {
         className="flex flex-col h-full overflow-hidden"
         style={{
           background: [
-            'radial-gradient(ellipse 130% 48% at 50% -6%, oklch(from var(--ot-brand) l c h / 0.22) 0%, transparent 68%)',
+            'radial-gradient(ellipse 145% 58% at 50% -4%, oklch(from var(--ot-brand) l c h / 0.38) 0%, transparent 66%)',
             'var(--ot-canvas)',
           ].join(', '),
         }}
       >
 
         {/* Top bar — controls only, no "OptiTech Search" wordmark */}
-        <div className="flex items-center justify-end px-md lg:px-2xl py-2.5 border-b border-fg/8 shrink-0 gap-xs">
+        <div className="flex items-center justify-end px-md lg:px-2xl py-2.5 shrink-0 gap-xs">
           <button
             type="button"
             onClick={toggleMode}
             aria-label={t('search.compact')}
-            className="flex items-center gap-1.25 px-sm py-1.75 border border-fg/15 text-fg-muted hover:text-fg hover:border-fg/35 transition-all duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
+            className="flex items-center gap-1.25 px-sm h-9 bg-brand text-fg-on-brand hover:opacity-90 transition-all duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
           >
             <Minimize2 size={16} />
             <span className="text-[10px] uppercase tracking-[0.08em] font-semibold hidden sm:inline">Compact</span>
@@ -551,7 +551,7 @@ export default function SiteSearch() {
             type="button"
             onClick={closeSearch}
             aria-label={t('search.close')}
-            className="flex items-center justify-center w-9 h-9 border border-fg/15 text-fg-muted hover:text-fg hover:border-fg/35 transition-all duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
+            className="flex items-center justify-center w-9 h-9 text-fg-muted/60 hover:text-fg transition-all duration-150 focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2"
           >
             <X size={20} />
           </button>

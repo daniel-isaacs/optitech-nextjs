@@ -146,7 +146,11 @@ export default function QuoteBlock({
                 on long lines; opacity is high enough to read clearly. */}
             <span
               aria-hidden="true"
-              className={cn(quoteMarkCva({ color }), "top-[-0.2em] left-0 z-0")}
+              className={cn(
+                quoteMarkCva({ color }),
+                "top-[-0.2em] z-0",
+                alignment === "center" ? "-left-6" : "left-0",
+              )}
               style={{ fontSize: bgMarkSize }}
             >
               &ldquo;

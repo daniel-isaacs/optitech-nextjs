@@ -55,12 +55,17 @@ const sectionCva = cva("px-md lg:px-lg", {
   defaultVariants: { color: "canvas", size: "headline" },
 });
 
-/** Inner column: alignment and max-width cap for centered layouts */
+/**
+ * Inner column: horizontal placement + max-width cap.
+ * "center" centers the column on the page (mx-auto) and caps its width, but the
+ * text inside still reads as a left-aligned block — no text-center, so paragraphs
+ * keep a clean left edge rather than going ragged-centered.
+ */
 const innerCva = cva("", {
   variants: {
     alignment: {
       left:   "",
-      center: "mx-auto max-w-screen-md text-center",
+      center: "mx-auto max-w-screen-md",
     },
   },
   defaultVariants: { alignment: "left" },

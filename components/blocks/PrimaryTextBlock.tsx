@@ -25,11 +25,13 @@ export type PrimaryTextStyleOptions = {
   /**
    * Depth effect applied to the heading letterforms.
    * Works at any scale; most impactful at display/headline.
-   *   extrude — comic 3D offset shadow (dark: white face; light: brand face + grey shadows)
-   *   liquid  — animated brand↔accent gradient sweep via background-clip:text
-   *   outline — hollow letterforms with brand stroke + breathing glow pulse
+   * outline works best at headline scale and above (hollow letterforms need stroke mass).
+   *   extrude — comic 3D offset shadow (dark: white face; light: brand face + token shadows)
+   *   liquid  — animated brand↔accent tidal gradient sweep via background-clip:text
+   *   outline — hollow wire letterforms with brand stroke, static glow, ghost offset
+   *   emboss  — carved-into-surface: brand face, opposing cavity shadow + rim highlight
    */
-  depth?: "none" | "extrude" | "liquid" | "outline";
+  depth?: "none" | "extrude" | "liquid" | "outline" | "emboss";
 };
 
 // ─── CVA variant configs ─────────────────────────────────────────────────────
@@ -111,6 +113,7 @@ const headlineCva = cva("text-balance", {
       extrude: "",
       liquid:  "",
       outline: "",
+      emboss:  "",
     },
   },
   compoundVariants: [
@@ -123,6 +126,7 @@ const headlineCva = cva("text-balance", {
     { depth: "extrude", class: "ot-depth-extrude" },
     { depth: "liquid",  class: "ot-depth-liquid" },
     { depth: "outline", class: "ot-depth-outline" },
+    { depth: "emboss",  class: "ot-depth-emboss" },
   ],
   defaultVariants: { size: "headline", color: "canvas", gradient: "none", depth: "none" },
 });

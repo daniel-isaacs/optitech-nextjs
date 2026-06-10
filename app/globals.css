@@ -591,33 +591,7 @@ body {
 
 @keyframes otLiquidShift {
   0%   { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-
-@keyframes otOutlinePulseDark {
-  0%, 100% {
-    filter:
-      drop-shadow(0 0 0.10em oklch(from var(--ot-brand) l c h / 0.30))
-      drop-shadow(0 0 0.30em oklch(from var(--ot-brand) l c h / 0.12));
-  }
-  50% {
-    filter:
-      drop-shadow(0 0 0.24em oklch(from var(--ot-brand) l c h / 0.72))
-      drop-shadow(0 0 0.56em oklch(from var(--ot-brand) l c h / 0.26));
-  }
-}
-
-@keyframes otOutlinePulseLight {
-  0%, 100% {
-    filter:
-      drop-shadow(0 0 0.06em oklch(from var(--ot-brand) l c h / 0.18))
-      drop-shadow(0 0 0.16em oklch(from var(--ot-brand) l c h / 0.08));
-  }
-  50% {
-    filter:
-      drop-shadow(0 0 0.14em oklch(from var(--ot-brand) l c h / 0.42))
-      drop-shadow(0 0 0.32em oklch(from var(--ot-brand) l c h / 0.16));
-  }
+  100% { background-position: 100% center; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
@@ -649,20 +623,20 @@ body {
   }
 }
 
-/* Light mode: brand teal face, neutral grey shadow stack that fades out */
+/* Light mode: brand face, neutral shadows derived from brand hue at zero chroma */
 [data-theme="light"] .ot-depth-extrude {
   color: var(--ot-brand);
   text-shadow:
     calc(var(--ot-extrude-offset) * 0.03em) calc(var(--ot-extrude-offset) * 0.03em) 0
-      oklch(55% 0.006 195),
+      oklch(from var(--ot-brand) 0.52 0.006 h),
     calc(var(--ot-extrude-offset) * 0.06em) calc(var(--ot-extrude-offset) * 0.06em) 0
-      oklch(45% 0.005 195),
+      oklch(from var(--ot-brand) 0.42 0.005 h),
     calc(var(--ot-extrude-offset) * 0.10em) calc(var(--ot-extrude-offset) * 0.10em) 0
-      oklch(34% 0.004 195),
+      oklch(from var(--ot-brand) 0.30 0.004 h),
     calc(var(--ot-extrude-offset) * 0.16em) calc(var(--ot-extrude-offset) * 0.16em) 0
-      oklch(26% 0.003 195 / 0.80),
+      oklch(from var(--ot-brand) 0.22 0.003 h / 0.80),
     calc(var(--ot-extrude-offset) * 0.22em) calc(var(--ot-extrude-offset) * 0.22em) 0
-      oklch(18% 0.002 195 / 0.45);
+      oklch(from var(--ot-brand) 0.14 0.002 h / 0.45);
 }
 
 /* Brand background: fg-on-brand face, accent-colored shadow stack */
@@ -704,7 +678,7 @@ body {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .ot-depth-liquid { animation: otLiquidShift 5s linear infinite; }
+  .ot-depth-liquid { animation: otLiquidShift 8s ease-in-out infinite alternate; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -729,45 +703,74 @@ body {
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* OUTLINE                                                                     */
-/* Hollow letterforms, brand stroke, drop-shadow glow breathes on 3s loop.   */
+/* Hollow wire letterforms. Brand stroke, static glow, faint ghost offset     */
+/* behind the wire for perceived depth. No animation.                         */
 /* ─────────────────────────────────────────────────────────────────────────── */
 .ot-depth-outline {
   color: transparent;
   -webkit-text-stroke: 0.04em var(--ot-brand);
   paint-order: stroke fill;
-  /* Resting state — reduced-motion users see a static glow at the midpoint */
+  text-shadow: 0.04em 0.06em 0 oklch(from var(--ot-brand) l c h / 0.14);
   filter:
-    drop-shadow(0 0 0.16em oklch(from var(--ot-brand) l c h / 0.50))
-    drop-shadow(0 0 0.40em oklch(from var(--ot-brand) l c h / 0.18));
+    drop-shadow(0 0 0.17em oklch(from var(--ot-brand) l c h / 0.48))
+    drop-shadow(0 0 0.42em oklch(from var(--ot-brand) l c h / 0.17));
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .ot-depth-outline { animation: otOutlinePulseDark 3s ease-in-out infinite; }
-}
-
-/* Light mode: same stroke, substantially softer glow */
+/* Light mode: same stroke, soft glow, ghost offset barely visible */
 [data-theme="light"] .ot-depth-outline {
+  text-shadow: 0.04em 0.06em 0 oklch(from var(--ot-brand) l c h / 0.08);
   filter:
     drop-shadow(0 0 0.10em oklch(from var(--ot-brand) l c h / 0.24))
     drop-shadow(0 0 0.22em oklch(from var(--ot-brand) l c h / 0.10));
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  [data-theme="light"] .ot-depth-outline {
-    animation: otOutlinePulseLight 3s ease-in-out infinite;
-  }
-}
-
-/* Brand background: accent stroke so hollow text contrasts against the fill */
+/* Brand background: accent stroke for contrast against the brand fill */
 .bg-brand-fill .ot-depth-outline {
   -webkit-text-stroke: 0.04em var(--ot-accent);
+  text-shadow: 0.04em 0.06em 0 oklch(from var(--ot-accent) l c h / 0.22);
   filter:
-    drop-shadow(0 0 0.16em oklch(from var(--ot-accent) l c h / 0.50))
-    drop-shadow(0 0 0.40em oklch(from var(--ot-accent) l c h / 0.18));
+    drop-shadow(0 0 0.17em oklch(from var(--ot-accent) l c h / 0.50))
+    drop-shadow(0 0 0.42em oklch(from var(--ot-accent) l c h / 0.18));
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .bg-brand-fill .ot-depth-outline { animation: otOutlinePulseDark 3s ease-in-out infinite; }
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* EMBOSS                                                                      */
+/* Carved-into-surface illusion. Opposing shadow offsets: dark edge bottom-   */
+/* right (cavity shadow), bright rim top-left (cavity highlight). Bloom glow  */
+/* makes the brand color appear lit from within.                              */
+/* No animation. Fully static. Scales gracefully from display to label.       */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.ot-depth-emboss {
+  color: var(--ot-brand);
+  text-shadow:
+    /* Dark cavity shadow — bottom-right edge */
+    0.026em  0.026em  0    oklch(from var(--ot-brand) calc(l * 0.18) c h / 0.88),
+    /* Bright rim highlight — top-left edge */
+   -0.014em -0.014em  0    oklch(from var(--ot-brand) calc(l + 0.28) c h / 0.44),
+    /* Tight inner bloom */
+    0        0        0.5em oklch(from var(--ot-brand) l c h / 0.22),
+    /* Soft ambient drop */
+    0        0.09em   0.32em oklch(from var(--ot-brand) calc(l * 0.38) c h / 0.16);
+}
+
+/* Light mode: same directions, tighter rim (light bg needs less pop), deeper shadow */
+[data-theme="light"] .ot-depth-emboss {
+  color: var(--ot-brand);
+  text-shadow:
+    0.026em  0.026em  0    oklch(from var(--ot-brand) calc(l * 0.14) c h / 0.95),
+   -0.014em -0.014em  0    oklch(from var(--ot-brand) calc(l + 0.28) c h / 0.28),
+    0        0        0.4em oklch(from var(--ot-brand) l c h / 0.14),
+    0        0.09em   0.28em oklch(from var(--ot-brand) calc(l * 0.32) c h / 0.12);
+}
+
+/* Brand background: accent face, accent-derived cavity shadows */
+.bg-brand-fill .ot-depth-emboss {
+  color: var(--ot-accent);
+  text-shadow:
+    0.026em  0.026em  0    oklch(from var(--ot-accent) calc(l * 0.18) c h / 0.85),
+   -0.014em -0.014em  0    oklch(from var(--ot-accent) calc(l + 0.24) c h / 0.42),
+    0        0        0.5em oklch(from var(--ot-accent) l c h / 0.20),
+    0        0.09em   0.32em oklch(from var(--ot-accent) calc(l * 0.38) c h / 0.15);
 }
 
 /* ── Card isometric tilt ──────────────────────────────────────────────────────

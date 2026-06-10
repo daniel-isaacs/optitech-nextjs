@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { parseChartData } from './chart/parseChartData'
 import { CHART_PALETTES, getChartTheme } from './chart/chartColors'
 import { HEIGHT_MAP } from '@/cms/styling/OT_ChartBlock.styling'
@@ -83,6 +85,13 @@ export default function ChartBlockClient({
 }: ChartBlockClientProps) {
   const { color, height: heightKey } = styleOptions
 
+  // Re-key the chart area on every route change so Recharts re-fires its entrance
+  // animation after client-side navigation (the App Router cache keeps this component
+  // alive between visits, which suppresses Recharts' mount-based animation).
+  const pathname = usePathname()
+  const [chartKey, setChartKey] = useState(0)
+  useEffect(() => { setChartKey(k => k + 1) }, [pathname])
+
   const parsed  = parseChartData(chartData, chartType)
   const palette = CHART_PALETTES[seriesColors] ?? CHART_PALETTES.brand
   const theme   = getChartTheme(color)
@@ -162,8 +171,8 @@ export default function ChartBlockClient({
         )}
       </div>
 
-      {/* Chart */}
-      {renderChart()}
+      {/* Chart — keyed so Recharts remounts and re-animates on every navigation */}
+      <div key={chartKey}>{renderChart()}</div>
     </div>
   )
 }

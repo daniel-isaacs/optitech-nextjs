@@ -52,14 +52,15 @@ export const OT_PrimaryTextDefault = displayTemplate({
       },
     },
     depth: {
-      displayName: 'Heading depth effect — Display scale only',
+      displayName: 'Heading depth effect — works at any scale, best at headline+',
       editor: 'select',
       sortOrder: 50,
       choices: {
-        none:    { displayName: 'None (Default)',          sortOrder: 10 },
-        extrude: { displayName: 'Comic Extrude',           sortOrder: 20 },
-        liquid:  { displayName: 'Liquid Fill',             sortOrder: 30 },
-        outline: { displayName: 'Chromatic Outline Pulse', sortOrder: 40 },
+        none:    { displayName: 'None (Default)',                        sortOrder: 10 },
+        extrude: { displayName: 'Comic Extrude — hard shadow stack',     sortOrder: 20 },
+        emboss:  { displayName: 'Mineral Emboss — carved into surface',  sortOrder: 30 },
+        outline: { displayName: 'Chromatic Outline — hollow wire',       sortOrder: 40 },
+        liquid:  { displayName: 'Liquid Fill — animated gradient sweep', sortOrder: 50 },
       },
     },
     entranceAnimation: {

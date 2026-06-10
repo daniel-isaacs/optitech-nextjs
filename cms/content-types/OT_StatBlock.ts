@@ -13,7 +13,7 @@ export const OT_StatBlock = contentType({
   displayName:          'Stat Block',
   description:          'Row of up to 4 metric callouts, each with a value, label, and context.',
   baseType:             '_component',
-  compositionBehaviors: ['sectionEnabled'],
+  compositionBehaviors: ['elementEnabled', 'sectionEnabled'],
   properties: {
     stats: {
       type:        'array',

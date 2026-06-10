@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   Search, X, Maximize2, Minimize2,
-  FileText, Newspaper, LayoutGrid, Sparkles, Hash, List,
+  FileText, Newspaper, LayoutGrid, Sparkles, Hash, List, SlidersHorizontal,
 } from 'lucide-react'
 import { useSearch } from './SearchProvider'
 import { useTranslation } from '@/lib/i18n/useTranslation'
@@ -243,7 +243,7 @@ export default function SiteSearch() {
                   : 'px-[14px] py-[8px] text-[12px]',
                 isActive
                   ? 'bg-brand text-fg-on-brand shadow-[0_2px_10px_var(--ot-bloom-brand-faint)]'
-                  : 'bg-fg/7 text-fg-muted/65 hover:bg-fg/12 hover:text-fg',
+                  : 'border border-fg/18 text-fg-muted hover:border-brand/40 hover:text-fg hover:bg-brand/5',
               ].join(' ')}
             >
               <f.Icon size={isCompact ? 10 : 12} className="shrink-0" />
@@ -290,7 +290,10 @@ export default function SiteSearch() {
     if (!showTopics) return null
     return (
       <div className={`flex flex-wrap items-center gap-xs ${isCompact ? '' : 'mt-xs'}`}>
-        <Hash size={10} className="text-fg-muted/30 shrink-0" aria-hidden />
+        <span className="flex items-center gap-[4px] text-[10px] uppercase tracking-[0.11em] font-bold text-fg-muted/50 shrink-0 mr-[2px] select-none">
+          <Hash size={10} aria-hidden />
+          {!isCompact && 'Topics'}
+        </span>
         {availableTopics.map(topic => {
           const isActive = topicFilter === topic
           return (
@@ -306,7 +309,7 @@ export default function SiteSearch() {
                 'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand',
                 isActive
                   ? 'bg-brand/15 ring-1 ring-brand/30 text-brand'
-                  : 'bg-fg/6 text-fg-muted/50 hover:bg-fg/10 hover:text-fg-muted',
+                  : 'border border-fg/15 text-fg-muted/75 hover:border-fg/30 hover:text-fg-muted hover:bg-fg/8',
               ].join(' ')}
             >
               {topic}
@@ -527,7 +530,7 @@ export default function SiteSearch() {
         className="flex flex-col h-full overflow-hidden"
         style={{
           background: [
-            'radial-gradient(ellipse 75% 52% at 8% -4%, oklch(from var(--ot-brand) l c h / 0.26) 0%, transparent 65%)',
+            'radial-gradient(ellipse 130% 48% at 50% -6%, oklch(from var(--ot-brand) l c h / 0.22) 0%, transparent 68%)',
             'var(--ot-canvas)',
           ].join(', '),
         }}
@@ -614,9 +617,16 @@ export default function SiteSearch() {
               )}
             </div>
 
-            {/* Filter pills + view toggle */}
-            <div className="flex items-center flex-wrap gap-sm justify-between mb-md">
-              {TypeFilterPills({ compact: false })}
+            {/* Filter section */}
+            <div className="mb-md">
+              <div className="flex items-center gap-[5px] mb-[10px]">
+                <SlidersHorizontal size={11} className="text-fg-muted/50" strokeWidth={2} aria-hidden />
+                <span className="text-[10px] uppercase tracking-[0.13em] font-bold text-fg-muted/50 select-none">
+                  Refine by
+                </span>
+              </div>
+              <div className="flex items-center flex-wrap gap-sm justify-between">
+                {TypeFilterPills({ compact: false })}
 
               {/* List / card view toggle */}
               <div className="flex items-center gap-[2px] ml-auto" role="group" aria-label="View mode">
@@ -650,6 +660,7 @@ export default function SiteSearch() {
                 >
                   <LayoutGrid size={16} strokeWidth={1.75} />
                 </button>
+              </div>
               </div>
             </div>
 

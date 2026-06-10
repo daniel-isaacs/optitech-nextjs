@@ -453,7 +453,14 @@ export default function StatBlock({
   const isDarkSurface = color === 'brand' || glass
 
   const header = (eyebrow || heading) ? (
-    <header className="flex flex-col gap-xs mb-lg lg:mb-xl max-w-screen-md">
+    <header
+      className={cn(
+        'flex flex-col gap-xs mb-lg lg:mb-xl max-w-screen-md',
+        // Glass mode tightens the section padding to a frame gap, so add the
+        // header's own top breathing room back in.
+        glass && 'pt-md lg:pt-lg',
+      )}
+    >
       {eyebrow && <p className={eyebrowCva({ color })}>{eyebrow}</p>}
       {heading && <h2 className={headingCva({ color })}>{heading}</h2>}
     </header>

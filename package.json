@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cms:push": "node --env-file=.env.$(git branch --show-current) node_modules/@optimizely/cms-cli/bin/run.js config push",
+    "cms:pull": "node --env-file=.env.$(git branch --show-current) node_modules/@optimizely/cms-cli/bin/run.js config pull"
   },
   "dependencies": {
     "@optimizely/cms-cli": "^2.0.0",

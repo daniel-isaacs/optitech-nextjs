@@ -49,7 +49,9 @@ function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolea
   )
 }
 
-// ─── TopicPill — filled accent badge (editorial header) ───────────────────────
+// ─── TopicPill — filled accent badge (editorial + atmospheric headers) ────────
+// Accent fill + fg-on-accent text. Used wherever the label sits over an image or
+// busy surface, where accent-as-text would be hard to read.
 
 function TopicPill({ topic }: { topic: string }) {
   const label = TOPIC_LABELS[topic] ?? topic
@@ -246,7 +248,10 @@ function AtmosphericHeader({
           <div className="bg-glass px-lg py-lg lg:px-xl lg:py-xl">
             {topic && (
               <div className="mb-md" {...pa?.('topic')}>
-                <TopicMark topic={topic} />
+                {/* Filled accent pill — over the featured image the accent-as-text
+                    TopicMark is hard to read, so use the accent background with the
+                    assigned fg-on-accent text for guaranteed contrast. */}
+                <TopicPill topic={topic} />
               </div>
             )}
 

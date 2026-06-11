@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but track *.example templates so the set of per-branch instances is documented
+!.env*.example
 
 # vercel
 .vercel

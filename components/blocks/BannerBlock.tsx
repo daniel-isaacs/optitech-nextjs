@@ -190,10 +190,23 @@ export default function BannerBlock({
   const Heading    = headingLevel
 
   // ── Content elements (shared between scrim and glass layouts) ──────────────
+  // When an image sits behind the label, accent-as-text is hard to read, so the
+  // eyebrow becomes a filled accent pill (accent background + assigned
+  // fg-on-accent text) for guaranteed contrast. Without an image it keeps the
+  // per-color text treatment. The outer <p> retains `banner-eyebrow` either way
+  // so the entrance animation still targets it.
   const eyebrowEl = eyebrow ? (
-    <p className={cn('banner-eyebrow', eyebrowCva({ color }))} {...pa('eyebrow')}>
-      {eyebrow}
-    </p>
+    hasImage ? (
+      <p className="banner-eyebrow" {...pa('eyebrow')}>
+        <span className="inline-flex items-center px-sm py-0.75 bg-accent text-fg-on-accent text-label uppercase tracking-label font-semibold">
+          {eyebrow}
+        </span>
+      </p>
+    ) : (
+      <p className={cn('banner-eyebrow', eyebrowCva({ color }))} {...pa('eyebrow')}>
+        {eyebrow}
+      </p>
+    )
   ) : null
 
   const headingEl = (

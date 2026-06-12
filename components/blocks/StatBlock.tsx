@@ -169,13 +169,13 @@ const contextCva = cva('text-label font-normal', {
   defaultVariants: { color: 'brand' },
 })
 
-/** Icon badge — small inline marker anchored to the label row. */
+/** Icon badge — sits left of the label+context column in the 2-col sub-layout. */
 const iconBadgeCva = cva('shrink-0', {
   variants: {
     color: {
-      brand:   'text-fg-on-brand/60',
-      canvas:  'text-brand/70',
-      surface: 'text-brand/70',
+      brand:   'text-fg-on-brand/70',
+      canvas:  'text-brand/80',
+      surface: 'text-brand/80',
     },
   },
   defaultVariants: { color: 'brand' },
@@ -393,31 +393,26 @@ export default function StatBlock({
               style={labelStyle}
             />
 
-            {/* ── Label (with optional inline icon) ────────────────────── */}
-            <p
-              className={cn(labelCva({ color }), 'mt-sm flex items-center gap-xs')}
+            {/* ── Label + context — icon left / text right when icon is on ── */}
+            <div
+              className={cn('mt-sm flex items-center', showIcons && Icon ? 'gap-sm' : '')}
               style={labelStyle}
             >
               {showIcons && Icon && (
                 <Icon
                   aria-hidden="true"
                   className={iconBadgeCva({ color })}
-                  size={13}
-                  strokeWidth={2}
+                  size={34}
+                  strokeWidth={1.5}
                 />
               )}
-              {stat.label}
-            </p>
-
-            {/* ── Context (optional) ────────────────────────────────────── */}
-            {stat.context && (
-              <p
-                className={cn(contextCva({ color }), 'mt-xs')}
-                style={labelStyle}
-              >
-                {stat.context}
-              </p>
-            )}
+              <div className="flex flex-col gap-xs">
+                <p className={labelCva({ color })}>{stat.label}</p>
+                {stat.context && (
+                  <p className={contextCva({ color })}>{stat.context}</p>
+                )}
+              </div>
+            </div>
           </li>
         )
       })}

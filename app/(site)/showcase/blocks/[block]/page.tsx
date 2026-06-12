@@ -17,6 +17,7 @@ import OT_TabsBlock                  from '@/cms/components/OT_TabsBlock'
 import OT_ChartBlock                 from '@/cms/components/OT_ChartBlock'
 import OT_BannerBlock                from '@/cms/components/OT_BannerBlock'
 import ResourceLibraryBlock         from '@/components/blocks/ResourceLibraryBlock'
+import CalloutBlock                  from '@/components/blocks/CalloutBlock'
 import JsonCopyBlock                 from '@/components/blocks/chart/JsonCopyBlock'
 import TrustRail                     from '@/components/blocks/TrustRail'
 import Button                        from '@/components/ui/Button'
@@ -33,6 +34,7 @@ const BLOCK_SLUGS = [
   'hero', 'card', 'primary-text', 'quote', 'rich-text',
   'image', 'video', 'stat', 'feature-grid', 'trust-rail',
   'accordion', 'tabs', 'blog-feed', 'button', 'chart', 'banner', 'resource-library',
+  'callout',
 ] as const
 
 type BlockSlug = typeof BLOCK_SLUGS[number]
@@ -55,6 +57,7 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'chart':        { label: 'ChartBlock',          cmsKey: 'OT_ChartBlock',       description: 'CMS-driven data visualization block. Five chart types: line, area, bar, bar stacked, and radial gauge. Four color variants, five series color palettes, fully responsive via Recharts.' },
   'banner':           { label: 'BannerBlock',          cmsKey: 'OT_BannerBlock',          description: 'Full-bleed background image with layered content: eyebrow, headline, optional body, and up to two CTAs. Two overlay modes: scrim (color overlay over the image) and glass (content inside a frosted panel). Three color variants, two alignment options, two height sizes, and two image blend modes.' },
   'resource-library': { label: 'ResourceLibraryBlock', cmsKey: 'OT_ResourceLibraryBlock', description: 'DAM-connected asset download list. The editor picks a single DAM asset as a collection anchor; the block fetches all assets in that collection via Optimizely Graph and renders them as a dense list or card grid with Lucide file-type iconography and native download links.' },
+  'callout':          { label: 'CalloutBlock',          cmsKey: 'OT_CalloutBlock',          description: 'Compact semantic inline notification. Six intent types: neutral, info, success, warning, danger, brand. Three variants: filled, bordered, bar. Dismissible with a two-phase kinetic exit — content sweeps right and fades, then the container height collapses.' },
 }
 
 export function generateStaticParams() {
@@ -1648,6 +1651,231 @@ function ResourceLibraryShowcase() {
   )
 }
 
+// ─── Callout ──────────────────────────────────────────────────────────────────
+
+const CALLOUT_INTENTS = ['neutral', 'info', 'success', 'warning', 'danger', 'brand'] as const
+type CalloutIntent = typeof CALLOUT_INTENTS[number]
+
+const CALLOUT_HEADINGS: Record<CalloutIntent, string> = {
+  neutral: 'Scheduled maintenance window',
+  info:    'API rate limits increased',
+  success: 'Deployment successful',
+  warning: 'Trial ending in 3 days',
+  danger:  'Action required: API key expiring',
+  brand:   'HIPAA compliance module now available',
+}
+
+const CALLOUT_BODIES: Record<CalloutIntent, string> = {
+  neutral: 'Platform maintenance is scheduled for Sunday, 2:00–4:00 AM UTC. No action required.',
+  info:    'Enterprise plans now support 10,000 requests per minute. Read the docs for updated rate limit headers.',
+  success: 'Release 4.2.1 is live in production. All health checks are passing and telemetry looks normal.',
+  warning: 'Your 30-day trial expires in 3 days. Upgrade now to prevent service interruption.',
+  danger:  'Your primary API key expires in 24 hours. Rotate it immediately to avoid authentication failures.',
+  brand:   'OptiTech\'s HIPAA compliance module is generally available. Configure it in your account security settings.',
+}
+
+const CALLOUT_CTAS: Record<CalloutIntent, string> = {
+  neutral: 'View schedule',
+  info:    'Read the docs',
+  success: 'View release notes',
+  warning: 'Upgrade now',
+  danger:  'Rotate key',
+  brand:   'Configure now',
+}
+
+const CALLOUT_BAR_HEADINGS: Record<CalloutIntent, string> = {
+  neutral: 'Platform maintenance scheduled Sunday 2:00 AM UTC.',
+  info:    'New: enterprise API rate limits increased to 10,000 req/min.',
+  success: 'Release 4.2.1 deployed successfully. All systems nominal.',
+  warning: 'Your trial expires in 3 days. Upgrade to prevent interruption.',
+  danger:  'API key expires in 24 hours. Rotate it immediately.',
+  brand:   'OptiTech HIPAA compliance module is now generally available.',
+}
+
+const CALLOUT_ICONS: Record<CalloutIntent, string> = {
+  neutral: 'clock',
+  info:    'lightbulb',
+  success: 'checkCircle',
+  warning: 'timer',
+  danger:  'lock',
+  brand:   'sparkles',
+}
+
+function CalloutGrid({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-sm px-md lg:px-lg pb-lg">
+      {children}
+    </div>
+  )
+}
+
+function CalloutShowcase() {
+  return (
+    <>
+      <BlockHeader slug="callout" />
+
+      {/* ── Filled · all 6 intents ──────────────────────────────────────── */}
+      <VariantGroup label="Filled variant · all 6 intents" note="18% alpha tint + 40% alpha full border in dark mode — each intent reads as a distinct color, not just a lighter surface. Heading and body use standard text tokens." />
+      <CalloutGrid>
+        {CALLOUT_INTENTS.map(intent => (
+          <CalloutBlock
+            key={intent}
+            heading={CALLOUT_HEADINGS[intent]}
+            body={CALLOUT_BODIES[intent]}
+            styleOptions={{ intent, variant: 'filled' }}
+          />
+        ))}
+      </CalloutGrid>
+
+      {/* ── Bordered · all 6 intents ────────────────────────────────────── */}
+      <VariantGroup label="Bordered variant · all 6 intents" note="Surface background + 3px top accent rule in the intent foreground color. Subdued but categorically distinct." />
+      <CalloutGrid>
+        {CALLOUT_INTENTS.map(intent => (
+          <CalloutBlock
+            key={intent}
+            heading={CALLOUT_HEADINGS[intent]}
+            body={CALLOUT_BODIES[intent]}
+            styleOptions={{ intent, variant: 'bordered' }}
+          />
+        ))}
+      </CalloutGrid>
+
+      {/* ── Icon layout · 28px left column ──────────────────────────────── */}
+      <VariantGroup label="Icon layout · filled · all 6 intents" note="When an icon is selected, it anchors the left as a 28px category signal — vertically centered with the text column. The icon communicates semantic type at a glance rather than decorating the heading inline." />
+      <CalloutGrid>
+        {CALLOUT_INTENTS.map(intent => (
+          <CalloutBlock
+            key={intent}
+            heading={CALLOUT_HEADINGS[intent]}
+            body={CALLOUT_BODIES[intent]}
+            ctaLabel={CALLOUT_CTAS[intent]}
+            ctaUrl="#"
+            styleOptions={{ intent, variant: 'filled', icon: CALLOUT_ICONS[intent] }}
+          />
+        ))}
+      </CalloutGrid>
+      <VariantGroup label="Icon layout · bordered · all 6 intents" />
+      <CalloutGrid>
+        {CALLOUT_INTENTS.map(intent => (
+          <CalloutBlock
+            key={intent}
+            heading={CALLOUT_HEADINGS[intent]}
+            body={CALLOUT_BODIES[intent]}
+            ctaLabel={CALLOUT_CTAS[intent]}
+            ctaUrl="#"
+            styleOptions={{ intent, variant: 'bordered', icon: CALLOUT_ICONS[intent] }}
+          />
+        ))}
+      </CalloutGrid>
+
+      {/* ── Bar · all 6 intents ─────────────────────────────────────────── */}
+      <VariantGroup label="Bar variant · all 6 intents" note="4px left accent anchor catches the eye during scroll; faint background tint separates the bar from the page; generous padding gives it enough mass to register at a glance. Designed for system notices and site-wide announcements." />
+      <div className="flex flex-col px-md lg:px-lg pb-lg gap-xs">
+        {CALLOUT_INTENTS.map(intent => (
+          <CalloutBlock
+            key={intent}
+            heading={CALLOUT_BAR_HEADINGS[intent]}
+            ctaLabel={CALLOUT_CTAS[intent]}
+            ctaUrl="#"
+            styleOptions={{ intent, variant: 'bar', icon: CALLOUT_ICONS[intent] }}
+          />
+        ))}
+      </div>
+
+      {/* ── Max width ────────────────────────────────────────────────────── */}
+      <VariantGroup label="Max width" note="Use Full for in-column placements. Constrain width when placing the callout as a standalone section so it does not stretch awkwardly to 1200px container width." />
+      <div className="flex flex-col px-md lg:px-lg pb-lg gap-sm">
+        {(['full', 'wide', 'default', 'narrow'] as const).map(mw => (
+          <div key={mw}>
+            <VariantLabel label={`maxWidth: "${mw}"`} />
+            <CalloutBlock
+              heading="Platform maintenance scheduled Sunday 2:00–4:00 AM UTC."
+              body="Read operations will continue without interruption. Write operations may have increased latency during this window."
+              ctaLabel="View schedule"
+              ctaUrl="#"
+              styleOptions={{ intent: 'neutral', variant: 'filled', icon: 'clock', maxWidth: mw }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* ── Compact size ────────────────────────────────────────────────── */}
+      <VariantGroup label="Compact size" note="Heading and CTA collapse to a single row when no body text is present. Reduced vertical padding for dense layouts." />
+      <div className="flex flex-col px-md lg:px-lg pb-lg gap-xs">
+        <VariantLabel label="default size" />
+        <CalloutBlock
+          heading="New feature: HIPAA compliance module now generally available."
+          ctaLabel="Configure now"
+          ctaUrl="#"
+          styleOptions={{ intent: 'brand', variant: 'filled', size: 'default', icon: 'sparkles' }}
+        />
+        <VariantLabel label="compact size — heading + CTA on one row" />
+        <CalloutBlock
+          heading="New feature: HIPAA compliance module now generally available."
+          ctaLabel="Configure now"
+          ctaUrl="#"
+          styleOptions={{ intent: 'brand', variant: 'filled', size: 'compact', icon: 'sparkles' }}
+        />
+        <VariantLabel label="compact with body — falls back to stacked layout" />
+        <CalloutBlock
+          heading="HIPAA compliance module now available."
+          body="Configure data residency, audit logging, and access controls in your account security settings."
+          ctaLabel="Configure now"
+          ctaUrl="#"
+          styleOptions={{ intent: 'brand', variant: 'filled', size: 'compact', icon: 'sparkles' }}
+        />
+      </div>
+
+      {/* ── Bordered + center alignment ─────────────────────────────────── */}
+      <VariantGroup label="Center alignment · bordered" />
+      <div className="px-md lg:px-lg pb-lg">
+        <CalloutBlock
+          heading="Scheduled maintenance window"
+          body="Platform maintenance is scheduled for Sunday, 2:00–4:00 AM UTC. No downtime expected for read operations."
+          ctaLabel="View schedule"
+          ctaUrl="#"
+          styleOptions={{ intent: 'neutral', variant: 'bordered', alignment: 'center', icon: 'clock' }}
+        />
+      </div>
+
+      {/* ── Dismissible · live demo ──────────────────────────────────────── */}
+      <VariantGroup
+        label="Dismissible · live demo"
+        note="Click the × button to trigger the two-phase exit: content sweeps right + fades out (220ms ease-out-quart), then the container height collapses (280ms ease-out-quart). Refresh to reset. prefers-reduced-motion: skips the sweep, collapses instantly."
+      />
+      <CalloutGrid>
+        {CALLOUT_INTENTS.map(intent => (
+          <CalloutBlock
+            key={intent}
+            heading={CALLOUT_HEADINGS[intent]}
+            body={CALLOUT_BODIES[intent]}
+            styleOptions={{ intent, variant: 'filled', dismissible: true, icon: CALLOUT_ICONS[intent] }}
+          />
+        ))}
+      </CalloutGrid>
+
+      {/* ── Dismissible bar ─────────────────────────────────────────────── */}
+      <VariantGroup label="Dismissible bar" />
+      <div className="flex flex-col px-md lg:px-lg pb-lg gap-xs">
+        <CalloutBlock
+          heading="Release 4.2.1 is live. All health checks passing."
+          ctaLabel="View release notes"
+          ctaUrl="#"
+          styleOptions={{ intent: 'success', variant: 'bar', dismissible: true }}
+        />
+        <CalloutBlock
+          heading="Your API key expires in 24 hours. Rotate it immediately."
+          ctaLabel="Rotate key"
+          ctaUrl="#"
+          styleOptions={{ intent: 'danger', variant: 'bar', dismissible: true }}
+        />
+      </div>
+
+      <div className="pb-xl" />
+    </>
+  )
+}
+
 export default async function ShowcaseBlockPage({ params }: Props) {
   const { block } = await params
 
@@ -1669,6 +1897,7 @@ export default async function ShowcaseBlockPage({ params }: Props) {
     case 'chart':        return <ChartShowcase />
     case 'banner':            return <BannerShowcase />
     case 'resource-library': return <ResourceLibraryShowcase />
+    case 'callout':          return <CalloutShowcase />
     default:                 return notFound()
   }
 }

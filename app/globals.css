@@ -1240,24 +1240,63 @@ body {
 .card-rich p:last-child {
   margin-bottom: 0;
 }
+/* Lists get symmetric breathing room from surrounding prose, top and bottom. */
 .card-rich ul,
 .card-rich ol {
-  padding-left: var(--ot-space-lg);
+  margin-top: var(--ot-space-md);
+  margin-bottom: var(--ot-space-md);
+}
+/* Unordered lists use an accent checkmark instead of a disc. The marker is
+   absolutely positioned so wrapped lines hang-indent under the text, not the
+   check. No color is set on the text itself — it inherits the card scheme. */
+.card-rich ul {
+  list-style: none;
+  padding-left: 0;
+}
+.card-rich ul li {
+  position: relative;
+  padding-left: 1.75rem;
   margin-bottom: var(--ot-space-sm);
 }
-.card-rich ul {
-  list-style-type: disc;
+.card-rich ul li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  line-height: inherit;
+  font-weight: 700;
+  /* Default (dark scheme in dark mode, and over-image cards which carry no
+     data-scheme): bright signal green on a dark ground. Overridden per scheme
+     and per page theme below. */
+  color: var(--ot-accent);
 }
+/* Brand fill: near-white check reads on the teal ground (and follows a CMS
+   brand override, since fg-on-brand is paired to whatever brand becomes). */
+.card-rich[data-scheme="brand"] ul li::before {
+  color: var(--ot-fg-on-brand);
+}
+/* Light fill (a light card on a dark section): the bright accent is too pale on
+   near-white, so drop to the deeper accent for contrast. */
+.card-rich[data-scheme="light"] ul li::before {
+  color: var(--ot-accent-hover);
+}
+/* Dark scheme in LIGHT page mode: surface/canvas invert to near-white, so the
+   bright accent loses contrast — drop to the deeper accent. Over-image cards
+   carry no data-scheme and a locally-pinned data-theme="dark", so they are
+   unaffected and keep the bright accent. */
+[data-theme="light"] .card-rich[data-scheme="dark"] ul li::before {
+  color: var(--ot-accent-hover);
+}
+/* Ordered lists keep numeric markers, with the same generous item spacing. */
 .card-rich ol {
+  padding-left: var(--ot-space-lg);
   list-style-type: decimal;
 }
-.card-rich li {
-  margin-bottom: var(--ot-space-xs);
+.card-rich ol li {
+  padding-left: var(--ot-space-xs);
+  margin-bottom: var(--ot-space-sm);
 }
 .card-rich li:last-child {
-  margin-bottom: 0;
-}
-.card-rich :is(ul, ol):last-child {
   margin-bottom: 0;
 }
 .card-rich strong {

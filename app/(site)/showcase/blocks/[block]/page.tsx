@@ -59,7 +59,7 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'banner':           { label: 'BannerBlock',          cmsKey: 'OT_BannerBlock',          description: 'Full-bleed background image with layered content: eyebrow, headline, optional body, and up to two CTAs. Two overlay modes: scrim (color overlay over the image) and glass (content inside a frosted panel). Three color variants, two alignment options, two height sizes, and two image blend modes.' },
   'resource-library': { label: 'ResourceLibraryBlock', cmsKey: 'OT_ResourceLibraryBlock', description: 'DAM-connected asset download list. The editor picks a single DAM asset as a collection anchor; the block fetches all assets in that collection via Optimizely Graph and renders them as a dense list or card grid with Lucide file-type iconography and native download links.' },
   'callout':          { label: 'CalloutBlock',          cmsKey: 'OT_CalloutBlock',          description: 'Compact semantic inline notification. Six intent types: neutral, info, success, warning, danger, brand. Three variants: filled, bordered, bar. Dismissible with a two-phase kinetic exit — content sweeps right and fades, then the container height collapses.' },
-  'divider':          { label: 'DividerBlock',          cmsKey: 'OT_DividerBlock',          description: 'Structural section divider that opens deliberate breathing room between stacked sections. Three treatments: centered text mark (a hairline broken by an editable label or an editorial ornament), gradient bleed (a waterfall of color that pours from the top and dissolves at the bottom), and angled gradient (a faceted ribbon of blended brand color, the footer’s diagonal-mask move turned on its side). One Tone control spans all three — neutral, brand, accent, spectrum, aurora — plus editor-controlled spacing, bar weight, and an optional draw-in reveal that rides the shared scroll observer.' },
+  'divider':          { label: 'DividerBlock',          cmsKey: 'OT_DividerBlock',          description: 'Structural section divider that opens deliberate breathing room between stacked sections. Three treatments: mark (a hairline broken by an editable label or an editorial ornament), glow (a precise luminous rule — a chromatic line of light with a soft bloom above and below), and bleed (atmospheric luminance — an elliptical light seam rising from the boundary). One Tone control spans all three — neutral, brand, accent, spectrum, aurora — plus editor-controlled spacing, weight, and an optional draw-in reveal that rides the shared scroll observer.' },
 }
 
 export function generateStaticParams() {
@@ -2051,22 +2051,22 @@ function DividerShowcase() {
       <SectionBand eyebrow="The platform" ground="surface">
         OptiTech gives engineering teams the infrastructure to ship incrementally, measure precisely, and respond in real time. Every flag carries an audit trail; every rollout is reversible.
       </SectionBand>
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'spectrum', weight: 'slim', space: 'lg' }} />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'spectrum', weight: 'slim', space: 'lg' }} />
       <SectionBand eyebrow="The method">
         Decisions are made at the edges of your system, not in a committee room three weeks later. The result is a shorter loop between a hypothesis and the evidence that settles it.
       </SectionBand>
 
       {/* ── The three styles ────────────────────────────────────────────── */}
-      <VariantGroup label="Styles · large spacing" note="Centered text mark, gradient bleed (waterfall), angled gradient — the same spacing scale, tone control, and token system behind each." />
+      <VariantGroup label="Styles · large spacing" note="Three ways to close a section. Mark is editorial punctuation; glow is a precise line of light; bleed is atmospheric luminance. One tone control and the same spacing scale behind each." />
 
-      <VariantLabel label='style: "mark"' note="A hairline broken by an editable label or an editorial ornament." />
+      <VariantLabel label='style: "mark"' note="A hairline broken by an editable label or an editorial ornament. Use when the break deserves a word." />
       <OT_DividerBlock content={{ label: 'Continue' } as any} displaySettings={{ style: 'mark', tone: 'neutral', ornament: 'pendant', space: 'lg' }} />
 
-      <VariantLabel label='style: "bleed"' note="A waterfall of color that pours from the top edge and dissolves to nothing at the bottom, full width." />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'spectrum', space: 'lg' }} />
+      <VariantLabel label='style: "glow"' note="A precise line of light: a chromatic rule with a soft bloom above and below, fading at the edges. The confident, crisp break." />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'spectrum', weight: 'slim', space: 'lg' }} />
 
-      <VariantLabel label='style: "prism"' note="A faceted ribbon of blended brand color — the footer's diagonal-mask move turned on its side." />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'spectrum', weight: 'slim', space: 'lg' }} />
+      <VariantLabel label='style: "bleed"' note="Atmospheric luminance: an elliptical glow rising from the boundary, brightest at center, dissolving at the edges. The quiet, ambient break." />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'spectrum', space: 'lg' }} />
 
       {/* ── Text mark · label + ornaments ───────────────────────────────── */}
       <VariantGroup label="Centered text mark · label and ornaments" note="A label takes precedence; with no label the mark falls back to the chosen ornament, never a broken gap. Spectrum and aurora tones turn the hairlines into gradients." />
@@ -2081,8 +2081,28 @@ function DividerShowcase() {
       <VariantLabel label='ornament: "dot" • · no label' />
       <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'mark', tone: 'neutral', ornament: 'dot', space: 'md' }} />
 
-      {/* ── Gradient bleed · waterfall · tones ──────────────────────────── */}
-      <VariantGroup label="Gradient bleed · waterfall · tones" note="Color pours from the top and disappears at the bottom. The horizontal blend carries the tone; the vertical mask does the falling." />
+      {/* ── Glow · chromatic rule · tones ───────────────────────────────── */}
+      <VariantGroup label="Glow · chromatic rule · tones" note="A precise line of light between two sections. The rule carries the tone and fades to transparent at the outer edges; a soft bloom emanates above and below. Use when you want a confident, luminous seam." />
+      <VariantLabel label='tone: "neutral" — a quiet rule of light' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'neutral', weight: 'slim', space: 'md' }} />
+      <VariantLabel label='tone: "brand"' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'brand', weight: 'slim', space: 'md' }} />
+      <VariantLabel label='tone: "accent"' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'accent', weight: 'slim', space: 'md' }} />
+      <VariantLabel label='tone: "spectrum" — brand → accent' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'spectrum', weight: 'slim', space: 'md' }} />
+      <VariantLabel label='tone: "aurora" — brand · accent · brand' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'aurora', weight: 'slim', space: 'md' }} />
+
+      {/* ── Glow · weight ───────────────────────────────────────────────── */}
+      <VariantGroup label="Glow · weight" note="Slim is a 1px rule with a tight 24px bloom; bold is a 2px rule with a 40px bloom for a stronger line of light." />
+      <VariantLabel label='weight: "slim" · tone: "spectrum"' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'spectrum', weight: 'slim', space: 'md' }} />
+      <VariantLabel label='weight: "bold" · tone: "spectrum"' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'spectrum', weight: 'bold', space: 'md' }} />
+
+      {/* ── Bleed · atmospheric radial seam · tones ─────────────────────── */}
+      <VariantGroup label="Bleed · atmospheric light seam · tones" note="Atmospheric luminance, not a colored bar: an elliptical glow rising from the boundary, brightest at the horizontal center, dissolving at the sides and the bottom. Peak opacity is held low on purpose — at arm's length it should read as a subtle seam of light." />
       <VariantLabel label='tone: "brand"' />
       <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'brand', space: 'sm' }} />
       <VariantLabel label='tone: "accent"' />
@@ -2091,26 +2111,15 @@ function DividerShowcase() {
       <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'spectrum', space: 'sm' }} />
       <VariantLabel label='tone: "aurora" — brand · accent · brand' />
       <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'aurora', space: 'sm' }} />
-      <VariantLabel label='tone: "neutral" — a quiet light seam' />
+      <VariantLabel label='tone: "neutral" — barely a seam' />
       <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'neutral', space: 'sm' }} />
 
-      {/* ── Angled gradient · tones ─────────────────────────────────────── */}
-      <VariantGroup label="Angled gradient · tones" note="A blended color bar overlaid with diagonal facets and a soft chromatic glow, feathered top and bottom. Tone sets the blend." />
-      <VariantLabel label='tone: "spectrum" — brand → accent' />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'spectrum', weight: 'slim', space: 'md' }} />
-      <VariantLabel label='tone: "aurora" — brand · accent · brand' />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'aurora', weight: 'slim', space: 'md' }} />
-      <VariantLabel label='tone: "brand"' />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'brand', weight: 'slim', space: 'md' }} />
-      <VariantLabel label='tone: "accent"' />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'accent', weight: 'slim', space: 'md' }} />
-
-      {/* ── Angled gradient · bar weight ────────────────────────────────── */}
-      <VariantGroup label="Angled gradient · bar weight" note="Slim is a refined ribbon; bold is a fuller band with more presence between sections." />
+      {/* ── Bleed · weight ──────────────────────────────────────────────── */}
+      <VariantGroup label="Bleed · weight" note="Slim is a 60px seam at 25% peak; bold is an 80px seam at 35% peak — more presence, still atmospheric." />
       <VariantLabel label='weight: "slim" · tone: "spectrum"' />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'spectrum', weight: 'slim', space: 'md' }} />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'spectrum', weight: 'slim', space: 'sm' }} />
       <VariantLabel label='weight: "bold" · tone: "spectrum"' />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'spectrum', weight: 'bold', space: 'md' }} />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'bleed', tone: 'spectrum', weight: 'bold', space: 'sm' }} />
 
       {/* ── Spacing scale ───────────────────────────────────────────────── */}
       <VariantGroup label="Spacing scale · sm → xl" note="Symmetric vertical padding, clamped so it scales down on narrow viewports. Bands above and below mark the gap each value opens." />
@@ -2124,9 +2133,9 @@ function DividerShowcase() {
       ))}
 
       {/* ── Reveal ──────────────────────────────────────────────────────── */}
-      <VariantGroup label="Reveal on scroll · draw in" note="reveal: draw rides the shared MotionObserver. The mark and angled gradient draw out from center, the mark label fades just behind, the bleed fades up. Scroll each into view to retrigger. prefers-reduced-motion: renders the final state instantly, no shift." />
-      <VariantLabel label='style: "prism" · reveal: "draw"' />
-      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'prism', tone: 'spectrum', weight: 'slim', space: 'md', reveal: 'draw' }} />
+      <VariantGroup label="Reveal on scroll · draw in" note="reveal: draw rides the shared MotionObserver. The mark and glow rule draw out from center, the glow bloom and mark label fade in just behind, the bleed seam fades up. Scroll each into view to retrigger. prefers-reduced-motion: renders the final state instantly, no shift." />
+      <VariantLabel label='style: "glow" · reveal: "draw"' />
+      <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'spectrum', weight: 'slim', space: 'md', reveal: 'draw' }} />
       <VariantLabel label='style: "mark" · reveal: "draw"' />
       <OT_DividerBlock content={{ label: 'Drawn in' } as any} displaySettings={{ style: 'mark', tone: 'accent', ornament: 'pendant', space: 'md', reveal: 'draw' }} />
       <VariantLabel label='style: "bleed" · reveal: "draw"' />

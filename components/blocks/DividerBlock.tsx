@@ -29,7 +29,7 @@ const SPACE_PAD: Record<DividerStyleOptions['space'], string> = {
 // aurora blend the two. Everything recalibrates under a CMS theme override.
 
 // Line / hairline fill for the text mark — solid for single tones, a horizontal
-// gradient for the blends.
+// gradient for the blends. (mark style — unchanged.)
 function lineBg(tone: DividerTone): string {
   switch (tone) {
     case 'brand':    return 'var(--ot-brand)'
@@ -39,23 +39,6 @@ function lineBg(tone: DividerTone): string {
     case 'neutral':
     default:         return 'oklch(from var(--ot-fg) l c h / 0.22)'
   }
-}
-
-// Horizontal color blend shared by the waterfall bleed and the angled gradient.
-function colorBlend(tone: DividerTone): string {
-  switch (tone) {
-    case 'brand':    return 'linear-gradient(100deg, oklch(from var(--ot-brand) calc(l + 0.08) c h), var(--ot-brand))'
-    case 'accent':   return 'linear-gradient(100deg, var(--ot-accent), oklch(from var(--ot-accent) calc(l - 0.08) c h))'
-    case 'spectrum': return 'linear-gradient(100deg, var(--ot-brand), var(--ot-accent))'
-    case 'aurora':   return 'linear-gradient(100deg, var(--ot-brand) 0%, var(--ot-accent) 50%, var(--ot-brand) 100%)'
-    case 'neutral':
-    default:         return 'linear-gradient(100deg, oklch(from var(--ot-fg) l c h / 0.12), oklch(from var(--ot-fg) l c h / 0.22))'
-  }
-}
-
-// Bloom token for the angled gradient's depth glow.
-function bloom(tone: DividerTone): string {
-  return tone === 'accent' ? 'var(--ot-bloom-accent-faint)' : 'var(--ot-bloom-brand-faint)'
 }
 
 const MARK_TEXT: Record<DividerTone, string> = {
@@ -72,15 +55,65 @@ const ORNAMENT_GLYPH: Record<Exclude<DividerOrnament, 'none'>, string> = {
   dot:      '•',
 }
 
-const PRISM_HEIGHT: Record<DividerWeight, string> = {
-  slim: 'clamp(16px, 2.2vw, 26px)',
-  bold: 'clamp(40px, 5vw, 60px)',
+// ─── Glow style — luminous chromatic rule ──────────────────────────────────────
+// A precisely placed line of light: a 1–2px horizontal rule whose color fades to
+// transparent at the outer 15% of the width, with a soft vertical bloom above and
+// below — light emanating from the line, like a neon tube. No stripes, no facets.
+
+// Crisp rule gradient: transparent → tone → transparent (full-strength color).
+function glowLine(tone: DividerTone): string {
+  switch (tone) {
+    case 'brand':    return 'linear-gradient(to right, transparent 0%, var(--ot-brand) 15%, var(--ot-brand) 85%, transparent 100%)'
+    case 'accent':   return 'linear-gradient(to right, transparent 0%, var(--ot-accent) 15%, var(--ot-accent) 85%, transparent 100%)'
+    case 'spectrum': return 'linear-gradient(to right, transparent 0%, var(--ot-brand) 15%, var(--ot-accent) 85%, transparent 100%)'
+    case 'aurora':   return 'linear-gradient(to right, transparent 0%, var(--ot-brand) 15%, var(--ot-accent) 50%, var(--ot-brand) 85%, transparent 100%)'
+    case 'neutral':
+    default:         return 'linear-gradient(to right, transparent 0%, oklch(from var(--ot-fg-muted) l c h / 0.30) 15%, oklch(from var(--ot-fg-muted) l c h / 0.30) 85%, transparent 100%)'
+  }
 }
 
-// Feathered top/bottom edges so each band reads as a defined bar, not a rectangle.
-const PRISM_MASK     = 'linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%)'
-// Waterfall: full at the top, dissolving to nothing at the very bottom.
-const WATERFALL_MASK = 'linear-gradient(to bottom, transparent 0%, black 6%, black 16%, rgba(0,0,0,0.55) 48%, rgba(0,0,0,0.18) 76%, transparent 100%)'
+// Bloom gradient: same horizontal shape, tone color carried at ~28% alpha (baked
+// in so the resting opacity is 1 and the reveal can fade opacity 0 → 1 cleanly).
+function glowBloom(tone: DividerTone): string {
+  const a = '0.28'
+  switch (tone) {
+    case 'brand':    return `linear-gradient(to right, transparent 0%, oklch(from var(--ot-brand) l c h / ${a}) 15%, oklch(from var(--ot-brand) l c h / ${a}) 85%, transparent 100%)`
+    case 'accent':   return `linear-gradient(to right, transparent 0%, oklch(from var(--ot-accent) l c h / ${a}) 15%, oklch(from var(--ot-accent) l c h / ${a}) 85%, transparent 100%)`
+    case 'spectrum': return `linear-gradient(to right, transparent 0%, oklch(from var(--ot-brand) l c h / ${a}) 15%, oklch(from var(--ot-accent) l c h / ${a}) 85%, transparent 100%)`
+    case 'aurora':   return `linear-gradient(to right, transparent 0%, oklch(from var(--ot-brand) l c h / ${a}) 15%, oklch(from var(--ot-accent) l c h / ${a}) 50%, oklch(from var(--ot-brand) l c h / ${a}) 85%, transparent 100%)`
+    case 'neutral':
+    default:         return 'linear-gradient(to right, transparent 0%, oklch(from var(--ot-fg-muted) l c h / 0.12) 15%, oklch(from var(--ot-fg-muted) l c h / 0.12) 85%, transparent 100%)'
+  }
+}
+
+// Vertical bloom shape: brightest at the line (center), fading above and below.
+const GLOW_BLOOM_MASK = 'linear-gradient(to bottom, transparent 0%, black 50%, transparent 100%)'
+
+const GLOW_LINE_PX:  Record<DividerWeight, string> = { slim: '1px', bold: '2px' }
+const GLOW_BLOOM_PX: Record<DividerWeight, string> = { slim: '24px', bold: '40px' }
+
+// ─── Bleed style — atmospheric radial light seam ────────────────────────────────
+// A soft elliptical glow sitting at the top edge: brightest at the horizontal
+// center, fading to transparent at the sides and the bottom. Reads as a light
+// source just above the boundary, not a colored bar. Peak alpha is baked into the
+// fill so the reveal can fade opacity 0 → 1.
+
+function bleedFill(tone: DividerTone, peak: number): string {
+  switch (tone) {
+    case 'brand':    return `oklch(from var(--ot-brand) l c h / ${peak})`
+    case 'accent':   return `oklch(from var(--ot-accent) l c h / ${peak})`
+    case 'spectrum': return `linear-gradient(to right, oklch(from var(--ot-brand) l c h / ${peak}), oklch(from var(--ot-accent) l c h / ${peak}))`
+    case 'aurora':   return `linear-gradient(to right, oklch(from var(--ot-brand) l c h / ${peak}), oklch(from var(--ot-accent) l c h / ${peak}), oklch(from var(--ot-brand) l c h / ${peak}))`
+    case 'neutral':
+    default:         return 'oklch(from var(--ot-fg-muted) l c h / 0.15)'   // capped — a barely-there seam
+  }
+}
+
+// Elliptical shape anchored at top-center: 60% wide, full height, fading out.
+const BLEED_RADIAL_MASK = 'radial-gradient(ellipse 60% 100% at 50% 0%, black 0%, transparent 100%)'
+
+const BLEED_HEIGHT: Record<DividerWeight, string> = { slim: '60px', bold: '80px' }
+const BLEED_PEAK:   Record<DividerWeight, number> = { slim: 0.25, bold: 0.35 }
 
 export default function DividerBlock({ label, styleOptions = {} }: DividerBlockProps) {
   const {
@@ -95,8 +128,51 @@ export default function DividerBlock({ label, styleOptions = {} }: DividerBlockP
 
   let inner: React.ReactNode = null
 
-  // ── Centered text mark ────────────────────────────────────────────────────────
-  if (style === 'mark') {
+  // ── Gradient bleed · atmospheric radial light seam ──────────────────────────────
+  if (style === 'bleed') {
+    inner = (
+      <span
+        className="ot-divider-bleed block w-full"
+        aria-hidden
+        style={{
+          height: BLEED_HEIGHT[weight],
+          background: bleedFill(tone, BLEED_PEAK[weight]),
+          WebkitMaskImage: BLEED_RADIAL_MASK,
+          maskImage: BLEED_RADIAL_MASK,
+        }}
+      />
+    )
+  }
+
+  // ── Glow · luminous chromatic rule ──────────────────────────────────────────────
+  else if (style === 'glow') {
+    const grad = glowLine(tone)
+    inner = (
+      <div className="relative flex w-full items-center justify-center" style={{ height: '56px' }} aria-hidden>
+        {/* Soft bloom behind the rule — light emanating from the line. */}
+        <span
+          className="ot-divider-bloom pointer-events-none absolute left-0 right-0 top-1/2 -translate-y-1/2"
+          style={{
+            height: GLOW_BLOOM_PX[weight],
+            background: glowBloom(tone),
+            WebkitMaskImage: GLOW_BLOOM_MASK,
+            maskImage: GLOW_BLOOM_MASK,
+            filter: 'blur(6px)',
+          }}
+        />
+        {/* The crisp rule itself. */}
+        <span
+          className="ot-divider-line relative block w-full"
+          style={{ height: GLOW_LINE_PX[weight], background: grad, transformOrigin: 'center' }}
+        />
+      </div>
+    )
+  }
+
+  // ── Centered text mark — unchanged ──────────────────────────────────────────────
+  // Default branch: also the graceful fallback for unknown / legacy style values
+  // (e.g. the removed 'prism'), which getDividerStyles normalizes to 'mark'.
+  else {
     const hasMark = trimmedLabel !== '' || ornament !== 'none'
     const glyph   = ornament !== 'none' ? ORNAMENT_GLYPH[ornament] : null
     const bg      = lineBg(tone)
@@ -126,50 +202,6 @@ export default function DividerBlock({ label, styleOptions = {} }: DividerBlockP
         </div>
       )
     }
-  }
-
-  // ── Gradient bleed · waterfall ──────────────────────────────────────────────────
-  // A blended color band that pours from the top and dissolves to nothing at the
-  // bottom — full width. The horizontal blend carries the tone; the vertical mask
-  // does the falling.
-  else if (style === 'bleed') {
-    inner = (
-      <span
-        className="ot-divider-bleed block w-full"
-        aria-hidden
-        style={{
-          height: 'clamp(90px, 14vw, 168px)',
-          transformOrigin: 'center',
-          background: colorBlend(tone),
-          WebkitMaskImage: WATERFALL_MASK,
-          maskImage: WATERFALL_MASK,
-        }}
-      />
-    )
-  }
-
-  // ── Angled gradient · faceted ribbon ────────────────────────────────────────────
-  // The footer's move, turned on its side: a blended color bar overlaid with
-  // diagonal facets (a light sheen pass + a darker depth pass), feathered at the
-  // top and bottom, with a drop-shadow that follows the masked alpha for soft
-  // chromatic depth.
-  else {
-    const facetSheen = 'repeating-linear-gradient(122deg, transparent 0px, oklch(from var(--ot-fg) l c h / 0.13) 7px, transparent 15px, transparent 34px)'
-    const facetDepth = 'repeating-linear-gradient(122deg, transparent 0px, oklch(from var(--ot-canvas) l c h / 0.32) 18px, transparent 30px, transparent 52px)'
-    inner = (
-      <span
-        className="ot-divider-line block w-full"
-        aria-hidden
-        style={{
-          height: PRISM_HEIGHT[weight],
-          transformOrigin: 'center',
-          background: [facetSheen, facetDepth, colorBlend(tone)].join(', '),
-          WebkitMaskImage: PRISM_MASK,
-          maskImage: PRISM_MASK,
-          filter: `drop-shadow(0 2px 16px ${bloom(tone)})`,
-        }}
-      />
-    )
   }
 
   return (

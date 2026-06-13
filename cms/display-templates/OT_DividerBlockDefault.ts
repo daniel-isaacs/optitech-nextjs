@@ -13,9 +13,9 @@ export const OT_DividerBlockDefault = displayTemplate({
       editor:      'select',
       sortOrder:   10,
       choices: {
-        mark:  { displayName: 'Centered text mark (Default)', sortOrder: 10 },
-        bleed: { displayName: 'Gradient bleed — waterfall',   sortOrder: 20 },
-        prism: { displayName: 'Angled gradient',              sortOrder: 30 },
+        mark:  { displayName: 'Mark — text or ornament with hairline rules', sortOrder: 10 },
+        glow:  { displayName: 'Glow — luminous chromatic rule',               sortOrder: 20 },
+        bleed: { displayName: 'Bleed — atmospheric radial light seam',        sortOrder: 30 },
       },
     },
 
@@ -33,8 +33,8 @@ export const OT_DividerBlockDefault = displayTemplate({
     },
 
     // ── Tone — one control across every style ──────────────────────────────────
-    // mark gets gradient hairlines for spectrum / aurora; bleed and angled
-    // gradient get blended fills. Neutral is a quiet, tinted treatment.
+    // mark gets gradient hairlines for spectrum / aurora; glow and bleed carry
+    // the tone as the light color. Neutral is a quiet, tinted treatment.
     tone: {
       displayName: 'Tone',
       editor:      'select',
@@ -61,14 +61,14 @@ export const OT_DividerBlockDefault = displayTemplate({
       },
     },
 
-    // ── Bar weight (angled gradient style only) ────────────────────────────────
+    // ── Weight — glow rule thickness & bleed intensity (not used by mark) ───────
     weight: {
-      displayName: 'Bar weight (angled gradient style only)',
+      displayName: 'Weight (glow & bleed styles)',
       editor:      'select',
       sortOrder:   50,
       choices: {
-        slim: { displayName: 'Slim ribbon (Default)', sortOrder: 10 },
-        bold: { displayName: 'Bold band',             sortOrder: 20 },
+        slim: { displayName: 'Slim (Default)', sortOrder: 10 },
+        bold: { displayName: 'Bold',           sortOrder: 20 },
       },
     },
 

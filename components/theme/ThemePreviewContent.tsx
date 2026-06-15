@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import BannerBlock from '@/components/blocks/BannerBlock'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -223,60 +224,51 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
       {/* ── 04 Component Preview ── */}
       <section id="components" className="px-md py-xl lg:px-lg">
         <SectionHead label="04 · Theme" title="Component Preview" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg items-stretch">
 
-          {/* Card — image + body */}
-          <div className="bg-surface border border-fg/10 flex flex-col">
-            <div className="aspect-video relative overflow-hidden">
-              <Image
-                src={CARD_IMAGES[0].src}
-                alt={CARD_IMAGES[0].alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, 50vw"
-              />
-            </div>
-            <div className="p-md flex flex-col gap-sm flex-1">
-              <p className="text-label tracking-label uppercase text-brand font-semibold">Product</p>
-              <h3 className="text-title font-semibold leading-title text-fg">
-                Intelligent Optimization at Scale
-              </h3>
-              <p className="text-sm text-fg-muted leading-body">
-                Our platform adapts to your traffic patterns in real time, delivering personalized experiences without engineering overhead.
-              </p>
-              <span className="mt-sm self-start bg-brand text-fg-on-brand text-label font-semibold tracking-label uppercase px-7 py-3">
-                {ctaLabel}
-              </span>
+          {/* ── Card ────────────────────────────────────────────────────────── */}
+          <div className="flex flex-col gap-sm">
+            <p className="text-label tracking-label uppercase text-fg-muted/70 font-semibold">Card</p>
+            <div className="bg-surface border border-fg/10 flex flex-col flex-1">
+              <div className="aspect-video relative overflow-hidden">
+                <Image
+                  src={CARD_IMAGES[0].src}
+                  alt={CARD_IMAGES[0].alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <div className="p-md flex flex-col gap-sm flex-1">
+                <p className="text-label tracking-label uppercase text-brand font-semibold">Product</p>
+                <h3 className="text-title font-semibold leading-title text-fg">
+                  Intelligent Optimization at Scale
+                </h3>
+                <p className="text-sm text-fg-muted leading-body">
+                  Our platform adapts to your traffic patterns in real time, delivering personalized experiences without engineering overhead.
+                </p>
+                <span className="mt-sm self-start bg-brand text-fg-on-brand text-label font-semibold tracking-label uppercase px-7 py-3">
+                  {ctaLabel}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Card — image + feature */}
-          <div className="bg-surface border border-fg/10 flex flex-col">
-            <div className="aspect-video relative overflow-hidden">
-              <Image
-                src={CARD_IMAGES[1].src}
-                alt={CARD_IMAGES[1].alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, 50vw"
+          {/* ── Banner (brand background, centered) ─────────────────────────── */}
+          {/* Renders the real BannerBlock so it reflects the live component under
+              the current theme. bg-brand on the wrapper keeps the brand read solid
+              behind the component's scrim; [&>section]:flex-1 lets the banner fill
+              the column height to match the card. */}
+          <div className="flex flex-col gap-sm">
+            <p className="text-label tracking-label uppercase text-fg-muted/70 font-semibold">Banner · Brand</p>
+            <div className="bg-brand border border-fg/10 overflow-hidden flex-1 flex [&>section]:flex-1">
+              <BannerBlock
+                eyebrow="Now Available"
+                heading="Optimize Every Visitor Experience"
+                primaryCta={{ label: ctaLabel, href: '#' }}
+                secondaryCta={{ label: 'Learn More', href: '#' }}
+                styleOptions={{ color: 'brand', alignment: 'center', size: 'compact' }}
               />
-            </div>
-            <div className="p-md flex flex-col gap-sm flex-1">
-              <div className="w-10 h-10 bg-accent/20 border border-accent/30 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent" aria-hidden="true">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-              </div>
-              <h3 className="text-title font-semibold leading-title text-fg mt-sm">
-                Built for Enterprise Teams
-              </h3>
-              <p className="text-sm text-fg-muted leading-body">
-                Role-based access, audit logs, SSO, and SLA-backed uptime — everything your security and compliance teams require.
-              </p>
-            </div>
-            <div className="border-t border-fg/10 px-md py-sm flex items-center justify-between">
-              <p className="text-label text-fg-muted">Enterprise tier</p>
-              <span className="text-label font-semibold text-accent tracking-label uppercase">Learn more →</span>
             </div>
           </div>
 

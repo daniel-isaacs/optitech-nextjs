@@ -37,13 +37,6 @@ export type RichTextStyleOptions = {
   /** Prose font weight: regular (default), medium, or semibold */
   textWeight?: "regular" | "medium" | "semibold";
   /**
-   * Broadsheet column flow.
-   *   single — one column (default)
-   *   dual   — two columns, justified + hyphenated
-   *   triple — three columns, tighter measure
-   */
-  columns?: "single" | "dual" | "triple";
-  /**
    * Print ground behind the prose.
    *   flat   — no texture (default)
    *   ruled  — faint baseline ruling
@@ -181,7 +174,6 @@ export default function RichTextBlock({
     ruledHeadings    = false,
     textScale        = "body",
     textWeight       = "regular",
-    columns          = "single",
     ground           = "flat",
     dividers         = "rule",
     numberedHeadings = false,
@@ -235,7 +227,6 @@ export default function RichTextBlock({
         data-ruled-headings={ruledHeadings ? "" : undefined}
         data-scale={textScale !== "body" ? textScale : undefined}
         data-weight={textWeight !== "regular" ? textWeight : undefined}
-        data-columns={columns !== "single" ? columns : undefined}
         data-ground={ground !== "flat" ? ground : undefined}
         data-dividers={dividers !== "rule" ? dividers : undefined}
         data-numbered={numberedHeadings ? "" : undefined}

@@ -45,16 +45,6 @@ export const OT_RichTextDefault = displayTemplate({
         toc:      { displayName: 'Contents — section navigator',    sortOrder: 30 },
       },
     },
-    columns: {
-      displayName: 'Column flow',
-      editor: 'select',
-      sortOrder: 45,
-      choices: {
-        single: { displayName: 'Single (Default)', sortOrder: 10 },
-        dual:   { displayName: 'Two columns',      sortOrder: 20 },
-        triple: { displayName: 'Three columns',    sortOrder: 30 },
-      },
-    },
     ground: {
       displayName: 'Print ground',
       editor: 'select',

@@ -602,24 +602,6 @@ function RichTextShowcase() {
         </div>
       ))}
 
-      {/* ── Reading-surface treatments: what RichText does that PrimaryText can't ── */}
-      <VariantGroup
-        label="Broadsheet columns · long-form article"
-        note="CSS multi-column flow with a tokenized rule. Justified + hyphenated; opening heading spans the full width. Collapses to one column when the measure narrows — resize the window."
-      />
-      {([
-        { label: 'columns: "dual"',   note: 'Two columns', cols: 'dual'   as const },
-        { label: 'columns: "triple"', note: 'Three columns, tighter measure', cols: 'triple' as const },
-      ]).map(item => (
-        <div key={item.cols} className="border-t border-fg/5">
-          <VariantLabel label={item.label} note={item.note} />
-          <OT_RichTextBlock
-            content={{ content: { json: RT_ARTICLE } } as any}
-            displaySettings={{ color: 'canvas', size: 'editorial', alignment: 'left', columns: item.cols }}
-          />
-        </div>
-      ))}
-
       <VariantGroup
         label="Print grounds · background texture"
         note="A ground sits behind the prose; it is texture, not a fill. Tokenized, so it recalibrates under a CMS theme override and switches to a light tint on brand."

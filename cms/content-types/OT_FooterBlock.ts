@@ -52,9 +52,21 @@ export const OT_FooterBlock = contentType({
     footerLogoInvertDark: {
       type: 'boolean',
       displayName: 'Invert Logo in Dark Mode',
-      description: 'Applies a brightness/invert filter so a dark logo reads as white on dark backgrounds.',
+      description: 'Applies a brightness/invert filter so a dark logo reads as white on dark backgrounds. Automatically disabled when the left panel is set to Light mode (the original logo shows on the light background).',
       group: 'OT_Style',
       sortOrder: 7,
+    },
+    footerLeftMode: {
+      type: 'string',
+      format: 'selectOne',
+      displayName: 'Left Panel Mode',
+      description: 'Color mode for the footer\'s left panel (logo, description, copyright). Light is useful for logos that don\'t read well inverted on a dark background — the canvas lightens and the text/logo adjust automatically. The right (brand) panel is unaffected.',
+      group: 'OT_Style',
+      sortOrder: 8,
+      enum: [
+        { value: 'dark',  displayName: 'Dark (default)' },
+        { value: 'light', displayName: 'Light' },
+      ],
     },
     // ── Content ───────────────────────────────────────────────────────────────
     description: {

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { cn } from '@/lib/utils'
 import { getSiteSettings, getRequestDomain, getRequestLocale } from '@/lib/optimizely'
 
 export default async function Footer() {
@@ -16,6 +17,12 @@ export default async function Footer() {
                                ? footerRef?.footerLogoInvertDark === true
                                : themeLogoInvert
   const footerLogoSize     = (footerRef?.footerLogoSize as string | undefined) ?? 'md'
+
+  // Left-panel color mode. Dark is the default → identical to today. Light flips
+  // --ot-canvas/--ot-fg/--ot-fg-muted on the left panel (and its desktop canvas
+  // layer) via data-theme, so the background, text, and logo invert all adjust
+  // automatically. The right (brand) panel is unaffected.
+  const footerLeftMode     = (footerRef?.footerLeftMode as string | undefined) === 'light' ? 'light' : 'dark'
 
   const FOOTER_LOGO_SIZE: Record<string, string> = {
     sm: 'max-h-8 w-auto',
@@ -69,9 +76,11 @@ export default async function Footer() {
         style={{ zIndex: 0, background: 'var(--ot-brand-hover)' }}
       />
 
-      {/* z-1: Canvas panel — masked right edge creates the mist/dissolve blend */}
+      {/* z-1: Canvas panel — masked right edge creates the mist/dissolve blend.
+          data-theme follows the left-panel mode so --ot-canvas resolves light or dark. */}
       <div
         aria-hidden
+        data-theme={footerLeftMode}
         className="hidden lg:block absolute inset-0 pointer-events-none"
         style={{
           zIndex: 1,
@@ -120,8 +129,12 @@ export default async function Footer() {
        */}
       <div className="relative flex flex-col lg:flex-row" style={{ zIndex: 10 }}>
 
-        {/* ── Left: canvas — logo + description + copyright ──────────────────── */}
-        <div className="bg-canvas lg:bg-transparent lg:w-[62%] flex flex-col justify-center px-md py-md lg:px-lg lg:py-lg lg:pr-20">
+        {/* ── Left: canvas — logo + description + copyright ────────────────────
+            data-theme drives the panel's color mode: 'dark' (default) is unchanged;
+            'light' flips canvas/text tokens, and the .logo-invert-dark rule in
+            globals.css auto-disables the logo invert so a dark logo shows in its
+            original colors on the light background. */}
+        <div data-theme={footerLeftMode} className="bg-canvas lg:bg-transparent lg:w-[62%] flex flex-col justify-center px-md py-md lg:px-lg lg:py-lg lg:pr-20">
 
           <Link
             href="/"
@@ -134,8 +147,9 @@ export default async function Footer() {
               alt={logoAlt}
               width={444}
               height={90}
-              className={logoSizeClass}
-              style={footerLogoInvert ? { filter: 'brightness(0) invert(1)' } : undefined}
+              // .logo-invert-dark inverts on a dark panel and resolves to filter:none
+              // under [data-theme="light"] (globals.css), so Light mode shows the original logo.
+              className={cn(logoSizeClass, footerLogoInvert && 'logo-invert-dark')}
             />
           </Link>
 

@@ -148,6 +148,7 @@ const THEME_QUERY = `
         footerLogo { url { default } }
         footerLogoSize
         footerLogoInvertDark
+        footerLeftMode
         description { html }
         links {
           label

@@ -2332,6 +2332,18 @@ body {
   box-shadow: 0 8px 40px var(--ot-bloom-brand-faint);
 }
 
+/* ── Centered banner eyebrow — light-mode accent pill ──────────────────────────
+ * On a light canvas a bright accent color loses contrast as plain text, so the
+ * centered canvas/surface banner eyebrow becomes a filled accent pill (with the
+ * dark fg-on-accent text). Dark mode keeps the plain accent text — there the
+ * accent reads cleanly on the dark canvas. Padding mirrors the over-image pill
+ * (py-0.75 / px-sm). Scoped to [data-theme="light"] so only light mode is affected. */
+[data-theme="light"] .banner-eyebrow-pill {
+  background: var(--ot-accent);
+  color: var(--ot-fg-on-accent);
+  padding: 0.1875rem var(--ot-space-sm);
+}
+
 /* ── Entrance: elements start invisible, animated to visible on data-active ── */
 .banner-eyebrow,
 .banner-heading,

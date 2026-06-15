@@ -216,6 +216,17 @@ export default function BannerBlock({
           {eyebrow}
         </span>
       </p>
+    ) : (isCentered && !isBrand) ? (
+      // Centered canvas/surface banner: plain accent text in dark mode (good
+      // contrast on the dark canvas), but in LIGHT mode a bright accent washes
+      // out as text on the light canvas — so .banner-eyebrow-pill promotes it to
+      // a filled accent pill with fg-on-accent text (rule in globals.css). The
+      // nested span lets the pill hug the text while the <p> stays centered.
+      <p className={cn('banner-eyebrow', eyebrowCva({ color }))} {...pa('eyebrow')}>
+        <span className="banner-eyebrow-pill inline-flex items-center text-label uppercase tracking-label font-semibold">
+          {eyebrow}
+        </span>
+      </p>
     ) : (
       <p className={cn('banner-eyebrow', eyebrowCva({ color }))} {...pa('eyebrow')}>
         {eyebrow}

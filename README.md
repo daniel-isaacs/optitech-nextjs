@@ -37,6 +37,12 @@ NEXT_PUBLIC_SITE_URL=          # Canonical site origin — no trailing slash
                                # Used to build <link rel="canonical"> hrefs and
                                # JSON-LD pageUrl values. Falls back to the
                                # request Host header when not set (useful in dev).
+
+# OptiAdmin dashboard (see "OptiAdmin Dashboard" below)
+OPTI_ADMIN_USER=               # Username for the /opti-admin sign-in
+OPTI_ADMIN_PASSWORD=           # Password for the /opti-admin sign-in
+                               # If either is unset, /opti-admin login is disabled
+                               # (the auth endpoint returns 503 "not configured").
 ```
 
 ### Shared block preview — set a default application in the CMS
@@ -51,6 +57,36 @@ To set the default:
 4. Enable the **Default application** toggle.
 
 Once set, shared block previews will load in the Visual Builder iframe using this site's preview URL.
+
+## OptiAdmin Dashboard
+
+OptiAdmin is a lightweight, self-contained admin area for inspecting the content in your Optimizely CMS instance. It lives under [`app/opti-admin/`](app/opti-admin/) and reads live data through Optimizely Graph — it is read-only and does not write back to the CMS.
+
+Visit **`/opti-admin`** on any deployment (e.g. [http://localhost:3000/opti-admin](http://localhost:3000/opti-admin)) to reach it.
+
+### Access & authentication
+
+- Sign-in lives at **`/opti-admin/login`** and uses a single set of credentials from `OPTI_ADMIN_USER` / `OPTI_ADMIN_PASSWORD` (see the env block above). This is intentionally simple env-var auth — not a multi-user system.
+- A successful login sets an `httpOnly` session cookie holding a SHA-256 token derived from the credentials. The session lasts **8 hours**.
+- If the credentials are not configured on the server, the auth endpoint returns **503** and login is disabled. The data endpoints under [`app/api/opti-admin/`](app/api/opti-admin/) reject any request without a valid session cookie with **401**.
+- The admin area runs under its own neutral token scope (`.opti-admin`), decoupled from the marketing site's brand theme, so its appearance is independent of the CMS theme.
+
+### What's included
+
+- **Dashboard** (`/opti-admin`) — a block-type inventory of the registered content types (grouped by content / media / data / layout category) plus a list of the most recently published/scheduled content.
+- **Component Usage** (`/opti-admin/component-usage`) — pick a block type and see which pages use it. Block types are counted by recursively scanning Visual Builder compositions (Section → Row → Column → Component); page types (`BlankExperience`, `OT_BlogPage`) are queried directly. Only content type keys in [`lib/admin/contentTypes.ts`](lib/admin/contentTypes.ts) may be queried.
+- **Content Calendar** (`/opti-admin/calendar`) — browse published and scheduled content by date across the CMS.
+
+The **Analytics** and **Settings** sections in the sidebar are placeholders and are marked "Soon" — they are not yet wired up.
+
+### Where things live
+
+| Concern | Location |
+|---|---|
+| Routes & pages | [`app/opti-admin/`](app/opti-admin/) |
+| Data / auth API routes | [`app/api/opti-admin/`](app/api/opti-admin/) |
+| UI components (shell, nav, clients) | [`components/admin/`](components/admin/) |
+| Auth helpers, Graph queries, content-type list | [`lib/admin/`](lib/admin/) |
 
 ## Learn More
 

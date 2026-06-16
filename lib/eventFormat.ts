@@ -55,12 +55,43 @@ export function formatEventLocation(opts: {
   return locationTypeLabel(locationType)
 }
 
+// ── Timezone ──────────────────────────────────────────────────────────────────
+
+/**
+ * The single site-wide timezone every event date and time is displayed in.
+ *
+ * Events are authored in the CMS as instants and reach us normalised to UTC
+ * (e.g. "2026-09-01T13:00:00.000Z") — there is no per-event timezone stored, so
+ * without this the runtime zone (UTC on Vercel) would leak into the UI. Every
+ * formatter below renders in this zone. To move the whole site to another zone,
+ * change this one constant to any IANA identifier (e.g. 'America/Los_Angeles').
+ */
+export const EVENT_TIMEZONE = 'America/New_York'
+
 // ── Date helpers ────────────────────────────────────────────────────────────────
 
 function toDate(iso?: string | null): Date | null {
   if (!iso) return null
   const d = new Date(iso)
   return Number.isNaN(d.getTime()) ? null : d
+}
+
+/** "YYYY-MM-DD" as observed in `tz` — day-granular comparisons in the display
+ *  zone rather than the server zone. */
+function dayKeyInZone(d: Date, tz: string): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(d)
+}
+
+/** Short timezone label for an instant in `tz`, e.g. "EDT" / "EST". */
+export function timeZoneAbbr(iso?: string | null, tz: string = EVENT_TIMEZONE, locale = 'en-US'): string {
+  const d = toDate(iso)
+  if (!d) return ''
+  const part = new Intl.DateTimeFormat(locale, { timeZone: tz, timeZoneName: 'short' })
+    .formatToParts(d)
+    .find(p => p.type === 'timeZoneName')
+  return part?.value ?? ''
 }
 
 /** Midnight (local) of the given date — used for day-granular comparisons. */
@@ -92,24 +123,24 @@ export function isUpcoming(startIso?: string | null, endIso?: string | null, now
 export function formatEventDate(
   startIso?: string | null,
   endIso?: string | null,
-  opts: { withTime?: boolean; locale?: string } = {},
+  opts: { withTime?: boolean; locale?: string; timeZone?: string } = {},
 ): string {
-  const { withTime = false, locale } = opts
+  const { withTime = false, locale, timeZone = EVENT_TIMEZONE } = opts
   const start = toDate(startIso)
   if (!start) return ''
   const end = toDate(endIso)
 
   const dateFmt = (d: Date, withYear: boolean) =>
     new Intl.DateTimeFormat(locale, {
-      month: 'long', day: 'numeric', ...(withYear ? { year: 'numeric' } : {}),
+      timeZone, month: 'long', day: 'numeric', ...(withYear ? { year: 'numeric' } : {}),
     }).format(d)
 
   const timeFmt = (d: Date) =>
-    new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(d)
+    new Intl.DateTimeFormat(locale, { timeZone, hour: 'numeric', minute: '2-digit' }).format(d)
 
-  // Multi-day range
-  if (end && startOfDay(end).getTime() !== startOfDay(start).getTime()) {
-    const sameYear = start.getFullYear() === end.getFullYear()
+  // Multi-day range — compare calendar days as observed in the display zone.
+  if (end && dayKeyInZone(end, timeZone) !== dayKeyInZone(start, timeZone)) {
+    const sameYear = dayKeyInZone(start, timeZone).slice(0, 4) === dayKeyInZone(end, timeZone).slice(0, 4)
     return `${dateFmt(start, !sameYear)} – ${dateFmt(end, true)}`
   }
 
@@ -122,24 +153,55 @@ export function formatEventDate(
 }
 
 /** Time-only label, e.g. "4:00 PM". Empty string when no start time. */
-export function formatEventTime(startIso?: string | null, endIso?: string | null, locale?: string): string {
+export function formatEventTime(
+  startIso?: string | null,
+  endIso?: string | null,
+  locale?: string,
+  timeZone: string = EVENT_TIMEZONE,
+): string {
   const start = toDate(startIso)
   if (!start) return ''
   const timeFmt = (d: Date) =>
-    new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(d)
+    new Intl.DateTimeFormat(locale, { timeZone, hour: 'numeric', minute: '2-digit' }).format(d)
   const end = toDate(endIso)
   return end ? `${timeFmt(start)} – ${timeFmt(end)}` : timeFmt(start)
 }
 
 /** Parts for a calendar-style date block: { month: "JUL", day: "14", weekday: "TUE" }. */
-export function eventDateBlock(startIso?: string | null, locale?: string): { month: string; day: string; weekday: string } | null {
+export function eventDateBlock(
+  startIso?: string | null,
+  locale?: string,
+  timeZone: string = EVENT_TIMEZONE,
+): { month: string; day: string; weekday: string } | null {
   const start = toDate(startIso)
   if (!start) return null
   return {
-    month:   new Intl.DateTimeFormat(locale, { month: 'short' }).format(start).toUpperCase(),
-    day:     new Intl.DateTimeFormat(locale, { day: 'numeric' }).format(start),
-    weekday: new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(start).toUpperCase(),
+    month:   new Intl.DateTimeFormat(locale, { timeZone, month: 'short' }).format(start).toUpperCase(),
+    day:     new Intl.DateTimeFormat(locale, { timeZone, day: 'numeric' }).format(start),
+    weekday: new Intl.DateTimeFormat(locale, { timeZone, weekday: 'short' }).format(start).toUpperCase(),
   }
+}
+
+/**
+ * Initials for a speaker headshot fallback. First letter of first word + first
+ * letter of last word, skipping honorific prefixes and credential suffixes:
+ *   "Marcus Webb"     → "MW"
+ *   "Marcus"          → "MA"   (single name: first two letters)
+ *   "Dr. Priya Nair"  → "PN"   (prefix skipped)
+ *   ""                → ""     (caller renders a person icon instead)
+ */
+const NAME_PREFIXES = new Set(['dr', 'mr', 'mrs', 'ms', 'miss', 'prof', 'professor', 'sir', 'dame', 'rev', 'hon'])
+const NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v', 'phd', 'md', 'esq', 'cpa', 'mba', 'jd'])
+
+export function getInitials(name?: string | null): string {
+  if (!name) return ''
+  const norm = (w: string) => w.replace(/[.,]/g, '').toLowerCase()
+  let words = name.trim().split(/\s+/).filter(Boolean)
+  while (words.length > 1 && NAME_PREFIXES.has(norm(words[0]))) words = words.slice(1)
+  while (words.length > 1 && NAME_SUFFIXES.has(norm(words[words.length - 1]))) words = words.slice(0, -1)
+  if (words.length === 0) return ''
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase()
 }
 
 /** Credit label, e.g. "1.5 CLE". Empty when no credit. */

@@ -49,12 +49,21 @@ function cardSurface(color: Color): string {
 
 // ─── Shared atoms ─────────────────────────────────────────────────────────────
 
-function TypeSignal({ type }: { type?: string }) {
-  if (!type) return null
+// Date numerals: Poppins (the body/display sans), NEVER the `font-display` role
+// — that resolves to Syne, whose slanted geometry reads as italic and is banned
+// below headline scale (DESIGN.md). Explicitly upright + tabular so single/double
+// digit days share a baseline. Size and weight are set per context.
+const DAY_NUMERAL = 'font-sans not-italic tabular-nums tracking-[-0.03em]'
+// Month abbreviation: 11px / 600 / 0.12em tracked uppercase. Colour per context.
+const MONTH_LABEL = 'font-semibold uppercase tracking-[0.12em] text-[0.6875rem] leading-none'
+
+// Event type badge — one treatment for every type (accent fill signals "category
+// label"; the text says which category). Sharp corners, label scale. Position is
+// supplied by the caller (absolute overlay in cards, inline in list rows).
+function TypeBadge({ type, className = '' }: { type: string; className?: string }) {
   return (
-    <span className="inline-flex items-center gap-xs">
-      <span className="block w-1.5 h-1.5 bg-accent flex-none" aria-hidden />
-      <span className="text-label uppercase tracking-label font-semibold text-accent">{eventTypeLabel(type)}</span>
+    <span className={`inline-flex items-center bg-accent text-fg-on-accent px-2 py-0.5 text-[0.6875rem] font-bold uppercase tracking-[0.08em] leading-none ${className}`}>
+      {eventTypeLabel(type)}
     </span>
   )
 }
@@ -114,24 +123,25 @@ function EventCard({ event, color }: { event: EventCardData; color: Color }) {
             )}
           </>
         ) : (
-          // No-image: editorial brand-tinted date panel with a large numeral.
-          <div className="w-full h-full bg-brand/12 flex flex-col items-center justify-center" aria-hidden>
+          // No-image: a deliberate typographic card — the date is the anchor,
+          // floating over a soft radial brand bloom on a brand-tinted surface.
+          <div className="relative w-full h-full bg-brand/8 overflow-hidden flex flex-col items-center justify-center" aria-hidden>
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse 62% 62% at 50% 48%, var(--ot-bloom-brand-faint) 0%, transparent 70%)' }}
+            />
             {block ? (
-              <>
-                <span className="text-label uppercase tracking-label font-semibold text-brand/70">{block.month}</span>
-                <span className="font-display text-[clamp(2.5rem,6vw,3.5rem)] leading-none font-extrabold text-brand">{block.day}</span>
-              </>
+              <div className="relative flex flex-col items-center">
+                <span className={`${MONTH_LABEL} text-brand/70`}>{block.month}</span>
+                <span className={`${DAY_NUMERAL} text-[clamp(2.5rem,6vw,3.5rem)] leading-none font-extrabold text-brand mt-0.5`}>{block.day}</span>
+              </div>
             ) : (
-              <CalendarIcon size={32} strokeWidth={1.5} className="text-brand/50" />
+              <CalendarIcon size={32} strokeWidth={1.5} className="relative text-brand/50" />
             )}
           </div>
         )}
-        {/* Type badge */}
-        {event.eventType && (
-          <span className="absolute top-0 left-0 bg-accent text-fg-on-accent px-sm py-0.75 text-label uppercase tracking-label font-semibold">
-            {eventTypeLabel(event.eventType)}
-          </span>
-        )}
+        {/* Type badge — overlays the top-left of the media / placeholder area */}
+        {event.eventType && <TypeBadge type={event.eventType} className="absolute top-0 left-0" />}
       </div>
 
       {/* Body */}
@@ -150,19 +160,25 @@ function EventCard({ event, color }: { event: EventCardData; color: Color }) {
 
 // ─── List view ──────────────────────────────────────────────────────────────────
 
+// Calendar tear-off: brand-bloom chromatic surface anchored by a 2px top accent
+// line (a top edge — not a banned side-stripe). The day numeral dominates; the
+// month sits above it, small and tracked. Reads identically on canvas/surface.
+const DATE_BLOCK_SURFACE =
+  'flex-none w-16 bg-brand/8 border-t-2 border-brand shadow-[0_4px_16px_var(--ot-bloom-brand-faint)]'
+
 function DateBlock({ event }: { event: EventCardData }) {
   const block = eventDateBlock(event.startDate)
   if (!block) {
     return (
-      <div className="flex-none w-16 h-16 bg-brand/10 border border-brand/20 flex items-center justify-center text-brand/60" aria-hidden>
+      <div className={`${DATE_BLOCK_SURFACE} h-16 flex items-center justify-center text-brand/50`} aria-hidden>
         <CalendarIcon size={20} strokeWidth={1.5} />
       </div>
     )
   }
   return (
-    <div className="flex-none w-16 bg-brand/10 border border-brand/20 flex flex-col items-center justify-center py-sm" aria-hidden>
-      <span className="text-label uppercase tracking-label font-semibold text-brand/70 leading-none">{block.month}</span>
-      <span className="font-display text-2xl leading-tight font-extrabold text-brand">{block.day}</span>
+    <div className={`${DATE_BLOCK_SURFACE} flex flex-col items-center justify-center gap-0.5 py-sm`} aria-hidden>
+      <span className={`${MONTH_LABEL} text-fg-muted`}>{block.month}</span>
+      <span className={`${DAY_NUMERAL} text-3xl leading-none font-extrabold text-brand`}>{block.day}</span>
     </div>
   )
 }
@@ -179,7 +195,7 @@ function EventListRow({ event }: { event: EventCardData }) {
     >
       <DateBlock event={event} />
       <div className="flex-1 min-w-0 flex flex-col justify-center gap-xs">
-        {event.eventType && <TypeSignal type={event.eventType} />}
+        {event.eventType && <TypeBadge type={event.eventType} className="self-start" />}
         <h3 className="text-title leading-title font-semibold text-fg text-balance group-hover:underline decoration-fg/20 underline-offset-2">
           {event.title}
         </h3>
@@ -338,8 +354,14 @@ function CalendarView({ events, color, now }: { events: EventCardData[]; color: 
                   ${isSel ? 'bg-brand/10' : ''}
                   focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand`}
               >
-                <span className={`text-label font-semibold leading-none ${
-                  isToday ? 'inline-flex items-center justify-center w-6 h-6 -ml-0.5 bg-brand text-fg-on-brand' : 'text-fg-muted'
+                {/* Navigation numerals — clean & upright (not display type):
+                    explicit not-italic + tabular figures, weight 700. Today is
+                    the brand colour on a subtle bloom-faint indicator (kept sharp
+                    to honour DESIGN.md's no-rounded-full identity rule). */}
+                <span className={`not-italic tabular-nums font-bold text-[0.8125rem] leading-none ${
+                  isToday
+                    ? 'inline-flex items-center justify-center w-6 h-6 -ml-0.5 bg-(--ot-bloom-brand-faint) text-brand'
+                    : 'text-fg-muted'
                 }`}>
                   {cell.date.getDate()}
                 </span>

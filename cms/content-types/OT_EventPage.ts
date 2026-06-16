@@ -1,4 +1,6 @@
 import { contentType } from '@optimizely/cms-sdk'
+import { OT_EventSpeaker } from './OT_EventSpeaker'
+import { OT_AgendaItem }   from './OT_AgendaItem'
 
 // ─── OT_EventPage ───────────────────────────────────────────────────────────────
 // A traditional CMS page (URL-addressable) representing a single event — webinar,
@@ -148,6 +150,27 @@ export const OT_EventPage = contentType({
       description: 'Where attendees register or join. Drives the primary CTA on the event page and card.',
       group:       'OT_Content',
       sortOrder:   130,
+    },
+
+    // ── Speakers & Agenda ───────────────────────────────────────────────────────
+    // Arrays of structured sub-components (OT_EventSpeaker / OT_AgendaItem).
+    // Localization is handled field-by-field on the sub-component properties,
+    // so the array level is not marked localized (mirrors OT_TabsBlock.tabs).
+    speakers: {
+      type:        'array',
+      displayName: 'Speakers',
+      description: 'Speakers, presenters, or panelists for this event.',
+      items:       { type: 'component', contentType: OT_EventSpeaker },
+      group:       'OT_Content',
+      sortOrder:   140,
+    },
+    agenda: {
+      type:        'array',
+      displayName: 'Agenda',
+      description: 'The event schedule — one item per session or time slot.',
+      items:       { type: 'component', contentType: OT_AgendaItem },
+      group:       'OT_Content',
+      sortOrder:   150,
     },
 
     // ── SEO / Search & Discovery ──────────────────────────────────────────────

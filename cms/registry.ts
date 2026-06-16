@@ -57,6 +57,8 @@ import { OT_FooterBlock }       from '@/cms/content-types/OT_FooterBlock'
 import { OT_BlogPage }          from '@/cms/content-types/OT_BlogPage'
 import { OT_CampaignPage }      from '@/cms/content-types/OT_CampaignPage'
 import { OT_EventPage }         from '@/cms/content-types/OT_EventPage'
+import { OT_EventSpeaker }      from '@/cms/content-types/OT_EventSpeaker'
+import { OT_AgendaItem }        from '@/cms/content-types/OT_AgendaItem'
 import { OT_FolderPage }        from '@/cms/content-types/OT_FolderPage'
 import { ImageMedia }           from '@/cms/content-types/ImageMedia'
 import { OT_BlogFeedBlock }     from '@/cms/content-types/OT_BlogFeedBlock'
@@ -187,6 +189,8 @@ initContentTypeRegistry([
   OT_BlogPage,
   OT_CampaignPage,
   OT_EventPage,
+  OT_EventSpeaker,
+  OT_AgendaItem,
   OT_FolderPage,
   ImageMedia,
   OT_BlogFeedBlock,

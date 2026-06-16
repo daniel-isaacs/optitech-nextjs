@@ -45,6 +45,20 @@ export type EventPageContent = {
   creditType?:     string | null
   creditHours?:    number | null
   registrationUrl?: { default?: string | null } | null
+  speakers?:       Array<{
+    name?:         string | null
+    title?:        string | null
+    organization?: string | null
+    bio?:          string | null
+    headshot?:     { url?: { default?: string | null } | null } | null
+    profileUrl?:   { default?: string | null } | null
+  }> | null
+  agenda?:         Array<{
+    time?:        string | null
+    title?:       string | null
+    description?: string | null
+    speaker?:     string | null
+  }> | null
   // SEO
   seoTitle?:        string | null
   seoDescription?:  string | null
@@ -66,12 +80,15 @@ function stripHtml(html: string | null | undefined, max = 160): string {
 
 // ─── GraphQL queries ──────────────────────────────────────────────────────────────
 
-// Listing query — over-fetches (200) so the client can paginate the calendar
-// across months without re-querying. Site scoping is applied in JS below.
+// Listing query — fetches up to Optimizely Graph's hard per-query cap of 100
+// (a higher `limit` is rejected with "Invalid 'limit' … expected: [0-100]",
+// which would throw and surface as an empty listing) so the client can
+// paginate the calendar across months without re-querying. Site scoping is
+// applied in JS below.
 const EVENTS_QUERY = `
   query GetEvents($locale: String!) {
     OT_EventPage(
-      limit: 200,
+      limit: 100,
       where: { _metadata: { locale: { eq: $locale }, status: { eq: "Published" } } }
     ) {
       items {
@@ -113,6 +130,20 @@ const EVENT_PAGE_QUERY = `
         creditHours
         featuredImage { url { default } }
         registrationUrl { default }
+        speakers {
+          name
+          title
+          organization
+          bio
+          headshot { url { default } }
+          profileUrl { default }
+        }
+        agenda {
+          time
+          title
+          description
+          speaker
+        }
         seoTitle
         seoDescription
         canonicalUrl { default }

@@ -1,4 +1,4 @@
-import { CalendarDays, Clock, MapPin, Video, Award, ArrowRight } from 'lucide-react'
+import { CalendarDays, Clock, MapPin, Video, Award, ArrowRight, ArrowUpRight } from 'lucide-react'
 import type { EventPageContent } from '@/lib/events'
 import {
   eventTypeLabel,
@@ -58,6 +58,17 @@ function Fact({
   )
 }
 
+// ─── Section heading ─────────────────────────────────────────────────────────────
+
+function SectionHeading({ children }: { children: string }) {
+  return (
+    <div className="flex items-center gap-sm mb-lg">
+      <span className="block w-6 h-px bg-accent flex-none" aria-hidden />
+      <h2 className="text-title leading-title tracking-title font-semibold text-fg">{children}</h2>
+    </div>
+  )
+}
+
 // ─── Page component ─────────────────────────────────────────────────────────────
 
 export default function EventPage({ content, pa }: Props) {
@@ -68,6 +79,7 @@ export default function EventPage({ content, pa }: Props) {
     locationType, venueName, city,
     creditType, creditHours,
     registrationUrl,
+    speakers, agenda,
   } = content
 
   const imageUrl     = featuredImage?.url?.default || null
@@ -139,6 +151,72 @@ export default function EventPage({ content, pa }: Props) {
                   // CMS-managed rich text — not user input
                   dangerouslySetInnerHTML={{ __html: description.html }}
                 />
+              )}
+
+              {/* Agenda — schedule timeline */}
+              {agenda && agenda.length > 0 && (
+                <section className="mt-2xl max-w-[68ch]" {...pa?.('agenda')}>
+                  <SectionHeading>Agenda</SectionHeading>
+                  <ul>
+                    {agenda.map((item, i) => (
+                      <li
+                        key={i}
+                        className={`grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-lg gap-y-xs py-md ${i > 0 ? 'border-t border-fg/10' : ''}`}
+                      >
+                        {item.time && (
+                          <p className="text-label uppercase tracking-label font-semibold text-accent sm:pt-0.5">{item.time}</p>
+                        )}
+                        <div className="min-w-0">
+                          {item.title && <p className="text-body font-semibold text-fg leading-snug">{item.title}</p>}
+                          {item.description && <p className="text-body text-fg-muted mt-xs text-pretty">{item.description}</p>}
+                          {item.speaker && (
+                            <p className="text-label uppercase tracking-label font-semibold text-fg-muted/70 mt-sm">{item.speaker}</p>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* Speakers */}
+              {speakers && speakers.length > 0 && (
+                <section className="mt-2xl" {...pa?.('speakers')}>
+                  <SectionHeading>Speakers</SectionHeading>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+                    {speakers.map((sp, i) => {
+                      const photo   = sp.headshot?.url?.default || null
+                      const profile = sp.profileUrl?.default || null
+                      const subline = [sp.title, sp.organization].filter(Boolean).join(' · ')
+                      return (
+                        <li key={i} className="flex gap-md">
+                          {photo && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={photo} alt="" aria-hidden className="flex-none w-16 h-16 object-cover" />
+                          )}
+                          <div className="min-w-0">
+                            {sp.name && <p className="text-title font-semibold text-fg leading-snug">{sp.name}</p>}
+                            {subline && (
+                              <p className="text-label uppercase tracking-label font-semibold text-accent mt-0.5">{subline}</p>
+                            )}
+                            {sp.bio && <p className="text-body text-fg-muted mt-sm text-pretty">{sp.bio}</p>}
+                            {profile && (
+                              <a
+                                href={profile}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group mt-sm inline-flex items-center gap-xs text-label uppercase tracking-label font-semibold text-fg hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                              >
+                                Profile
+                                <ArrowUpRight size={14} strokeWidth={2} className="motion-safe:transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
+                              </a>
+                            )}
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </section>
               )}
             </div>
 

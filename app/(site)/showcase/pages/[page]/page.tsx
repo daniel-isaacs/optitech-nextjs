@@ -154,6 +154,17 @@ const MOCK_EVENT_CONFERENCE = {
   creditType:  'CPE',
   creditHours: 18,
   registrationUrl: { default: 'https://example.com/register' },
+  agenda: [
+    { time: '9:00 AM – 9:45 AM',   title: 'Keynote: The Delivery Decade',          description: 'Where feature delivery is heading, and why the next bottleneck is organisational, not technical.', speaker: 'Nadia Okafor' },
+    { time: '10:00 AM – 11:30 AM', title: 'Lab: Edge-Distributed Flag State',       description: 'Hands-on session building a propagation pipeline that converges in under 200ms.',                  speaker: 'Marcus Webb' },
+    { time: '1:00 PM – 1:45 PM',   title: 'Targeting Rules, Compiled',              description: 'A walk through the decision-tree compiler and the bytecode the evaluation engine walks.',          speaker: 'Priya Nair' },
+    { time: '2:00 PM – 3:00 PM',   title: 'Panel: Correctness at Scale',            description: 'Three platform leads on testing, rollout safety, and the failures that taught them the most.' },
+  ],
+  speakers: [
+    { name: 'Nadia Okafor', title: 'Staff Infrastructure Engineer', organization: 'OptiTech',     bio: 'Leads infrastructure reliability, specialising in distributed evaluation systems and edge-state propagation.', headshot: { url: { default: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80&fit=crop&crop=faces' } }, profileUrl: { default: 'https://example.com/speakers/nadia' } },
+    { name: 'Marcus Webb',  title: 'Principal Engineer',             organization: 'OptiTech',     bio: 'Works on the evaluation hot path and the regional propagation layer behind sub-millisecond delivery.',        headshot: { url: { default: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=faces' } }, profileUrl: { default: 'https://example.com/speakers/marcus' } },
+    { name: 'Priya Nair',   title: 'Compiler Engineer',              organization: 'OptiTech',     bio: 'Builds the targeting rule compiler that turns human-readable rules into compact decision trees.' },
+  ],
 }
 
 const MOCK_EVENT_WEBINAR = {
@@ -195,7 +206,7 @@ function EventPageShowcase() {
           <p className="text-label tracking-label uppercase text-brand font-semibold mb-xs">01</p>
           <h3 className="text-title font-semibold leading-title tracking-title text-fg">Featured image header</h3>
           <p className="text-body text-fg-muted mt-sm max-w-[60ch]">
-            A multi-day in-person conference. The featured image bleeds into a full-height header with a brand-tinted scrim; the type badge and title anchor to the lower edge. Multi-day dates, venue, city, and CPE credit fill the facts rail.
+            A multi-day in-person conference. The featured image bleeds into a full-height header with a brand-tinted scrim; the type badge and title anchor to the lower edge. Multi-day dates, venue, city, and CPE credit fill the facts rail. Below the description, the optional Agenda timeline and Speakers grid render from their sub-component arrays.
           </p>
         </div>
         <EventPage content={MOCK_EVENT_CONFERENCE as unknown as Parameters<typeof EventPage>[0]['content']} />

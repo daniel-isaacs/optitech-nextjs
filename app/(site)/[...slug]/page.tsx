@@ -13,12 +13,14 @@ import {
 } from '@/lib/optimizely'
 import { getBlogPage, getLatestBlogPosts, getAuthorName } from '@/lib/blog'
 import { getCampaignPage, getCampaignPageMeta, mapCampaignPageRaw } from '@/lib/campaign'
+import { getEventPage } from '@/lib/events'
 import { withAppContext }       from '@optimizely/cms-sdk/react/server'
 import { PreviewComponent }    from '@optimizely/cms-sdk/react/client'
 import type { PreviewParams }  from '@optimizely/cms-sdk'
 import { CompositionRenderer } from '@/lib/CompositionRenderer'
 import BlogPage                from '@/components/pages/BlogPage'
 import CampaignPage            from '@/components/pages/CampaignPage'
+import EventPage               from '@/components/pages/EventPage'
 import Script                  from 'next/script'
 import { DraftStateBanner }    from '@/components/preview/DraftStateBanner'
 import { ExternalPreviewLinkPanel } from '@/components/preview/ExternalPreviewLinkPanel'
@@ -115,6 +117,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       settings ?? {},
       path,
     )
+  }
+
+  // Event page — fetch the full content record (includes SEO fields); fall back
+  // to the event title when no explicit SEO title is set.
+  if (exp?.__typename === 'OT_EventPage' && exp?._metadata?.key) {
+    const eventContent = await getEventPage(exp._metadata.key as string, locale)
+    const seoFields: PageSeoFields = {
+      ...(eventContent ?? {}),
+      seoTitle: eventContent?.seoTitle ?? eventContent?.title ?? undefined,
+      ogImage:  eventContent?.ogImage ?? eventContent?.featuredImage ?? undefined,
+      schemaType: 'Event',
+    }
+    return buildPageMetadata(seoFields, settings ?? {}, path)
   }
 
   return buildPageMetadata((exp ?? {}) as PageSeoFields, settings ?? {}, path)
@@ -368,6 +383,34 @@ async function CmsPage({ params, searchParams }: Props) {
           />
         </>
       )
+    }
+
+    // Event page — _page type rendered by its own component, not a composition
+    if (exp?.__typename === 'OT_EventPage') {
+      const contentKey = exp._metadata?.key as string | undefined
+      // Preview: getPreviewContent returns all fields. Public: targeted query.
+      const eventContent = dm.isEnabled
+        ? exp
+        : (contentKey ? await getEventPage(contentKey, locale) : null)
+
+      if (eventContent) {
+        const eventJsonLd = buildJsonLd(
+          { ...(eventContent as PageSeoFields), schemaType: 'Event' },
+          settings ?? {},
+          fullPageUrl,
+        )
+
+        return (
+          <>
+            <JsonLd data={eventJsonLd} />
+            {dm.isEnabled && cmsUrl && (
+              <Script src={`${cmsUrl}/util/javascript/communicationinjector.js`} />
+            )}
+            {dm.isEnabled && <PreviewComponent />}
+            <EventPage content={eventContent as any} />
+          </>
+        )
+      }
     }
 
     // Standalone block content (not an experience) — send to the isolated preview route

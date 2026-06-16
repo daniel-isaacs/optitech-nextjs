@@ -28,6 +28,7 @@ import { OT_BannerBlockDefault }     from '@/cms/display-templates/OT_BannerBloc
 import { OT_ResourceLibraryDefault } from '@/cms/display-templates/OT_ResourceLibraryDefault'
 import { OT_CalloutDefault }         from '@/cms/display-templates/OT_CalloutDefault'
 import { OT_DividerBlockDefault }    from '@/cms/display-templates/OT_DividerBlockDefault'
+import { OT_EventListingDefault }    from '@/cms/display-templates/OT_EventListingDefault'
 
 // Content type definitions — required at runtime so the SDK's query builder
 // can generate the correct GraphQL fragments for each type
@@ -55,6 +56,7 @@ import { OT_Author }            from '@/cms/content-types/OT_Author'
 import { OT_FooterBlock }       from '@/cms/content-types/OT_FooterBlock'
 import { OT_BlogPage }          from '@/cms/content-types/OT_BlogPage'
 import { OT_CampaignPage }      from '@/cms/content-types/OT_CampaignPage'
+import { OT_EventPage }         from '@/cms/content-types/OT_EventPage'
 import { OT_FolderPage }        from '@/cms/content-types/OT_FolderPage'
 import { ImageMedia }           from '@/cms/content-types/ImageMedia'
 import { OT_BlogFeedBlock }     from '@/cms/content-types/OT_BlogFeedBlock'
@@ -67,6 +69,7 @@ import { OT_BannerBlock }           from '@/cms/content-types/OT_BannerBlock'
 import { OT_ResourceLibraryBlock }  from '@/cms/content-types/OT_ResourceLibraryBlock'
 import { OT_CalloutBlock }          from '@/cms/content-types/OT_CalloutBlock'
 import { OT_DividerBlock }          from '@/cms/content-types/OT_DividerBlock'
+import { OT_EventListingBlock }     from '@/cms/content-types/OT_EventListingBlock'
 
 // OptiForm content types — built-in Forms for Visual Builder element schemas
 import { OptiFormsContainerData }   from '@/cms/content-types/OptiFormsContainerData'
@@ -98,6 +101,7 @@ import OT_ThemeManagerAdapter     from '@/cms/components/OT_ThemeManager'
 import OT_AuthorAdapter           from '@/cms/components/OT_Author'
 import OT_FooterBlockAdapter      from '@/cms/components/OT_FooterBlock'
 import OT_BlogPageAdapter         from '@/cms/components/OT_BlogPage'
+import OT_EventPageAdapter        from '@/cms/components/OT_EventPage'
 import OT_FolderPageAdapter       from '@/cms/components/OT_FolderPage'
 import ImageMediaAdapter          from '@/cms/components/ImageMedia'
 import OT_BlogFeedBlockAdapter    from '@/cms/components/OT_BlogFeedBlock'
@@ -108,6 +112,7 @@ import OT_BannerBlockAdapter           from '@/cms/components/OT_BannerBlock'
 import OT_ResourceLibraryBlockAdapter  from '@/cms/components/OT_ResourceLibraryBlock'
 import OT_CalloutBlockAdapter          from '@/cms/components/OT_CalloutBlock'
 import OT_DividerBlockAdapter          from '@/cms/components/OT_DividerBlock'
+import OT_EventListingBlockAdapter     from '@/cms/components/OT_EventListingBlock'
 
 // OptiForm component adapters
 import OptiFormsContainerDataAdapter   from '@/cms/components/OptiFormsContainerData'
@@ -153,6 +158,7 @@ initDisplayTemplateRegistry([
   OT_ResourceLibraryDefault,
   OT_CalloutDefault,
   OT_DividerBlockDefault,
+  OT_EventListingDefault,
 ])
 
 initContentTypeRegistry([
@@ -180,6 +186,7 @@ initContentTypeRegistry([
   OT_FooterBlock,
   OT_BlogPage,
   OT_CampaignPage,
+  OT_EventPage,
   OT_FolderPage,
   ImageMedia,
   OT_BlogFeedBlock,
@@ -192,6 +199,7 @@ initContentTypeRegistry([
   OT_ResourceLibraryBlock,
   OT_CalloutBlock,
   OT_DividerBlock,
+  OT_EventListingBlock,
   // OptiForm types
   OptiFormsContainerData,
   OptiFormsDependencyRule,
@@ -225,6 +233,7 @@ initReactComponentRegistry({
     OT_Author:           OT_AuthorAdapter,
     OT_FooterBlock:      OT_FooterBlockAdapter,
     OT_BlogPage:         OT_BlogPageAdapter,
+    OT_EventPage:        OT_EventPageAdapter,
     OT_FolderPage:       OT_FolderPageAdapter,
     ImageMedia:          ImageMediaAdapter,
     OT_BlogFeedBlock:    OT_BlogFeedBlockAdapter,
@@ -235,6 +244,7 @@ initReactComponentRegistry({
     OT_ResourceLibraryBlock:  OT_ResourceLibraryBlockAdapter,
     OT_CalloutBlock:          OT_CalloutBlockAdapter,
     OT_DividerBlock:          OT_DividerBlockAdapter,
+    OT_EventListingBlock:     OT_EventListingBlockAdapter,
     // Composition structure — 'BlankSection' is the SDK's built-in section type key;
     // '_Row' and '_Column' are the fixed registry keys OptimizelyGridSection resolves.
     BlankSection:       BlankSectionAdapter,

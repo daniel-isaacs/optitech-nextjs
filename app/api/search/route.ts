@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { getClient } from '@/lib/optimizely'
 import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import type { SearchResult } from '@/lib/search'
+import { formatEventLocation } from '@/lib/eventFormat'
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220)
@@ -110,6 +111,43 @@ function buildBlankExperienceQuery(withDomain: boolean): string {
   `
 }
 
+// Event search — surfaces OT_EventPage with the fields that matter for events
+// (date + location carry as much weight as the title). summary is HTML-stripped
+// to a short excerpt by the caller.
+function buildEventQuery(withDomain: boolean): string {
+  const domainVar    = withDomain ? ', $domain: String' : ''
+  const metaFilter   = withDomain
+    ? '_metadata: { locale: { eq: $locale }, url: { base: { eq: $domain } } }'
+    : '_metadata: { locale: { eq: $locale } }'
+  return `
+    query SearchEvents($query: String!, $limit: Int!, $locale: String!${domainVar}) {
+      OT_EventPage(
+        orderBy: { _ranking: RELEVANCE }
+        where: {
+          _fulltext: { match: $query, fuzzy: true, synonyms: ONE }
+          ${metaFilter}
+        }
+        limit: $limit
+        tracking: { phrase: $query, source: "/search" }
+      ) {
+        items {
+          _track
+          _metadata { key url { default } }
+          title
+          eventType
+          startDate
+          endDate
+          locationType
+          venueName
+          city
+          summary { html }
+          featuredImage { url { default } }
+        }
+      }
+    }
+  `
+}
+
 function withTrackAuth(url: string | null | undefined): string | null {
   if (!url) return null
   const key = process.env.OPTIMIZELY_GRAPH_SINGLE_KEY
@@ -128,7 +166,7 @@ const SETTINGS_TYPES = new Set([
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const q        = (searchParams.get('q') ?? '').trim()
-  const type     = (searchParams.get('type') ?? 'all') as 'all' | 'Blog' | 'Page'
+  const type     = (searchParams.get('type') ?? 'all') as 'all' | 'Blog' | 'Page' | 'Event'
   const semantic = searchParams.get('semantic') === 'true'
   const limit    = 16
 
@@ -176,7 +214,7 @@ export async function GET(req: NextRequest) {
   const seen = new Set<string>()
 
   // ── Blog results ─────────────────────────────────────────────────────────
-  if (type !== 'Page') {
+  if (type === 'all' || type === 'Blog') {
     try {
       const blogQuery = buildBlogQuery(withDomain, semantic)
       const data = await getClient().request(blogQuery, baseVars)
@@ -205,10 +243,46 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // ── Event results ──────────────────────────────────────────────────────────
+  if (type === 'all' || type === 'Event') {
+    try {
+      const eventQuery = buildEventQuery(withDomain)
+      const data = await getClient().request(eventQuery, baseVars)
+      const items: any[] = (data as any)?.OT_EventPage?.items ?? []
+      for (const item of items) {
+        if (!item._metadata?.url?.default) continue
+        if (seen.has(item._metadata.key)) continue
+        seen.add(item._metadata.key)
+        const summaryHtml = (item.summary?.html as string | undefined) || undefined
+        const locationLabel = formatEventLocation({
+          locationType: item.locationType,
+          venueName:    item.venueName,
+          city:         item.city,
+        }) || undefined
+        results.push({
+          id:            item._metadata.key,
+          title:         item.title ?? 'Untitled',
+          url:           item._metadata.url.default,
+          type:          'Event',
+          excerpt:       summaryHtml ? stripHtml(summaryHtml).slice(0, 160) : undefined,
+          imageUrl:      item.featuredImage?.url?.default || undefined,
+          eventType:     item.eventType || undefined,
+          startDate:     item.startDate || undefined,
+          endDate:       item.endDate || undefined,
+          locationType:  item.locationType || undefined,
+          locationLabel,
+          _track:        withTrackAuth(item._track),
+        })
+      }
+    } catch (err) {
+      console.error('[search] event query failed:', err)
+    }
+  }
+
   // ── Experience results (typed — enriched with seoDescription / ogImage) ──
   // Runs before the generic _Content query so enriched data wins the seen-Set
   // deduplication; _Content then fills in any remaining non-experience pages.
-  if (type !== 'Blog') {
+  if (type === 'all' || type === 'Page') {
     try {
       const expQuery = buildBlankExperienceQuery(withDomain)
       const data = await getClient().request(expQuery, baseVars)
@@ -242,6 +316,7 @@ export async function GET(req: NextRequest) {
         const types: string[] = item._metadata?.types ?? []
         if (!types.includes('_Page') && !types.includes('_Experience')) continue
         if (types.includes('OT_BlogPage')) continue
+        if (types.includes('OT_EventPage')) continue
         if (types.some(t => SETTINGS_TYPES.has(t))) continue
         if (!item._metadata?.url?.default) continue
         if (seen.has(item._metadata.key)) continue

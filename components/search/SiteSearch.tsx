@@ -7,21 +7,24 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   Search, X, Maximize2, Minimize2,
   FileText, Newspaper, LayoutGrid, Sparkles, Hash, List, SlidersHorizontal,
+  CalendarDays, MapPin, Video,
 } from 'lucide-react'
 import { useSearch } from './SearchProvider'
 import { useTranslation } from '@/lib/i18n/useTranslation'
 import type { SearchResult } from '@/lib/search'
+import { formatEventDate, eventTypeLabel } from '@/lib/eventFormat'
 
 type DisplayMode = 'immersive' | 'compact'
-type TypeFilter  = 'all' | 'Blog' | 'Page'
+type TypeFilter  = 'all' | 'Blog' | 'Page' | 'Event'
 type ViewMode    = 'list' | 'card'
 
 const DISPLAY_MODE_KEY = 'ot-search-mode'
 
 const TYPE_FILTERS: { value: TypeFilter; label: string; Icon: typeof LayoutGrid }[] = [
-  { value: 'all',  label: 'All',  Icon: LayoutGrid },
-  { value: 'Blog', label: 'Blog', Icon: Newspaper  },
-  { value: 'Page', label: 'Page', Icon: FileText   },
+  { value: 'all',   label: 'All',    Icon: LayoutGrid   },
+  { value: 'Blog',  label: 'Blog',   Icon: Newspaper    },
+  { value: 'Page',  label: 'Page',   Icon: FileText     },
+  { value: 'Event', label: 'Events', Icon: CalendarDays },
 ]
 
 function formatDate(iso?: string): string | null {
@@ -179,6 +182,7 @@ export default function SiteSearch() {
 
   const blogCount  = results.filter(r => r.type === 'Blog').length
   const pageCount  = results.filter(r => r.type === 'Page').length
+  const eventCount = results.filter(r => r.type === 'Event').length
   const allCount   = results.length
 
   const availableTopics = Array.from(new Set(
@@ -210,8 +214,9 @@ export default function SiteSearch() {
 
   function TypeFilterPills({ compact: isCompact }: { compact: boolean }) {
     const countFor = (f: TypeFilter) => {
-      if (f === 'all')  return allCount
-      if (f === 'Blog') return blogCount
+      if (f === 'all')   return allCount
+      if (f === 'Blog')  return blogCount
+      if (f === 'Event') return eventCount
       return pageCount
     }
 
@@ -353,7 +358,9 @@ export default function SiteSearch() {
     index:   number
     compact: boolean
   }) {
-    const date         = formatDate(result.published)
+    const isEvent      = result.type === 'Event'
+    const eventDate    = isEvent ? formatEventDate(result.startDate, result.endDate) : null
+    const date         = isEvent ? eventDate : formatDate(result.published)
     const isFocused    = focusedIdx === index
     const hasThumbnail = !!result.imageUrl
 
@@ -385,6 +392,8 @@ export default function SiteSearch() {
                 loading="lazy"
                 className="w-full h-full object-cover"
               />
+            ) : isEvent ? (
+              <CalendarDays size={isCompact ? 15 : 18} className="text-accent/40" />
             ) : result.type === 'Blog' ? (
               <Newspaper size={isCompact ? 15 : 18} className="text-fg-muted/25" />
             ) : (
@@ -395,9 +404,17 @@ export default function SiteSearch() {
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-[6px] flex-wrap mb-[5px]">
-              <span className={`text-[10px] uppercase tracking-[0.1em] font-bold ${result.type === 'Blog' ? 'text-brand' : 'text-fg-muted/60'}`}>
+              <span className={`text-[10px] uppercase tracking-[0.1em] font-bold ${isEvent ? 'text-accent' : result.type === 'Blog' ? 'text-brand' : 'text-fg-muted/60'}`}>
                 {result.type}
               </span>
+              {isEvent && result.eventType && (
+                <>
+                  <span className="text-fg/15">·</span>
+                  <span className="text-[10px] uppercase tracking-[0.08em] font-semibold text-fg-muted/55">
+                    {eventTypeLabel(result.eventType)}
+                  </span>
+                </>
+              )}
               {result.topic && (
                 <>
                   <span className="text-fg/15">·</span>
@@ -409,7 +426,10 @@ export default function SiteSearch() {
               {date && (
                 <>
                   <span className="text-fg/15">·</span>
-                  <span className="text-[10px] text-fg-muted/40">{date}</span>
+                  <span className={`text-[10px] ${isEvent ? 'text-fg-muted font-semibold inline-flex items-center gap-0.75' : 'text-fg-muted/40'}`}>
+                    {isEvent && <CalendarDays size={11} strokeWidth={2} aria-hidden />}
+                    {date}
+                  </span>
                 </>
               )}
             </div>
@@ -421,6 +441,15 @@ export default function SiteSearch() {
             ].join(' ')}>
               {result.title}
             </p>
+
+            {isEvent && result.locationLabel && (
+              <p className={`mt-[4px] inline-flex items-center gap-[5px] font-medium text-fg-muted ${isCompact ? 'text-[12px]' : 'text-[13px]'}`}>
+                {result.locationType === 'virtual'
+                  ? <Video size={13} strokeWidth={2} className="text-fg-muted/70 shrink-0" aria-hidden />
+                  : <MapPin size={13} strokeWidth={2} className="text-fg-muted/70 shrink-0" aria-hidden />}
+                {result.locationLabel}
+              </p>
+            )}
 
             {result.excerpt && (
               <p className={`text-fg-muted leading-relaxed mt-[4px] line-clamp-2 ${isCompact ? 'text-[12px]' : 'text-[14px]'}`}>
@@ -446,7 +475,8 @@ export default function SiteSearch() {
   // ─── Result card — card grid view (immersive only) ─────────────────────────
 
   function ResultCard({ result, index }: { result: SearchResult; index: number }) {
-    const date      = formatDate(result.published)
+    const isEvent   = result.type === 'Event'
+    const date      = isEvent ? formatEventDate(result.startDate, result.endDate) : formatDate(result.published)
     const isFocused = focusedIdx === index
 
     return (
@@ -477,9 +507,11 @@ export default function SiteSearch() {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                {result.type === 'Blog'
-                  ? <Newspaper size={28} className="text-fg-muted/18" />
-                  : <FileText  size={28} className="text-fg-muted/18" />}
+                {isEvent
+                  ? <CalendarDays size={28} className="text-accent/25" />
+                  : result.type === 'Blog'
+                    ? <Newspaper size={28} className="text-fg-muted/18" />
+                    : <FileText  size={28} className="text-fg-muted/18" />}
               </div>
             )}
           </div>
@@ -487,9 +519,17 @@ export default function SiteSearch() {
           {/* Content */}
           <div className="px-md pt-md pb-lg">
             <div className="flex items-center gap-[6px] flex-wrap mb-[6px]">
-              <span className={`text-[10px] uppercase tracking-[0.1em] font-bold ${result.type === 'Blog' ? 'text-brand' : 'text-fg-muted/60'}`}>
+              <span className={`text-[10px] uppercase tracking-[0.1em] font-bold ${isEvent ? 'text-accent' : result.type === 'Blog' ? 'text-brand' : 'text-fg-muted/60'}`}>
                 {result.type}
               </span>
+              {isEvent && result.eventType && (
+                <>
+                  <span className="text-fg/15">·</span>
+                  <span className="text-[10px] uppercase tracking-[0.08em] font-semibold text-fg-muted/55">
+                    {eventTypeLabel(result.eventType)}
+                  </span>
+                </>
+              )}
               {result.topic && (
                 <>
                   <span className="text-fg/15">·</span>
@@ -505,12 +545,31 @@ export default function SiteSearch() {
             ].join(' ')}>
               {result.title}
             </p>
+            {/* Event date + location carry as much weight as the title */}
+            {isEvent && (date || result.locationLabel) && (
+              <div className="mt-sm flex flex-col gap-[3px]">
+                {date && (
+                  <span className="inline-flex items-center gap-[5px] text-[12px] font-semibold text-fg-muted">
+                    <CalendarDays size={13} strokeWidth={2} className="text-brand shrink-0" aria-hidden />
+                    {date}
+                  </span>
+                )}
+                {result.locationLabel && (
+                  <span className="inline-flex items-center gap-[5px] text-[12px] text-fg-muted">
+                    {result.locationType === 'virtual'
+                      ? <Video size={13} strokeWidth={2} className="text-fg-muted/70 shrink-0" aria-hidden />
+                      : <MapPin size={13} strokeWidth={2} className="text-fg-muted/70 shrink-0" aria-hidden />}
+                    {result.locationLabel}
+                  </span>
+                )}
+              </div>
+            )}
             {result.excerpt && (
               <p className="text-fg-muted text-[13px] leading-relaxed mt-[6px] line-clamp-2">
                 {result.excerpt}
               </p>
             )}
-            {date && <p className="text-[10px] text-fg-muted/40 mt-sm">{date}</p>}
+            {!isEvent && date && <p className="text-[10px] text-fg-muted/40 mt-sm">{date}</p>}
           </div>
         </button>
       </li>

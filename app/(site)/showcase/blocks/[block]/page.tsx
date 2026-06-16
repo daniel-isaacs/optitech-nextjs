@@ -23,11 +23,13 @@ import JsonCopyBlock                 from '@/components/blocks/chart/JsonCopyBlo
 import TrustRail                     from '@/components/blocks/TrustRail'
 import Button                        from '@/components/ui/Button'
 import BlogFeedBlock                 from '@/components/blocks/BlogFeedBlock'
+import EventListingBlock             from '@/components/blocks/EventListingBlock'
 import {
   ArrowRight, Zap, ChevronRight, Play, Download,
   Sparkles, Send, Rocket, Star, Plus,
 } from 'lucide-react'
 import type { BlogFeedPost }         from '@/lib/blogFeed'
+import type { EventCardData }        from '@/lib/events'
 
 // ─── Static params ──────────────────────────────────────────────────────────
 
@@ -35,7 +37,7 @@ const BLOCK_SLUGS = [
   'hero', 'card', 'primary-text', 'quote', 'rich-text',
   'image', 'video', 'stat', 'feature-grid', 'trust-rail',
   'accordion', 'tabs', 'blog-feed', 'button', 'chart', 'banner', 'resource-library',
-  'callout', 'divider',
+  'callout', 'divider', 'event-listing',
 ] as const
 
 type BlockSlug = typeof BLOCK_SLUGS[number]
@@ -60,6 +62,7 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'resource-library': { label: 'ResourceLibraryBlock', cmsKey: 'OT_ResourceLibraryBlock', description: 'DAM-connected asset download list. The editor picks a single DAM asset as a collection anchor; the block fetches all assets in that collection via Optimizely Graph and renders them as a dense list or card grid with Lucide file-type iconography and native download links.' },
   'callout':          { label: 'CalloutBlock',          cmsKey: 'OT_CalloutBlock',          description: 'Compact semantic inline notification. Six intent types: neutral, info, success, warning, danger, brand. Three variants: filled, bordered, bar. Dismissible with a two-phase kinetic exit — content sweeps right and fades, then the container height collapses.' },
   'divider':          { label: 'DividerBlock',          cmsKey: 'OT_DividerBlock',          description: 'Structural section divider that opens deliberate breathing room between stacked sections. Three treatments: mark (a hairline broken by an editable label or an editorial ornament), glow (a precise luminous rule — a chromatic line of light with a soft bloom above and below), and bleed (atmospheric luminance — an elliptical light seam rising from the boundary). One Tone control spans all three — neutral, brand, accent, spectrum, aurora — plus editor-controlled spacing, weight, and an optional draw-in reveal that rides the shared scroll observer.' },
+  'event-listing':    { label: 'EventListingBlock',     cmsKey: 'OT_EventListingBlock',     description: 'CMS-driven listing of Event Pages with three toggleable views: card grid, list (calendar-style date blocks), and a monthly calendar with day agenda. A segmented icon control switches views; type-filter chips and a past-events toggle refine the set. Works across technology, healthcare, legal, and financial events on both canvas and surface grounds. In production, events are fetched at render time from published Event Pages; the showcase uses static fixtures.' },
 }
 
 export function generateStaticParams() {
@@ -2128,6 +2131,126 @@ function DividerShowcase() {
   )
 }
 
+// ─── Event Listing ──────────────────────────────────────────────────────────────
+
+// Static fixtures — a cross-vertical mix of types, in-person/virtual, with and
+// without featured images, with and without credit, spread across May–August 2026
+// (a couple in the past to exercise the past-events toggle; the rest distributed
+// so the calendar view shows events across multiple weeks).
+const EVENT_IMG_A = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&fit=crop'   // conference stage
+const EVENT_IMG_B = 'https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=800&q=80&fit=crop'   // webinar / screen
+const EVENT_IMG_C = 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80&fit=crop'   // community gathering
+const EVENT_IMG_D = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80&fit=crop'   // healthcare
+
+const MOCK_EVENTS: EventCardData[] = [
+  {
+    key: 'e-webinar-1', title: 'Shipping Faster with Feature Flags: A Live Webinar', url: '#',
+    eventType: 'webinar', startDate: '2026-06-25T16:00:00Z', endDate: '2026-06-25T17:00:00Z',
+    locationType: 'virtual', venueName: 'Zoom Webinar', summary: 'A practical walkthrough of progressive delivery.',
+    imageUrl: EVENT_IMG_B,
+  },
+  {
+    key: 'e-community-1', title: 'OptiTech Community Meetup: Austin', url: '#',
+    eventType: 'community', startDate: '2026-06-20T17:30:00Z',
+    locationType: 'inPerson', venueName: 'Capital Factory', city: 'Austin, TX',
+    imageUrl: EVENT_IMG_C,
+  },
+  {
+    key: 'e-conference-1', title: 'OptiTech Summit 2026', url: '#',
+    eventType: 'conference', startDate: '2026-07-14T09:00:00Z', endDate: '2026-07-16T17:00:00Z',
+    locationType: 'inPerson', venueName: 'Javits Center', city: 'New York, NY',
+    imageUrl: EVENT_IMG_A,
+  },
+  {
+    key: 'e-workshop-1', title: 'Hands-on Workshop: Building Audit-Ready Pipelines', url: '#',
+    eventType: 'workshop', startDate: '2026-07-09T14:00:00Z', endDate: '2026-07-09T18:00:00Z',
+    locationType: 'inPerson', venueName: 'Merchandise Mart', city: 'Chicago, IL',
+    creditType: 'CPE', creditHours: 4,
+  },
+  {
+    key: 'e-screening-1', title: 'Free Community Health Screening', url: '#',
+    eventType: 'screening', startDate: '2026-07-22T09:00:00Z', endDate: '2026-07-22T15:00:00Z',
+    locationType: 'inPerson', venueName: 'Lakewood Civic Center', city: 'Cleveland, OH',
+  },
+  {
+    key: 'e-seminar-1', title: 'CLE Seminar: Data Privacy in Practice', url: '#',
+    eventType: 'seminar', startDate: '2026-08-05T12:00:00Z', endDate: '2026-08-05T14:30:00Z',
+    locationType: 'inPerson', venueName: 'Boston Bar Association', city: 'Boston, MA',
+    creditType: 'CLE', creditHours: 1.5,
+  },
+  {
+    key: 'e-training-1', title: 'Investor Briefing & Platform Training', url: '#',
+    eventType: 'training', startDate: '2026-08-18T15:00:00Z', endDate: '2026-08-18T17:00:00Z',
+    locationType: 'virtual', venueName: 'OptiTech Live', creditType: 'CE', creditHours: 2,
+    imageUrl: EVENT_IMG_D,
+  },
+  {
+    key: 'e-webinar-past', title: 'Past Webinar: Q1 Product Roadmap', url: '#',
+    eventType: 'webinar', startDate: '2026-05-28T16:00:00Z', endDate: '2026-05-28T17:00:00Z',
+    locationType: 'virtual', venueName: 'Zoom Webinar',
+  },
+  {
+    key: 'e-conf-past', title: 'Past Conference: DevWorld 2026', url: '#',
+    eventType: 'conference', startDate: '2026-05-10T09:00:00Z', endDate: '2026-05-11T17:00:00Z',
+    locationType: 'inPerson', venueName: 'Moscone Center', city: 'San Francisco, CA',
+    imageUrl: EVENT_IMG_A,
+  },
+]
+
+function EventListingShowcase() {
+  return (
+    <>
+      <BlockHeader slug="event-listing" />
+
+      <div className="px-md pb-sm lg:px-lg pt-md">
+        <p className="text-label text-fg-muted/60 leading-body max-w-[65ch]">
+          In production, events are fetched at render time from published Event Pages. The showcase uses static fixtures (May–August 2026, mixed verticals) to demonstrate the views and display-template settings independently of CMS content.
+        </p>
+      </div>
+
+      <VariantGroup label="Card grid · canvas · type filter on · past-events toggle" note="Default view. Chips show only the event types present. Toggle the 'Show past events' control to reveal the de-emphasized past rows under a divider; switch views with the segmented control." />
+      <div className="border-t border-fg/5">
+        <EventListingBlock
+          heading="Upcoming events"
+          subtext="Webinars, conferences, workshops, and community events across the OptiTech network."
+          events={MOCK_EVENTS}
+          styleOptions={{ defaultView: 'card', color: 'canvas', showViewToggle: true, showTypeFilter: true, showPastEvents: 'toggle' }}
+        />
+      </div>
+
+      <VariantGroup label="List · surface" note="Compact rows anchored by a calendar-style date block. Multi-day events show a range; the date block scales down on narrow viewports." />
+      <div className="border-t border-fg/5">
+        <EventListingBlock
+          heading="Event schedule"
+          events={MOCK_EVENTS}
+          styleOptions={{ defaultView: 'list', color: 'surface', showViewToggle: true, showTypeFilter: true, showPastEvents: 'toggle' }}
+        />
+      </div>
+
+      <VariantGroup label="Calendar · canvas" note="Monthly grid with prev/next + Today. Days with events are interactive — selecting one opens that day's agenda below the grid. Multiple events per day collapse to chips with a '+N more' count. Below the sm breakpoint the grid becomes a month agenda list." />
+      <div className="border-t border-fg/5">
+        <EventListingBlock
+          heading="Events calendar"
+          events={MOCK_EVENTS}
+          styleOptions={{ defaultView: 'calendar', color: 'canvas', showViewToggle: true, showTypeFilter: true, showPastEvents: 'show' }}
+        />
+      </div>
+
+      <VariantGroup label="Locked single view · type pre-filtered (webinars)" note="showViewToggle off + filterByType: 'webinar' — the 'embed on a product page' use case. The view is locked to cards, the type chips are suppressed, and only webinars load." />
+      <div className="border-t border-fg/5">
+        <EventListingBlock
+          heading="Upcoming webinars"
+          events={MOCK_EVENTS}
+          filterByType="webinar"
+          styleOptions={{ defaultView: 'card', color: 'canvas', showViewToggle: false, showTypeFilter: true, showPastEvents: 'hide' }}
+        />
+      </div>
+
+      <div className="pb-xl" />
+    </>
+  )
+}
+
 export default async function ShowcaseBlockPage({ params }: Props) {
   const { block } = await params
 
@@ -2151,6 +2274,7 @@ export default async function ShowcaseBlockPage({ params }: Props) {
     case 'resource-library': return <ResourceLibraryShowcase />
     case 'callout':          return <CalloutShowcase />
     case 'divider':          return <DividerShowcase />
+    case 'event-listing':    return <EventListingShowcase />
     default:                 return notFound()
   }
 }

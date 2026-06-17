@@ -14,6 +14,9 @@ import {
 import { getBlogPage, getLatestBlogPosts, getAuthorName } from '@/lib/blog'
 import { getCampaignPage, getCampaignPageMeta, mapCampaignPageRaw } from '@/lib/campaign'
 import { getEventPage } from '@/lib/events'
+import { getPractitioner } from '@/lib/practitioners'
+import { practitionerName, primaryArea, bioPreview } from '@/lib/practitionerFormat'
+import PractitionerHeader from '@/components/practitioner/PractitionerHeader'
 import { withAppContext }       from '@optimizely/cms-sdk/react/server'
 import { PreviewComponent }    from '@optimizely/cms-sdk/react/client'
 import type { PreviewParams }  from '@optimizely/cms-sdk'
@@ -128,6 +131,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       seoTitle: eventContent?.seoTitle ?? eventContent?.title ?? undefined,
       ogImage:  eventContent?.ogImage ?? eventContent?.featuredImage ?? undefined,
       schemaType: eventContent?.schemaType || 'Event',
+    }
+    return buildPageMetadata(seoFields, settings ?? {}, path)
+  }
+
+  // Practitioner page — _experience; build SEO from page fields with a smart
+  // fallback to the referenced practitioner's name + credentials + primary area.
+  if (exp?.__typename === 'OT_PractitionerPage') {
+    const refKey = (exp as any)?.practitionerRef?.key as string | undefined
+    const practitioner = refKey ? await getPractitioner(refKey, locale) : null
+
+    let fallbackTitle: string | undefined
+    if (practitioner) {
+      const name    = practitionerName(practitioner, false)
+      const creds    = practitioner.credentials ? `, ${practitioner.credentials}` : ''
+      const primary  = primaryArea(practitioner.practiceAreas)
+      const areaPart = primary?.areaName ? ` — ${primary.areaName}` : ''
+      fallbackTitle  = `${name}${creds}${areaPart}`.trim() || undefined
+    }
+
+    const headshotOg = practitioner?.headshotUrl
+      ? { url: { default: practitioner.headshotUrl } }
+      : undefined
+
+    const seoFields: PageSeoFields = {
+      ...((exp ?? {}) as PageSeoFields),
+      seoTitle:   (exp as any)?.seoTitle ?? fallbackTitle,
+      ogImage:    (exp as any)?.ogImage ?? headshotOg,
+      schemaType: (exp as any)?.schemaType || 'Person',
     }
     return buildPageMetadata(seoFields, settings ?? {}, path)
   }
@@ -426,6 +457,48 @@ async function CmsPage({ params, searchParams }: Props) {
       redirect(`/preview?${qs}`)
     }
     notFound()
+  }
+
+  // Practitioner page — _experience type. The referenced practitioner record
+  // populates a locked PractitionerHeader rendered OUTSIDE the composition tree;
+  // everything below is the editor's free Visual Builder composition. This is
+  // the architectural guarantee that the header always appears and cannot be
+  // moved or deleted.
+  if (exp?.__typename === 'OT_PractitionerPage') {
+    const refKey = (exp as any).practitionerRef?.key as string | undefined
+    const practitioner = refKey ? await getPractitioner(refKey, locale) : null
+
+    const primary = practitioner ? primaryArea(practitioner.practiceAreas) : null
+    const personSeo: PageSeoFields = {
+      ...(exp as PageSeoFields),
+      schemaType: (exp as PageSeoFields).schemaType || 'Person',
+      person: practitioner
+        ? {
+            name:        practitionerName(practitioner, false),
+            jobTitle:    practitioner.title ?? undefined,
+            description: bioPreview(practitioner.bio, 300) || undefined,
+            worksFor:    primary?.facility ?? undefined,
+          }
+        : null,
+    }
+    const practitionerJsonLd = buildJsonLd(personSeo, settings ?? {}, fullPageUrl)
+
+    return (
+      <>
+        <JsonLd data={practitionerJsonLd} />
+        {dm.isEnabled && cmsUrl && (
+          <Script src={`${cmsUrl}/util/javascript/communicationinjector.js`} />
+        )}
+        {dm.isEnabled && <PreviewComponent />}
+        {practitioner && (
+          <PractitionerHeader
+            practitioner={practitioner}
+            profileLabel={(exp as any).profileLabel ?? undefined}
+          />
+        )}
+        <CompositionRenderer nodes={exp.composition.nodes} />
+      </>
+    )
   }
 
   // Always extract accordion items — buildJsonLd decides whether to emit them

@@ -24,12 +24,14 @@ import TrustRail                     from '@/components/blocks/TrustRail'
 import Button                        from '@/components/ui/Button'
 import BlogFeedBlock                 from '@/components/blocks/BlogFeedBlock'
 import EventListingBlock             from '@/components/blocks/EventListingBlock'
+import PractitionerListingBlock      from '@/components/blocks/PractitionerListingBlock'
 import {
   ArrowRight, Zap, ChevronRight, Play, Download,
   Sparkles, Send, Rocket, Star, Plus,
 } from 'lucide-react'
 import type { BlogFeedPost }         from '@/lib/blogFeed'
 import type { EventCardData }        from '@/lib/events'
+import type { PractitionerCardData } from '@/lib/practitioners'
 
 // ─── Static params ──────────────────────────────────────────────────────────
 
@@ -37,7 +39,7 @@ const BLOCK_SLUGS = [
   'hero', 'card', 'primary-text', 'quote', 'rich-text',
   'image', 'video', 'stat', 'feature-grid', 'trust-rail',
   'accordion', 'tabs', 'blog-feed', 'button', 'chart', 'banner', 'resource-library',
-  'callout', 'divider', 'event-listing',
+  'callout', 'divider', 'event-listing', 'practitioner-listing',
 ] as const
 
 type BlockSlug = typeof BLOCK_SLUGS[number]
@@ -63,6 +65,7 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'callout':          { label: 'CalloutBlock',          cmsKey: 'OT_CalloutBlock',          description: 'Compact semantic inline notification. Six intent types: neutral, info, success, warning, danger, brand. Three variants: filled, bordered, bar. Dismissible with a two-phase kinetic exit — content sweeps right and fades, then the container height collapses.' },
   'divider':          { label: 'DividerBlock',          cmsKey: 'OT_DividerBlock',          description: 'Structural section divider that opens deliberate breathing room between stacked sections. Three treatments: mark (a hairline broken by an editable label or an editorial ornament), glow (a precise luminous rule — a chromatic line of light with a soft bloom above and below), and bleed (atmospheric luminance — an elliptical light seam rising from the boundary). One Tone control spans all three — neutral, brand, accent, spectrum, aurora — plus editor-controlled spacing, weight, and an optional draw-in reveal that rides the shared scroll observer.' },
   'event-listing':    { label: 'EventListingBlock',     cmsKey: 'OT_EventListingBlock',     description: 'CMS-driven listing of Event Pages with three toggleable views: card grid, list (calendar-style date blocks), and a monthly calendar with day agenda. A segmented icon control switches views; type-filter chips and a past-events toggle refine the set. Works across technology, healthcare, legal, and financial events on both canvas and surface grounds. In production, events are fetched at render time from published Event Pages; the showcase uses static fixtures.' },
+  'practitioner-listing': { label: 'PractitionerListingBlock', cmsKey: 'OT_PractitionerListingBlock', description: 'CMS-driven, vertical-agnostic people directory pulled from Practitioner Profiles. Grid (cards) or list (rows) layout, client-side search across name / credentials / specialty, and filter chips for practice area and language that are derived dynamically from the loaded set — never a fixed list. Scope it to one vertical with the Group Tag Filter (e.g. "optimedical"). Squared portraits with a chromatic brand bloom and a designed initials fallback. In production, practitioners are fetched at render time; the showcase uses static fixtures spanning medical, legal, and technology verticals.' },
 }
 
 export function generateStaticParams() {
@@ -2251,6 +2254,143 @@ function EventListingShowcase() {
   )
 }
 
+// ─── Practitioner Listing ─────────────────────────────────────────────────────
+
+// Portrait IDs are real Unsplash photos; several records intentionally omit a
+// headshot to exercise the designed initials fallback.
+const HS = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=80`
+
+const MOCK_PRACTITIONERS: PractitionerCardData[] = [
+  // ── Medical (optimedical) ──────────────────────────────────────────────────
+  {
+    key: 'pr-vargas', firstName: 'Elena', lastName: 'Vargas', suffix: 'MD', credentials: 'MD, FACC',
+    title: 'Chief of Cardiology',
+    headshotUrl: HS('1594824476967-48c8b964273f'),
+    bio: { html: '<p>Dr. Vargas leads the cardiovascular service line, with a clinical focus on structural heart disease and interventional procedures. She has published widely on minimally invasive valve repair and mentors the interventional fellowship.</p>' },
+    practiceAreas: [
+      { areaName: 'Cardiology', facility: 'Memorial Heart Center', isPrimary: true },
+      { areaName: 'Interventional Procedures', facility: 'Memorial Heart Center' },
+    ],
+    phone: '(312) 555-0142', email: 'e.vargas@optimedical.example', officeLocation: 'Chicago, IL',
+    languages: 'English, Spanish', linkedIn: 'https://www.linkedin.com/in/example',
+    groupTag: 'optimedical', url: '/practitioners/elena-vargas',
+  },
+  {
+    key: 'pr-bell', firstName: 'Marcus', lastName: 'Bell', suffix: 'MD', credentials: 'MD',
+    title: 'Director, Medical Oncology',
+    headshotUrl: HS('1612349317150-e413f6a5b16d'),
+    bio: { html: '<p>Dr. Bell specializes in hematologic malignancies and leads the institute’s clinical trials program, with an emphasis on immunotherapy and precision treatment planning.</p>' },
+    practiceAreas: [{ areaName: 'Oncology', facility: 'Lakeside Cancer Institute', isPrimary: true }],
+    phone: '(312) 555-0188', email: 'm.bell@optimedical.example', officeLocation: 'Chicago, IL',
+    languages: 'English', groupTag: 'optimedical', url: '/practitioners/marcus-bell',
+  },
+  {
+    key: 'pr-nair', firstName: 'Priya', lastName: 'Nair', suffix: 'MD', credentials: 'MD, FACEP',
+    title: 'Attending Physician, Emergency Medicine',
+    // No headshot — exercises the initials fallback.
+    bio: { html: '<p>Dr. Nair practices emergency medicine and serves as the department’s simulation education lead, building rapid-response protocols for high-acuity presentations.</p>' },
+    practiceAreas: [{ areaName: 'Emergency Medicine', facility: 'Central Hospital', isPrimary: true }],
+    phone: '(312) 555-0203', email: 'p.nair@optimedical.example', officeLocation: 'Evanston, IL',
+    languages: 'English, Hindi, Mandarin', groupTag: 'optimedical', url: '/practitioners/priya-nair',
+  },
+
+  // ── Legal (optilegal) ──────────────────────────────────────────────────────
+  {
+    key: 'pr-reese', firstName: 'Jonathan', lastName: 'Reese', suffix: 'JD', credentials: 'JD',
+    title: 'Senior Partner',
+    headshotUrl: HS('1560250097-0b93528c311a'),
+    bio: { html: '<p>Jonathan advises closely held businesses and high-net-worth individuals on federal and state tax strategy, succession planning, and IRS controversy matters.</p>' },
+    practiceAreas: [{ areaName: 'Tax Law', facility: 'Chicago Office', isPrimary: true }],
+    phone: '(312) 555-0310', email: 'j.reese@optilegal.example', officeLocation: 'Chicago, IL',
+    languages: 'English', linkedIn: 'https://www.linkedin.com/in/example',
+    groupTag: 'optilegal', url: '/practitioners/jonathan-reese',
+  },
+  {
+    key: 'pr-marchetti', firstName: 'Sofia', lastName: 'Marchetti', suffix: 'JD', credentials: 'JD, LLM',
+    title: 'Partner',
+    // No headshot — initials fallback.
+    bio: { html: '<p>Sofia represents plaintiffs in complex personal injury and product liability litigation, with a track record of trial verdicts in catastrophic-injury cases.</p>' },
+    practiceAreas: [{ areaName: 'Personal Injury', facility: 'Milan Office', isPrimary: true }],
+    phone: '(312) 555-0355', email: 's.marchetti@optilegal.example', officeLocation: 'New York, NY',
+    languages: 'English, Italian', groupTag: 'optilegal', url: '/practitioners/sofia-marchetti',
+  },
+  {
+    key: 'pr-okafor', firstName: 'David', lastName: 'Okafor', suffix: 'Esq.', credentials: 'JD',
+    title: 'Managing Partner',
+    headshotUrl: HS('1507003211169-0a1dd7228f2d'),
+    bio: { html: '<p>David leads the corporate practice, advising on mergers and acquisitions, private equity transactions, and cross-border joint ventures for technology and manufacturing clients.</p>' },
+    practiceAreas: [{ areaName: 'Corporate Law', facility: 'Chicago Office', isPrimary: true }],
+    phone: '(312) 555-0399', email: 'd.okafor@optilegal.example', officeLocation: 'Chicago, IL',
+    languages: 'English, French', groupTag: 'optilegal', url: '/practitioners/david-okafor',
+  },
+
+  // ── Technology (optitech) ────────────────────────────────────────────────────
+  {
+    key: 'pr-lindqvist', firstName: 'Ava', lastName: 'Lindqvist', credentials: '',
+    title: 'Principal Platform Engineer',
+    headshotUrl: HS('1573496359142-b8d87734a5a2'),
+    bio: { html: '<p>Ava designs the distributed systems behind the platform’s delivery layer, focusing on multi-region resilience, observability, and developer experience.</p>' },
+    practiceAreas: [{ areaName: 'Platform Engineering', facility: 'Stockholm', isPrimary: true }],
+    email: 'ava@optitech.example', officeLocation: 'Stockholm, SE',
+    languages: 'English, Swedish', linkedIn: 'https://www.linkedin.com/in/example',
+    groupTag: 'optitech', url: '/practitioners/ava-lindqvist',
+  },
+  {
+    key: 'pr-park', firstName: 'Theo', lastName: 'Park', credentials: '',
+    title: 'VP, Product Strategy',
+    // No headshot — initials fallback.
+    bio: { html: '<p>Theo shapes the product roadmap across the experimentation and content suites, partnering with go-to-market teams to translate platform capability into customer outcomes.</p>' },
+    practiceAreas: [{ areaName: 'Product Strategy', facility: 'Seoul', isPrimary: true }],
+    email: 'theo@optitech.example', officeLocation: 'Seoul, KR',
+    languages: 'English, Korean', groupTag: 'optitech', url: '/practitioners/theo-park',
+  },
+]
+
+function PractitionerListingShowcase() {
+  const medical = MOCK_PRACTITIONERS.filter(p => p.groupTag === 'optimedical')
+  return (
+    <>
+      <BlockHeader slug="practitioner-listing" />
+
+      <div className="px-md pb-sm lg:px-lg pt-md">
+        <p className="text-label text-fg-muted/60 leading-body max-w-[65ch]">
+          In production, practitioners are fetched at render time from Practitioner Profiles, scoped by the Group Tag Filter. The showcase uses static fixtures across three verticals so every filter and empty state is exercisable. Search by a name (“Vargas”) or a specialty (“tax”); the specialty and language chips list only values present in the loaded set.
+        </p>
+      </div>
+
+      <VariantGroup label="Grid · 3 columns · canvas · search + filters" note="The full directory experience. All eight practitioners loaded with no group-tag scope; specialty and language chips are derived from the data. Some records use a headshot, others the designed initials fallback." />
+      <div className="border-t border-fg/5">
+        <PractitionerListingBlock
+          heading="Find a practitioner"
+          subtext="Search our directory by name or specialty, or filter by practice area and language."
+          practitioners={MOCK_PRACTITIONERS}
+          styleOptions={{ layout: 'grid', color: 'canvas', columns: 3, showSearch: true, showFilters: true, density: 'comfortable' }}
+        />
+      </div>
+
+      <VariantGroup label="Grid · 4 columns · surface · no search / no filters · scoped to optimedical" note="The curated “Meet Our Doctors” use case on a healthcare page: Group Tag Filter restricts the set to medical practitioners and the filter UI is suppressed." />
+      <div className="border-t border-fg/5">
+        <PractitionerListingBlock
+          heading="Meet our doctors"
+          practitioners={medical}
+          styleOptions={{ layout: 'grid', color: 'surface', columns: 4, showSearch: false, showFilters: false, density: 'comfortable' }}
+        />
+      </div>
+
+      <VariantGroup label="List · canvas · search + filters" note="The compact list layout: smaller thumbnail, name + credentials on one line, title + primary area beneath, inline contact, and a clear link affordance to the profile page." />
+      <div className="border-t border-fg/5">
+        <PractitionerListingBlock
+          heading="Our team"
+          practitioners={MOCK_PRACTITIONERS}
+          styleOptions={{ layout: 'list', color: 'canvas', columns: 3, showSearch: true, showFilters: true, density: 'comfortable' }}
+        />
+      </div>
+
+      <div className="pb-xl" />
+    </>
+  )
+}
+
 export default async function ShowcaseBlockPage({ params }: Props) {
   const { block } = await params
 
@@ -2275,6 +2415,7 @@ export default async function ShowcaseBlockPage({ params }: Props) {
     case 'callout':          return <CalloutShowcase />
     case 'divider':          return <DividerShowcase />
     case 'event-listing':    return <EventListingShowcase />
+    case 'practitioner-listing': return <PractitionerListingShowcase />
     default:                 return notFound()
   }
 }

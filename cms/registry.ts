@@ -29,6 +29,7 @@ import { OT_ResourceLibraryDefault } from '@/cms/display-templates/OT_ResourceLi
 import { OT_CalloutDefault }         from '@/cms/display-templates/OT_CalloutDefault'
 import { OT_DividerBlockDefault }    from '@/cms/display-templates/OT_DividerBlockDefault'
 import { OT_EventListingDefault }    from '@/cms/display-templates/OT_EventListingDefault'
+import { OT_PractitionerListingDefault } from '@/cms/display-templates/OT_PractitionerListingDefault'
 
 // Content type definitions — required at runtime so the SDK's query builder
 // can generate the correct GraphQL fragments for each type
@@ -72,6 +73,10 @@ import { OT_ResourceLibraryBlock }  from '@/cms/content-types/OT_ResourceLibrary
 import { OT_CalloutBlock }          from '@/cms/content-types/OT_CalloutBlock'
 import { OT_DividerBlock }          from '@/cms/content-types/OT_DividerBlock'
 import { OT_EventListingBlock }     from '@/cms/content-types/OT_EventListingBlock'
+import { OT_PracticeArea }            from '@/cms/content-types/OT_PracticeArea'
+import { OT_PractitionerProfile }     from '@/cms/content-types/OT_PractitionerProfile'
+import { OT_PractitionerPage }        from '@/cms/content-types/OT_PractitionerPage'
+import { OT_PractitionerListingBlock } from '@/cms/content-types/OT_PractitionerListingBlock'
 
 // OptiForm content types — built-in Forms for Visual Builder element schemas
 import { OptiFormsContainerData }   from '@/cms/content-types/OptiFormsContainerData'
@@ -115,6 +120,7 @@ import OT_ResourceLibraryBlockAdapter  from '@/cms/components/OT_ResourceLibrary
 import OT_CalloutBlockAdapter          from '@/cms/components/OT_CalloutBlock'
 import OT_DividerBlockAdapter          from '@/cms/components/OT_DividerBlock'
 import OT_EventListingBlockAdapter     from '@/cms/components/OT_EventListingBlock'
+import OT_PractitionerListingBlockAdapter from '@/cms/components/OT_PractitionerListingBlock'
 
 // OptiForm component adapters
 import OptiFormsContainerDataAdapter   from '@/cms/components/OptiFormsContainerData'
@@ -161,6 +167,7 @@ initDisplayTemplateRegistry([
   OT_CalloutDefault,
   OT_DividerBlockDefault,
   OT_EventListingDefault,
+  OT_PractitionerListingDefault,
 ])
 
 initContentTypeRegistry([
@@ -204,6 +211,10 @@ initContentTypeRegistry([
   OT_CalloutBlock,
   OT_DividerBlock,
   OT_EventListingBlock,
+  OT_PracticeArea,
+  OT_PractitionerProfile,
+  OT_PractitionerPage,
+  OT_PractitionerListingBlock,
   // OptiForm types
   OptiFormsContainerData,
   OptiFormsDependencyRule,
@@ -249,6 +260,7 @@ initReactComponentRegistry({
     OT_CalloutBlock:          OT_CalloutBlockAdapter,
     OT_DividerBlock:          OT_DividerBlockAdapter,
     OT_EventListingBlock:     OT_EventListingBlockAdapter,
+    OT_PractitionerListingBlock: OT_PractitionerListingBlockAdapter,
     // Composition structure — 'BlankSection' is the SDK's built-in section type key;
     // '_Row' and '_Column' are the fixed registry keys OptimizelyGridSection resolves.
     BlankSection:       BlankSectionAdapter,

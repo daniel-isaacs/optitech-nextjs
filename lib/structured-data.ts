@@ -115,6 +115,19 @@ export function buildJsonLd(
         }
         break
 
+      case 'Person':
+        pageNode = {
+          '@type': 'Person',
+          name:        page.person?.name ?? page.seoTitle ?? undefined,
+          jobTitle:    page.person?.jobTitle ?? undefined,
+          description: page.person?.description ?? page.pageAnswer ?? page.seoDescription ?? undefined,
+          url:         pageUrl,
+          ...(page.person?.worksFor
+            ? { worksFor: { '@type': 'Organization', name: page.person.worksFor } }
+            : {}),
+        }
+        break
+
       default:
         pageNode = undefined as unknown as Record<string, unknown>
     }

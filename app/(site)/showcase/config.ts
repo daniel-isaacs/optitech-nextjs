@@ -37,6 +37,7 @@ export const CATEGORIES: ShowcaseCategory[] = [
       { label: 'Callout',          slug: 'callout'          },
       { label: 'Divider',          slug: 'divider'          },
       { label: 'Event Listing',    slug: 'event-listing'    },
+      { label: 'Practitioner Listing', slug: 'practitioner-listing' },
     ],
   },
   {

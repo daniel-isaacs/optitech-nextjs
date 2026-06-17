@@ -62,9 +62,9 @@ function ContactItem({
   children: ReactNode
 }) {
   const inner = (
-    <span className="inline-flex items-center gap-xs text-fg-muted">
+    <span className="inline-flex items-center gap-xs text-fg/85">
       <Icon size={14} strokeWidth={1.75} className="flex-none text-brand" aria-hidden />
-      <span className="font-mono text-sm tracking-tight">{children}</span>
+      <span className="font-mono text-sm">{children}</span>
     </span>
   )
   return href ? (

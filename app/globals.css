@@ -1535,6 +1535,28 @@ body {
     0 16px 52px oklch(from var(--ot-accent) l c h / 0.13);
 }
 
+/* ── Practitioner portrait card ───────────────────────────────────────────────
+ * The portrait-first directory card. A resting chromatic elevation (brand-hued,
+ * never grey) deepens and lifts on hover. The glass footer's reveal slide and
+ * the bio fade are handled per-element in the component (transform/opacity only).
+ * Bloom tokens follow CMS theme overrides automatically. Reduced-motion keeps
+ * the shadow intensification but drops the translate.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.practitioner-card {
+  box-shadow: 0 4px 24px var(--ot-bloom-brand-faint);
+  transition:
+    transform var(--ot-dur-quick) var(--ot-ease-quick),
+    box-shadow var(--ot-dur-quick) var(--ot-ease-quick);
+}
+.practitioner-card:hover {
+  box-shadow:
+    0 16px 40px var(--ot-bloom-brand-faint),
+    0 4px 16px var(--ot-bloom-accent-faint);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .practitioner-card:hover { transform: translateY(-6px); }
+}
+
 /* ── Background-image card frost ──────────────────────────────────────────────
  * The legibility floor behind text on imageStyle="background" cards. Sits as an
  * absolute layer inside the bottom-anchored content box (covers only the text +

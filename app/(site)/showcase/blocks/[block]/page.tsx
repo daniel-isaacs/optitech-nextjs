@@ -2348,6 +2348,7 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
 
 function PractitionerListingShowcase() {
   const medical = MOCK_PRACTITIONERS.filter(p => p.groupTag === 'optimedical')
+  const tech    = MOCK_PRACTITIONERS.filter(p => p.groupTag === 'optitech')
   return (
     <>
       <BlockHeader slug="practitioner-listing" />
@@ -2358,7 +2359,7 @@ function PractitionerListingShowcase() {
         </p>
       </div>
 
-      <VariantGroup label="Grid · 3 columns · canvas · search + filters" note="The full directory experience. All eight practitioners loaded with no group-tag scope; specialty and language chips are derived from the data. Some records use a headshot, others the designed initials fallback." />
+      <VariantGroup label="Grid · 3 columns · canvas · search + filters" note="The full directory experience. All eight practitioners loaded with no group-tag scope; specialty and language chips are derived from the data. Portrait-first cards: the headshot (or its branded-abstract initials plate) fills a 3:4 plate. Hover a card to lift it and slide the glass footer up, revealing a bio excerpt." />
       <div className="border-t border-fg/5">
         <PractitionerListingBlock
           heading="Find a practitioner"
@@ -2377,12 +2378,22 @@ function PractitionerListingShowcase() {
         />
       </div>
 
-      <VariantGroup label="List · canvas · search + filters" note="The compact list layout: smaller thumbnail, name + credentials on one line, title + primary area beneath, inline contact, and a clear link affordance to the profile page." />
+      <VariantGroup label="List · canvas · search + filters" note="The compact list layout: a circular portrait thumbnail with a chromatic brand ring, name + credentials as one unit, title · primary area beneath, inline contact, and a chevron link affordance. Hover a row to bring its border to brand with a faint brand wash and slide the chevron right." />
       <div className="border-t border-fg/5">
         <PractitionerListingBlock
           heading="Our team"
           practitioners={MOCK_PRACTITIONERS}
           styleOptions={{ layout: 'list', color: 'canvas', columns: 3, showSearch: true, showFilters: true, density: 'comfortable' }}
+        />
+      </div>
+
+      <VariantGroup label="Grid · 2 columns · surface · no search / no filters · scoped to optitech" note="The “Leadership Team” / “Executive Bios” use case on a brand or about page. Two columns give each portrait more width, so the plate reads at its most dramatic — and the glass footer and initials gradient stay legible on the surface ground. One headshot, one initials plate." />
+      <div className="border-t border-fg/5">
+        <PractitionerListingBlock
+          heading="Leadership team"
+          subtext="The people setting product direction across the platform."
+          practitioners={tech}
+          styleOptions={{ layout: 'grid', color: 'surface', columns: 2, showSearch: false, showFilters: false, density: 'comfortable' }}
         />
       </div>
 

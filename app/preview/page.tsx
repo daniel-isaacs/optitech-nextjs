@@ -6,6 +6,8 @@ import {
 import { PreviewComponent } from '@optimizely/cms-sdk/react/client'
 import { getClient, getRequestBaseUrl } from '@/lib/optimizely'
 import { CompositionRenderer } from '@/lib/CompositionRenderer'
+import { getPractitioner } from '@/lib/practitioners'
+import PractitionerHeader from '@/components/practitioner/PractitionerHeader'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Script from 'next/script'
@@ -143,6 +145,19 @@ async function PreviewPage({ searchParams }: Props) {
 
   const isExperience = Array.isArray(content?.composition?.nodes)
 
+  // Practitioner experience pages render a locked profile header OUTSIDE the
+  // composition tree — the live slug route does this in its OT_PractitionerPage
+  // branch. Mirror it here so the header previews alongside the editable
+  // composition below; without this the top profile section is invisible in the
+  // Visual Builder while the sections under it render normally.
+  let practitioner = null
+  if (isExperience && content?.__typename === 'OT_PractitionerPage') {
+    const refKey = content?.practitionerRef?.key as string | undefined
+    if (refKey) {
+      practitioner = await getPractitioner(refKey, sp('loc') || 'en')
+    }
+  }
+
   // For standalone blocks synthesize __composition so pa(content.__composition)
   // generates the data-epi-block-id attribute needed for on-page editing.
   const contentKey = typeof params.key === 'string' ? params.key : ''
@@ -207,6 +222,12 @@ async function PreviewPage({ searchParams }: Props) {
         <>
           <Header />
           <main className="flex-1">
+            {practitioner && (
+              <PractitionerHeader
+                practitioner={practitioner}
+                profileLabel={content.profileLabel ?? undefined}
+              />
+            )}
             <CompositionRenderer nodes={content.composition.nodes} />
           </main>
           <Footer />

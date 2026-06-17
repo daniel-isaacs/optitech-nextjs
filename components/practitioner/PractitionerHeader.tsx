@@ -7,7 +7,6 @@ import {
   primaryArea,
   parseLanguages,
 } from '@/lib/practitionerFormat'
-import Headshot from './Headshot'
 
 type PreviewAttrs = (field: string) => Record<string, unknown>
 
@@ -29,6 +28,28 @@ type Props = {
   pa?: PreviewAttrs
 }
 
+// SVG feTurbulence grain — desaturated, tiled. Matches the directory card/portrait
+// grain so the people surfaces share one texture character. mix-blend-overlay adds
+// tooth without lightening or darkening the ground beneath.
+const NOISE_BG =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E\")"
+
+// Branded-abstract portrait surface for the no-headshot state — the same visual
+// language as the directory card's fallback plate.
+const PLATE_GRADIENT =
+  'radial-gradient(ellipse at 40% 35%, ' +
+  'oklch(from var(--ot-brand) calc(l + 0.12) c h) 0%, ' +
+  'var(--ot-brand) 40%, ' +
+  'oklch(from var(--ot-brand) calc(l - 0.1) c h) 100%)'
+
+// Option A — the chromatic shadow IS the frame. The portrait floats above the
+// ground, emanating a soft brand-hued light. A 1px bloom border defines the edge
+// without a hard rule. Bloom tokens follow CMS theme overrides automatically.
+const PORTRAIT_SHADOW =
+  '0 0 0 1px var(--ot-bloom-brand-border), ' +
+  '0 24px 80px var(--ot-bloom-brand-faint), ' +
+  '0 8px 32px var(--ot-bloom-brand-faint)'
+
 // ─── Contact item ───────────────────────────────────────────────────────────────
 
 function ContactItem({
@@ -43,7 +64,7 @@ function ContactItem({
   const inner = (
     <span className="inline-flex items-center gap-xs text-fg-muted">
       <Icon size={14} strokeWidth={1.75} className="flex-none text-brand" aria-hidden />
-      <span className="font-mono text-xs tracking-tight">{children}</span>
+      <span className="font-mono text-sm tracking-tight">{children}</span>
     </span>
   )
   return href ? (
@@ -62,15 +83,19 @@ function ContactItem({
 
 // ─── Header ─────────────────────────────────────────────────────────────────────
 //
-// The locked profile header. Rendered by the slug route OUTSIDE the Visual
-// Builder composition, so editors can never move or delete it and it always
-// reflects the referenced practitioner record. Editorial split: a brand-filled
-// portrait panel anchors the left; the identity statement sits on canvas to the
-// right. Stacks on narrow viewports.
+// The locked profile header — the hero of a person's profile page. Rendered by
+// the slug route OUTSIDE the Visual Builder composition, so editors can never
+// move or delete it and it always reflects the referenced practitioner record.
+//
+// Editorial split: a magazine-style portrait floats on the left over an
+// atmospheric brand bloom (the glow, not a box, is the frame); the identity
+// statement sits to the right with the name as the dominant typographic element.
+// Stacks on narrow viewports. Stays on the canvas ground (token-derived), so it
+// adapts to a CMS light/dark theme rather than pinning a single mode.
 
 export default function PractitionerHeader({ practitioner, profileLabel, pa }: Props) {
   const p = practitioner
-  const name      = practitionerName(p, true)
+  const name      = practitionerName(p, false)
   const initials  = practitionerInitials(p)
   const primary   = primaryArea(p.practiceAreas)
   const languages = parseLanguages(p.languages)
@@ -78,77 +103,109 @@ export default function PractitionerHeader({ practitioner, profileLabel, pa }: P
   const hasContact = !!(p.phone || p.email || p.officeLocation || p.linkedIn || languages.length)
 
   return (
-    <header className="bg-canvas border-b border-fg/10">
-      <div className="mx-auto max-w-6xl px-md lg:px-xl py-xl lg:py-2xl">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-lg lg:gap-xl items-stretch">
+    <header className="relative overflow-hidden bg-canvas">
+      {/* Atmospheric brand bloom — the portrait reads as lit from within the page. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: 'radial-gradient(ellipse 60% 80% at 25% 50%, var(--ot-bloom-brand-faint) 0%, transparent 70%)' }}
+      />
+      {/* Fine grain — gives the dark ground material tooth. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-[0.05]"
+        style={{ backgroundImage: NOISE_BG }}
+      />
 
-          {/* ── Portrait panel — brand-filled ground (committed color) ── */}
-          <div className="relative bg-brand flex items-center justify-center p-md sm:p-lg lg:p-xl">
-            {/* subtle layered depth: an inner bloom halo behind the portrait */}
+      <div className="relative mx-auto max-w-6xl px-md lg:px-xl py-12 lg:py-20">
+        <div className="grid grid-cols-1 items-center gap-lg lg:grid-cols-[minmax(0,0.38fr)_minmax(0,1fr)] lg:gap-2xl">
+
+          {/* ── Floating editorial portrait ── */}
+          <div className="mx-auto w-full max-w-80 lg:mx-0 lg:max-w-none">
             <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{ background: 'radial-gradient(120% 90% at 50% 0%, oklch(from var(--ot-brand) calc(l + 0.06) c h / 0.6), transparent 70%)' }}
-            />
-            <div className="relative w-full max-w-[18rem] lg:max-w-none">
-              <Headshot
-                variant="header"
-                src={p.headshotUrl}
-                initials={initials}
-                alt={name ? `Portrait of ${name}` : 'Practitioner portrait'}
-                fieldAttrs={pa?.('practitionerRef')}
-              />
+              className="@container relative aspect-3/4 w-full overflow-hidden bg-surface"
+              style={{ boxShadow: PORTRAIT_SHADOW }}
+              {...pa?.('practitionerRef')}
+            >
+              {p.headshotUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={p.headshotUrl}
+                  alt={name ? `Portrait of ${name}` : 'Practitioner portrait'}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <div aria-hidden className="absolute inset-0" style={{ background: PLATE_GRADIENT }}>
+                  <div
+                    className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-[0.12]"
+                    style={{ backgroundImage: NOISE_BG }}
+                  />
+                  <div
+                    className="absolute inset-0 flex items-center justify-center font-extrabold leading-none tracking-[-0.03em] text-[clamp(3rem,22cqw,5rem)]"
+                    style={{ color: 'oklch(from var(--ot-fg-on-brand) l c h / 0.90)' }}
+                  >
+                    {initials || (
+                      <svg viewBox="0 0 24 24" width="34%" height="34%" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* ── Identity ── */}
-          <div className="flex flex-col justify-center min-w-0">
-            {/* Profile label badge — reserves no space when absent */}
+          <div className="flex min-w-0 flex-col">
+            {/* Profile label — arrives first as the eye scans; reserves no space when absent */}
             {profileLabel && (
               <span
-                className="self-start mb-md inline-flex items-center bg-accent text-fg-on-accent px-sm py-1 text-label uppercase tracking-label font-semibold"
+                className="mb-md self-start inline-flex items-center bg-accent px-sm py-1 text-label font-bold uppercase tracking-label text-fg-on-accent"
+                style={{ boxShadow: '0 0 0 1px var(--ot-bloom-accent-border), 0 4px 18px var(--ot-bloom-accent-faint)' }}
                 {...pa?.('profileLabel')}
               >
                 {profileLabel}
               </span>
             )}
 
-            {/* Name — the single Syne accent moment per the type system */}
+            {/* Name + credentials — one typographic unit. Poppins display weight. */}
             <h1
-              className="text-fg text-balance leading-[0.95] text-[clamp(2.25rem,5vw,3.75rem)]"
-              style={{ fontFamily: 'var(--font-syne)', fontWeight: 'var(--font-weight-syne)', letterSpacing: '-0.02em' }}
+              className="text-balance font-extrabold leading-[0.95] text-fg text-[clamp(2.5rem,5vw,4rem)]"
+              style={{ letterSpacing: '-0.03em' }}
             >
               {name || 'Practitioner'}
+              {p.credentials && (
+                <span
+                  className="font-bold"
+                  style={{ fontSize: '0.65em', color: 'var(--ot-accent)', letterSpacing: '0.04em' }}
+                >
+                  , {p.credentials}
+                </span>
+              )}
             </h1>
 
-            {/* Credentials */}
-            {p.credentials && (
-              <p className="mt-sm text-label uppercase tracking-label font-semibold text-brand">
-                {p.credentials}
-              </p>
-            )}
-
-            {/* Title */}
+            {/* Title — the professional role statement */}
             {p.title && (
               <p className="mt-md text-title leading-title font-semibold text-fg">{p.title}</p>
             )}
 
-            {/* Primary practice area + facility */}
-            {primary && (
-              <p className="mt-xs text-body text-fg-muted text-pretty">
-                <span className="text-fg">{primary.areaName}</span>
+            {/* Primary practice area · facility */}
+            {primary?.areaName && (
+              <p className="mt-xs text-pretty text-sm text-fg-muted">
+                {primary.areaName}
                 {primary.facility && (
                   <>
-                    <span className="mx-xs text-fg-muted/50" aria-hidden>—</span>
+                    <span className="mx-2 text-fg-muted/40" aria-hidden>·</span>
                     {primary.facility}
                   </>
                 )}
               </p>
             )}
 
-            {/* Contact — present but quiet */}
+            {/* Contact — designed strip, divided from the identity block above */}
             {hasContact && (
-              <div className="mt-lg pt-md border-t border-fg/10 flex flex-wrap gap-x-lg gap-y-sm">
+              <div className="mt-lg flex flex-wrap gap-x-lg gap-y-sm border-t border-fg/8 pt-md">
                 {p.phone && (
                   <ContactItem icon={Phone} href={`tel:${p.phone.replace(/[^\d+]/g, '')}`}>
                     {p.phone}
@@ -173,6 +230,14 @@ export default function PractitionerHeader({ practitioner, profileLabel, pa }: P
           </div>
         </div>
       </div>
+
+      {/* Bottom transition — a centered brand-glow hairline that fades into the
+          VB composition below, instead of a hard divider. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
+        style={{ background: 'linear-gradient(to right, transparent, var(--ot-bloom-brand-ring), transparent)' }}
+      />
     </header>
   )
 }

@@ -33,10 +33,13 @@ export default function PractitionerListRow({ practitioner, onSurface = false, d
 
   const body = (
     <>
-      {/* Full-height square portrait, flush to the left edge. self-stretch takes
-          the row's height (set by the text column); aspect-square then makes the
-          width match — a bigger, borderless image than the old circle thumb. */}
-      <div className="relative flex-none self-stretch aspect-square overflow-hidden">
+      {/* Square portrait, flush to the left edge, borderless. The width is
+          definite (numeric scale, not a named token) and aspect-square derives
+          the height from it — a flex item can't derive width from a stretched
+          height, so a definite WIDTH is what keeps the square from collapsing.
+          At this size the portrait drives the row height, so it fills edge to
+          edge; the text column centers beside it. Bigger than the old thumb. */}
+      <div className={`relative flex-none aspect-square overflow-hidden ${density === 'compact' ? 'w-24' : 'w-32'}`}>
         <PractitionerPortrait
           shape="fill"
           src={p.headshotUrl}

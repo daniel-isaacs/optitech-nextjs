@@ -19,7 +19,7 @@ export const OT_EventPage = contentType({
   displayName: 'Event Page',
   description: 'A single event with date, location, and registration details. Appears in event listings and site search.',
   baseType:    '_page',
-  mayContainTypes: ['_self'],
+  mayContainTypes: ['*'], // All child content types allowed
   properties: {
     // ── Core content ──────────────────────────────────────────────────────────
     title: {

@@ -13,7 +13,7 @@ export const OT_CampaignPage = contentType({
   displayName:     'Campaign Page',
   description:     'Slotted landing page with three constrained content sections: hero, body, and closing. Each slot references a shared block of a specific type.',
   baseType:        '_page',
-  mayContainTypes: ['BlankExperience', 'OT_FolderPage', 'OT_BlogPage'],
+  mayContainTypes: ['*'], // All child content types allowed
   properties: {
 
     // ── Content slots ─────────────────────────────────────────────────────────

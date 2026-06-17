@@ -55,12 +55,21 @@ export default function PractitionerListRow({ practitioner, onSurface = false, d
           )}
         </p>
 
-        {/* Title · primary area */}
-        {(p.title || primary?.areaName) && (
-          <p className="mt-0.5 text-pretty text-sm leading-snug text-fg-muted">
-            {p.title}
-            {p.title && primary?.areaName && <span className="mx-1.5 text-fg-muted/40" aria-hidden>·</span>}
-            {primary?.areaName}
+        {/* Title — emphasized role statement */}
+        {p.title && (
+          <p className="mt-0.5 text-pretty text-sm font-semibold leading-snug text-fg">{p.title}</p>
+        )}
+
+        {/* Primary area · facility — secondary */}
+        {primary?.areaName && (
+          <p className="mt-0.5 text-sm leading-snug text-fg-muted">
+            {primary.areaName}
+            {primary.facility && (
+              <>
+                <span className="mx-1.5 text-fg-muted/40" aria-hidden>·</span>
+                {primary.facility}
+              </>
+            )}
           </p>
         )}
 

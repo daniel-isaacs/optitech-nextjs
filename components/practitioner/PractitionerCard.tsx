@@ -88,6 +88,12 @@ export default function PractitionerCard({ practitioner, density = 'comfortable'
             )}
           </h3>
 
+          {p.title && (
+            <p className={`text-pretty font-semibold leading-snug text-fg ${compact ? 'text-sm' : 'text-[0.95rem]'}`}>
+              {p.title}
+            </p>
+          )}
+
           {primary?.areaName && (
             <p
               className="text-label font-semibold uppercase tracking-label"
@@ -108,7 +114,7 @@ export default function PractitionerCard({ practitioner, density = 'comfortable'
   )
 
   const className =
-    'practitioner-card group relative block aspect-[3/4] w-full overflow-hidden bg-surface ' +
+    'practitioner-card group relative block aspect-3/4 w-full overflow-hidden bg-surface ' +
     'focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand'
 
   return p.url ? (

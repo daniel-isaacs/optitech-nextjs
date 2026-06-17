@@ -2365,7 +2365,7 @@ function PractitionerListingShowcase() {
           heading="Find a practitioner"
           subtext="Search our directory by name or specialty, or filter by practice area and language."
           practitioners={MOCK_PRACTITIONERS}
-          styleOptions={{ layout: 'grid', color: 'canvas', columns: 3, showSearch: true, showFilters: true, density: 'comfortable' }}
+          styleOptions={{ layout: 'grid', color: 'canvas', columns: 3, showSearchFilters: true, density: 'comfortable' }}
         />
       </div>
 
@@ -2374,7 +2374,7 @@ function PractitionerListingShowcase() {
         <PractitionerListingBlock
           heading="Meet our doctors"
           practitioners={medical}
-          styleOptions={{ layout: 'grid', color: 'surface', columns: 4, showSearch: false, showFilters: false, density: 'comfortable' }}
+          styleOptions={{ layout: 'grid', color: 'surface', columns: 4, showSearchFilters: false, density: 'comfortable' }}
         />
       </div>
 
@@ -2383,7 +2383,7 @@ function PractitionerListingShowcase() {
         <PractitionerListingBlock
           heading="Our team"
           practitioners={MOCK_PRACTITIONERS}
-          styleOptions={{ layout: 'list', color: 'canvas', columns: 3, showSearch: true, showFilters: true, density: 'comfortable' }}
+          styleOptions={{ layout: 'list', color: 'canvas', columns: 3, showSearchFilters: true, density: 'comfortable' }}
         />
       </div>
 
@@ -2393,7 +2393,7 @@ function PractitionerListingShowcase() {
           heading="Leadership team"
           subtext="The people setting product direction across the platform."
           practitioners={tech}
-          styleOptions={{ layout: 'grid', color: 'surface', columns: 2, showSearch: false, showFilters: false, density: 'comfortable' }}
+          styleOptions={{ layout: 'grid', color: 'surface', columns: 2, showSearchFilters: false, density: 'comfortable' }}
         />
       </div>
 

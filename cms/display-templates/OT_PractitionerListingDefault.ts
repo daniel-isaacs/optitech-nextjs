@@ -34,19 +34,10 @@ export const OT_PractitionerListingDefault = displayTemplate({
         col4: { displayName: '4 columns', sortOrder: 30 },
       },
     },
-    showSearch: {
-      displayName: 'Show Search',
+    showSearchFilters: {
+      displayName: 'Show Search & Filters',
       editor:      'select',
       sortOrder:   40,
-      choices: {
-        'true':  { displayName: 'Yes', sortOrder: 10 },
-        'false': { displayName: 'No',  sortOrder: 20 },
-      },
-    },
-    showFilters: {
-      displayName: 'Show Filters',
-      editor:      'select',
-      sortOrder:   50,
       choices: {
         'true':  { displayName: 'Yes', sortOrder: 10 },
         'false': { displayName: 'No',  sortOrder: 20 },

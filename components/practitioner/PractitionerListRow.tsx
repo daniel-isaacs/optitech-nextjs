@@ -13,12 +13,13 @@ type Props = {
   density?: 'comfortable' | 'compact'
 }
 
-// Compact directory row. A circular portrait thumbnail with a chromatic brand
-// ring anchors the left; name + credentials read as one typographic unit, with
-// title · primary-area beneath and optional inline contact. The whole row links
-// to the profile page. On hover the full border goes brand and a faint brand
-// wash fills the row, with the chevron sliding right — a strong left-to-right
-// reading anchor without a decorative side-stripe (banned by DESIGN.md).
+// Compact directory row. A full-height square portrait sits flush against the
+// left edge (no ring, no border, no inset) and anchors the row; name +
+// credentials read as one typographic unit, with title · primary-area beneath
+// and optional inline contact. The whole row links to the profile page. On
+// hover the full border goes brand and a faint brand wash fills the row, with
+// the chevron sliding right — a strong left-to-right reading anchor without a
+// decorative side-stripe (banned by DESIGN.md).
 
 export default function PractitionerListRow({ practitioner, onSurface = false, density = 'comfortable' }: Props) {
   const p        = practitioner
@@ -27,29 +28,27 @@ export default function PractitionerListRow({ practitioner, onSurface = false, d
   const primary  = primaryArea(p.practiceAreas)
 
   const rowBg = onSurface ? 'bg-canvas' : 'bg-surface'
-  const pad   = density === 'compact' ? 'gap-sm p-sm' : 'gap-md p-md'
+  // Text column padding only — the portrait is flush to the row's left/top/bottom.
+  const textPad = density === 'compact' ? 'py-sm pl-sm pr-sm' : 'py-md pl-md pr-md'
 
   const body = (
     <>
-      <div
-        className="flex-none rounded-full"
-        // Chromatic brand ring around the circular thumbnail (box-shadow, not a
-        // border, so it never affects layout); derived from --ot-brand.
-        style={{ boxShadow: '0 0 0 2px oklch(from var(--ot-brand) l c h / 0.35)' }}
-      >
+      {/* Full-height square portrait, flush to the left edge. self-stretch takes
+          the row's height (set by the text column); aspect-square then makes the
+          width match — a bigger, borderless image than the old circle thumb. */}
+      <div className="relative flex-none self-stretch aspect-square overflow-hidden">
         <PractitionerPortrait
-          shape="circle"
+          shape="fill"
           src={p.headshotUrl}
           initials={initials}
-          alt={name ? `Portrait of ${name}` : 'Practitioner portrait'}
-          className="h-14 w-14"
+          alt={name ? `Portrait of ${name}` : 'Profile portrait'}
         />
       </div>
 
-      <div className="min-w-0 flex-1">
+      <div className={`min-w-0 flex-1 self-center ${textPad}`}>
         {/* Name + credentials — one typographic unit */}
         <p className="flex flex-wrap items-baseline gap-x-1.5">
-          <span className="text-base font-bold leading-tight text-fg">{name || 'Practitioner'}</span>
+          <span className="text-base font-bold leading-tight text-fg">{name || 'Profile'}</span>
           {p.credentials && (
             <span className="text-sm font-medium text-fg-muted">{p.credentials}</span>
           )}
@@ -104,9 +103,10 @@ export default function PractitionerListRow({ practitioner, onSurface = false, d
   )
 
   // Full border (not a side-stripe) shifts to brand on hover, with a faint brand
-  // wash. 150ms quick ease. Compliant left-edge reading anchor.
+  // wash. 150ms quick ease. items-stretch lets the portrait fill the row height;
+  // overflow-hidden clips the flush square to the bordered edge.
   const className =
-    `group flex items-center ${pad} ${rowBg} border border-fg/10 ` +
+    `group flex items-stretch overflow-hidden ${rowBg} border border-fg/10 ` +
     'transition-[background-color,border-color] duration-150 ease-[var(--ot-ease-quick)] ' +
     'hover:border-brand/60 hover:bg-brand/[0.04]'
 

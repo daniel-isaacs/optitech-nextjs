@@ -7,8 +7,7 @@ export type PractitionerListingStyleOptions = {
   layout:      PractitionerListingLayout
   color:       PractitionerListingColor
   columns:     PractitionerListingColumns
-  showSearch:  boolean
-  showFilters: boolean
+  showSearchFilters: boolean
   density:     PractitionerListingDensity
 }
 
@@ -28,8 +27,10 @@ export function getPractitionerListingStyles(
     layout:      (s.layout  ?? 'grid')        as PractitionerListingLayout,
     color:       (s.color   ?? 'canvas')      as PractitionerListingColor,
     columns,
-    showSearch:  bool(s.showSearch,  true),
-    showFilters: bool(s.showFilters, true),
+    // One toggle hides both the search field and the filter chips. Default on.
+    // Falls back to the legacy `showSearch` key so content authored before the
+    // two settings were merged still resolves sensibly.
+    showSearchFilters: bool(s.showSearchFilters ?? s.showSearch, true),
     density:     (s.density ?? 'comfortable') as PractitionerListingDensity,
   }
 }

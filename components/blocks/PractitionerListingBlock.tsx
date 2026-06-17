@@ -49,8 +49,7 @@ export default function PractitionerListingBlock({
           layout={styleOptions.layout}
           columns={styleOptions.columns}
           color={color}
-          showSearch={styleOptions.showSearch}
-          showFilters={styleOptions.showFilters}
+          showSearchFilters={styleOptions.showSearchFilters}
           density={styleOptions.density}
           emptyMessage={emptyMessage?.trim() || 'No results found.'}
         />

@@ -18,8 +18,7 @@ type Props = {
   layout:        PractitionerListingLayout
   columns:       PractitionerListingColumns
   color:         PractitionerListingColor
-  showSearch:    boolean
-  showFilters:   boolean
+  showSearchFilters: boolean
   density:       PractitionerListingDensity
   emptyMessage:  string
 }
@@ -101,7 +100,7 @@ function ViewToggle({
   onChange: (v: PractitionerListingLayout) => void
 }) {
   const btn = (active: boolean) =>
-    'inline-flex h-10 w-10 items-center justify-center motion-safe:transition-colors duration-150 ' +
+    'inline-flex h-12 w-12 items-center justify-center motion-safe:transition-colors duration-150 ' +
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ' +
     (active ? 'bg-brand text-fg-on-brand' : 'text-fg-muted hover:text-fg')
 
@@ -127,8 +126,7 @@ export default function PractitionerListingClient({
   layout,
   columns,
   color,
-  showSearch,
-  showFilters,
+  showSearchFilters,
   density,
   emptyMessage,
 }: Props) {
@@ -200,7 +198,9 @@ export default function PractitionerListingClient({
 
   const inputBg = onSurface ? 'bg-canvas' : 'bg-surface'
 
-  const hasControls = (showSearch || showFilters) && (showSearch || areaOptions.length > 0 || languageOptions.length > 0)
+  // The search + filter row shows only when enabled; the view toggle is always
+  // available, so visitors can switch grid/list even with controls hidden.
+  const hasControls = showSearchFilters
 
   return (
     <div>
@@ -209,10 +209,15 @@ export default function PractitionerListingClient({
         {/* Search + view toggle share the top row; the toggle is always available
             so visitors can switch layout regardless of the CMS default. */}
         <div className="flex items-center gap-md">
-          {showSearch && (
-            <div className="relative flex-1 min-w-0 max-w-xl">
+          {showSearchFilters && (
+            // Width cap uses the numeric spacing multiplier (136 = 34rem), NOT a
+            // named size: this theme's spacing tokens (xs..2xl) shadow Tailwind's
+            // container scale, so max-w-xl resolves to --spacing-xl (64px), not
+            // 36rem, and would collapse the field. Every named max-w in that
+            // token range has the same trap.
+            <div className="relative flex-1 min-w-0 max-w-136">
               <label htmlFor={searchId} className="sr-only">
-                Search practitioners by name or specialty
+                Search by name or specialty
               </label>
               <Search
                 size={18}
@@ -246,7 +251,7 @@ export default function PractitionerListingClient({
           </div>
         </div>
 
-        {showFilters && (areaOptions.length > 0 || languageOptions.length > 0) && (
+        {showSearchFilters && (areaOptions.length > 0 || languageOptions.length > 0) && (
           <div className="flex flex-col gap-sm">
             <FilterGroup label="Specialty" options={areaOptions} selected={area} onSelect={setArea} />
             <FilterGroup label="Language" options={languageOptions} selected={language} onSelect={setLang} />
@@ -259,7 +264,7 @@ export default function PractitionerListingClient({
         <div className="mb-md flex items-center justify-between gap-sm border-b border-fg/10 pb-sm">
           <p className="font-mono text-xs uppercase tracking-label text-fg-muted/70" aria-live="polite">
             <span className="text-fg">{results.length}</span>{' '}
-            {results.length === 1 ? 'practitioner' : 'practitioners'}
+            {results.length === 1 ? 'profile' : 'profiles'}
           </p>
           {filtersActive && (
             <button

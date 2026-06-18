@@ -7,10 +7,14 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionObserver } from "@/components/providers/MotionObserver";
 import { getSiteSettings, getRequestDomain, buildThemeCSS, getRequestLocale } from '@/lib/optimizely'
 
+// Weights are limited to the set the product UI actually renders:
+// 300 (light — stat values, banner lede), 400 (body), 500 (medium — nav/UI),
+// 600 (title/label), 700 (headline), 800 (display). Thin/ExtraLight/Black
+// (100/200/900) are unused in product and intentionally not shipped.
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 const syne = Syne({

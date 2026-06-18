@@ -67,7 +67,7 @@ const headingCva = cva(
 )
 
 const bodyCva = cva(
-  'font-sans font-light text-body leading-body text-pretty max-w-[55ch] [&_p]:mt-0',
+  'font-sans font-light text-body leading-body text-pretty max-w-(--ot-measure-tight) [&_p]:mt-0',
   {
     variants: {
       color: {

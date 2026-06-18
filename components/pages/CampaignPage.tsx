@@ -168,7 +168,7 @@ function renderClosingItem(item: CampaignClosingItem, index: number) {
           <div className="min-w-0 order-1 flex flex-col gap-md">
             {item.eyebrow && <span className="text-label uppercase tracking-wide text-brand font-semibold">{item.eyebrow}</span>}
             {item.heading && <h2 className="text-headline font-bold text-fg text-wrap-balance leading-tight">{item.heading}</h2>}
-            {item.body    && <div className="text-body text-fg-muted leading-relaxed max-w-[60ch]"><RichText content={item.body} /></div>}
+            {item.body    && <div className="text-body text-fg leading-body max-w-(--ot-measure)"><RichText content={item.body} /></div>}
             {item.ctaUrl  && (
               <div className="mt-sm">
                 <a href={item.ctaUrl} className="inline-flex items-center gap-sm px-lg py-sm bg-brand text-fg-on-brand text-label font-semibold uppercase tracking-wide motion-safe:transition-colors motion-safe:duration-200 ease-quick">
@@ -200,7 +200,7 @@ function renderClosingItem(item: CampaignClosingItem, index: number) {
           <div className="min-w-0 order-1 flex flex-col gap-md">
             {item.eyebrow && <span className="text-label uppercase tracking-wide text-brand font-semibold">{item.eyebrow}</span>}
             {item.heading && <h2 className="text-headline font-bold text-fg text-wrap-balance leading-tight">{item.heading}</h2>}
-            {item.body    && <div className="text-body text-fg-muted leading-relaxed max-w-[60ch]"><RichText content={item.body} /></div>}
+            {item.body    && <div className="text-body text-fg leading-body max-w-(--ot-measure)"><RichText content={item.body} /></div>}
             {item.ctaUrl  && (
               <div className="mt-sm">
                 <a href={item.ctaUrl} className="inline-flex items-center gap-sm px-lg py-sm bg-brand text-fg-on-brand text-label font-semibold uppercase tracking-wide motion-safe:transition-colors motion-safe:duration-200 ease-quick">

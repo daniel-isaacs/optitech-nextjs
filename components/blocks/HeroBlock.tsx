@@ -72,7 +72,7 @@ const headlineCva = cva(
   }
 );
 
-const bodyCva = cva("text-body leading-body max-w-[52ch]", {
+const bodyCva = cva("text-body leading-body max-w-(--ot-measure-tight)", {
   variants: {
     color: {
       brand:   "text-fg-on-brand/80",

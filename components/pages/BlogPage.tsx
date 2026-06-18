@@ -159,7 +159,7 @@ function ImpactHeader({
           </h1>
 
           {subHeadline && (
-            <p className="mt-lg text-title leading-title text-fg-muted max-w-[56ch] text-pretty" {...pa?.('subHeadline')}>
+            <p className="mt-lg text-title leading-title text-fg-muted max-w-(--ot-measure-tight) text-pretty" {...pa?.('subHeadline')}>
               {subHeadline}
             </p>
           )}
@@ -260,7 +260,7 @@ function AtmosphericHeader({
             </h1>
 
             {subHeadline && (
-              <p className="mt-sm text-title leading-title text-fg-muted text-pretty max-w-[52ch]" {...pa?.('subHeadline')}>
+              <p className="mt-sm text-title leading-title text-fg-muted text-pretty max-w-(--ot-measure-tight)" {...pa?.('subHeadline')}>
                 {subHeadline}
               </p>
             )}
@@ -550,7 +550,7 @@ export default function BlogPage({ content, latestPosts, pa }: Props) {
 
                   {authorRef.bio?.html && (
                     <div
-                      className="mt-md text-body leading-[1.65] text-fg-muted max-w-[52ch] [&_p]:m-0 [&_p+p]:mt-[0.75em] [&_strong]:font-semibold [&_strong]:text-fg [&_em]:not-italic [&_em]:text-accent"
+                      className="mt-md text-body leading-body text-fg max-w-(--ot-measure-tight) [&_p]:m-0 [&_p+p]:mt-[0.75em] [&_strong]:font-semibold [&_strong]:text-fg [&_em]:not-italic [&_em]:text-accent"
                       dangerouslySetInnerHTML={{ __html: authorRef.bio.html }}
                     />
                   )}

@@ -157,7 +157,7 @@ const contentClasses = [
 ].join(' ')
 
 const answerCva = cva(
-  'text-body leading-body max-w-[68ch] text-pretty',
+  'text-body leading-body max-w-(--ot-measure-wide) text-pretty',
   {
     variants: {
       color: {

@@ -155,7 +155,7 @@ export default async function Footer() {
 
           {descriptionHtml && (
             <div
-              className="mt-sm max-w-[58ch] text-[0.875rem] leading-relaxed text-fg-muted [&_p]:m-0 [&_p+p]:mt-[0.5em] [&_strong]:font-semibold [&_strong]:text-fg [&_em]:not-italic [&_em]:text-accent [&_a]:text-fg-muted [&_a]:underline [&_a]:decoration-fg/20 [&_a:hover]:text-fg [&_a:hover]:decoration-fg/50 transition-colors duration-150"
+              className="mt-sm max-w-(--ot-measure-tight) text-body leading-body text-fg-muted [&_p]:m-0 [&_p+p]:mt-[0.5em] [&_strong]:font-semibold [&_strong]:text-fg [&_em]:not-italic [&_em]:text-accent [&_a]:text-fg-muted [&_a]:underline [&_a]:decoration-fg/20 [&_a:hover]:text-fg [&_a:hover]:decoration-fg/50 transition-colors duration-150"
               dangerouslySetInnerHTML={{ __html: descriptionHtml }}
             />
           )}

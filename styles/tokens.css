@@ -51,6 +51,7 @@
   /* Scale */
   --ot-text-display:  clamp(3rem, 8vw, 6rem);
   --ot-text-headline: clamp(1.75rem, 4vw, 2.75rem);
+  --ot-text-subhead:  1.5rem;   /* prose h2 / sub-headline tier between headline and title */
   --ot-text-title:    1.25rem;
   --ot-text-body:     1rem;
   --ot-text-label:    0.8125rem;
@@ -58,14 +59,23 @@
   /* Line heights */
   --ot-leading-display:  0.9;
   --ot-leading-headline: 1.05;
+  --ot-leading-subhead:  1.15;
   --ot-leading-title:    1.3;
   --ot-leading-body:     1.65;
 
   /* Letter spacing */
   --ot-tracking-display:  -0.03em;
   --ot-tracking-headline: -0.02em;
+  --ot-tracking-subhead:  -0.02em;
   --ot-tracking-title:    -0.01em;
   --ot-tracking-label:     0.06em;
+
+  /* Measure (line length) — single source of truth for reading-column widths.
+   * Body copy lives in the comfortable 45–75ch band; these three cover the roles
+   * that were previously scattered as one-off max-w-[NNch] values across blocks. */
+  --ot-measure-tight: 52ch;   /* hero ledes, tight statement columns           */
+  --ot-measure:       65ch;    /* default long-form reading measure             */
+  --ot-measure-wide:  72ch;    /* generous editorial / multi-clause body        */
 
   /* Font weights */
   --ot-weight-display:  800;

@@ -71,7 +71,7 @@ const headingCva = cva(
   },
 )
 
-const subheadingCva = cva('mt-sm text-body leading-body max-w-[60ch]', {
+const subheadingCva = cva('mt-sm text-body leading-body max-w-(--ot-measure)', {
   variants: {
     color: {
       canvas:  'text-fg-muted',

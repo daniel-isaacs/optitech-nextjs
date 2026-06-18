@@ -24,6 +24,7 @@
   /* Text sizes */
   --text-display:  var(--ot-text-display);
   --text-headline: var(--ot-text-headline);
+  --text-subhead:  var(--ot-text-subhead);
   --text-title:    var(--ot-text-title);
   --text-body:     var(--ot-text-body);
   --text-label:    var(--ot-text-label);
@@ -31,12 +32,14 @@
   /* Line heights */
   --leading-display:  var(--ot-leading-display);
   --leading-headline: var(--ot-leading-headline);
+  --leading-subhead:  var(--ot-leading-subhead);
   --leading-title:    var(--ot-leading-title);
   --leading-body:     var(--ot-leading-body);
 
   /* Letter spacing */
   --tracking-display:  var(--ot-tracking-display);
   --tracking-headline: var(--ot-tracking-headline);
+  --tracking-subhead:  var(--ot-tracking-subhead);
   --tracking-title:    var(--ot-tracking-title);
   --tracking-label:    var(--ot-tracking-label);
 
@@ -381,6 +384,11 @@ body {
   background: var(--ot-canvas);
   color: var(--ot-fg);
   font-family: var(--ot-font-sans);
+  /* Let optical faces (e.g. Fraunces, selected as a Display Font via ThemeManager)
+   * adapt their optical size to the rendered size, and keep kerning on so display
+   * pairs sit correctly. Cheap, global, no visual change to Poppins body. */
+  font-optical-sizing: auto;
+  font-kerning: normal;
 }
 
 /* Syne hollow: wire letterforms — transparent fill, accent stroke + hard stepped extrude.
@@ -876,10 +884,10 @@ body {
   margin-bottom: var(--ot-space-md);
 }
 [data-rich-text] h2 {
-  font-size: 1.5rem;
+  font-size: var(--ot-text-subhead);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  line-height: var(--ot-leading-subhead);
+  letter-spacing: var(--ot-tracking-subhead);
   color: var(--ot-fg);
   text-wrap: balance;
   margin-top: var(--ot-space-xl);

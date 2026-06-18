@@ -45,7 +45,7 @@ export default function EventListingBlock({
     <section className={`${sectionBg} px-md py-xl lg:px-lg`}>
       <div className="mx-auto max-w-7xl">
         {(heading || subtext) && (
-          <header className="mb-lg max-w-[60ch]">
+          <header className="mb-lg max-w-(--ot-measure)">
             {heading && (
               <h2 className="text-headline leading-headline tracking-headline font-bold text-fg text-balance" {...pa('heading')}>
                 {heading}

@@ -205,7 +205,7 @@ export default function EventPage({ content, pa }: Props) {
                 <div
                   data-rich-text=""
                   data-color="canvas"
-                  className="max-w-[68ch] [&>p:first-of-type]:text-title [&>p:first-of-type]:leading-title [&>p:first-of-type]:text-fg-muted [&>p:first-of-type]:text-pretty [&>p:first-of-type]:mb-lg"
+                  className="max-w-(--ot-measure-wide) [&>p:first-of-type]:text-title [&>p:first-of-type]:leading-title [&>p:first-of-type]:text-fg-muted [&>p:first-of-type]:text-pretty [&>p:first-of-type]:mb-lg"
                   {...pa?.('description')}
                   // CMS-managed rich text — not user input
                   dangerouslySetInnerHTML={{ __html: description.html }}

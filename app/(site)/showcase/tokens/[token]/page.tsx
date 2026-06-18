@@ -54,16 +54,16 @@ const TYPE_SCALE = [
   { label: 'Label',    token: '--ot-text-label',    meta: 'Poppins 600 · 0.8125rem · ls +0.06em · uppercase',                  classes: 'text-label tracking-label font-semibold uppercase',                   sample: 'Section tag · Metadata · Timestamp' },
 ] as const
 
+// Only the weights actually shipped (see app/layout.tsx). Thin/ExtraLight/Black
+// (100/200/900) are unused in product and not loaded, so they are not shown here
+// — listing them would render synthesized faux weights and misrepresent the system.
 const POPPINS_WEIGHTS = [
-  { weight: '100', label: 'Thin',       twClass: 'font-thin'      },
-  { weight: '200', label: 'ExtraLight', twClass: 'font-extralight' },
   { weight: '300', label: 'Light',      twClass: 'font-light'      },
   { weight: '400', label: 'Normal',     twClass: 'font-normal'     },
   { weight: '500', label: 'Medium',     twClass: 'font-medium'     },
   { weight: '600', label: 'SemiBold',   twClass: 'font-semibold'   },
   { weight: '700', label: 'Bold',       twClass: 'font-bold'       },
   { weight: '800', label: 'ExtraBold',  twClass: 'font-extrabold'  },
-  { weight: '900', label: 'Black',      twClass: 'font-black'      },
 ] as const
 
 const SYNE_VARIANTS = [
@@ -165,7 +165,7 @@ function TypographySection() {
       <div className="mt-xl border-t border-fg/10 pt-lg">
         <div className="flex items-baseline gap-md mb-md">
           <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Poppins Weight Spectrum</p>
-          <span className="font-mono text-label text-fg-muted/50">100 – 900 · all weights loaded</span>
+          <span className="font-mono text-label text-fg-muted/50">300 – 800 · loaded weights</span>
         </div>
         <div className="flex flex-col divide-y divide-fg/5">
           {POPPINS_WEIGHTS.map(w => (

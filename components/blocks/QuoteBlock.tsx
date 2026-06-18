@@ -46,8 +46,8 @@ const containerCva = cva("mx-auto w-full", {
 const blockquoteCva = cva("relative pl-12", {
   variants: {
     alignment: {
-      left:   "max-w-[65ch]",
-      center: "max-w-[65ch] mx-auto",
+      left:   "max-w-(--ot-measure)",
+      center: "max-w-(--ot-measure) mx-auto",
     },
   },
   defaultVariants: { alignment: "center" },

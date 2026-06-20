@@ -57,8 +57,11 @@ export const CATEGORIES: ShowcaseCategory[] = [
     match: '/showcase/layout',
     href:  '/showcase/layout/row-rhythm',
     items: [
-      { label: 'Row Rhythm',      slug: 'row-rhythm'      },
-      { label: 'Section Overlap', slug: 'section-overlap' },
+      { label: 'Row Rhythm',        slug: 'row-rhythm'       },
+      { label: 'Section Overlap',   slug: 'section-overlap'  },
+      { label: 'Carousel',          slug: 'carousel'         },
+      { label: 'Row Settings',      slug: 'row-settings'     },
+      { label: 'Section Settings',  slug: 'section-settings' },
     ],
   },
   {
@@ -66,7 +69,11 @@ export const CATEGORIES: ShowcaseCategory[] = [
     slug:  'theme',
     match: '/showcase/theme',
     href:  '/showcase/theme',
-    items: [],
+    items: [
+      { label: 'Tech',               slug: 'tech'       },
+      { label: 'Healthcare',         slug: 'healthcare' },
+      { label: 'Financial Services', slug: 'financial'  },
+    ],
   },
   {
     label: 'Tokens',

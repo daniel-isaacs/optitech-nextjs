@@ -1,15 +1,19 @@
 import type { Metadata } from 'next'
 import { notFound }       from 'next/navigation'
 import { SectionLabel }   from '../../components'
+import SliderRow          from '@/cms/compositions/SliderRow'
 
 // ─── Static params ────────────────────────────────────────────────────────────
 
-const FEATURE_SLUGS = ['row-rhythm', 'section-overlap'] as const
+const FEATURE_SLUGS = ['row-rhythm', 'section-overlap', 'carousel', 'row-settings', 'section-settings'] as const
 type FeatureSlug    = typeof FEATURE_SLUGS[number]
 
 const LABELS: Record<FeatureSlug, string> = {
-  'row-rhythm':      'Row Rhythm',
-  'section-overlap': 'Section Overlap',
+  'row-rhythm':       'Row Rhythm',
+  'section-overlap':  'Section Overlap',
+  'carousel':         'Carousel',
+  'row-settings':     'Row Settings',
+  'section-settings': 'Section Settings',
 }
 
 export function generateStaticParams() {
@@ -434,6 +438,460 @@ function SectionOverlapShowcase() {
   )
 }
 
+// ─── Carousel showcase ────────────────────────────────────────────────────────
+
+const SLIDE_CONTENT = [
+  { bg: 'bg-brand',                       fg: 'text-fg-on-brand',   heading: 'Enterprise-grade infrastructure',  sub: 'Capacity that scales with demand'       },
+  { bg: 'bg-surface border border-fg/10', fg: 'text-fg',            heading: 'Uncompromised security posture',   sub: 'Built to the strictest standards'       },
+  { bg: 'bg-accent',                      fg: 'text-fg-on-accent',  heading: 'Insight across every workflow',    sub: 'Real-time observability, built in'      },
+]
+
+function Slide({ bg, fg, heading, sub, n }: { bg: string; fg: string; heading: string; sub: string; n: number }) {
+  return (
+    <div className={`flex flex-col gap-md p-xl ${bg}`} style={{ minHeight: '13rem' }}>
+      <span className={`text-label tracking-label uppercase font-semibold ${fg} opacity-50`}>0{n}</span>
+      <p className={`text-headline font-bold leading-headline tracking-headline ${fg}`}>{heading}</p>
+      <p className={`text-body ${fg} opacity-70`}>{sub}</p>
+    </div>
+  )
+}
+
+const TRANSITION_DEMOS: { mode: string; label: string; desc: string }[] = [
+  { mode: 'slide',  label: 'Slide',  desc: 'Classic horizontal translate — all slides live on a single track that shifts left.' },
+  { mode: 'fade',   label: 'Fade',   desc: 'Slides stack in place; active fades in while the previous fades out. Good for full-bleed image backgrounds.' },
+  { mode: 'cover',  label: 'Cover',  desc: 'Like slide, but inactive slides scale down and dim — the active slide asserts dominance.' },
+  { mode: 'morph',  label: 'Morph',  desc: 'Fade with a blur-and-scale effect. Creates an organic, editorial handoff between slides.' },
+]
+
+function CarouselShowcase() {
+  return (
+    <div className="space-y-2xl">
+
+      <div className="max-w-[640px]">
+        <p className="text-body leading-body text-fg-muted">
+          The OT_LandingRowSlider display template renders a client-side carousel
+          in place of a standard row. Four transition modes, configurable controls,
+          autoplay, loop behavior, and a peek inset to tease adjacent slides.
+        </p>
+      </div>
+
+      <div className="space-y-sm">
+        <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+          Template: <code className="font-mono normal-case text-fg">OT_LandingRowSlider</code>
+        </p>
+        <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+          Component: <code className="font-mono normal-case text-fg">SliderRow</code> (client component)
+        </p>
+      </div>
+
+      {/* Transition modes — 2×2 grid */}
+      <div>
+        <SectionLabel index="01" title="Transition modes" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+          {TRANSITION_DEMOS.map(({ mode, label, desc }) => (
+            <div key={mode} className="space-y-md">
+              <div>
+                <p className="text-title font-semibold text-fg">{label}</p>
+                <p className="text-label text-fg-muted mt-xs">{desc}</p>
+              </div>
+              <SliderRow
+                transition={mode}
+                controls="both"
+                autoplay="off"
+                loop="loop"
+                peek="none"
+                verticalPadding=""
+                bgColorClass=""
+              >
+                {SLIDE_CONTENT.map((s, i) => (
+                  <Slide key={i} n={i + 1} {...s} />
+                ))}
+              </SliderRow>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Peek inset */}
+      <div>
+        <SectionLabel index="02" title="Peek — tease adjacent slides" />
+        <div className="max-w-[640px] mb-lg">
+          <p className="text-body text-fg-muted">
+            The <code className="font-mono text-fg">peek</code> setting adds symmetric horizontal inset,
+            trimming each side so neighboring slides bleed into view. Three sizes: sm (4%), md (8%), lg (14%).
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-xl">
+          {(['sm', 'md', 'lg'] as const).map(size => (
+            <div key={size} className="space-y-md">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                Peek {size} — {size === 'sm' ? '4%' : size === 'md' ? '8%' : '14%'} inset
+              </p>
+              <SliderRow
+                transition="slide"
+                controls="dots"
+                autoplay="off"
+                loop="loop"
+                peek={size}
+                verticalPadding=""
+                bgColorClass=""
+              >
+                {SLIDE_CONTENT.map((s, i) => (
+                  <Slide key={i} n={i + 1} {...s} />
+                ))}
+              </SliderRow>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Controls variants */}
+      <div>
+        <SectionLabel index="03" title="Controls" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+          {([
+            { controls: 'both',   label: 'Both — arrows + dots' },
+            { controls: 'arrows', label: 'Arrows only' },
+            { controls: 'dots',   label: 'Dots only' },
+            { controls: 'none',   label: 'None — rely on swipe or autoplay' },
+          ] as const).map(({ controls, label }) => (
+            <div key={controls} className="space-y-md">
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold">{label}</p>
+              <SliderRow
+                transition="slide"
+                controls={controls}
+                autoplay="off"
+                loop="loop"
+                peek="none"
+                verticalPadding=""
+                bgColorClass=""
+              >
+                {SLIDE_CONTENT.map((s, i) => (
+                  <Slide key={i} n={i + 1} {...s} />
+                ))}
+              </SliderRow>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Settings reference */}
+      <div>
+        <SectionLabel index="04" title="Settings reference" />
+        <div className="bg-surface p-lg font-mono text-label text-fg-muted space-y-md">
+          {[
+            { setting: 'transition', values: 'slide · fade · cover · morph',       note: 'How slides hand off to each other' },
+            { setting: 'controls',   values: 'both · arrows · dots · none',        note: 'Which navigation controls render' },
+            { setting: 'autoplay',   values: 'off · slow (8s) · medium (5s) · fast (3s)', note: 'Interval; resets on manual nav' },
+            { setting: 'loop',       values: 'loop · bounce · stop',               note: 'Behavior at end of slide list' },
+            { setting: 'peek',       values: 'none · sm (4%) · md (8%) · lg (14%)', note: 'Inset that bleeds adjacent slides' },
+          ].map(r => (
+            <div key={r.setting} className="flex flex-col md:flex-row md:gap-xl">
+              <span className="text-fg w-[120px] flex-none">{r.setting}</span>
+              <span className="w-[300px] flex-none">{r.values}</span>
+              <span className="text-fg-muted">{r.note}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
+// ─── Row Settings showcase ────────────────────────────────────────────────────
+
+const GAP_SIZES = [
+  { key: 'none',   cls: 'gap-0',   label: 'None',   val: '0' },
+  { key: 'small',  cls: 'gap-sm',  label: 'Small',  val: '8px' },
+  { key: 'medium', cls: 'gap-md',  label: 'Medium', val: '16px' },
+  { key: 'large',  cls: 'gap-lg',  label: 'Large',  val: '32px' },
+  { key: 'xl',     cls: 'gap-xl',  label: 'XL',     val: '64px' },
+]
+
+const ALIGN_DEMOS = [
+  { key: 'start',   cls: 'items-start',   label: 'Start',   desc: 'Default. Short columns sit at the top of the row.' },
+  { key: 'center',  cls: 'items-center',  label: 'Center',  desc: 'All columns center vertically. Useful for text-beside-image pairs.' },
+  { key: 'end',     cls: 'items-end',     label: 'End',     desc: 'Columns anchor to the bottom — rare but useful for baseline grids.' },
+  { key: 'stretch', cls: '',              label: 'Stretch', desc: 'Columns fill to the tallest sibling — natural flex default.' },
+]
+
+function MiniCol({ bg, height, label }: { bg: string; height: string; label: string }) {
+  return (
+    <div className={`flex-1 min-w-0 flex items-end p-sm ${bg}`} style={{ height }}>
+      <span className="text-label font-semibold opacity-60 text-fg-on-brand">{label}</span>
+    </div>
+  )
+}
+
+function RowSettingsShowcase() {
+  return (
+    <div className="space-y-2xl">
+
+      <div className="max-w-[640px]">
+        <p className="text-body leading-body text-fg-muted">
+          Display settings on <code className="font-mono text-fg">OT_LandingRow</code> control
+          spacing, alignment, background, column ordering, and entrance animation. Most settings
+          correspond directly to flex CSS properties on the row container.
+        </p>
+      </div>
+
+      {/* Column gap */}
+      <div>
+        <SectionLabel index="01" title="Column gap" />
+        <div className="max-w-[640px] mb-lg">
+          <p className="text-body text-fg-muted">
+            The <code className="font-mono text-fg">columnGap</code> setting maps directly to the flex
+            gap between columns. Applies at every breakpoint.
+          </p>
+        </div>
+        <div className="space-y-md">
+          {GAP_SIZES.map(g => (
+            <div key={g.key}>
+              <p className="text-label tracking-label uppercase text-fg-muted font-semibold mb-xs">
+                {g.label} — {g.val}
+              </p>
+              <div className={`flex flex-row ${g.cls}`} style={{ minHeight: '4rem' }}>
+                <div className="flex-1 bg-brand opacity-80" />
+                <div className="flex-1 bg-surface border border-fg/10" />
+                <div className="flex-1 bg-accent opacity-80" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Align items */}
+      <div>
+        <SectionLabel index="02" title="Align items" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+          {ALIGN_DEMOS.map(a => (
+            <div key={a.key} className="space-y-sm">
+              <div>
+                <p className="text-title font-semibold text-fg">{a.label}</p>
+                <p className="text-label text-fg-muted">{a.desc}</p>
+              </div>
+              <div className={`flex flex-row gap-md ${a.cls}`} style={{ minHeight: '8rem' }}>
+                <MiniCol bg="bg-brand" height="7rem" label="Tall" />
+                <MiniCol bg="bg-surface border border-fg/10" height="3rem" label="Short" />
+                <MiniCol bg="bg-accent" height="5rem" label="Mid" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Background colors */}
+      <div>
+        <SectionLabel index="03" title="Row background" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+          {[
+            { key: 'none',      bg: '',                  label: 'None',       note: 'Transparent — inherits section background' },
+            { key: 'canvas',    bg: 'bg-canvas',         label: 'Canvas',     note: 'Base page background' },
+            { key: 'surface',   bg: 'bg-surface',        label: 'Surface',    note: 'Slightly raised from canvas' },
+            { key: 'brand',     bg: 'bg-brand',          label: 'Brand',      note: 'Full brand color fill', dark: true },
+            { key: 'brandDeep', bg: 'bg-brand-hover',   label: 'Brand deep', note: 'Deeper brand shade', dark: true },
+            { key: 'glass',     bg: 'bg-glass',          label: 'Glass',      note: 'Translucent dark overlay', dark: true },
+          ].map(b => (
+            <div key={b.key} className={`p-md ${b.bg} border border-fg/10`} data-theme={b.dark ? 'dark' : undefined} style={{ minHeight: '5rem' }}>
+              <p className="text-label tracking-label uppercase font-semibold text-fg opacity-60">{b.key === 'none' ? 'No bg' : b.key}</p>
+              <p className="text-body text-fg font-medium mt-xs">{b.label}</p>
+              <p className="text-label text-fg-muted mt-xs">{b.note}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Reverse */}
+      <div>
+        <SectionLabel index="04" title="Reverse column order" />
+        <div className="max-w-[640px] mb-lg">
+          <p className="text-body text-fg-muted">
+            <code className="font-mono text-fg">reverseColumns</code> applies <code className="font-mono text-fg">flex-row-reverse</code>
+            at the row's breakpoint — DOM order stays the same (accessible), only visual
+            presentation flips. Use for alternating text/image pairs across sections.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+          <div className="space-y-sm">
+            <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Normal</p>
+            <div className="flex flex-row gap-md" style={{ minHeight: '6rem' }}>
+              <div className="flex-[2] bg-brand flex items-center justify-center">
+                <span className="text-label font-semibold text-fg-on-brand">Image</span>
+              </div>
+              <div className="flex-1 bg-surface border border-fg/10 flex items-center justify-center">
+                <span className="text-label font-semibold text-fg-muted">Text</span>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-sm">
+            <p className="text-label tracking-label uppercase text-fg-muted font-semibold">Reversed</p>
+            <div className="flex flex-row-reverse gap-md" style={{ minHeight: '6rem' }}>
+              <div className="flex-[2] bg-brand flex items-center justify-center">
+                <span className="text-label font-semibold text-fg-on-brand">Image</span>
+              </div>
+              <div className="flex-1 bg-surface border border-fg/10 flex items-center justify-center">
+                <span className="text-label font-semibold text-fg-muted">Text</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Settings reference */}
+      <div>
+        <SectionLabel index="05" title="Settings reference" />
+        <div className="bg-surface p-lg font-mono text-label text-fg-muted space-y-sm">
+          {[
+            { setting: 'columnGap',         values: 'none · small · medium · large · xl' },
+            { setting: 'alignItems',        values: 'start · center · end · stretch' },
+            { setting: 'justifyContent',    values: 'start · center · end · between' },
+            { setting: 'backgroundColor',   values: 'none · canvas · surface · brand · brandDeep · glass' },
+            { setting: 'reverseColumns',    values: 'false · true' },
+            { setting: 'verticalPadding',   values: 'none · small · medium · large · xl' },
+            { setting: 'columnRhythm',      values: 'none · gentle · moderate · bold' },
+            { setting: 'breakpoint',        values: 'sm · md · lg · xl (when columns go side-by-side)' },
+            { setting: 'entranceAnimation', values: 'none · fade · slide · parallax' },
+          ].map(r => (
+            <div key={r.setting} className="flex flex-col md:flex-row md:gap-xl">
+              <span className="text-fg w-[200px] flex-none">{r.setting}</span>
+              <span>{r.values}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
+// ─── Section Settings showcase ────────────────────────────────────────────────
+
+const SECTION_WIDTHS = [
+  { key: 'full',    cls: 'w-full',                            label: 'Full',    desc: 'Edge-to-edge — no container, no padding. Use for full-bleed images, sliders, and banner backgrounds.' },
+  { key: 'default', cls: 'container mx-auto px-lg w-full',   label: 'Default', desc: 'Standard container with responsive max-width and horizontal padding. The correct choice for most content sections.' },
+  { key: 'wide',    cls: 'max-w-7xl w-full mx-auto px-lg',   label: 'Wide',    desc: 'Slightly wider than default. Useful for data-dense grids or feature-rich layout areas.' },
+  { key: 'narrow',  cls: 'max-w-4xl w-full mx-auto px-lg',   label: 'Narrow',  desc: 'Constrained to 56rem — forces reading focus for text-primary sections like long-form copy or single CTAs.' },
+]
+
+const SECTION_VSPACING = [
+  { key: 'none',   cls: 'py-0',   label: 'None',   val: '0' },
+  { key: 'small',  cls: 'py-md',  label: 'Small',  val: '16px' },
+  { key: 'medium', cls: 'py-lg',  label: 'Medium', val: '32px' },
+  { key: 'large',  cls: 'py-xl',  label: 'Large',  val: '64px' },
+  { key: 'xl',     cls: 'py-2xl', label: 'XL',     val: '128px' },
+]
+
+function SectionSettingsShowcase() {
+  return (
+    <div className="space-y-2xl">
+
+      <div className="max-w-[640px]">
+        <p className="text-body leading-body text-fg-muted">
+          Display settings on <code className="font-mono text-fg">OT_LandingSection</code> control
+          content width, vertical padding, background color, section overlap, and entrance animation.
+          Width and spacing together define the breathing room of every page region.
+        </p>
+      </div>
+
+      {/* Width variants */}
+      <div>
+        <SectionLabel index="01" title="Content width" />
+        <div className="space-y-md">
+          {SECTION_WIDTHS.map(w => (
+            <div key={w.key} className="border border-fg/10 overflow-hidden">
+              <div className="bg-surface/50 px-md py-sm border-b border-fg/10">
+                <p className="text-label tracking-label uppercase text-fg-muted font-semibold">
+                  {w.key} — {w.label}
+                </p>
+                <p className="text-label text-fg-muted">{w.desc}</p>
+              </div>
+              <div className="relative bg-canvas/50 overflow-hidden" style={{ height: '3rem' }}>
+                <div
+                  className="absolute inset-y-0 bg-brand/30 border-x border-brand/50"
+                  style={{
+                    width: { full: '100%', wide: '88%', default: '76%', narrow: '58%' }[w.key],
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Vertical spacing */}
+      <div>
+        <SectionLabel index="02" title="Vertical spacing" />
+        <div className="max-w-[640px] mb-lg">
+          <p className="text-body text-fg-muted">
+            <code className="font-mono text-fg">verticalSpacing</code> adds padding top and bottom
+            to the section content area. Use Large (64px) as the default; step up to XL for hero
+            moments, down to Small for tight utility rows like nav or banners.
+          </p>
+        </div>
+        <div className="space-y-sm">
+          {SECTION_VSPACING.map(s => (
+            <div key={s.key} className="flex items-center gap-xl">
+              <span className="text-label tracking-label uppercase text-fg-muted font-semibold w-[80px] flex-none">{s.label}</span>
+              <span className="text-label font-mono text-fg w-[40px] flex-none">{s.val}</span>
+              <div className="flex-1 relative bg-surface border border-fg/10 overflow-hidden" style={{ minHeight: '2rem' }}>
+                <div className={`w-full ${s.cls} bg-brand/20`} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Background colors */}
+      <div>
+        <SectionLabel index="03" title="Section background" />
+        <div className="space-y-md">
+          {[
+            { key: 'none',      cls: '',                label: 'None (transparent)',  dark: false, note: 'Inherits the page or outer background. Default.' },
+            { key: 'canvas',    cls: 'bg-canvas',       label: 'Canvas',              dark: false, note: 'Explicit base page color — useful when surrounding context might override.' },
+            { key: 'surface',   cls: 'bg-surface',      label: 'Surface',             dark: false, note: 'Slightly elevated from canvas — creates a visual break without strong contrast.' },
+            { key: 'brand',     cls: 'bg-brand',        label: 'Brand',               dark: true,  note: 'Full brand-color fill. Forces dark theme on nested tokens.' },
+            { key: 'brandDeep', cls: 'bg-brand-hover',  label: 'Brand deep',          dark: true,  note: 'Deeper shade for anchoring sections. Pairs well as a footer or closing section.' },
+            { key: 'glass',     cls: 'bg-glass',        label: 'Glass',               dark: true,  note: 'Translucent dark overlay. Works over image or video backgrounds.' },
+          ].map(b => (
+            <div
+              key={b.key}
+              className={`flex items-center gap-md p-md ${b.cls} border border-fg/10`}
+              data-theme={b.dark ? 'dark' : undefined}
+            >
+              <span className="text-label tracking-label uppercase font-semibold text-fg-muted w-[100px] flex-none">{b.key}</span>
+              <span className="text-body font-medium text-fg w-[140px] flex-none">{b.label}</span>
+              <span className="text-label text-fg-muted">{b.note}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Settings reference */}
+      <div>
+        <SectionLabel index="04" title="Settings reference" />
+        <div className="bg-surface p-lg font-mono text-label text-fg-muted space-y-sm">
+          {[
+            { setting: 'gridWidth',         values: 'full · default · wide · narrow' },
+            { setting: 'verticalSpacing',   values: 'none · small · medium · large · xl' },
+            { setting: 'backgroundColor',   values: 'none · canvas · surface · brand · brandDeep · glass' },
+            { setting: 'sectionOverlap',    values: 'none · shallow (16px) · mid (32px) · deep (64px) · full (128px)' },
+            { setting: 'entranceAnimation', values: 'none · fade · slide · parallax' },
+          ].map(r => (
+            <div key={r.setting} className="flex flex-col md:flex-row md:gap-xl">
+              <span className="text-fg w-[200px] flex-none">{r.setting}</span>
+              <span>{r.values}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function ShowcaseLayoutFeaturePage({
@@ -455,8 +913,11 @@ export default async function ShowcaseLayoutFeaturePage({
         </h1>
       </div>
 
-      {feature === 'row-rhythm'      && <RowRhythmShowcase />}
-      {feature === 'section-overlap' && <SectionOverlapShowcase />}
+      {feature === 'row-rhythm'       && <RowRhythmShowcase />}
+      {feature === 'section-overlap'  && <SectionOverlapShowcase />}
+      {feature === 'carousel'         && <CarouselShowcase />}
+      {feature === 'row-settings'     && <RowSettingsShowcase />}
+      {feature === 'section-settings' && <SectionSettingsShowcase />}
     </div>
   )
 }

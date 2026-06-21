@@ -52,8 +52,9 @@ export default function ShowcaseNav() {
       {hasSubItems && (
         <div className="flex items-center overflow-x-auto scrollbar-none gap-xs px-md py-2.25 border-b border-fg/8">
           {activeCategory!.items.map(item => {
-            const itemHref   = `/showcase/${activeCategory!.slug}/${item.slug}`
-            const isActive   = pathname.startsWith(itemHref)
+            const itemHref   = item.href ?? `/showcase/${activeCategory!.slug}/${item.slug}`
+            // Hash links (in-page anchors) can't be matched against the pathname.
+            const isActive   = !item.href && pathname.startsWith(itemHref)
             return (
               <a
                 key={item.slug}

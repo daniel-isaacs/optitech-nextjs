@@ -112,7 +112,7 @@ export default function ThemePlayground({
   return (
     <div className="px-md lg:px-lg py-lg">
       {/* Intro */}
-      <div className="max-w-2xl mb-lg">
+      <div className="max-w-[42rem] mb-lg">
         <h1 className="text-headline font-bold leading-headline tracking-headline text-fg mb-sm">Theme Playground</h1>
         <p className="text-body leading-body text-fg-muted">
           Tune the live theme and watch every token respond. Adjust the primary font, corner style, motion,
@@ -121,7 +121,7 @@ export default function ThemePlayground({
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-[clamp(320px,28vw,380px)_1fr] gap-lg items-start">
+      <div className="grid lg:grid-cols-[360px_minmax(0,1fr)] gap-lg items-start">
         {/* ── Controls (inspector) ──────────────────────────────────────────── */}
         <aside className="bg-surface border border-fg/10 rounded-ot-surface p-md space-y-lg lg:sticky lg:top-40 lg:max-h-[calc(100vh-11rem)] lg:overflow-y-auto">
           <div className="flex items-center justify-between">

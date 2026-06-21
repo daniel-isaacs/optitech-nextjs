@@ -90,7 +90,7 @@ export function PreviewSurface({
 
         {/* ── A composed surface, so the theme reads in context first ───────── */}
         <section id="surfaces" className="scroll-mt-36 space-y-lg">
-          <div className="space-y-sm max-w-xl">
+          <div className="space-y-sm max-w-[34rem]">
             <p className="text-label tracking-label uppercase text-accent font-semibold">In context</p>
             <h2 className="text-headline font-bold leading-headline tracking-headline">
               Build once, ship to every brand.
@@ -169,7 +169,7 @@ export function PreviewSurface({
             <div>
               <p className="text-label font-mono text-fg-muted/50 mb-1">Title · 600 &nbsp;·&nbsp; Body · 400</p>
               <p className="text-title font-semibold">A considered type system</p>
-              <p className="text-body leading-body text-fg-muted max-w-prose">
+              <p className="text-body leading-body text-fg-muted max-w-[60ch]">
                 The quick brown fox jumps over the lazy dog. Body copy holds a comfortable measure and
                 the weight ladder keeps a clear step between every level of the hierarchy.
               </p>
@@ -256,7 +256,7 @@ export function PreviewSurface({
 
         {/* ── Form elements ─────────────────────────────────────────────────── */}
         <Block id="inputs" n="04" title="Form elements">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md max-w-3xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md max-w-[48rem]">
             <label className="space-y-1.5">
               <span className="text-label font-semibold text-fg-muted block">Default</span>
               <input
@@ -312,7 +312,7 @@ export function PreviewSurface({
 
         {/* ── Motion ────────────────────────────────────────────────────────── */}
         <Block id="motion" n="06" title="Motion">
-          <p className="text-sm text-fg-muted max-w-prose">
+          <p className="text-sm text-fg-muted max-w-[60ch]">
             Hover a tile — the transition duration reads <code className="font-mono text-fg">--ot-dur-base</code>,
             which scales with Motion Intensity. Your OS &ldquo;reduce motion&rdquo; setting always wins.
           </p>

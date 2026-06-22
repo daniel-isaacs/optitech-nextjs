@@ -4,7 +4,7 @@ import ThemePlayground from '@/components/theme/playground/ThemePlayground'
 import { buildInitialColors, buildInitialAxes } from '@/components/theme/playground/model'
 
 export const metadata: Metadata = {
-  title: 'Theme Playground — Design System — OptiTech',
+  title: 'Theme Playground — Design System — Site Accelerator',
 }
 
 export default async function ThemePlaygroundPage() {

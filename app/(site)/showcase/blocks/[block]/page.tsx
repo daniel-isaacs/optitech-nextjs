@@ -65,7 +65,7 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'callout':          { label: 'CalloutBlock',          cmsKey: 'OT_CalloutBlock',          description: 'Compact semantic inline notification. Six intent types: neutral, info, success, warning, danger, brand. Three variants: filled, bordered, bar. Dismissible with a two-phase kinetic exit — content sweeps right and fades, then the container height collapses.' },
   'divider':          { label: 'DividerBlock',          cmsKey: 'OT_DividerBlock',          description: 'Structural section divider that opens deliberate breathing room between stacked sections. Three treatments: mark (a hairline broken by an editable label or an editorial ornament), glow (a precise luminous rule — a chromatic line of light with a soft bloom above and below), and bleed (atmospheric luminance — an elliptical light seam rising from the boundary). One Tone control spans all three — neutral, brand, accent, spectrum, aurora — plus editor-controlled spacing, weight, and an optional draw-in reveal that rides the shared scroll observer.' },
   'event-listing':    { label: 'EventListingBlock',     cmsKey: 'OT_EventListingBlock',     description: 'CMS-driven listing of Event Pages with three toggleable views: card grid, list (calendar-style date blocks), and a monthly calendar with day agenda. A segmented icon control switches views; type-filter chips and a past-events toggle refine the set. Works across technology, healthcare, legal, and financial events on both canvas and surface grounds. In production, events are fetched at render time from published Event Pages; the showcase uses static fixtures.' },
-  'practitioner-listing': { label: 'PractitionerListingBlock', cmsKey: 'OT_PractitionerListingBlock', description: 'CMS-driven, vertical-agnostic people directory pulled from Practitioner Profiles. Grid (cards) or list (rows) layout, client-side search across name / credentials / specialty, and filter chips for practice area and language that are derived dynamically from the loaded set — never a fixed list. Scope it to one vertical with the Group Tag Filter (e.g. "optimedical"). Squared portraits with a chromatic brand bloom and a designed initials fallback. In production, practitioners are fetched at render time; the showcase uses static fixtures spanning medical, legal, and technology verticals.' },
+  'practitioner-listing': { label: 'PractitionerListingBlock', cmsKey: 'OT_PractitionerListingBlock', description: 'CMS-driven, vertical-agnostic people directory pulled from Practitioner Profiles. Grid (cards) or list (rows) layout, client-side search across name / credentials / specialty, and filter chips for practice area and language that are derived dynamically from the loaded set — never a fixed list. Scope it to one vertical with the Group Tag Filter (e.g. "medical"). Squared portraits with a chromatic brand bloom and a designed initials fallback. In production, practitioners are fetched at render time; the showcase uses static fixtures spanning medical, legal, and technology verticals.' },
 }
 
 export function generateStaticParams() {
@@ -80,7 +80,7 @@ export async function generateMetadata({
   const { block } = await params
   const meta = BLOCK_META[block as BlockSlug]
   if (!meta) return {}
-  return { title: `${meta.label} — Blocks — Showcase — OptiTech` }
+  return { title: `${meta.label} — Blocks — Showcase — Site Accelerator` }
 }
 
 type DS = Record<string, string | boolean>
@@ -125,8 +125,8 @@ function HeroShowcase() {
     {
       label: 'Brand · Image Right (default)',
       content: {
-        eyebrow: 'Introducing OptiTech', headline: 'Move at the speed of certainty.',
-        body: 'OptiTech gives your teams the infrastructure to experiment continuously, ship confidently, and know whether it worked.',
+        eyebrow: 'A better way to work', headline: 'Move at the speed of certainty.',
+        body: 'Everything your team needs to launch faster, work smarter, and see what is working in real time.',
         primaryCtaLabel: 'Get started', primaryCtaUrl: { default: '#' },
         secondaryCtaLabel: 'Learn more', secondaryCtaUrl: { default: '#' },
         visual: HERO_IMG, visualAlt: HERO_ALT,
@@ -136,8 +136,8 @@ function HeroShowcase() {
     {
       label: 'Canvas · Image Left',
       content: {
-        eyebrow: 'The platform', headline: 'Built for teams who ship daily.',
-        body: 'Feature flags, experiment data, and deployment telemetry in one platform. OptiTech closes the gap between shipping and knowing.',
+        eyebrow: 'The platform', headline: 'Built for teams who move daily.',
+        body: 'Plan, launch, and measure in one place. The platform closes the gap between doing the work and knowing it worked.',
         primaryCtaLabel: 'View the platform', primaryCtaUrl: { default: '#' },
         visual: HERO_IMG, visualAlt: HERO_ALT,
       },
@@ -147,7 +147,7 @@ function HeroShowcase() {
       label: 'Surface · Image Right',
       content: {
         eyebrow: 'The method', headline: 'Precision at every layer.',
-        body: 'From the first feature flag to the thousandth experiment, OptiTech tracks what matters and surfaces it when you need it.',
+        body: 'From the first idea to the thousandth iteration, the platform tracks what matters and surfaces it when you need it.',
         primaryCtaLabel: 'See how it works', primaryCtaUrl: { default: '#' },
         visual: HERO_IMG, visualAlt: HERO_ALT,
       },
@@ -159,8 +159,8 @@ function HeroShowcase() {
     {
       label: 'Brand · No image',
       content: {
-        eyebrow: 'Introducing OptiTech', headline: 'Move at the speed of certainty.',
-        body: 'OptiTech gives your teams the infrastructure to experiment continuously, ship confidently, and know whether it worked.',
+        eyebrow: 'A better way to work', headline: 'Move at the speed of certainty.',
+        body: 'Everything your team needs to launch faster, work smarter, and see what is working in real time.',
         primaryCtaLabel: 'Get started', primaryCtaUrl: { default: '#' },
         secondaryCtaLabel: 'Learn more', secondaryCtaUrl: { default: '#' },
       },
@@ -169,8 +169,8 @@ function HeroShowcase() {
     {
       label: 'Canvas · No image',
       content: {
-        eyebrow: 'The platform', headline: 'Built for teams who ship daily.',
-        body: 'Feature flags, experiment data, and deployment telemetry in one platform.',
+        eyebrow: 'The platform', headline: 'Built for teams who move daily.',
+        body: 'Plan, launch, and measure in one place, so every team works from the same picture.',
         primaryCtaLabel: 'View the platform', primaryCtaUrl: { default: '#' },
       },
       displaySettings: { color: 'canvas', animation: 'none' },
@@ -179,7 +179,7 @@ function HeroShowcase() {
       label: 'Surface · No image',
       content: {
         eyebrow: 'The method', headline: 'Precision at every layer.',
-        body: 'From the first feature flag to the thousandth experiment, OptiTech tracks what matters.',
+        body: 'From the first idea to the thousandth iteration, the platform tracks what matters.',
         primaryCtaLabel: 'See how it works', primaryCtaUrl: { default: '#' },
       },
       displaySettings: { color: 'surface', animation: 'none' },
@@ -251,10 +251,10 @@ function CardShowcase() {
       <VariantGroup label="Fill variants · no image · with CTA" />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
-          <OT_CardBlock content={{ Heading: 'Targeted Rollouts', Eyebrow: 'Deployment', Description: 'Deploy to any user segment with a single API call. Real-time, without a redeploy.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'ghost', border: 'subtle' }} />
-          <OT_CardBlock content={{ Heading: 'Experiment Engine', Eyebrow: 'Analytics', Description: 'Concurrent A/B tests with automatic interaction detection. Results in hours, not weeks.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface' }} />
-          <OT_CardBlock content={{ Heading: 'Statistical Confidence', Eyebrow: 'Insights', Description: 'Power calculations and confidence intervals are built into the platform. No spreadsheets.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'brand' }} />
-          <OT_CardBlock content={{ Heading: 'Instant Rollback', Eyebrow: 'Safety', Description: 'One flag, one API call. Revert any change across every deployment in seconds.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'light' }} />
+          <OT_CardBlock content={{ Heading: 'Reach the Right People', Eyebrow: 'Targeting', Description: 'Tailor every message to the right audience in a few clicks. No technical help required.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'ghost', border: 'subtle' }} />
+          <OT_CardBlock content={{ Heading: 'Test and Learn', Eyebrow: 'Optimization', Description: 'Compare versions side by side and let the results pick the winner. Answers in days, not weeks.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface' }} />
+          <OT_CardBlock content={{ Heading: 'Clear Confidence', Eyebrow: 'Insights', Description: 'See what is driving results with metrics that explain themselves. No spreadsheets.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'brand' }} />
+          <OT_CardBlock content={{ Heading: 'Easy to Undo', Eyebrow: 'Peace of mind', Description: 'Roll back any change in seconds. Try things boldly, knowing nothing is permanent.', ctaLabel: 'Learn more', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'light' }} />
         </div>
       </div>
 
@@ -279,18 +279,18 @@ function CardShowcase() {
       <VariantGroup label="Image: top · 4:3 aspect · surface fill" />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Feature Flags at Scale', Eyebrow: 'Platform', Description: 'Ship to any segment with a kill switch on every flag. The safest way to deploy at velocity.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
-          <OT_CardBlock content={{ Heading: 'Precision-Grade Telemetry', Eyebrow: 'Infrastructure', Description: 'Every signal, every layer. OptiTech ingests data from flag changes, deploys, and user events in real time.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
-          <OT_CardBlock content={{ Heading: 'Results You Can Act On', Eyebrow: 'Analytics', Description: 'Statistical significance checks, interaction effects, and automatic stopping rules. No guesswork.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Built to Scale', Eyebrow: 'Platform', Description: 'Grow from your first launch to your busiest season without missing a beat. Reliable at any size.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Everything in One View', Eyebrow: 'Insights', Description: 'Every signal in one place. The platform brings your activity, audience, and outcomes together in real time.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
+          <OT_CardBlock content={{ Heading: 'Results You Can Act On', Eyebrow: 'Analytics', Description: 'Clear answers, not raw numbers. See what changed, why it mattered, and what to do next. No guesswork.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See how it works', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'top' }} />
         </div>
       </div>
 
       <VariantGroup label="Image: background · scrim · content at bottom" note="Dark gradient from bottom. Text always press-white regardless of fill." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Ship with confidence.', Eyebrow: 'Deployment', Description: 'Every flag tracked. Every change reversible.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'Get started', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
+          <OT_CardBlock content={{ Heading: 'Launch with confidence.', Eyebrow: 'Delivery', Description: 'Every change tracked. Every change reversible.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'Get started', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
           <OT_CardBlock content={{ Heading: 'Measure what matters.', Eyebrow: 'Analytics', Description: 'Real signals, not approximations.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
-          <OT_CardBlock content={{ Heading: 'Iterate faster.', Eyebrow: 'Velocity', Description: 'From hypothesis to result in hours.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the platform', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
+          <OT_CardBlock content={{ Heading: 'Iterate faster.', Eyebrow: 'Momentum', Description: 'From idea to result in hours.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the platform', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'background' }} />
         </div>
       </div>
 
@@ -298,20 +298,20 @@ function CardShowcase() {
       <div className="px-md pb-xl lg:px-lg flex flex-col gap-lg">
         <div>
           <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;left&rdquo;</span>
-          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Infrastructure built for continuous delivery.', Eyebrow: 'Platform', Description: 'OptiTech gives engineering teams the tooling to ship incrementally, measure precisely, and respond in real time.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View the platform', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'left' }} /></div>
+          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Built for the way you work.', Eyebrow: 'Platform', Description: 'The platform gives your team the tools to move step by step, measure precisely, and respond in real time.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View the platform', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'left' }} /></div>
         </div>
         <div>
           <span className="font-mono text-label text-fg-muted/50">imageSide: &ldquo;right&rdquo;</span>
-          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Statistical confidence at every decision point.', Eyebrow: 'Analytics', Description: 'Every experiment runs with power calculations, automatic stopping rules, and interaction effect detection.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore analytics', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'right' }} /></div>
+          <div className="mt-sm"><OT_CardBlock content={{ Heading: 'Confidence at every decision point.', Eyebrow: 'Analytics', Description: 'Every test runs with clear measurement, sensible defaults, and results you can trust at a glance.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore analytics', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'side', imageSide: 'right' }} /></div>
         </div>
       </div>
 
       <VariantGroup label="image:float · content slides up over the image bottom" note="Content box overlaps the lower portion of the image with the card's fill background." />
       <div className="px-md pb-xl lg:px-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          <OT_CardBlock content={{ Heading: 'Infrastructure that never sleeps.', Eyebrow: 'Platform', Description: '99.99% uptime across every region, backed by automated failover.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View SLA', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'float' }} />
-          <OT_CardBlock content={{ Heading: 'Signal in the noise.', Eyebrow: 'Analytics', Description: 'Our engine sifts millions of events per second so your team sees what matters.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the dashboard', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'brand', imageStyle: 'float' }} />
-          <OT_CardBlock content={{ Heading: 'Hardware meets intelligence.', Eyebrow: 'Edge compute', Description: 'Push logic to the edge. OptiTech runs where your users are, cutting round-trip latency by 80%.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore edge', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'float', border: 'subtle' }} />
+          <OT_CardBlock content={{ Heading: 'Always on, always ready.', Eyebrow: 'Reliability', Description: '99.99% uptime across every region, backed by automatic failover.', image: CARD_IMG_A, imageAlt: CARD_IMG_A_ALT, ctaLabel: 'View uptime', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'float' }} />
+          <OT_CardBlock content={{ Heading: 'Signal in the noise.', Eyebrow: 'Analytics', Description: 'The platform sifts through the noise so your team sees only what matters.', image: CARD_IMG_C, imageAlt: CARD_IMG_C_ALT, ctaLabel: 'See the dashboard', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'brand', imageStyle: 'float' }} />
+          <OT_CardBlock content={{ Heading: 'Fast, everywhere.', Eyebrow: 'Performance', Description: 'The platform runs close to your audience wherever they are, keeping every experience quick and responsive.', image: CARD_IMG_B, imageAlt: CARD_IMG_B_ALT, ctaLabel: 'Explore performance', ctaUrl: { default: '#' } } as any} displaySettings={{ fill: 'surface', imageStyle: 'float', border: 'subtle' }} />
         </div>
       </div>
 
@@ -422,14 +422,14 @@ function PrimaryTextShowcase() {
 
 function QuoteShowcase() {
   const colors = [
-    { content: { quote: 'OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.', attributionName: 'Sarah Chen', attributionTitle: 'VP Engineering, Meridian' }, displaySettings: { color: 'brand',   alignment: 'left', size: 'large' } },
-    { content: { quote: 'OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.', attributionName: 'Sarah Chen', attributionTitle: 'VP Engineering, Meridian' }, displaySettings: { color: 'canvas',  alignment: 'left', size: 'large' } },
-    { content: { quote: 'OptiTech gave us the confidence to ship faster without second-guessing every decision. The team moved from monthly releases to daily.', attributionName: 'Sarah Chen', attributionTitle: 'VP Engineering, Meridian' }, displaySettings: { color: 'surface', alignment: 'left', size: 'large' } },
+    { content: { quote: 'The platform gave us the confidence to move faster without second-guessing every decision. We went from monthly launches to weekly.', attributionName: 'Sarah Chen', attributionTitle: 'VP Operations, Meridian' }, displaySettings: { color: 'brand',   alignment: 'left', size: 'large' } },
+    { content: { quote: 'The platform gave us the confidence to move faster without second-guessing every decision. We went from monthly launches to weekly.', attributionName: 'Sarah Chen', attributionTitle: 'VP Operations, Meridian' }, displaySettings: { color: 'canvas',  alignment: 'left', size: 'large' } },
+    { content: { quote: 'The platform gave us the confidence to move faster without second-guessing every decision. We went from monthly launches to weekly.', attributionName: 'Sarah Chen', attributionTitle: 'VP Operations, Meridian' }, displaySettings: { color: 'surface', alignment: 'left', size: 'large' } },
   ]
 
   const sizes = [
-    { content: { quote: 'We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.', attributionName: 'Marcus Reid', attributionTitle: 'CTO, Folio' }, displaySettings: { size: 'large', color: 'canvas', alignment: 'left' } },
-    { content: { quote: 'We went from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.', attributionName: 'Marcus Reid', attributionTitle: 'CTO, Folio' }, displaySettings: { size: 'small', color: 'canvas', alignment: 'left' } },
+    { content: { quote: 'We went from reviewing results once a quarter to improving continuously. The platform is what made that possible.', attributionName: 'Marcus Reid', attributionTitle: 'COO, Folio' }, displaySettings: { size: 'large', color: 'canvas', alignment: 'left' } },
+    { content: { quote: 'We went from reviewing results once a quarter to improving continuously. The platform is what made that possible.', attributionName: 'Marcus Reid', attributionTitle: 'COO, Folio' }, displaySettings: { size: 'small', color: 'canvas', alignment: 'left' } },
   ]
 
   const alignments = [
@@ -490,73 +490,73 @@ const rule = (): RTNode => ({ type: 'hr', children: [txt('')] })
 const doc  = (...nodes: RTNode[]) => ({ type: 'richText', children: nodes })
 
 const RT_FULL = doc(
-  h2('Platform intelligence, accelerated.'),
-  para('OptiTech was built for teams who move faster than quarterly roadmaps. We identified a gap between the pace at which modern software ships and the tools available to measure, refine, and respond to it. We closed it.'),
-  para('The platform ingests signals from every layer of the stack: feature flags, experiment data, user behaviour telemetry, and deployment events. It surfaces the patterns that matter before they become problems.'),
-  h3('Statistical confidence, not gut instinct'),
-  para('Decisions are made at the edges of your system, not in a committee room three weeks later. OptiTech gives your engineering and product teams a shared language for running experiments with ', bold('statistical confidence'), ' backed by real signal.'),
+  h2('Clarity, accelerated.'),
+  para('The platform was built for teams who move faster than the quarterly plan. We saw a gap between the pace at which modern teams work and the tools available to measure, refine, and respond to it. We closed it.'),
+  para('The platform brings together signals from every part of your work: what you launch, how your audience responds, and what changes along the way. It surfaces the patterns that matter before they become problems.'),
+  h3('Confidence, not guesswork'),
+  para('Decisions are made where the work happens, not in a meeting three weeks later. The platform gives your whole team a shared language for testing ideas with ', bold('real confidence'), ' backed by real evidence.'),
   ul(
-    'Deploy changes to targeted segments in minutes, not sprints.',
-    'Run concurrent experiments without interaction effects.',
-    'Roll back any flag with a single API call.',
+    'Reach the right audience in minutes, not weeks.',
+    'Run several tests at once without them interfering.',
+    'Undo any change with a single click.',
   ),
-  quote('We moved from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.'),
+  quote('We moved from reviewing results once a quarter to improving continuously. The platform is what made that possible.'),
 )
 
 const RT_PROSE = doc(
-  para('OptiTech was built for teams who move faster than quarterly roadmaps. We identified a gap between the pace at which modern software ships and the tools available to measure, refine, and respond to it.'),
-  para('The platform ingests signals from every layer of the stack: feature flags, experiment data, user behaviour telemetry, and deployment events. It surfaces the patterns that matter before they become problems.'),
-  para('Decisions are made at the edges of your system. OptiTech gives your engineering and product teams a shared language for running experiments with statistical confidence backed by real signal.'),
+  para('The platform was built for teams who move faster than the quarterly plan. We saw a gap between the pace at which modern teams work and the tools available to measure, refine, and respond to it.'),
+  para('The platform brings together signals from every part of your work: what you launch, how your audience responds, and what changes along the way. It surfaces the patterns that matter before they become problems.'),
+  para('Decisions are made where the work happens. The platform gives your whole team a shared language for testing ideas with real confidence backed by real evidence.'),
 )
 
 const RT_STRUCTURED = doc(
-  h2('Why OptiTech'),
-  para('Speed that compounds. The faster you can measure, the faster you can iterate.'),
-  h3('For engineering teams'),
-  para('Feature flags with a full audit trail. Targeted rollouts. Statistical validity checks built into the platform.'),
-  h3('For product teams'),
-  para('Experiment design tools that connect directly to your data. No more waiting three weeks for results from a release you have already moved past.'),
+  h2('Why the platform'),
+  para('Speed that compounds. The faster you can measure, the faster you can improve.'),
+  h3('For delivery teams'),
+  para('A full history of every change. Targeted launches. Quality checks built right in.'),
+  h3('For planning teams'),
+  para('Tools that connect directly to your data. No more waiting three weeks for results from work you have already moved past.'),
 )
 
 // Long-form article with H1 title — feeds the TOC treatment demo.
 // The TOC panel auto-inserts after the first heading (Option B).
 const RT_TOC_ARTICLE = doc(
-  h1('A Technical Guide to Feature Flags'),
-  para('Feature flags give engineering teams granular control over what ships and when. This guide covers the patterns, tradeoffs, and tooling decisions that matter most at scale.'),
-  h2('What are feature flags?'),
-  para('A feature flag is a conditional branch in your application code, controlled by a runtime configuration value rather than a deployment. The code ships; the behavior waits. You toggle the value in the platform, and the change propagates without a redeploy.'),
-  para('At their simplest, they are ', bold('if statements with remote config'), '. At scale, they become the primitives for targeted rollouts, gradual traffic migration, A/B experiments, and kill switches.'),
-  h2('Targeting and segmentation'),
-  para('The power of flags comes from targeting — the ability to expose a feature to a specific audience before the full population. Targeting rules evaluate against user attributes, device properties, or custom context you pass at evaluation time.'),
-  para('Segments are reusable groupings of targeting rules: "internal users", "beta cohort", "EU traffic." Once defined, the same segment appears across all flags in your project, keeping rollout logic consistent.'),
-  h2('Experimentation and statistical validity'),
-  para('Flags are the delivery mechanism for A/B tests. A control bucket and a treatment bucket run concurrently, each receiving a deterministic slice of traffic based on a consistent hashing function applied to the user identifier.'),
-  para('Statistical validity requires a minimum sample size before you can read results. Ship early, let traffic accumulate, and resist the urge to call a winner before the power threshold is met.'),
+  h1('A Practical Guide to Continuous Improvement'),
+  para('Continuous improvement gives teams a clear way to decide what to change and when. This guide covers the habits, tradeoffs, and tooling choices that matter most as you grow.'),
+  h2('What is continuous improvement?'),
+  para('Continuous improvement is the practice of making small, measured changes and learning from each one, rather than betting everything on a single big launch. You make a change, watch how it lands, and decide what to do next.'),
+  para('At their simplest, these are ', bold('small bets you can reverse'), '. At scale, they become the foundation for targeted launches, gradual rollouts, side-by-side tests, and quick recoveries.'),
+  h2('Audiences and segments'),
+  para('The power of the approach comes from targeting — the ability to show a change to a specific audience before everyone sees it. You can target by location, behaviour, or any detail you already know about your audience.'),
+  para('Segments are reusable groups: "new customers", "early adopters", "returning visitors". Once defined, the same segment is available everywhere, keeping your decisions consistent.'),
+  h2('Testing and confidence'),
+  para('Side-by-side tests are how you learn what works. A control group and a test group run at the same time, each seeing a different version, so you can compare results fairly.'),
+  para('Confidence requires enough responses before you read the results. Start early, let the data build, and resist the urge to call a winner before you have enough to be sure.'),
   h2('Rollout strategies'),
-  para('A gradual rollout starts at a small traffic percentage and expands as confidence grows. The OptiTech platform lets you set percentage targets with a slider and update them in real time — no deploys, no code reviews.'),
-  para('Canary deployments pair a flag with a version gate: traffic assigned to the treatment cohort also receives the new deployment artifact. The flag becomes the rollback mechanism.'),
-  h2('Kill switches and incident response'),
-  para('Every flag is implicitly a kill switch. If a feature is causing elevated error rates, disable the flag: the behavior is removed from production in under a second without a revert commit, a code freeze, or an on-call escalation chain.'),
+  para('A gradual rollout starts with a small share of your audience and expands as confidence grows. The platform lets you set the share with a slider and update it in real time — no waiting, no help needed.'),
+  para('A staged rollout pairs a change with a checkpoint: the group that sees the new version is watched closely before it reaches everyone. The same control becomes your way to step back.'),
+  h2('Quick recovery'),
+  para('Every change is reversible. If something is not landing the way you hoped, switch it off: the change is removed in seconds, with no scramble, no freeze, and no late-night escalation.'),
 )
 
 // Long-form article: multiple chapters, a section break, a list and a quote.
 // Feeds the broadsheet-column, divider, numbered-chapter and scroll-reveal demos.
 const RT_ARTICLE = doc(
-  h2('The case for continuous experimentation'),
-  para('OptiTech was built for teams who move faster than quarterly roadmaps. We identified a gap between the pace at which modern software ships and the tools available to measure, refine, and respond to it. We closed it, then we kept closing it.'),
-  para('The platform ingests signals from every layer of the stack: feature flags, experiment data, user behaviour telemetry, and deployment events. It surfaces the patterns that matter before they become problems, and it does so in language an engineer and a product lead can read the same way.'),
-  para('Decisions are made at the edges of your system, not in a committee room three weeks later. The result is a shorter loop between a hypothesis and the evidence that settles it.'),
+  h2('The case for continuous improvement'),
+  para('The platform was built for teams who move faster than the quarterly plan. We saw a gap between the pace at which modern teams work and the tools available to measure, refine, and respond to it. We closed it, then we kept closing it.'),
+  para('The platform brings together signals from every part of your work: what you launch, how your audience responds, and what changes along the way. It surfaces the patterns that matter before they become problems, and it does so in language every team can read the same way.'),
+  para('Decisions are made where the work happens, not in a meeting three weeks later. The result is a shorter loop between an idea and the evidence that settles it.'),
   rule(),
-  h2('Confidence, not gut instinct'),
-  para('Every rollout carries a full audit trail. Targeting is expressed as a query, not a checkbox, and the statistical validity checks run continuously rather than at the end of a sprint.'),
+  h2('Confidence, not guesswork'),
+  para('Every change carries a full history. Audiences are chosen in a few clicks, not buried in settings, and the quality checks run continuously rather than at the end of a cycle.'),
   ul(
-    'Deploy changes to targeted segments in minutes, not sprints.',
-    'Run concurrent experiments without interaction effects.',
-    'Roll back any flag with a single API call.',
+    'Reach the right audience in minutes, not weeks.',
+    'Run several tests at once without them interfering.',
+    'Undo any change with a single click.',
   ),
-  quote('We moved from quarterly experiments to continuous iteration. OptiTech is the infrastructure that made that possible.'),
+  quote('We moved from reviewing results once a quarter to improving continuously. The platform is what made that possible.'),
   h2('Where the signal lives'),
-  para('The patterns you need are rarely in the dashboard you built last quarter. They live in the seams between deployment and behaviour, and that is exactly where OptiTech listens.'),
+  para('The patterns you need are rarely in the report you built last quarter. They live in the space between what you launch and how people respond, and that is exactly where the platform listens.'),
 )
 
 function RichTextShowcase() {
@@ -735,14 +735,14 @@ function ImageShowcase() {
               <span className="text-label tracking-label uppercase text-brand font-semibold">Caption inset</span>
               <span className="text-label text-fg-muted/60">Badge floats over bottom-left corner</span>
             </div>
-            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'Precision-manufactured circuit board — OptiTech hardware layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
+            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'A close look at the systems that power the platform.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
               <span className="text-label tracking-label uppercase text-brand font-semibold">Caption below</span>
               <span className="text-label text-fg-muted/60">Label-scale text beneath the image</span>
             </div>
-            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'Precision-manufactured circuit board — OptiTech hardware layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
+            <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'A close look at the systems that power the platform.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
           </div>
         </div>
       </div>
@@ -776,7 +776,7 @@ function ImageShowcase() {
 
       <VariantGroup label="Animate · scroll-triggered wipe reveal" note="Teal bar sweeps right; image follows on its heels via clip-path. Fires once on IntersectionObserver entry. Respects prefers-reduced-motion." />
       <div className="px-md pb-xl lg:px-lg">
-        <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'OptiTech. Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', animate: true, frame: 'offset', captionPosition: 'inset' }} />
+        <OT_ImageBlock content={{ image: IMG_SRC, alt: IMG_ALT, caption: 'Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', animate: true, frame: 'offset', captionPosition: 'inset' }} />
       </div>
 
       <VariantGroup label="Editorial layout · 2-column" note="Populate any editorial field (eyebrow, heading, body, CTA) and the block auto-switches to a 55/45 two-column grid. All frame and overlay treatments still apply. Text always stacks above media on mobile." />
@@ -821,7 +821,7 @@ function ImageShowcase() {
             <span className="text-label text-fg-muted/60">lightbox: true · frame: glow · ratio: 16:9</span>
           </div>
           <OT_ImageBlock
-            content={{ image: IMG_SRC, alt: 'OptiTech agentic pipeline architecture diagram', caption: 'Click to view at full resolution' } as any}
+            content={{ image: IMG_SRC, alt: 'Platform architecture diagram', caption: 'Click to view at full resolution' } as any}
             displaySettings={{ ratio: 'r16_9', frame: 'glow', shadow: true, captionPosition: 'below', lightbox: true }}
           />
         </div>
@@ -847,12 +847,12 @@ const VIDEO_VM  = 'https://vimeo.com/148751763'
 
 function VideoShowcase() {
   const treatments: Array<{ label: string; note: string; content: any; displaySettings: DS }> = [
-    { label: 'Clean',           note: 'No treatments — baseline',                                  content: { src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' }, displaySettings: { ratio: 'r16_9' } },
-    { label: 'Frame: offset',   note: 'Bold teal backing block',                                   content: { src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'offset' } },
-    { label: 'Frame: glow',     note: 'Inset teal ring + outer ambient bloom',                    content: { src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'glow' } },
-    { label: 'Overlay',         note: 'Brand teal at 40% opacity, multiply blend',                content: { src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' }, displaySettings: { ratio: 'r16_9', overlay: true } },
-    { label: 'Glow + Overlay',  note: 'Atmospheric — teal wash unifies tone, glow defines edge',  content: { src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'glow', overlay: true } },
-    { label: 'Offset + Overlay',note: 'Bold — teal backing anchors frame',                        content: { src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'offset', overlay: true } },
+    { label: 'Clean',           note: 'No treatments — baseline',                                  content: { src: { default: VIDEO_YT }, title: 'Platform Overview' }, displaySettings: { ratio: 'r16_9' } },
+    { label: 'Frame: offset',   note: 'Bold teal backing block',                                   content: { src: { default: VIDEO_YT }, title: 'Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'offset' } },
+    { label: 'Frame: glow',     note: 'Inset teal ring + outer ambient bloom',                    content: { src: { default: VIDEO_YT }, title: 'Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'glow' } },
+    { label: 'Overlay',         note: 'Brand teal at 40% opacity, multiply blend',                content: { src: { default: VIDEO_YT }, title: 'Platform Overview' }, displaySettings: { ratio: 'r16_9', overlay: true } },
+    { label: 'Glow + Overlay',  note: 'Atmospheric — teal wash unifies tone, glow defines edge',  content: { src: { default: VIDEO_YT }, title: 'Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'glow', overlay: true } },
+    { label: 'Offset + Overlay',note: 'Bold — teal backing anchors frame',                        content: { src: { default: VIDEO_YT }, title: 'Platform Overview' }, displaySettings: { ratio: 'r16_9', frame: 'offset', overlay: true } },
   ]
 
   return (
@@ -867,14 +867,14 @@ function VideoShowcase() {
               <span className="text-label tracking-label uppercase text-brand font-semibold">YouTube</span>
               <span className="text-label text-fg-muted/60">Platform thumbnail + branded play button</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview' } as any} displaySettings={{ ratio: 'r16_9' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'Platform Overview' } as any} displaySettings={{ ratio: 'r16_9' }} />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
               <span className="text-label tracking-label uppercase text-brand font-semibold">Vimeo</span>
               <span className="text-label text-fg-muted/60">oEmbed thumbnail fetched on mount — shimmer while loading</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_VM }, title: 'OptiTech Case Study: Meridian Engineering' } as any} displaySettings={{ ratio: 'r16_9' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_VM }, title: 'Customer Story: Meridian' } as any} displaySettings={{ ratio: 'r16_9' }} />
           </div>
         </div>
       </div>
@@ -902,14 +902,14 @@ function VideoShowcase() {
               <span className="text-label tracking-label uppercase text-brand font-semibold">Inset</span>
               <span className="text-label text-fg-muted/60">Badge floats over bottom-left corner of the poster</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview', caption: 'OptiTech. Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'Platform Overview', caption: 'Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'inset' }} />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-sm gap-y-xs mb-sm">
               <span className="text-label tracking-label uppercase text-brand font-semibold">Below</span>
               <span className="text-label text-fg-muted/60">Label-scale text beneath the video</span>
             </div>
-            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'OptiTech Platform Overview', caption: 'OptiTech. Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
+            <OT_VideoBlock content={{ src: { default: VIDEO_YT }, title: 'Platform Overview', caption: 'Precision at every layer.' } as any} displaySettings={{ ratio: 'r16_9', captionPosition: 'below' }} />
           </div>
         </div>
       </div>
@@ -923,7 +923,7 @@ function VideoShowcase() {
             <span className="text-label text-fg-muted/60">mediaSide: left · frame: offset</span>
           </div>
           <OT_VideoBlock
-            content={{ videoUrl: VIDEO_YT, title: 'OptiTech Platform Overview', eyebrow: 'Platform', heading: 'See it in motion, not just on paper.', ctaUrl: { default: '#' }, ctaLabel: 'Watch overview' } as any}
+            content={{ videoUrl: VIDEO_YT, title: 'Platform Overview', eyebrow: 'Platform', heading: 'See it in motion, not just on paper.', ctaUrl: { default: '#' }, ctaLabel: 'Watch overview' } as any}
             displaySettings={{ ratio: 'r16_9', frame: 'offset', mediaSide: 'left' }}
           />
         </div>
@@ -933,7 +933,7 @@ function VideoShowcase() {
             <span className="text-label text-fg-muted/60">mediaSide: right · overlay · glow</span>
           </div>
           <OT_VideoBlock
-            content={{ videoUrl: VIDEO_YT, title: 'OptiTech Platform Overview', eyebrow: 'Case Study', heading: 'How Meridian cut deployment time by 40%.', ctaUrl: { default: '#' }, ctaLabel: 'Read the story' } as any}
+            content={{ videoUrl: VIDEO_YT, title: 'Platform Overview', eyebrow: 'Customer Story', heading: 'How Meridian cut launch time by 40%.', ctaUrl: { default: '#' }, ctaLabel: 'Read the story' } as any}
             displaySettings={{ ratio: 'r16_9', frame: 'glow', overlay: true, mediaSide: 'right' }}
           />
         </div>
@@ -1000,12 +1000,12 @@ function StatShowcase() {
 // ─── Feature Grid ─────────────────────────────────────────────────────────────
 
 const FG_ITEMS = [
-  { headline: 'Sub-millisecond evaluation',   body: 'Every flag decision is made in memory on evaluation nodes pre-loaded with your full flag state. No database round-trips on the hot path.' },
-  { headline: 'Edge-distributed state',       body: 'Flag configuration is pushed to evaluation nodes within 200ms of a save in the CMS. Strong-consistency mode available for kill switches.' },
-  { headline: 'Targeting rule compilation',   body: 'Rules are pre-compiled into a bytecode decision tree on flag save, not at evaluation time. Direct interpretation against a pre-indexed user context.' },
-  { headline: 'Concurrent experiments',       body: 'Run multiple A/B tests simultaneously with automatic interaction effect detection. No manual exclusion groups required.' },
-  { headline: 'Statistical confidence built-in', body: 'Power calculations and stopping rules are wired into the platform. Know when your experiment has reached significance without a spreadsheet.' },
-  { headline: 'Instant rollback',             body: 'One flag, one API call. Revert any change across every deployment in seconds. Full audit trail included.' },
+  { headline: 'Fast by default',           body: 'Every experience loads quickly for your audience, wherever they are. Speed is built in, not bolted on.' },
+  { headline: 'Always up to date',         body: 'Changes go live the moment you publish them, with no waiting and no technical help required.' },
+  { headline: 'Reach the right people',    body: 'Tailor what each audience sees in a few clicks. Target by location, behaviour, or any detail you already know.' },
+  { headline: 'Test several ideas at once', body: 'Run multiple tests side by side and the platform keeps the results clean, with no overlap to untangle.' },
+  { headline: 'Confidence built in',       body: 'Clear measurement and sensible defaults tell you when a result is ready to act on, with no spreadsheet needed.' },
+  { headline: 'Easy to undo',              body: 'One click reverts any change in seconds, with a full history of who changed what and when.' },
 ]
 
 function FeatureGridShowcase() {
@@ -1103,11 +1103,11 @@ function TrustRailShowcase() {
 // ─── Accordion ────────────────────────────────────────────────────────────────
 
 const ACCORDION_ITEMS = [
-  { question: 'How does OptiTech handle sub-millisecond evaluation?', answer: 'Flag state is kept in memory on evaluation nodes. There are no database round-trips on the hot path. Changes are pushed within 200ms of a CMS save. The evaluation engine walks a pre-compiled bytecode decision tree in a single pass.' },
-  { question: 'Can I run concurrent experiments without interaction effects?', answer: 'Yes. The platform detects interaction effects automatically. You can run multiple A/B tests simultaneously and the system isolates results per experiment, flagging any significant cross-experiment interactions for review.' },
-  { question: 'What happens when a flag configuration change propagates to the edge?', answer: 'Evaluation nodes receive flag updates via WebSocket push with a polling fallback. The propagation window is under 200ms for most deployments. Kill-switch flags support a strong-consistency mode that adds one round-trip for guaranteed freshness.' },
-  { question: 'How are experiment results calculated?', answer: 'OptiTech computes power calculations and stopping rules directly in the platform. Confidence intervals and p-values are updated in real time. The platform flags when statistical significance is reached and prevents early stopping unless the stopping rule threshold is met.' },
-  { question: 'What is the rollback process?', answer: 'One flag, one API call. Flipping a flag to its fallback state propagates to all evaluation nodes within the standard 200ms window. A full audit trail records every change, including the initiating user and timestamp.' },
+  { question: 'How quickly can we get started?', answer: 'Most teams are up and running the same day. There is nothing to install — you sign in, connect your content, and start making changes right away. Our onboarding guide walks you through the first steps in under an hour.' },
+  { question: 'Can we run more than one test at a time?', answer: 'Yes. You can run several tests side by side and the platform keeps the results clean, so you always know which change drove which result. There is no manual setup needed to keep them from overlapping.' },
+  { question: 'How fast do changes go live?', answer: 'Changes appear the moment you publish them. There is no waiting and no technical help required — what you see in the editor is what your audience sees, almost instantly.' },
+  { question: 'How do you decide when a result is ready?', answer: 'The platform watches each test as responses come in and tells you when you have enough to be confident. It guides you away from calling a winner too early, so the decisions you make hold up.' },
+  { question: 'What if we need to undo a change?', answer: 'One click reverts any change in seconds. The platform keeps a full history of who changed what and when, so you can always step back to a known good state.' },
 ]
 
 function AccordionShowcase() {
@@ -1143,10 +1143,10 @@ function AccordionShowcase() {
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
 const TABS_CONTENT = [
-  { tabLabel: 'Evaluation', heading: 'Sub-millisecond flag evaluation', body: 'Flag state lives in memory on evaluation nodes. The evaluation engine walks a pre-compiled bytecode decision tree in a single pass — no database round-trips on the hot path.', imageSrc: IMG_SRC, imageAlt: IMG_ALT },
-  { tabLabel: 'Experiments', heading: 'Concurrent A/B testing with automatic confidence', body: 'Run multiple experiments simultaneously. Interaction effects are detected automatically. Power calculations and stopping rules are built into the platform — no spreadsheets required.' },
-  { tabLabel: 'Rollout',     heading: 'Targeted rollouts at any granularity', body: 'Deploy to any user segment with a single API call. Feature flags can target by user attribute, cohort, geography, or any combination. Kill switches propagate to all evaluation nodes within 200ms.' },
-  { tabLabel: 'Observability', heading: 'Full audit trail and deployment telemetry', body: 'Every flag change, experiment result, and deployment event is logged with timestamp, user, and context. Real-time dashboards surface the patterns that matter before they become incidents.' },
+  { tabLabel: 'Speed', heading: 'Fast for everyone, everywhere', body: 'Every experience loads quickly for your audience, wherever they are. Speed is built into the platform, so you never have to choose between rich content and a fast page.', imageSrc: IMG_SRC, imageAlt: IMG_ALT },
+  { tabLabel: 'Testing', heading: 'Test ideas side by side with confidence', body: 'Run multiple tests at once. The platform keeps the results clean and tells you when each one is ready to act on — no spreadsheets required.' },
+  { tabLabel: 'Targeting',   heading: 'Reach the right audience every time', body: 'Tailor what each audience sees in a few clicks. Target by location, behaviour, or any detail you already know, and the right experience reaches the right people instantly.' },
+  { tabLabel: 'Insights', heading: 'A full history and clear reporting', body: 'Every change, result, and update is recorded with the time, the person, and the context. Real-time dashboards surface the patterns that matter before they become problems.' },
 ]
 
 function TabsShowcase() {
@@ -1187,12 +1187,12 @@ function TabsShowcase() {
 // ─── Blog Feed (simplified) ───────────────────────────────────────────────────
 
 const MOCK_POSTS: BlogFeedPost[] = [
-  { _metadata: { key: 'sc-post-1', published: '2026-05-15T09:00:00Z', url: { default: '/blog/architecture-sub-millisecond-delivery' } }, headline: 'How OptiTech Builds for Speed: Architecture Behind Sub-Millisecond Feature Delivery', topic: 'insights', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '8 min read' },
-  { _metadata: { key: 'sc-post-2', published: '2026-05-10T08:00:00Z', url: { default: '/blog/future-of-personalization' } }, headline: 'The Future of Personalization: How AI Is Reshaping User Experiences', topic: 'innovation', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop' } }, authorRef: { name: 'Marcus Webb' }, readTime: '5 min read' },
-  { _metadata: { key: 'sc-post-3', published: '2026-05-06T10:30:00Z', url: { default: '/blog/zero-downtime-deployments' } }, headline: 'Why Feature Flags Are the Foundation of Modern Product Development', topic: 'resources', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop' } }, authorRef: { name: 'Priya Nair' }, readTime: '6 min read' },
-  { _metadata: { key: 'sc-post-4', published: '2026-04-28T14:00:00Z', url: { default: '/blog/observability-trends-2026' } }, headline: 'Observability in 2026: Five Trends Redefining How Teams Monitor Production', topic: 'news', featuredImage: undefined, authorRef: { name: 'James Okonkwo' }, readTime: '4 min read' },
-  { _metadata: { key: 'sc-post-5', published: '2026-04-20T11:00:00Z', url: { default: '/blog/experiment-design' } }, headline: 'Experiment Design That Actually Works: A Practical Guide for Product Teams', topic: 'leadership', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '7 min read' },
-  { _metadata: { key: 'sc-post-6', published: '2026-04-14T09:30:00Z', url: { default: '/blog/sdk-internals' } }, headline: 'Inside the OptiTech SDK: How We Cut Evaluation Latency by 60%', topic: 'stories', featuredImage: undefined, authorRef: { name: 'Marcus Webb' }, readTime: '9 min read' },
+  { _metadata: { key: 'sc-post-1', published: '2026-05-15T09:00:00Z', url: { default: '/blog/architecture-sub-millisecond-delivery' } }, headline: 'Built for Speed: How We Keep Every Experience Fast at Any Scale', topic: 'insights', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '8 min read' },
+  { _metadata: { key: 'sc-post-2', published: '2026-05-10T08:00:00Z', url: { default: '/blog/future-of-personalization' } }, headline: 'The Future of Personalization: How AI Is Reshaping Customer Experiences', topic: 'innovation', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop' } }, authorRef: { name: 'Marcus Webb' }, readTime: '5 min read' },
+  { _metadata: { key: 'sc-post-3', published: '2026-05-06T10:30:00Z', url: { default: '/blog/zero-downtime-deployments' } }, headline: 'Why Continuous Improvement Is the Foundation of Modern Teams', topic: 'resources', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop' } }, authorRef: { name: 'Priya Nair' }, readTime: '6 min read' },
+  { _metadata: { key: 'sc-post-4', published: '2026-04-28T14:00:00Z', url: { default: '/blog/observability-trends-2026' } }, headline: 'Measurement in 2026: Five Trends Redefining How Teams Track What Works', topic: 'news', featuredImage: undefined, authorRef: { name: 'James Okonkwo' }, readTime: '4 min read' },
+  { _metadata: { key: 'sc-post-5', published: '2026-04-20T11:00:00Z', url: { default: '/blog/experiment-design' } }, headline: 'Testing That Actually Works: A Practical Guide for Every Team', topic: 'leadership', featuredImage: { url: { default: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop' } }, authorRef: { name: 'Nadia Okafor' }, readTime: '7 min read' },
+  { _metadata: { key: 'sc-post-6', published: '2026-04-14T09:30:00Z', url: { default: '/blog/sdk-internals' } }, headline: 'Behind the Scenes: How We Made the Platform 60% Faster', topic: 'stories', featuredImage: undefined, authorRef: { name: 'Marcus Webb' }, readTime: '9 min read' },
 ]
 
 function BlogFeedShowcase() {
@@ -1548,7 +1548,7 @@ function BannerShowcase() {
       content: {
         heading: 'Move at the speed of certainty.',
         eyebrow: 'Ready when you are',
-        body: { html: '<p>OptiTech gives your teams the infrastructure to experiment continuously, ship confidently, and know whether it worked.</p>' },
+        body: { html: '<p>Everything your team needs to launch faster, work smarter, and see what is working in real time.</p>' },
         backgroundImage: BANNER_IMG_A,
         primaryCtaLabel: 'Book a demo', primaryCtaUrl: { default: '#' },
         secondaryCtaLabel: 'See pricing', secondaryCtaUrl: { default: '#' },
@@ -1558,9 +1558,9 @@ function BannerShowcase() {
     {
       label: 'Brand · Center · Scrim · Large',
       content: {
-        heading: 'Every experiment. Every answer. One platform.',
-        eyebrow: 'The OptiTech advantage',
-        body: { html: '<p>Feature flags, A/B tests, and deployment telemetry unified so your team closes the loop between shipping and knowing.</p>' },
+        heading: 'Every idea. Every answer. One platform.',
+        eyebrow: 'The platform advantage',
+        body: { html: '<p>Planning, testing, and measurement in one place, so your team closes the loop between doing the work and knowing it worked.</p>' },
         backgroundImage: BANNER_IMG_B,
         primaryCtaLabel: 'Start free trial', primaryCtaUrl: { default: '#' },
         secondaryCtaLabel: 'View docs', secondaryCtaUrl: { default: '#' },
@@ -1572,7 +1572,7 @@ function BannerShowcase() {
       content: {
         heading: 'Precision at every layer.',
         eyebrow: 'The method',
-        body: { html: '<p>From the first feature flag to the thousandth experiment, OptiTech tracks what matters and surfaces it when you need it.</p>' },
+        body: { html: '<p>From the first idea to the thousandth iteration, the platform tracks what matters and surfaces it when you need it.</p>' },
         backgroundImage: BANNER_IMG_A,
         primaryCtaLabel: 'See how it works', primaryCtaUrl: { default: '#' },
       },
@@ -1596,8 +1596,8 @@ function BannerShowcase() {
       label: 'Canvas · Center · Glass · Large',
       content: {
         heading: 'Confidence is a competitive advantage.',
-        eyebrow: 'OptiTech platform',
-        body: { html: '<p>Stop shipping and hoping. Start shipping and knowing. Real-time experiment data means every decision is an informed one.</p>' },
+        eyebrow: 'The platform',
+        body: { html: '<p>Stop launching and hoping. Start launching and knowing. Real-time data means every decision is an informed one.</p>' },
         backgroundImage: BANNER_IMG_A,
         primaryCtaLabel: 'Book a demo', primaryCtaUrl: { default: '#' },
         secondaryCtaLabel: 'See pricing', secondaryCtaUrl: { default: '#' },
@@ -1607,9 +1607,9 @@ function BannerShowcase() {
     {
       label: 'Brand · Center · Glass · Large',
       content: {
-        heading: 'The platform your engineers have been asking for.',
+        heading: 'The platform your team has been asking for.',
         eyebrow: 'Enterprise ready',
-        body: { html: '<p>SOC 2 Type II, 99.99% uptime SLA, and SDK support for every major language. Built for teams that can\'t afford to guess.</p>' },
+        body: { html: '<p>SOC 2 Type II, a 99.99% uptime guarantee, and support built for scale. Made for teams that can\'t afford to guess.</p>' },
         backgroundImage: BANNER_IMG_B,
         primaryCtaLabel: 'Talk to sales', primaryCtaUrl: { default: '#' },
         secondaryCtaLabel: 'Security overview', secondaryCtaUrl: { default: '#' },
@@ -1619,18 +1619,18 @@ function BannerShowcase() {
     {
       label: 'Canvas · Left · Glass · Large',
       content: {
-        heading: 'From flag to finding in under an hour.',
+        heading: 'From idea to insight in under an hour.',
         eyebrow: 'Speed of certainty',
         backgroundImage: BANNER_IMG_A,
-        primaryCtaLabel: 'Start experimenting', primaryCtaUrl: { default: '#' },
+        primaryCtaLabel: 'Start testing', primaryCtaUrl: { default: '#' },
       },
       displaySettings: { color: 'canvas', treatment: 'glass', alignment: 'left', size: 'large', imageBlend: 'overlay' },
     },
     {
       label: 'Brand · Left · Glass · Compact',
       content: {
-        heading: 'Deploy once. Learn forever.',
-        eyebrow: 'Continuous delivery',
+        heading: 'Launch once. Learn forever.',
+        eyebrow: 'Continuous improvement',
         backgroundImage: BANNER_IMG_B,
         primaryCtaLabel: 'See a live demo', primaryCtaUrl: { default: '#' },
         secondaryCtaLabel: 'Read the docs', secondaryCtaUrl: { default: '#' },
@@ -1708,9 +1708,9 @@ function BannerShowcase() {
 // ─── Resource Library ─────────────────────────────────────────────────────────
 
 const MOCK_ASSETS = [
-  { title: 'OptiTech Platform — Technical Overview and Architecture Reference',  url: '#', extension: 'pdf',  fileSize: 2_412_000, description: 'Architecture deep-dive for engineering teams.', tags: ['Engineering', 'Platform'] },
+  { title: 'Platform Overview and Getting Started Guide',  url: '#', extension: 'pdf',  fileSize: 2_412_000, description: 'A complete introduction for new teams.', tags: ['Guide', 'Platform'] },
   { title: 'Q4 2024 Analyst Report',                  url: '#', extension: 'pdf',  fileSize: 890_000,   description: null, tags: ['Finance', 'Report'] },
-  { title: 'Integration Guide — REST & GraphQL APIs', url: '#', extension: 'docx', fileSize: 345_000,   description: null, tags: ['Developer', 'APIs'] },
+  { title: 'Integration Guide — Connecting Your Tools', url: '#', extension: 'docx', fileSize: 345_000,   description: null, tags: ['Developer', 'Integrations'] },
   { title: 'Enterprise Pitch Deck',                   url: '#', extension: 'pptx', fileSize: 7_800_000, description: 'Slides for executive stakeholder presentations.', tags: ['Sales'] },
   { title: 'Compliance & Security Datasheet',         url: '#', extension: 'pdf',  fileSize: 512_000,   description: null, tags: null },
   { title: 'Brand Asset Package',                     url: '#', extension: 'zip',  fileSize: 24_600_000, description: 'Logos, colour swatches, and typeface files.', tags: ['Brand', 'Design'] },
@@ -1801,7 +1801,7 @@ const CALLOUT_HEADINGS: Record<CalloutIntent, string> = {
   success: 'Deployment successful',
   warning: 'Trial ending in 3 days',
   danger:  'Action required: API key expiring',
-  brand:   'HIPAA compliance module now available',
+  brand:   'New analytics dashboard now available',
 }
 
 const CALLOUT_BODIES: Record<CalloutIntent, string> = {
@@ -1810,7 +1810,7 @@ const CALLOUT_BODIES: Record<CalloutIntent, string> = {
   success: 'Release 4.2.1 is live in production. All health checks are passing and telemetry looks normal.',
   warning: 'Your 30-day trial expires in 3 days. Upgrade now to prevent service interruption.',
   danger:  'Your primary API key expires in 24 hours. Rotate it immediately to avoid authentication failures.',
-  brand:   'OptiTech\'s HIPAA compliance module is generally available. Configure it in your account security settings.',
+  brand:   'Our new analytics dashboard is now available to all plans. Turn it on in your account settings.',
 }
 
 const CALLOUT_CTAS: Record<CalloutIntent, string> = {
@@ -1828,7 +1828,7 @@ const CALLOUT_BAR_HEADINGS: Record<CalloutIntent, string> = {
   success: 'Release 4.2.1 deployed successfully. All systems nominal.',
   warning: 'Your trial expires in 3 days. Upgrade to prevent interruption.',
   danger:  'API key expires in 24 hours. Rotate it immediately.',
-  brand:   'OptiTech HIPAA compliance module is now generally available.',
+  brand:   'Our new analytics dashboard is now available to all plans.',
 }
 
 const CALLOUT_ICONS: Record<CalloutIntent, string> = {
@@ -1943,22 +1943,22 @@ function CalloutShowcase() {
       <div className="flex flex-col px-md lg:px-lg pb-lg gap-xs">
         <VariantLabel label="default size" />
         <CalloutBlock
-          heading="New feature: HIPAA compliance module now generally available."
+          heading="New feature: the analytics dashboard is now available to all plans."
           ctaLabel="Configure now"
           ctaUrl="#"
           styleOptions={{ intent: 'brand', variant: 'filled', size: 'default', icon: 'sparkles' }}
         />
         <VariantLabel label="compact size — heading + CTA on one row" />
         <CalloutBlock
-          heading="New feature: HIPAA compliance module now generally available."
+          heading="New feature: the analytics dashboard is now available to all plans."
           ctaLabel="Configure now"
           ctaUrl="#"
           styleOptions={{ intent: 'brand', variant: 'filled', size: 'compact', icon: 'sparkles' }}
         />
         <VariantLabel label="compact with body — falls back to stacked layout" />
         <CalloutBlock
-          heading="HIPAA compliance module now available."
-          body="Configure data residency, audit logging, and access controls in your account security settings."
+          heading="The new analytics dashboard is now available."
+          body="Turn on richer reporting, scheduled exports, and shared views in your account settings."
           ctaLabel="Configure now"
           ctaUrl="#"
           styleOptions={{ intent: 'brand', variant: 'filled', size: 'compact', icon: 'sparkles' }}
@@ -2041,11 +2041,11 @@ function DividerShowcase() {
         note="The divider's job: open a measured gap so one section reads as finished and the next as a fresh start. Placed in its own full-width row in Visual Builder."
       />
       <SectionBand eyebrow="The platform" ground="surface">
-        OptiTech gives engineering teams the infrastructure to ship incrementally, measure precisely, and respond in real time. Every flag carries an audit trail; every rollout is reversible.
+        The platform gives your team the tools to move step by step, measure precisely, and respond in real time. Every change carries a full history; every launch is reversible.
       </SectionBand>
       <OT_DividerBlock content={{ label: '' } as any} displaySettings={{ style: 'glow', tone: 'spectrum', weight: 'slim', space: 'lg' }} />
       <SectionBand eyebrow="The method">
-        Decisions are made at the edges of your system, not in a committee room three weeks later. The result is a shorter loop between a hypothesis and the evidence that settles it.
+        Decisions are made where the work happens, not in a meeting three weeks later. The result is a shorter loop between an idea and the evidence that settles it.
       </SectionBand>
 
       {/* ── The three styles ────────────────────────────────────────────── */}
@@ -2157,13 +2157,13 @@ const MOCK_EVENTS: EventCardData[] = [
     imageUrl: EVENT_IMG_B,
   },
   {
-    key: 'e-community-1', title: 'OptiTech Community Meetup: Austin', url: '#',
+    key: 'e-community-1', title: 'Acme Community Meetup: Austin', url: '#',
     eventType: 'community', startDate: '2026-06-20T17:30:00Z',
     locationType: 'inPerson', venueName: 'Capital Factory', city: 'Austin, TX',
     imageUrl: EVENT_IMG_C,
   },
   {
-    key: 'e-conference-1', title: 'OptiTech Summit 2026', url: '#',
+    key: 'e-conference-1', title: 'Acme Summit 2026', url: '#',
     eventType: 'conference', startDate: '2026-07-14T09:00:00Z', endDate: '2026-07-16T17:00:00Z',
     locationType: 'inPerson', venueName: 'Javits Center', city: 'New York, NY',
     imageUrl: EVENT_IMG_A,
@@ -2188,7 +2188,7 @@ const MOCK_EVENTS: EventCardData[] = [
   {
     key: 'e-training-1', title: 'Investor Briefing & Platform Training', url: '#',
     eventType: 'training', startDate: '2026-08-18T15:00:00Z', endDate: '2026-08-18T17:00:00Z',
-    locationType: 'virtual', venueName: 'OptiTech Live', creditType: 'CE', creditHours: 2,
+    locationType: 'virtual', venueName: 'Acme Live', creditType: 'CE', creditHours: 2,
     imageUrl: EVENT_IMG_D,
   },
   {
@@ -2219,7 +2219,7 @@ function EventListingShowcase() {
       <div className="border-t border-fg/5">
         <EventListingBlock
           heading="Upcoming events"
-          subtext="Webinars, conferences, workshops, and community events across the OptiTech network."
+          subtext="Webinars, conferences, workshops, and community events across our network."
           events={MOCK_EVENTS}
           styleOptions={{ defaultView: 'card', color: 'canvas', showViewToggle: true, showTypeFilter: true, showPastEvents: 'toggle' }}
         />
@@ -2265,7 +2265,7 @@ function EventListingShowcase() {
 const HS = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=80`
 
 const MOCK_PRACTITIONERS: PractitionerCardData[] = [
-  // ── Medical (optimedical) ──────────────────────────────────────────────────
+  // ── Medical ──────────────────────────────────────────────────────────────────
   {
     key: 'pr-vargas', firstName: 'Elena', lastName: 'Vargas', suffix: 'MD', credentials: 'MD, FACC',
     title: 'Chief of Cardiology',
@@ -2275,9 +2275,9 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
       { areaName: 'Cardiology', facility: 'Memorial Heart Center', isPrimary: true },
       { areaName: 'Interventional Procedures', facility: 'Memorial Heart Center' },
     ],
-    phone: '(312) 555-0142', email: 'e.vargas@optimedical.example', officeLocation: 'Chicago, IL',
+    phone: '(312) 555-0142', email: 'e.vargas@example.com', officeLocation: 'Chicago, IL',
     languages: 'English, Spanish', linkedIn: 'https://www.linkedin.com/in/example',
-    groupTag: 'optimedical', url: '/practitioners/elena-vargas',
+    groupTag: 'medical', url: '/practitioners/elena-vargas',
   },
   {
     key: 'pr-bell', firstName: 'Marcus', lastName: 'Bell', suffix: 'MD', credentials: 'MD',
@@ -2285,8 +2285,8 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
     headshotUrl: HS('1612349317150-e413f6a5b16d'),
     bio: { html: '<p>Dr. Bell specializes in hematologic malignancies and leads the institute’s clinical trials program, with an emphasis on immunotherapy and precision treatment planning.</p>' },
     practiceAreas: [{ areaName: 'Oncology', facility: 'Lakeside Cancer Institute', isPrimary: true }],
-    phone: '(312) 555-0188', email: 'm.bell@optimedical.example', officeLocation: 'Chicago, IL',
-    languages: 'English', groupTag: 'optimedical', url: '/practitioners/marcus-bell',
+    phone: '(312) 555-0188', email: 'm.bell@example.com', officeLocation: 'Chicago, IL',
+    languages: 'English', groupTag: 'medical', url: '/practitioners/marcus-bell',
   },
   {
     key: 'pr-nair', firstName: 'Priya', lastName: 'Nair', suffix: 'MD', credentials: 'MD, FACEP',
@@ -2294,20 +2294,20 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
     // No headshot — exercises the initials fallback.
     bio: { html: '<p>Dr. Nair practices emergency medicine and serves as the department’s simulation education lead, building rapid-response protocols for high-acuity presentations.</p>' },
     practiceAreas: [{ areaName: 'Emergency Medicine', facility: 'Central Hospital', isPrimary: true }],
-    phone: '(312) 555-0203', email: 'p.nair@optimedical.example', officeLocation: 'Evanston, IL',
-    languages: 'English, Hindi, Mandarin', groupTag: 'optimedical', url: '/practitioners/priya-nair',
+    phone: '(312) 555-0203', email: 'p.nair@example.com', officeLocation: 'Evanston, IL',
+    languages: 'English, Hindi, Mandarin', groupTag: 'medical', url: '/practitioners/priya-nair',
   },
 
-  // ── Legal (optilegal) ──────────────────────────────────────────────────────
+  // ── Legal ──────────────────────────────────────────────────────
   {
     key: 'pr-reese', firstName: 'Jonathan', lastName: 'Reese', suffix: 'JD', credentials: 'JD',
     title: 'Senior Partner',
     headshotUrl: HS('1560250097-0b93528c311a'),
     bio: { html: '<p>Jonathan advises closely held businesses and high-net-worth individuals on federal and state tax strategy, succession planning, and IRS controversy matters.</p>' },
     practiceAreas: [{ areaName: 'Tax Law', facility: 'Chicago Office', isPrimary: true }],
-    phone: '(312) 555-0310', email: 'j.reese@optilegal.example', officeLocation: 'Chicago, IL',
+    phone: '(312) 555-0310', email: 'j.reese@example.com', officeLocation: 'Chicago, IL',
     languages: 'English', linkedIn: 'https://www.linkedin.com/in/example',
-    groupTag: 'optilegal', url: '/practitioners/jonathan-reese',
+    groupTag: 'legal', url: '/practitioners/jonathan-reese',
   },
   {
     key: 'pr-marchetti', firstName: 'Sofia', lastName: 'Marchetti', suffix: 'JD', credentials: 'JD, LLM',
@@ -2315,8 +2315,8 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
     // No headshot — initials fallback.
     bio: { html: '<p>Sofia represents plaintiffs in complex personal injury and product liability litigation, with a track record of trial verdicts in catastrophic-injury cases.</p>' },
     practiceAreas: [{ areaName: 'Personal Injury', facility: 'Milan Office', isPrimary: true }],
-    phone: '(312) 555-0355', email: 's.marchetti@optilegal.example', officeLocation: 'New York, NY',
-    languages: 'English, Italian', groupTag: 'optilegal', url: '/practitioners/sofia-marchetti',
+    phone: '(312) 555-0355', email: 's.marchetti@example.com', officeLocation: 'New York, NY',
+    languages: 'English, Italian', groupTag: 'legal', url: '/practitioners/sofia-marchetti',
   },
   {
     key: 'pr-okafor', firstName: 'David', lastName: 'Okafor', suffix: 'Esq.', credentials: 'JD',
@@ -2324,20 +2324,20 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
     headshotUrl: HS('1507003211169-0a1dd7228f2d'),
     bio: { html: '<p>David leads the corporate practice, advising on mergers and acquisitions, private equity transactions, and cross-border joint ventures for technology and manufacturing clients.</p>' },
     practiceAreas: [{ areaName: 'Corporate Law', facility: 'Chicago Office', isPrimary: true }],
-    phone: '(312) 555-0399', email: 'd.okafor@optilegal.example', officeLocation: 'Chicago, IL',
-    languages: 'English, French', groupTag: 'optilegal', url: '/practitioners/david-okafor',
+    phone: '(312) 555-0399', email: 'd.okafor@example.com', officeLocation: 'Chicago, IL',
+    languages: 'English, French', groupTag: 'legal', url: '/practitioners/david-okafor',
   },
 
-  // ── Technology (optitech) ────────────────────────────────────────────────────
+  // ── Technology ───────────────────────────────────────────────────────────────────
   {
     key: 'pr-lindqvist', firstName: 'Ava', lastName: 'Lindqvist', credentials: '',
     title: 'Principal Platform Engineer',
     headshotUrl: HS('1573496359142-b8d87734a5a2'),
     bio: { html: '<p>Ava designs the distributed systems behind the platform’s delivery layer, focusing on multi-region resilience, observability, and developer experience.</p>' },
     practiceAreas: [{ areaName: 'Platform Engineering', facility: 'Stockholm', isPrimary: true }],
-    email: 'ava@optitech.example', officeLocation: 'Stockholm, SE',
+    email: 'ava@example.com', officeLocation: 'Stockholm, SE',
     languages: 'English, Swedish', linkedIn: 'https://www.linkedin.com/in/example',
-    groupTag: 'optitech', url: '/practitioners/ava-lindqvist',
+    groupTag: 'technology', url: '/practitioners/ava-lindqvist',
   },
   {
     key: 'pr-park', firstName: 'Theo', lastName: 'Park', credentials: '',
@@ -2345,14 +2345,14 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
     // No headshot — initials fallback.
     bio: { html: '<p>Theo shapes the product roadmap across the experimentation and content suites, partnering with go-to-market teams to translate platform capability into customer outcomes.</p>' },
     practiceAreas: [{ areaName: 'Product Strategy', facility: 'Seoul', isPrimary: true }],
-    email: 'theo@optitech.example', officeLocation: 'Seoul, KR',
-    languages: 'English, Korean', groupTag: 'optitech', url: '/practitioners/theo-park',
+    email: 'theo@example.com', officeLocation: 'Seoul, KR',
+    languages: 'English, Korean', groupTag: 'technology', url: '/practitioners/theo-park',
   },
 ]
 
 function PractitionerListingShowcase() {
-  const medical = MOCK_PRACTITIONERS.filter(p => p.groupTag === 'optimedical')
-  const tech    = MOCK_PRACTITIONERS.filter(p => p.groupTag === 'optitech')
+  const medical = MOCK_PRACTITIONERS.filter(p => p.groupTag === 'medical')
+  const tech    = MOCK_PRACTITIONERS.filter(p => p.groupTag === 'technology')
   return (
     <>
       <BlockHeader slug="practitioner-listing" />
@@ -2373,7 +2373,7 @@ function PractitionerListingShowcase() {
         />
       </div>
 
-      <VariantGroup label="Grid · 4 columns · surface · no search / no filters · scoped to optimedical" note="The curated “Meet Our Doctors” use case on a healthcare page: Group Tag Filter restricts the set to medical practitioners and the filter UI is suppressed." />
+      <VariantGroup label="Grid · 4 columns · surface · no search / no filters · scoped to medical" note="The curated “Meet the Team” use case on a vertical page: Group Tag Filter restricts the set to one group and the filter UI is suppressed." />
       <div className="border-t border-fg/5">
         <PractitionerListingBlock
           heading="Meet our doctors"
@@ -2391,7 +2391,7 @@ function PractitionerListingShowcase() {
         />
       </div>
 
-      <VariantGroup label="Grid · 2 columns · surface · no search / no filters · scoped to optitech" note="The “Leadership Team” / “Executive Bios” use case on a brand or about page. Two columns give each portrait more width, so the plate reads at its most dramatic — and the glass footer and initials gradient stay legible on the surface ground. One headshot, one initials plate." />
+      <VariantGroup label="Grid · 2 columns · surface · no search / no filters · scoped to technology" note="The “Leadership Team” / “Executive Bios” use case on a brand or about page. Two columns give each portrait more width, so the plate reads at its most dramatic — and the glass footer and initials gradient stay legible on the surface ground. One headshot, one initials plate." />
       <div className="border-t border-fg/5">
         <PractitionerListingBlock
           heading="Leadership team"

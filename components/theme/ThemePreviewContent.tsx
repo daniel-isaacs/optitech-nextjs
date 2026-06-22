@@ -51,12 +51,13 @@ function SectionHead({ label, title }: { label: string; title: string }) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function ThemePreviewContent({ settings }: { settings: any }) {
+  const siteName    = (settings?.siteName as string | undefined) ?? 'Site Accelerator'
   const logoSrc     = settings?.logo?.url?.default ?? '/brand/logo/OT.png'
-  const logoAlt     = settings?.logoAlt ?? 'OptiTech'
+  const logoAlt     = settings?.logoAlt ?? siteName
   const logoFit     = (settings?.logoFit as string | undefined) ?? 'full'
   const invertDark  = settings?.logoInvertDark === true
   const ctaLabel    = settings?.ctaLabel ?? 'Get Started'
-  const copyright   = settings?.copyright ?? `© ${new Date().getFullYear()} OptiTech. All rights reserved.`
+  const copyright   = settings?.copyright ?? `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`
   const defaultMode = (settings?.defaultMode as string | undefined) ?? 'dark'
   const brandColor  = settings?.colorBrand as string | undefined
 
@@ -175,7 +176,7 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
         {!hasAnyColor ? (
           <div className="bg-surface border border-fg/10 px-md py-lg">
             <p className="text-body text-fg-muted">
-              No color overrides are set. Using default OptiTech design tokens.
+              No color overrides are set. Using the default design tokens.
             </p>
             <p className="text-label text-fg-muted/60 mt-sm font-mono">styles/tokens.css</p>
           </div>
@@ -295,7 +296,7 @@ export default function ThemePreviewContent({ settings }: { settings: any }) {
                 )}
                 <div className="p-md" style={{ background: bg }}>
                   <div className="flex items-center justify-between mb-md" style={{ background: surf, padding: '8px 12px' }}>
-                    <span className="text-label font-semibold" style={{ color: fg }}>OptiTech</span>
+                    <span className="text-label font-semibold" style={{ color: fg }}>{siteName}</span>
                     <span className="text-label font-semibold tracking-label uppercase" style={{ background: btnBg, color: fg, padding: '2px 10px' }}>
                       {ctaLabel}
                     </span>

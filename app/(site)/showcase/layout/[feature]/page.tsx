@@ -28,7 +28,7 @@ export async function generateMetadata({
   const { feature } = await params
   const label = LABELS[feature as FeatureSlug]
   if (!label) return {}
-  return { title: `${label} — Layout — Showcase — OptiTech` }
+  return { title: `${label} — Layout — Showcase — Site Accelerator` }
 }
 
 // ─── Demo primitives ──────────────────────────────────────────────────────────

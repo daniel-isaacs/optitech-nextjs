@@ -39,7 +39,7 @@ type Props = {
   autoplay:         string
   loop:             string
   peek:             string
-  gap:              string
+  gap?:             string
   verticalPadding:  string
   bgColorClass:     string
   paProps?:         Record<string, unknown>

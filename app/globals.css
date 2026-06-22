@@ -992,14 +992,26 @@ body {
 /* pair, identical in both modes. box-decoration-break clones the box per line.  */
 /* Motion: the marker wipes in left→right; reduced-motion shows it fully drawn.   */
 .ot-fx-highlight {
-  color: var(--ot-fg-on-accent);
-  background-image: linear-gradient(var(--ot-accent), var(--ot-accent));
+  color: var(--ot-fg);
+  /* A felt-tip swipe, not a label block: a translucent accent band over the
+     lower ~58% of the text, hugging each line (box-decoration-break: clone).
+     Text stays fg, so glyphs read both on the band and where ascenders rise
+     above it — which is also what keeps it legible in dark AND light, since the
+     semi-transparent wash never has to carry the contrast on its own. The band
+     is faintly heavier at the baseline (ink settling) for a marker feel. */
+  background-image: linear-gradient(
+    to top,
+    transparent 3%,
+    oklch(from var(--ot-accent) l c h / 0.72) 3%,
+    oklch(from var(--ot-accent) l c h / 0.48) 56%,
+    transparent 58%
+  );
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 100% 100%;
-  padding: 0.02em 0.16em;
-  -webkit-box-decoration-break: clone;
+  padding-inline: 0.04em;
   box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 @media (prefers-reduced-motion: no-preference) {
   .ot-fx-highlight { animation: otHighlightWipe 0.7s var(--ot-ease-kinetic) both; }

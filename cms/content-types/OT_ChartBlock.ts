@@ -39,8 +39,9 @@ export const OT_ChartBlock = contentType({
         { value: 'barStacked', displayName: 'Bar Stacked — Composition' },
         { value: 'radial',     displayName: 'Radial — Single Score or KPI' },
       ],
-      group:     'OT_Content',
-      sortOrder: 30,
+      group:       'OT_Content',
+      sortOrder:   30,
+      isLocalized: false,
     },
     chartData: {
       type:        'string',
@@ -48,6 +49,9 @@ export const OT_ChartBlock = contentType({
       description: `Paste a JSON dataset. LINE/AREA/BAR STACKED: { "series": [{ "name": "…", "data": [1,2,3] }], "labels": ["Jan","Feb","Mar"] }. RADIAL: { "series": [{ "name": "…", "data": [84] }], "labels": ["Score"], "max": 100 }`,
       group:       'OT_Content',
       sortOrder:   40,
+      // Not localized: this is parsed JSON the chart renders. Translating it
+      // would corrupt numbers/keys and break rendering.
+      isLocalized: false,
     },
     seriesColors: {
       type:        'string',
@@ -61,8 +65,9 @@ export const OT_ChartBlock = contentType({
         { value: 'warm',        displayName: 'Warm — Amber & Gold' },
         { value: 'cool',        displayName: 'Cool — Blue & Indigo' },
       ],
-      group:     'OT_Content',
-      sortOrder: 50,
+      group:       'OT_Content',
+      sortOrder:   50,
+      isLocalized: false,
     },
     valuePrefix: {
       type:        'string',
@@ -71,6 +76,8 @@ export const OT_ChartBlock = contentType({
       group:       'OT_Content',
       sortOrder:   60,
       maxLength:   5,
+      // Not localized: a currency/unit symbol the chart renders verbatim.
+      isLocalized: false,
     },
     valueSuffix: {
       type:        'string',
@@ -79,6 +86,8 @@ export const OT_ChartBlock = contentType({
       group:       'OT_Content',
       sortOrder:   70,
       maxLength:   5,
+      // Not localized: a unit suffix the chart renders verbatim.
+      isLocalized: false,
     },
     showLegend: {
       type:        'boolean',
@@ -86,6 +95,7 @@ export const OT_ChartBlock = contentType({
       description: 'Toggle legend visibility. Recommended on for multi-series charts.',
       group:       'OT_Content',
       sortOrder:   80,
+      isLocalized: false,
     },
     showGrid: {
       type:        'boolean',
@@ -93,6 +103,7 @@ export const OT_ChartBlock = contentType({
       description: 'Toggle chart grid lines.',
       group:       'OT_Content',
       sortOrder:   90,
+      isLocalized: false,
     },
   },
 })

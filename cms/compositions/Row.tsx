@@ -106,7 +106,9 @@ export default function Row({ node, displaySettings = {}, children }: Props) {
         autoplay={String(displaySettings.sliderAutoplay      ?? 'off')}
         loop={String(displaySettings.sliderLoop              ?? 'loop')}
         peek={String(displaySettings.sliderPeek              ?? 'none')}
-        gap={spacing}
+        // The slider display template has no Content Spacing dropdown, so the
+        // gutter between slides defaults to 'medium' (see SliderRow's GAP_VAR).
+        gap={String(displaySettings.contentSpacing           ?? 'medium')}
         verticalPadding={vPaddingClass}
         bgColorClass={bgColorClass}
         staggerAttr={isAnimated ? entranceAnimation : undefined}

@@ -53,7 +53,7 @@ export default function SliderRow({
   autoplay        = 'off',
   loop            = 'loop',
   peek            = 'none',
-  gap             = 'none',
+  gap             = 'medium',
   verticalPadding = '',
   bgColorClass    = '',
   paProps         = {},

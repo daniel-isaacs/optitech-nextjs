@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   const domain   = await getRequestDomain()
   const locale   = await getRequestLocale()
   const settings = await getSiteSettings(domain, locale)
-  const siteName = (settings?.siteName as string | undefined) ?? 'OptiTech'
+  const siteName = (settings?.siteName as string | undefined) ?? 'Site Accelerator'
 
   const recentItems = await getRecentContent(8)
 

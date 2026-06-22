@@ -2632,53 +2632,56 @@ body {
  * ──────────────────────────────────────────────────────────────────────────── */
 
 /* Sidebar container */
+/* The sidebar rail stays a dark, high-contrast surface, but its hue derives from
+   --ot-brand so it follows the configured theme (teal by default, any vertical's
+   color once themed). Every literal hue below is swapped for the brand's `h`. */
 .oa-sidebar {
   background: linear-gradient(
     168deg,
-    oklch(19% 0.030 175) 0%,
-    oklch(13.5% 0.020 175) 100%
+    oklch(from var(--ot-brand) 19% 0.03 h) 0%,
+    oklch(from var(--ot-brand) 13.5% 0.02 h) 100%
   );
-  border-right-color: oklch(25% 0.026 175);
+  border-right-color: oklch(from var(--ot-brand) 25% 0.026 h);
   box-shadow:
-    1px 0 0 oklch(28% 0.026 175 / 0.4),
-    6px 0 24px oklch(6% 0.012 175 / 0.50);
+    1px 0 0 oklch(from var(--ot-brand) 28% 0.026 h / 0.4),
+    6px 0 24px oklch(from var(--ot-brand) 6% 0.012 h / 0.50);
 }
 
 /* Wordmark area border */
 .oa-sidebar .oa-wordmark-border {
-  border-bottom-color: oklch(25% 0.026 175);
+  border-bottom-color: oklch(from var(--ot-brand) 25% 0.026 h);
 }
 
 /* Section label */
 .oa-sidebar .oa-section-label {
-  color: oklch(34% 0.018 175);
+  color: oklch(from var(--ot-brand) 34% 0.018 h);
 }
 
 /* Nav items */
 .oa-sb-nav-item {
-  color: oklch(54% 0.018 175);
+  color: oklch(from var(--ot-brand) 54% 0.018 h);
   transition: color 120ms var(--ot-ease-quick), background-color 120ms var(--ot-ease-quick); /* dur-exempt: 120ms — nearest fast(150) Δ30ms */
 }
 .oa-sb-nav-item:hover {
-  color: oklch(80% 0.012 165);
+  color: oklch(from var(--ot-brand) 80% 0.012 h);
   background-color: oklch(100% 0 0 / 0.07);
 }
 .oa-sb-nav-item.oa-active {
-  color: oklch(80% 0.14 155);
-  background-color: oklch(51% 0.16 158 / 0.22);
+  color: oklch(from var(--ot-brand) 80% 0.14 h);
+  background-color: oklch(from var(--ot-brand) l c h / 0.22);
   font-weight: 600;
 }
 
 /* Sidebar footer */
 .oa-sidebar .oa-sb-divider {
-  border-top-color: oklch(25% 0.026 175);
+  border-top-color: oklch(from var(--ot-brand) 25% 0.026 h);
 }
 .oa-sb-logout {
-  color: oklch(42% 0.014 175);
+  color: oklch(from var(--ot-brand) 42% 0.014 h);
   transition: color 120ms var(--ot-ease-quick), background-color 120ms var(--ot-ease-quick); /* dur-exempt: 120ms — nearest fast(150) Δ30ms */
 }
 .oa-sb-logout:hover {
-  color: oklch(70% 0.012 165);
+  color: oklch(from var(--ot-brand) 70% 0.012 h);
   background-color: oklch(100% 0 0 / 0.07);
 }
 
@@ -2689,11 +2692,11 @@ body {
     0 2px 8px oklch(0% 0 0 / 0.04);
 }
 
-/* Site badge in the header */
+/* Site badge in the header — brand-tinted neutral chip */
 .oa-site-badge {
-  color: oklch(44% 0.016 252);
-  background: oklch(94% 0.007 252);
-  border: 1px solid oklch(88% 0.008 252);
+  color: oklch(from var(--ot-brand) 44% 0.02 h);
+  background: oklch(from var(--ot-brand) 94% 0.01 h);
+  border: 1px solid oklch(from var(--ot-brand) 88% 0.012 h);
 }
 
 /* ── OptiAdmin shell — independent neutral token scope ───────────────────────
@@ -2712,23 +2715,16 @@ body {
  * without any explicit override.
  * ──────────────────────────────────────────────────────────────────────────── */
 .opti-admin {
-  /* Grounds */
-  --ot-canvas:  oklch(98.5% 0.003 170); /* page background — clean near-white, faint teal tint */
-  --ot-surface: oklch(96.0% 0.006 170); /* elevated panel surfaces                             */
-
-  /* Text */
-  --ot-fg:          oklch(13%   0.012 170); /* primary — near-black, max contrast  */
-  --ot-fg-muted:    oklch(44%   0.018 170); /* secondary — labels, metadata        */
-  --ot-fg-on-brand: oklch(98.5% 0.003 170); /* text on filled action surfaces      */
-
-  /* Primary accent: OptiTech green-teal — matches brand icon palette */
-  --ot-brand:       oklch(51% 0.16 158); /* interactive: active nav, CTA fills  */
-  --ot-brand-hover: oklch(40% 0.14 158); /* deeper state: hover / pressed       */
-
-  /* Status green: same hue family, slightly brighter for chip legibility      */
-  --ot-accent:       oklch(56% 0.17 145);
-  --ot-accent-hover: oklch(44% 0.14 145);
-  --ot-fg-on-accent: oklch(13% 0.012 170);
+  /* Stable light tool palette — stays light regardless of the site's dark/light
+     mode, so the admin is always a calm, legible work surface. The neutrals are
+     tinted toward the configured brand hue (the design system's tint rule), and
+     --ot-brand / --ot-accent (plus their hover + on-fill text) are intentionally
+     NOT overridden here, so they inherit from the active CMS theme and the admin
+     visibly adopts the configured brand color. */
+  --ot-canvas:  oklch(from var(--ot-brand) 98.5% 0.004 h); /* near-white, brand-tinted */
+  --ot-surface: oklch(from var(--ot-brand) 96%   0.007 h); /* elevated panels          */
+  --ot-fg:       oklch(from var(--ot-brand) 16% 0.02 h);   /* near-black, max contrast  */
+  --ot-fg-muted: oklch(from var(--ot-brand) 45% 0.03 h);   /* labels, metadata          */
 }
 
 /* ── Section overlap ─────────────────────────────────────────────────────────

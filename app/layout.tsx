@@ -90,17 +90,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const domain   = await getRequestDomain()
   const locale   = await getRequestLocale()
   const settings = await getSiteSettings(domain, locale)
-  const siteName = (settings?.siteName as string | null | undefined) ?? 'OptiTech'
+  const siteName = (settings?.siteName as string | null | undefined) ?? 'Site Accelerator'
   return {
     title: {
       default:  siteName,
       // Applied automatically to every CMS page's string title:
-      //   seoTitle "Using the SDK"  →  <title>Using the SDK | OptiTech</title>
-      //   seoTitle blank            →  <title>OptiTech</title>  (the default above)
+      //   seoTitle "Using the SDK"  →  <title>Using the SDK | Site Accelerator</title>
+      //   seoTitle blank            →  <title>Site Accelerator</title>  (the default above)
       template: `%s | ${siteName}`,
     },
     description: (settings?.defaultSeoDescription as string | null | undefined)
-      ?? 'OptiTech — bold, forward-moving.',
+      ?? 'Site Accelerator — a configurable, multi-vertical site framework.',
   }
 }
 

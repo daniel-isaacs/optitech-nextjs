@@ -3,6 +3,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 import Button from '@/components/ui/Button'
 import MobileMenu from '@/components/layout/MobileMenu'
 import DesktopNav from '@/components/layout/DesktopNav'
+import { BrandMark } from '@/components/layout/BrandMark'
 import { LocaleSelector } from '@/components/layout/LocaleSelector'
 import type { NavItem } from '@/components/layout/DesktopNav'
 import SearchTrigger from '@/components/search/SearchTrigger'
@@ -69,8 +70,9 @@ export default async function Header() {
   const locale   = await getRequestLocale()
   const settings = await getSiteSettings(domain, locale)
 
-  const logoSrc        = settings?.logo?.url?.default ?? '/brand/logo/OptiTech-Logo.svg'
-  const logoAlt        = settings?.logoAlt       ?? 'OptiTech'
+  const siteName       = (settings?.siteName as string | undefined) ?? 'Site Accelerator'
+  const logoSrc        = settings?.logo?.url?.default
+  const logoAlt        = settings?.logoAlt       ?? siteName
   const logoFit        = (settings?.logoFit as string | undefined) ?? 'full'
   const logoInvertDark = settings?.logoInvertDark === true
   const ctaLabel       = settings?.ctaLabel ?? 'Get Started'
@@ -120,14 +122,18 @@ export default async function Header() {
         <div className="flex items-center justify-between px-md py-md lg:px-lg">
 
           <a href={localizedHref('/', locale)} aria-label={`${logoAlt} — ${t(locale, 'nav.home')}`} className="flex items-center h-12">
-            <Image
-              src={logoSrc}
-              alt={logoAlt}
-              width={444}
-              height={90}
-              className={logoImgClass}
-              priority
-            />
+            {logoSrc ? (
+              <Image
+                src={logoSrc}
+                alt={logoAlt}
+                width={444}
+                height={90}
+                className={logoImgClass}
+                priority
+              />
+            ) : (
+              <BrandMark name={siteName} className="text-fg" />
+            )}
           </a>
 
           <DesktopNav navItems={navItems} />

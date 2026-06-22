@@ -22,7 +22,7 @@ export async function GET() {
   const settings = await getSiteSettings(domain)
 
   const siteUrl      = process.env.NEXT_PUBLIC_SITE_URL ?? baseUrl ?? `https://${domain}`
-  const siteName     = (settings?.siteName as string | null)               ?? 'OptiTech'
+  const siteName     = (settings?.siteName as string | null)               ?? 'Site Accelerator'
   const orgDesc      = (settings?.organizationDescription as string | null) ?? ''
   const seoDesc      = (settings?.defaultSeoDescription as string | null)   ?? ''
   const description  = orgDesc || seoDesc

@@ -8,7 +8,8 @@ export default async function AdminShell({ children }: { children: React.ReactNo
   const domain   = await getRequestDomain()
   const locale   = await getRequestLocale()
   const settings = await getSiteSettings(domain, locale)
-  const siteName = (settings?.siteName as string | undefined) ?? 'OptiTech'
+  const siteName = (settings?.siteName as string | undefined) ?? 'Site Accelerator'
+  const logoSrc  = settings?.logo?.url?.default as string | undefined
   const baseUrl  = await getRequestBaseUrl()
   const hostname = baseUrl ? baseUrl.replace(/^https?:\/\//, '') : domain
 
@@ -16,26 +17,33 @@ export default async function AdminShell({ children }: { children: React.ReactNo
     <div className="flex h-full min-h-screen">
       {/* ── Sidebar ─────────────────────────────────────────────────────────── */}
       <aside className="oa-sidebar w-[220px] shrink-0 flex flex-col border-r">
-        {/* Wordmark */}
-        <div className="oa-wordmark-border h-[58px] flex items-center gap-[10px] px-md border-b shrink-0">
-          <Image
-            src="/brand/logo/optitech-icon.svg"
-            alt="OptiTech"
-            width={36}
-            height={27}
-            className="shrink-0"
-            priority
-          />
-          <div className="flex flex-col leading-none gap-0.5">
+        {/* Wordmark — reuses the configured site logo; falls back to a neutral
+            brand-colored mark + site name when none is set. */}
+        <div className="oa-wordmark-border h-[58px] flex items-center gap-[10px] px-md border-b shrink-0 min-w-0">
+          {logoSrc ? (
+            <Image
+              src={logoSrc}
+              alt={siteName}
+              width={444}
+              height={90}
+              className="max-h-7 w-auto max-w-[120px] object-contain logo-invert-dark shrink-0"
+              priority
+            />
+          ) : (
+            <span aria-hidden className="h-8 w-8 shrink-0 rounded-ot-control bg-brand" />
+          )}
+          <div className="flex flex-col leading-none gap-0.5 min-w-0">
+            {!logoSrc && (
+              <span
+                className="text-[0.6875rem] font-bold tracking-[0.12em] uppercase leading-none truncate"
+                style={{ color: 'oklch(from var(--ot-brand) 84% 0.01 h)' }}
+              >
+                {siteName}
+              </span>
+            )}
             <span
               className="text-[0.6875rem] font-bold tracking-[0.12em] uppercase leading-none"
-              style={{ color: 'oklch(84% 0.010 175)' }}
-            >
-              OptiTech
-            </span>
-            <span
-              className="text-[0.6875rem] font-bold tracking-[0.12em] uppercase leading-none"
-              style={{ color: 'oklch(68% 0.13 155)' }}
+              style={{ color: 'oklch(from var(--ot-brand) 80% 0.14 h)' }}
             >
               Admin
             </span>

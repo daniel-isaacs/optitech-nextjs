@@ -90,7 +90,7 @@ export function buildPageMetadata(
   const richTitle =
     pageTitle && site.siteName
       ? `${pageTitle} | ${site.siteName}`
-      : pageTitle ?? site.siteName ?? 'OptiTech'
+      : pageTitle ?? site.siteName ?? 'Site Accelerator'
 
   const description = page.seoDescription ?? site.defaultSeoDescription ?? undefined
 

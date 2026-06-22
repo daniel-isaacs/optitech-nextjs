@@ -16,7 +16,7 @@
   "search": {
     "trigger": "Rechercher",
     "placeholder": "Que cherchez-vous ?",
-    "placeholderCompact": "Rechercher dans OptiTech...",
+    "placeholderCompact": "Rechercher sur le site...",
     "inputLabel": "Requête de recherche",
     "close": "Fermer la recherche",
     "noResults": "Aucun résultat pour « {query} »",

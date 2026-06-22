@@ -16,7 +16,7 @@
   "search": {
     "trigger": "Suchen",
     "placeholder": "Was suchen Sie?",
-    "placeholderCompact": "OptiTech durchsuchen...",
+    "placeholderCompact": "Website durchsuchen...",
     "inputLabel": "Suchanfrage",
     "close": "Suche schließen",
     "noResults": "Keine Ergebnisse für \"{query}\"",

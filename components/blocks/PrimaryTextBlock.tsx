@@ -67,15 +67,17 @@ const sectionCva = cva("px-md lg:px-lg", {
 
 /**
  * Inner column: horizontal placement + max-width cap.
- * "center" centers the column on the page (mx-auto) and caps its width, but the
- * text inside still reads as a left-aligned block — no text-center, so paragraphs
- * keep a clean left edge rather than going ragged-centered.
+ * "center" centers the capped-width column on the page (mx-auto) AND centers the
+ * content within it (text-center) so the heading/eyebrow/body read as genuinely
+ * centered rather than left-aligned inside a centered box. The flex container
+ * below also gets items-center so block-level children collapse to their content
+ * width and sit on the page's center axis.
  */
 const innerCva = cva("", {
   variants: {
     alignment: {
       left:   "",
-      center: "mx-auto max-w-5xl",
+      center: "mx-auto max-w-5xl text-center",
     },
   },
   defaultVariants: { alignment: "left" },
@@ -152,7 +154,7 @@ export default function PrimaryTextBlock({
   return (
     <section className={sectionCva({ color, size })}>
       <div className={innerCva({ alignment })}>
-        <div className="flex flex-col gap-sm">
+        <div className={`flex flex-col gap-sm${alignment === 'center' ? ' items-center' : ''}`}>
           {eyebrow && (
             <p className={eyebrowCva({ color })} {...pa('eyebrow')}>{eyebrow}</p>
           )}

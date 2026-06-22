@@ -157,7 +157,11 @@ export default function PrimaryTextBlock({
             <p className={eyebrowCva({ color })} {...pa('eyebrow')}>{eyebrow}</p>
           )}
           <Heading
-            className={`${headlineCva({ size, color })}${!isHighlight && effectClass ? ` ${effectClass}` : ''}`}
+            className={`${headlineCva({ size, color })}${
+              // Highlight's band fills the line's leading, so add a little bottom
+              // margin (on top of the gap-sm) to keep it off the body copy.
+              isHighlight ? ' mb-sm' : effectClass ? ` ${effectClass}` : ''
+            }`}
             {...(effect === 'animatedGradient' ? { 'data-pause-offscreen': '' } : {})}
             {...pa('headline')}
           >

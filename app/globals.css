@@ -935,6 +935,96 @@ body {
     0        0.09em   0.32em oklch(from var(--ot-accent) calc(l * 0.38) c h / 0.15);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * HEADER EFFECTS — consolidated set (mode + scheme robust)
+ * Every effect derives all color from --ot-brand / --ot-accent / --ot-fg (or
+ * bloom/relative-color), so it recalibrates under any CMS theme. The FACE is
+ * either currentColor/fg (auto-adapts to mode) or a designed-contrast token
+ * pair; decoration layers are brand/accent (mode-constant) with tuned alpha,
+ * plus explicit [data-theme="light"] handling where a ground flip needs it.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* GRADIENT — static diagonal brand→accent fill (the classic loud headline).    */
+/* Robust: saturated token stops read on dark grounds as-is; light mode darkens */
+/* both stops so the clipped text keeps contrast against a near-white canvas.    */
+.ot-fx-gradient {
+  background-image: linear-gradient(120deg, var(--ot-brand) 0%, var(--ot-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-theme="light"] .ot-fx-gradient {
+  background-image: linear-gradient(120deg,
+    oklch(from var(--ot-brand) calc(l - 0.04) c h) 0%,
+    oklch(from var(--ot-accent) calc(l - 0.30) c h) 100%);
+}
+/* On a brand-filled ground, run fg-on-brand → accent so the fill stays legible */
+.bg-brand-fill .ot-fx-gradient {
+  background-image: linear-gradient(120deg, var(--ot-fg-on-brand) 0%, var(--ot-accent) 100%);
+}
+
+/* CHROMATIC — faux-CMYK channel split / print misregistration.                  */
+/* Robust: face = fg (adapts to mode); the two offset ghosts are brand & accent  */
+/* at alpha, so they read as colored fringes on either ground. Legibility holds  */
+/* because the solid fg face is the readable layer. Motion: a slow micro-jitter. */
+.ot-fx-chromatic {
+  color: var(--ot-fg);
+  text-shadow:
+    -0.07em 0 0 oklch(from var(--ot-brand)  l c h / 0.85),
+     0.07em 0 0 oklch(from var(--ot-accent) l c h / 0.85);
+}
+[data-theme="light"] .ot-fx-chromatic {
+  text-shadow:
+    -0.07em 0 0 oklch(from var(--ot-brand)  l c h / 0.9),
+     0.07em 0 0 oklch(from var(--ot-accent) l c h / 0.9);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ot-fx-chromatic { animation: otChromaJitter 4s steps(1, end) infinite; }
+}
+@keyframes otChromaJitter {
+  0%, 92%, 100% { text-shadow: -0.07em 0 0 oklch(from var(--ot-brand) l c h / 0.85),  0.07em 0 0 oklch(from var(--ot-accent) l c h / 0.85); }
+  94%           { text-shadow: -0.1em 0.014em 0 oklch(from var(--ot-brand) l c h / 0.85), 0.085em -0.014em 0 oklch(from var(--ot-accent) l c h / 0.85); }
+  97%           { text-shadow: -0.05em -0.01em 0 oklch(from var(--ot-brand) l c h / 0.85), 0.11em 0.01em 0 oklch(from var(--ot-accent) l c h / 0.85); }
+}
+
+/* HIGHLIGHT — accent "marker swipe" behind the text (apply to an inline span).  */
+/* Robust by construction: accent ground + fg-on-accent text is a designed AA    */
+/* pair, identical in both modes. box-decoration-break clones the box per line.  */
+/* Motion: the marker wipes in left→right; reduced-motion shows it fully drawn.   */
+.ot-fx-highlight {
+  color: var(--ot-fg-on-accent);
+  background-image: linear-gradient(var(--ot-accent), var(--ot-accent));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% 100%;
+  padding: 0.02em 0.16em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ot-fx-highlight { animation: otHighlightWipe 0.7s var(--ot-ease-kinetic) both; }
+}
+@keyframes otHighlightWipe {
+  from { background-size: 0% 100%; }
+  to   { background-size: 100% 100%; }
+}
+
+/* GLOW — backlit aurora halo behind a solid face (soft brand+accent bloom).      */
+/* Robust: face = fg (adapts); halo uses brand/accent relative-color alpha. Light */
+/* mode tightens the blur and lifts alpha so the glow still registers on white.   */
+/* Sits on tinted grounds + token-derived, so it never becomes neon-on-#000.      */
+.ot-fx-glow {
+  color: var(--ot-fg);
+  filter:
+    drop-shadow(0 0 0.32em oklch(from var(--ot-brand)  l c h / 0.5))
+    drop-shadow(0 0 0.7em  oklch(from var(--ot-accent) l c h / 0.32));
+}
+[data-theme="light"] .ot-fx-glow {
+  filter:
+    drop-shadow(0 0 0.16em oklch(from var(--ot-brand)  l c h / 0.45))
+    drop-shadow(0 0 0.36em oklch(from var(--ot-accent) l c h / 0.3));
+}
+
 /* ── Card isometric tilt ──────────────────────────────────────────────────────
  * Solid two-layer offset shadow creates a visible isometric "back face" at rest
  * (depth is always present, not just on hover). On hover, perspective rotation

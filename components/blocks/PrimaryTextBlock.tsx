@@ -3,6 +3,23 @@ import { RichText } from '@optimizely/cms-sdk/react/richText'
 
 // ─── Style option types (map 1:1 to CMS content properties) ─────────────────
 
+/**
+ * Header effect applied to the heading. One consolidated, marketer-facing set —
+ * every option is token-derived (works on any color scheme) and handles both
+ * dark and light mode. Most impactful at headline scale and up.
+ *   gradient          — static brand→accent diagonal fill (background-clip:text)
+ *   animatedGradient  — the same fill, animated as a slow shimmer/sweep
+ *   depth3d           — hard isometric 3D offset shadow stack ("pop-out")
+ *   embossed          — pressed/carved into the surface
+ *   outline           — hollow wire letterforms with brand stroke + glow
+ *   glitch            — RGB channel-split / digital-glitch fringe
+ *   highlight         — accent marker swipe behind the text (inline)
+ *   glow              — backlit aurora halo
+ */
+export type HeaderEffect =
+  | "none" | "gradient" | "animatedGradient" | "depth3d"
+  | "embossed" | "outline" | "glitch" | "highlight" | "glow";
+
 export type PrimaryTextStyleOptions = {
   /** Horizontal alignment of the content column within the section */
   alignment?: "left" | "center";
@@ -10,28 +27,21 @@ export type PrimaryTextStyleOptions = {
   color?: "none" | "brand" | "canvas" | "surface";
   /** Heading scale — controls font size, weight, tracking, and vertical rhythm */
   size?: "display" | "headline" | "title" | "label";
-  /**
-   * Gradient fill for the heading.
-   * Only takes effect when size is "display"; ignored at all other scales.
-   * Dark canvas background required (see DESIGN.md §6).
-   *   brand    — brand teal face + brand shadow stack (Brand — Primary)
-   *   warm     — accent face + brand shadows (Brand — Extended)
-   *   luminous — fg/near-white face + brand-tinted shadows (Luminous — Carved from Light)
-   *   ember    — accent face + hue-shifted ember shadows (Accent — Ember)
-   *   extrude  — fg face + accent rim + 12-layer brand isometric shadows
-   *   mono     — fg face + greyscale shadows; dark mode=silver, light mode=charcoal
-   */
-  gradient?: "none" | "brand" | "warm" | "luminous" | "ember" | "extrude" | "mono";
-  /**
-   * Depth effect applied to the heading letterforms.
-   * Works at any scale; most impactful at display/headline.
-   * outline works best at headline scale and above (hollow letterforms need stroke mass).
-   *   extrude — comic 3D offset shadow (dark: white face; light: brand face + token shadows)
-   *   liquid  — animated brand↔accent tidal gradient sweep via background-clip:text
-   *   outline — hollow wire letterforms with brand stroke, static glow, ghost offset
-   *   emboss  — carved-into-surface: brand face, opposing cavity shadow + rim highlight
-   */
-  depth?: "none" | "extrude" | "liquid" | "outline" | "emboss";
+  /** Header effect on the heading (see HeaderEffect). */
+  effect?: HeaderEffect;
+};
+
+/** Effect key → global CSS class (defined in app/globals.css). */
+const EFFECT_CLASS: Record<HeaderEffect, string> = {
+  none:             "",
+  gradient:         "ot-fx-gradient",
+  animatedGradient: "ot-depth-liquid",
+  depth3d:          "ot-depth-extrude",
+  embossed:         "ot-depth-emboss",
+  outline:          "ot-depth-outline",
+  glitch:           "ot-fx-chromatic",
+  highlight:        "ot-fx-highlight",
+  glow:             "ot-fx-glow",
 };
 
 // ─── CVA variant configs ─────────────────────────────────────────────────────
@@ -85,10 +95,9 @@ const eyebrowCva = cva("text-label tracking-label uppercase font-semibold", {
 });
 
 /**
- * Heading: scale carries weight, tracking, and line-height.
- * Gradient compound variants fire only when size === "display" — enforced here,
- * not by the caller.
- * Depth compound variants apply at any scale; CSS handles theme + bg overrides.
+ * Heading: scale carries weight, tracking, and line-height; color sets the face.
+ * The header effect class is appended separately (see EFFECT_CLASS) so a single
+ * dropdown drives it; the effect's own CSS handles theme + background overrides.
  */
 const headlineCva = cva("text-balance", {
   variants: {
@@ -104,36 +113,8 @@ const headlineCva = cva("text-balance", {
       canvas:  "text-fg",
       surface: "text-fg",
     },
-    gradient: {
-      none:     "",
-      brand:    "",
-      warm:     "",
-      luminous: "",
-      ember:    "",
-      extrude:  "",
-      mono:     "",
-    },
-    depth: {
-      none:    "",
-      extrude: "",
-      liquid:  "",
-      outline: "",
-      emboss:  "",
-    },
   },
-  compoundVariants: [
-    { size: "display", gradient: "brand",    class: "display-gradient-brand" },
-    { size: "display", gradient: "warm",     class: "display-gradient-warm" },
-    { size: "display", gradient: "luminous", class: "display-gradient-luminous" },
-    { size: "display", gradient: "ember",    class: "display-gradient-ember" },
-    { size: "display", gradient: "extrude",  class: "display-extrude" },
-    { size: "display", gradient: "mono",     class: "display-gradient-mono" },
-    { depth: "extrude", class: "ot-depth-extrude" },
-    { depth: "liquid",  class: "ot-depth-liquid" },
-    { depth: "outline", class: "ot-depth-outline" },
-    { depth: "emboss",  class: "ot-depth-emboss" },
-  ],
-  defaultVariants: { size: "headline", color: "canvas", gradient: "none", depth: "none" },
+  defaultVariants: { size: "headline", color: "canvas" },
 });
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -159,11 +140,14 @@ export default function PrimaryTextBlock({
     alignment = "left",
     color     = "canvas",
     size      = "headline",
-    gradient  = "none",
-    depth     = "none",
+    effect    = "none",
   } = styleOptions;
 
   const Heading = headingLevel
+  const effectClass = EFFECT_CLASS[effect]
+  // Highlight is an inline marker swipe, so it lives on a span hugging the text;
+  // every other effect applies directly to the heading element.
+  const isHighlight = effect === 'highlight'
 
   return (
     <section className={sectionCva({ color, size })}>
@@ -173,11 +157,11 @@ export default function PrimaryTextBlock({
             <p className={eyebrowCva({ color })} {...pa('eyebrow')}>{eyebrow}</p>
           )}
           <Heading
-            className={headlineCva({ size, color, gradient, depth })}
-            {...(depth === 'liquid' ? { 'data-pause-offscreen': '' } : {})}
+            className={`${headlineCva({ size, color })}${!isHighlight && effectClass ? ` ${effectClass}` : ''}`}
+            {...(effect === 'animatedGradient' ? { 'data-pause-offscreen': '' } : {})}
             {...pa('headline')}
           >
-            {headline}
+            {isHighlight ? <span className={effectClass}>{headline}</span> : headline}
           </Heading>
           {body && (
             <div

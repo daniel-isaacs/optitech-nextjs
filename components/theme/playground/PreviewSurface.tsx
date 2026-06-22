@@ -53,11 +53,11 @@ const WEIGHTS = [
   { w: 800, name: 'ExtraBold' },
 ]
 
-const GRADIENTS = [
-  { cls: 'display-gradient-brand', label: 'Brand' },
-  { cls: 'display-gradient-warm', label: 'Warm' },
-  { cls: 'display-gradient-luminous', label: 'Luminous' },
-  { cls: 'display-gradient-ember', label: 'Ember' },
+const HEADER_EFFECTS = [
+  { cls: 'ot-fx-gradient', label: 'Gradient' },
+  { cls: 'ot-depth-extrude', label: '3D Depth' },
+  { cls: 'ot-fx-chromatic', label: 'Glitch' },
+  { cls: 'ot-fx-glow', label: 'Glow' },
 ]
 
 const SPACING = [
@@ -191,14 +191,14 @@ export function PreviewSurface({
             ))}
           </div>
 
-          {/* Display gradient fills */}
+          {/* Header effects */}
           <div className="pt-2 border-t border-fg/10 space-y-sm">
-            <p className="text-label tracking-label uppercase text-fg-muted">Display gradient fills</p>
+            <p className="text-label tracking-label uppercase text-fg-muted">Header effects</p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-md">
-              {GRADIENTS.map((gr) => (
-                <div key={gr.cls}>
-                  <p className={`${gr.cls} text-[2rem] font-extrabold leading-none`}>Aa</p>
-                  <p className="text-label font-mono text-fg-muted/60 mt-1">{gr.label}</p>
+              {HEADER_EFFECTS.map((fx) => (
+                <div key={fx.cls}>
+                  <p className={`${fx.cls} text-[2rem] font-extrabold leading-none`}>Aa</p>
+                  <p className="text-label font-mono text-fg-muted/60 mt-1">{fx.label}</p>
                 </div>
               ))}
             </div>

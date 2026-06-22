@@ -350,25 +350,29 @@ function CardShowcase() {
 
 function PrimaryTextShowcase() {
   const sizes = [
-    { content: { eyebrow: 'The platform', headline: 'Speed that compounds.' }, displaySettings: { size: 'display', color: 'canvas', alignment: 'left', gradient: 'none' } },
-    { content: { eyebrow: 'Integrations', headline: 'Connect everything you already use.' }, displaySettings: { size: 'headline', color: 'canvas', alignment: 'left', gradient: 'none' } },
-    { content: { eyebrow: 'Customers', headline: 'Trusted by teams who ship fast.' }, displaySettings: { size: 'title', color: 'canvas', alignment: 'left', gradient: 'none' } },
-    { content: { headline: 'Section tag · Supporting context' }, displaySettings: { size: 'label', color: 'canvas', alignment: 'left', gradient: 'none' } },
+    { content: { eyebrow: 'The platform', headline: 'Speed that compounds.' }, displaySettings: { size: 'display', color: 'canvas', alignment: 'left', headerEffect: 'none' } },
+    { content: { eyebrow: 'Integrations', headline: 'Connect everything you already use.' }, displaySettings: { size: 'headline', color: 'canvas', alignment: 'left', headerEffect: 'none' } },
+    { content: { eyebrow: 'Customers', headline: 'Trusted by teams who ship fast.' }, displaySettings: { size: 'title', color: 'canvas', alignment: 'left', headerEffect: 'none' } },
+    { content: { headline: 'Section tag · Supporting context' }, displaySettings: { size: 'label', color: 'canvas', alignment: 'left', headerEffect: 'none' } },
   ]
 
   const colors = [
-    { content: { eyebrow: 'The method', headline: 'Precision at every layer.' }, displaySettings: { size: 'headline', color: 'brand',   alignment: 'left', gradient: 'none' } },
-    { content: { eyebrow: 'The method', headline: 'Precision at every layer.' }, displaySettings: { size: 'headline', color: 'canvas',  alignment: 'left', gradient: 'none' } },
-    { content: { eyebrow: 'The method', headline: 'Precision at every layer.' }, displaySettings: { size: 'headline', color: 'surface', alignment: 'left', gradient: 'none' } },
+    { content: { eyebrow: 'The method', headline: 'Precision at every layer.' }, displaySettings: { size: 'headline', color: 'brand',   alignment: 'left', headerEffect: 'none' } },
+    { content: { eyebrow: 'The method', headline: 'Precision at every layer.' }, displaySettings: { size: 'headline', color: 'canvas',  alignment: 'left', headerEffect: 'none' } },
+    { content: { eyebrow: 'The method', headline: 'Precision at every layer.' }, displaySettings: { size: 'headline', color: 'surface', alignment: 'left', headerEffect: 'none' } },
   ]
 
-  const depths = [
-    { content: { eyebrow: 'Brand — Primary',             headline: 'Kinetic by design.'     }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'brand'    } },
-    { content: { eyebrow: 'Brand — Extended',            headline: 'Heat meets precision.'  }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'warm'     } },
-    { content: { eyebrow: 'Luminous — Carved from Light',headline: 'Lit from within.'       }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'luminous' } },
-    { content: { eyebrow: 'Accent — Ember',              headline: 'Burn bright.'           }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'ember'    } },
-    { content: { eyebrow: 'Brand — Isometric Extrude',   headline: 'Depth is a statement.'  }, displaySettings: { size: 'display', color: 'canvas', alignment: 'left',   gradient: 'extrude'  } },
-    { content: { eyebrow: 'Mono — Silver & Fog',         headline: 'Pure signal.'           }, displaySettings: { size: 'display', color: 'canvas', alignment: 'center', gradient: 'mono'     } },
+  // The consolidated Header Effect set — one dropdown, all token-derived and
+  // mode-robust (work on any color scheme, in dark and light).
+  const effects = [
+    { content: { eyebrow: 'Gradient',         headline: 'Build once, ship everywhere.' }, displaySettings: { size: 'display',  color: 'canvas', alignment: 'left', headerEffect: 'gradient' } },
+    { content: { eyebrow: 'Animated Gradient', headline: 'Momentum you can see.'        }, displaySettings: { size: 'display',  color: 'canvas', alignment: 'left', headerEffect: 'animatedGradient' } },
+    { content: { eyebrow: '3D Depth',          headline: 'Depth is a statement.'       }, displaySettings: { size: 'display',  color: 'canvas', alignment: 'left', headerEffect: 'depth3d' } },
+    { content: { eyebrow: 'Embossed',          headline: 'Pressed into the surface.'   }, displaySettings: { size: 'display',  color: 'canvas', alignment: 'left', headerEffect: 'embossed' } },
+    { content: { eyebrow: 'Outline',           headline: 'Drawn in wire.'              }, displaySettings: { size: 'display',  color: 'canvas', alignment: 'left', headerEffect: 'outline' } },
+    { content: { eyebrow: 'Glitch',            headline: 'Break the signal.'           }, displaySettings: { size: 'display',  color: 'canvas', alignment: 'left', headerEffect: 'glitch' } },
+    { content: { eyebrow: 'Highlight',         headline: 'Call it out.'                }, displaySettings: { size: 'headline', color: 'canvas', alignment: 'left', headerEffect: 'highlight' } },
+    { content: { eyebrow: 'Glow',              headline: 'Lit from within.'            }, displaySettings: { size: 'display',  color: 'canvas', alignment: 'left', headerEffect: 'glow' } },
   ]
 
   return (
@@ -391,10 +395,10 @@ function PrimaryTextShowcase() {
         </div>
       ))}
 
-      <VariantGroup label="Display gradients · display scale only · canvas" note='Gradient fires only when size is "display" — enforced by CVA compound variant. Mono: silver chrome in dark mode, charcoal in light mode.' />
-      {depths.map((item, i) => (
+      <VariantGroup label="Header effects · one dropdown · canvas" note="Every effect is token-derived (works on any brand/accent scheme) and handles both dark and light mode. Toggle the showcase theme to see each adapt. Animated Gradient and Glitch animate; both degrade under prefers-reduced-motion." />
+      {effects.map((item, i) => (
         <div key={i} className="border-t border-fg/5">
-          <VariantLabel label={`gradient: "${item.displaySettings.gradient}"`} />
+          <VariantLabel label={`effect: "${item.displaySettings.headerEffect}"`} />
           <OT_PrimaryTextBlock content={item.content as any} displaySettings={item.displaySettings} />
         </div>
       ))}

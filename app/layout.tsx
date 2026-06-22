@@ -1,7 +1,7 @@
 import '@/lib/optimizely'
 import '@/cms/registry'
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Caveat, Geist_Mono, Hanken_Grotesk, Poppins, Sora, Syne } from "next/font/google";
+import { Bricolage_Grotesque, Caveat, Geist_Mono, Libre_Franklin, Poppins, Sora, Syne } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionObserver } from "@/components/providers/MotionObserver";
@@ -34,9 +34,10 @@ const syne = Syne({
 // weight ladder matches Poppins so every type level holds, and display: "swap" +
 // variable assignment keeps the swap FOUT-free.
 //
-// Primary A — Hanken Grotesk: clean, humanist grotesque. The neutral workhorse
-// pole — disappears into body copy, snaps to authority at weight 800.
-const hankenGrotesk = Hanken_Grotesk({
+// Primary A — Libre Franklin: Franklin Gothic lineage. The institutional /
+// trustworthy pole — reads credible for medical & financial-services brands,
+// with a strong 800 for display and a clean 400 for body.
+const libreFranklin = Libre_Franklin({
   variable: "--font-primary-a",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -133,7 +134,7 @@ export default async function RootLayout({
       // client/server diff when localStorage overrides the CMS default.
       data-default-theme={defaultMode}
       data-theme={defaultMode}
-      className={`${poppins.variable} ${geistMono.variable} ${syne.variable} ${hankenGrotesk.variable} ${sora.variable} ${bricolage.variable} ${caveat.variable} h-full antialiased`}
+      className={`${poppins.variable} ${geistMono.variable} ${syne.variable} ${libreFranklin.variable} ${sora.variable} ${bricolage.variable} ${caveat.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

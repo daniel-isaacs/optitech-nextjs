@@ -347,6 +347,23 @@ These global utilities reference bloom tokens and must be defined in `globals.cs
 | `.card-hover-tilt` | Isometric back-face visible at rest (solid 2-layer offset shadow in brand-hover). On hover: `perspective(900px) rotateX(-3deg) rotateY(5deg)` + deepened shadow. Reduced-motion: shadow only. |
 | `.logo-invert-dark` | `filter: brightness(0) invert(1)` in dark mode; removed in light mode |
 
+### Header Effects (consolidated set)
+
+The heading block (`OT_PrimaryTextBlock`) exposes a single **Header effect** select. Every option is token-derived (works on any brand/accent scheme) and handles both dark and light mode (mode-agnostic construction on the mode-constant brand/accent tokens, or an explicit `[data-theme="light"]` pass). All are motion-safe and keep a legible base letterform.
+
+| Marketer label | Class | Effect |
+|---|---|---|
+| Gradient | `.ot-fx-gradient` | Static brand→accent diagonal `background-clip:text` fill; light mode darkens both stops |
+| Animated Gradient | `.ot-depth-liquid` | The fill animated as a slow shimmer/sweep; freezes mid-sweep under reduced-motion |
+| 3D Depth | `.ot-depth-extrude` | Hard isometric 45° offset shadow stack; `[data-theme=light]` + `.bg-brand-fill` variants |
+| Embossed | `.ot-depth-emboss` | Carved-into-surface: opposing cavity shadow + rim highlight |
+| Outline | `.ot-depth-outline` | Hollow wire letterforms, brand stroke + `drop-shadow` glow |
+| Glitch | `.ot-fx-chromatic` | RGB channel-split fringe (brand/accent offsets) on an fg face; subtle motion-safe jitter |
+| Highlight | `.ot-fx-highlight` | Accent marker swipe behind the text (inline span, `box-decoration-break: clone`); fg-on-accent text |
+| Glow | `.ot-fx-glow` | Backlit aurora halo (brand + accent bloom `drop-shadow`); tightened on light grounds |
+
+The older `.display-gradient-*` / `.display-extrude` classes are superseded by this set and no longer exposed in the CMS.
+
 ---
 
 ## 10. Impeccable Collaboration

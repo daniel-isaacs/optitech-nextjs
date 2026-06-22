@@ -29,7 +29,7 @@ Success: a solution engineer re-themes the framework for a prospect's vertical i
 
 ## Brand Personality
 
-Adaptable, precise, quietly confident. The character is its range: the confidence to become any vertical convincingly rather than to impose one industry's energy. Voice is editorial and credible, never hype-driven. The default "OptiTech" theme is bold and forward-moving, but boldness is a setting, not the identity; craft, restraint, and theme-fidelity are the constants.
+Adaptable, precise, quietly confident. The character is its range: the confidence to become any vertical convincingly rather than to impose one industry's energy. Voice is editorial and credible, never hype-driven. The default theme is bold and forward-moving, but boldness is a setting, not the identity; craft, restraint, and theme-fidelity are the constants.
 
 ## Anti-references
 

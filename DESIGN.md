@@ -55,11 +55,11 @@ spacing:
 
 ## 1. Overview and Evolution
 
-Site Accelerator is a **configurable, multi-vertical site framework** built on the Optimizely SaaS CMS: one shared component library and token system that can be re-themed into a credible site for any vertical (financial services, healthcare, retail, legal, and more) without code changes. Its first incarnation was a single teal brand site; that look now survives only as the **default "OptiTech" theme** — one example skin among many, not the framework's identity.
+Site Accelerator is a **configurable, multi-vertical site framework** built on the Optimizely SaaS CMS: one shared component library and token system that can be re-themed into a credible site for any vertical (financial services, healthcare, retail, legal, and more) without code changes. Its first incarnation was a single teal brand site; that look now survives only as the **default theme** — one example skin among many, not the framework's identity.
 
 The design framework has two jobs:
 
-1. **Standalone quality** — the default "OptiTech" theme (mineral teal palette, Poppins type system, dark-first grounds) must look like a considered, professional design in its own right. Not a template, not a generic demo. Something that earns attention. Every vertical theme built on the framework must clear that same bar.
+1. **Standalone quality** — the default theme (mineral teal palette, Poppins type system, dark-first grounds) must look like a considered, professional design in its own right. Not a template, not a generic demo. Something that earns attention. Every vertical theme built on the framework must clear that same bar.
 
 2. **Rebranding surface** — everything visually distinctive is expressed through semantic CSS tokens (`--ot-brand`, `--ot-accent`, `--ot-canvas`, etc.) that the ThemeManager overrides via a CMS-injected `<style>` block. Swap the brand color and watch the entire site — bloom halos, gradient fills, button fills, blockquote borders, chromatic shadows — recalibrate automatically. (The `--ot-` token prefix is a historical name; it is theme-neutral and carries no brand meaning.)
 

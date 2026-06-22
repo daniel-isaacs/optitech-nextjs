@@ -52,7 +52,7 @@ Every new block component added to `components/blocks/` must also get a static d
    - Add an entry to `BLOCK_META` record
    - Write a `<YourBlockShowcase />` component with all meaningful `styleOptions` combinations
    - Add a `case 'your-block': return <YourBlockShowcase />` to the switch statement
-   - Use realistic placeholder copy consistent with the showcase's default "OptiTech" theme voice
+   - Use realistic, vertical-neutral placeholder copy consistent with the showcase's default theme voice
 
 2. **Showcase nav config** — `app/(site)/showcase/config.ts`
    - Add `{ label: 'Your Block', slug: 'your-block' }` to the `items` array inside the `'blocks'` category
@@ -64,7 +64,7 @@ This is a standing requirement — do not wait to be asked.
 
 Full design specs live in [PRODUCT.md](PRODUCT.md) and [DESIGN.md](DESIGN.md). Read both before any UI work.
 
-**What this is:** **Site Accelerator** — a configurable, vertical-agnostic site framework on the Optimizely SaaS CMS for standing up credible sites in any vertical (financial services, healthcare, retail, legal, …), primarily for pre-sales / solution-engineer demos. "OptiTech" (the mineral-teal look) is the **default theme**, not the identity: the token system is the brand, and any vertical re-skins it via ThemeManager. The `OT_` / `--ot-` prefix on content types and tokens is **historical and theme-neutral** — do not read brand meaning into it, and do not mass-rename it (renaming content-type keys is a breaking CMS migration).
+**What this is:** **Site Accelerator** — a configurable, vertical-agnostic site framework on the Optimizely SaaS CMS for standing up credible sites in any vertical (financial services, healthcare, retail, legal, …), primarily for pre-sales / solution-engineer demos. The mineral-teal look is the **default theme**, not the identity: the token system is the brand, and any vertical re-skins it via ThemeManager. The `OT_` / `--ot-` prefix on content types and tokens is **historical and theme-neutral** — do not read brand meaning into it, and do not mass-rename it (renaming content-type keys is a breaking CMS migration).
 
 **Register:** Brand (the design IS the product — configurable demo sites)
 **North Star:** "The Kinetic Editorial" — precision-crafted, editorial confidence, choreographed motion. This is the default theme's character and the craft bar **every vertical theme must meet**.

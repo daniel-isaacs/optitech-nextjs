@@ -259,7 +259,7 @@ export default function VideoBlock({
                 {/* Focus ring on the button itself */}
                 <span className="absolute inset-0 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2" />
 
-                {/* Teal square — sharp-cornered, OptiTech-native */}
+                {/* Brand square — sharp-cornered, default-theme-native */}
                 <span
                   className={[
                     "relative flex items-center justify-center w-16 h-16",

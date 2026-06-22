@@ -35,7 +35,7 @@ const FALLBACK_NAV: NavItem[] = [
 function normalizeNavHref(
   rawUrl: string | null | undefined,
   locale: Locale,
-  domain: string,       // request Host header, e.g. "optitech-nextjs-tim.vercel.app"
+  domain: string,       // request Host header, e.g. "your-site.vercel.app"
 ): string {
   if (!rawUrl) return '#'
 

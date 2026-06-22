@@ -1,5 +1,5 @@
 {
-  "name": "optitechnextjs",
+  "name": "site-accelerator",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "lint:tokens": "node scripts/check-color-literals.mjs",
-    "cms:push": "node --env-file=.env.$(git branch --show-current) node_modules/@optimizely/cms-cli/bin/run.js config push",
-    "cms:pull": "node --env-file=.env.$(git branch --show-current) node_modules/@optimizely/cms-cli/bin/run.js config pull"
+    "cms:push": "node --env-file=.env --env-file-if-exists=.env.local node_modules/@optimizely/cms-cli/bin/run.js config push",
+    "cms:pull": "node --env-file=.env --env-file-if-exists=.env.local node_modules/@optimizely/cms-cli/bin/run.js config pull"
   },
   "dependencies": {
     "@optimizely/cms-cli": "^2.0.0",

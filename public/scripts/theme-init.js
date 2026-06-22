@@ -2,7 +2,7 @@
  * Theme initialisation — runs before React hydration to prevent FOUC.
  *
  * Priority order:
- *   1. User's explicit preference stored in localStorage ("optitech-theme")
+ *   1. User's explicit preference stored in localStorage ("site-theme")
  *   2. Site default from CMS ThemeManager, passed as data-default-theme on <html>
  *   3. Hard fallback: "dark"
  *
@@ -17,7 +17,7 @@
 (function () {
   try {
     var h = document.documentElement
-    var stored = localStorage.getItem('optitech-theme')
+    var stored = localStorage.getItem('site-theme')
     var defaultMode = h.getAttribute('data-default-theme') || 'dark'
     h.setAttribute('data-theme', stored || defaultMode)
   } catch (e) {

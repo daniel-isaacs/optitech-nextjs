@@ -30,7 +30,7 @@ No test runner is configured yet.
 - **React 19.2.4**
 - **Tailwind CSS v4** — configured via `@import "tailwindcss"` in `globals.css`; theme tokens defined with `@theme inline` (v4 syntax, not `tailwind.config.*`)
 - **@optimizely/cms-sdk ^2.0.0** — headless CMS client; initialize with `GraphClient` using a single app key
-- **@optimizely/cms-cli ^2.0.0** — syncs TypeScript content type definitions to Optimizely CMS; needs `OPTIMIZELY_CMS_CLIENT_ID` / `OPTIMIZELY_CMS_CLIENT_SECRET` in `process.env` (the CLI does not load `.env` files itself — see [CLI sync](#cli-sync) for the per-branch workflow)
+- **@optimizely/cms-cli ^2.0.0** — syncs TypeScript content type definitions to Optimizely CMS; needs `OPTIMIZELY_CMS_CLIENT_ID` / `OPTIMIZELY_CMS_CLIENT_SECRET` in `process.env` (the CLI does not load `.env` files itself — see [CLI sync](#cli-sync) for the `.env` / `.env.local` workflow)
 
 ## Architecture
 
@@ -370,14 +370,17 @@ OPTIMIZELY_CMS_CLIENT_SECRET=
 - **The CLI does NOT load any `.env` file itself.** It reads only from `process.env` (see `node_modules/@optimizely/cms-cli/dist/service/config.js`). `next dev` auto-loads `.env.local`, but a bare `npx @optimizely/cms-cli config push` does not — so the credentials must already be exported in the shell, or loaded via `--env-file`. Editing `.env.local` and immediately running the CLI in the same shell will use whatever was loaded *before* the edit → stale creds → `401 invalid bearer token`.
 - **`OPTIMIZELY_CMS_URL` is NOT read by the CLI.** The host is taken from `--host` / `OPTIMIZELY_CMS_API_URL`, else defaults to the shared SaaS gateway `https://api.cms.optimizely.com` (`cmsRestClient.js`). The instance URL (`app-…cms.optimizely.com`) is the CMS UI host, not the API gateway — do not set it as `OPTIMIZELY_CMS_API_URL`. **Which instance the push targets is determined entirely by the `client_id`/`client_secret`.** Wrong creds → silently pushes to the wrong instance.
 
-**Per-branch instance workflow:** `.env*` files are gitignored, so switching branches does NOT swap them — you must manage them yourself. This repo keeps one credential file per branch/instance: `.env.<branch>` (gitignored) with a tracked `.env.<branch>.example` template documenting the set. Push/pull via the package scripts, which auto-select the file matching the current branch:
+**Env-file model:** the project uses a standard layered setup, all gitignored except the committed `.env.example` template:
+- **`.env`** — the site/project you develop against (the instance's Graph key + CMS client credentials + the deployed `NEXT_PUBLIC_SITE_URL`). To switch to a different instance, edit this file.
+- **`.env.local`** — machine-local overrides loaded *after* `.env` (wins on overlap). Holds only what differs locally, e.g. `NEXT_PUBLIC_SITE_URL=http://localhost:3000`.
+- **`.env.example`** — committed, documented, no secrets. Copy to `.env` to onboard: `cp .env.example .env`.
+
+The `cms:push` / `cms:pull` scripts feed these files to the CLI explicitly (the CLI does not read `.env` itself), mirroring Next.js precedence — `.env` then `.env.local`:
 ```bash
-yarn cms:push   # → node --env-file=.env.$(git branch --show-current) … config push
+yarn cms:push   # → node --env-file=.env --env-file-if-exists=.env.local … config push
 yarn cms:pull
 ```
-This guarantees the credentials match the checked-out branch regardless of stale shell exports. To point the **dev server** at the same instance, copy that file over `.env.local` (`cp .env.<branch> .env.local`). When creating a new branch tied to a new instance, add `.env.<newbranch>` (and a matching `.example`).
-
-To run the CLI ad-hoc against the current branch's instance: `node --env-file=.env.$(git branch --show-current) node_modules/@optimizely/cms-cli/bin/run.js config push` — the subcommand is `config push`, not just `push`.
+Because the push target is determined solely by the `client_id`/`client_secret` in `.env`, the instance you push to always matches the instance `.env` points at — no shell-export drift. To run the CLI ad-hoc: `node --env-file=.env --env-file-if-exists=.env.local node_modules/@optimizely/cms-cli/bin/run.js config push` — the subcommand is `config push`, not just `push`.
 
 **Critical:** Registering a content type in `cms/registry.ts` immediately adds it to every GraphQL query the SDK sends. If the type has not been pushed to the CMS Graph schema yet, the Next.js production build (`yarn build`) will fail with `HTTP 400: Unknown type "OT_YourBlock"`. The dev server (`yarn dev`) is not affected. Push the type before deploying.
 

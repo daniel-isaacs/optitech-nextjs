@@ -78,7 +78,7 @@ export async function getRequestDomain(): Promise<string> {
  * Returns the full base URL (protocol + host) for the current request.
  * Used to filter content queries to the correct Optimizely site channel,
  * matching what is stored as _metadata.url.base in Content Graph.
- * e.g. "https://optitech-nextjs-tim.vercel.app" or "http://localhost:3000"
+ * e.g. "https://your-site.vercel.app" or "http://localhost:3000"
  */
 export async function getRequestBaseUrl(): Promise<string> {
   try {
@@ -410,7 +410,7 @@ const _fetchAllThemeManagers = cache(async function fetchAllThemeManagers(locale
  *
  * Returning null on no match is intentional: an unrecognised domain (e.g. a
  * fresh Vercel deployment whose URL hasn't been registered in any ThemeManager
- * yet) should render with the default CSS token values ("generic OptiTech
+ * yet) should render with the default CSS token values ("generic default-theme
  * branding") rather than inheriting whatever theme was most recently published.
  * All callers (Header, Footer, layout) handle null gracefully via optional
  * chaining and hardcoded fallback values.

@@ -1,5 +1,5 @@
 /**
- * i18n configuration for OptiTech Next.js
+ * i18n configuration for Site Accelerator
  *
  * Four stock locales. Locale is detected from the URL prefix (/fr/, /de/, /es/).
  * The default locale (English) has no prefix — existing URLs are unaffected.

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 90" width="120" height="90" role="img" aria-labelledby="title desc">
-  <title id="title">OptiTech icon</title>
-  <desc id="desc">A circular AI/data-stream mark using only the OptiTech brand colors.</desc>
+  <title id="title">Site Accelerator icon</title>
+  <desc id="desc">A circular AI/data-stream mark using only the default theme brand colors.</desc>
   <defs>
     <linearGradient id="ot-mark-gradient" x1="0" y1="45" x2="120" y2="45" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="oklch(82% 0.19 145)"/>

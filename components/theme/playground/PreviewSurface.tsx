@@ -7,7 +7,7 @@ import type { ColorState, Mode } from './model'
 // style, so Tailwind utilities (bg-brand, text-fg, …) and the relative-color
 // bloom/gradient tokens all recalibrate inside this region without touching the
 // surrounding tool chrome. Content is intentionally generic — a stand-in product,
-// not OptiTech — so the theme is what you read, not the copy.
+// not a specific brand — so the theme is what you read, not the copy.
 
 function SwatchRow({ items }: { items: { label: string; value: string; onFg?: string }[] }) {
   return (

@@ -33,7 +33,7 @@ OPTIMIZELY_CMS_CLIENT_SECRET=  # OAuth client secret for content type sync (cms-
 
 # SEO / metadata
 NEXT_PUBLIC_SITE_URL=          # Canonical site origin — no trailing slash
-                               # (e.g. https://optitech-nextjs-tim.vercel.app)
+                               # (e.g. https://your-site.vercel.app)
                                # Used to build <link rel="canonical"> hrefs and
                                # JSON-LD pageUrl values. Falls back to the
                                # request Host header when not set (useful in dev).

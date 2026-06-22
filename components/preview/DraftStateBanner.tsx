@@ -7,7 +7,7 @@
  * Appears as a fixed strip across the top of the viewport. Collapses to a small
  * floating pill anchored to the bottom-left corner (clear of nav CTAs) when dismissed.
  *
- * Styled with the OptiTech design system tokens. Uses a warm amber signal to
+ * Styled with the Site Accelerator design system tokens. Uses a warm amber signal to
  * indicate "draft / unpublished" state — distinct from brand teal and signal green.
  */
 

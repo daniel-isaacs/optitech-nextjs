@@ -33,7 +33,7 @@ export const DEFAULT_CORNER_STYLE: CornerStyleKey = 'sharp'
 // non-themeable accent font for select areas — see app/layout.tsx.)
 export const PRIMARY_FONTS = {
   poppins:        { var: 'var(--font-poppins)',   label: 'Poppins (default)' },
-  libreFranklin:  { var: 'var(--font-primary-a)', label: 'Libre Franklin'    },
+  sourceSerif:    { var: 'var(--font-primary-a)', label: 'Source Serif'      },
   sora:           { var: 'var(--font-primary-b)', label: 'Sora'              },
   bricolage:      { var: 'var(--font-primary-c)', label: 'Bricolage Grotesque' },
 } as const

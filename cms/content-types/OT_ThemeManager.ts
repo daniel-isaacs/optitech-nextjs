@@ -134,7 +134,7 @@ export const OT_ThemeManager = contentType({
       sortOrder: 185,
       enum: [
         { value: 'poppins',       displayName: 'Poppins — geometric, friendly (default)' },
-        { value: 'libreFranklin', displayName: 'Libre Franklin — institutional, trustworthy' },
+        { value: 'sourceSerif', displayName: 'Source Serif — editorial, trustworthy (serif)' },
         { value: 'sora',          displayName: 'Sora — squared, technical' },
         { value: 'bricolage',     displayName: 'Bricolage Grotesque — expressive, characterful' },
       ],

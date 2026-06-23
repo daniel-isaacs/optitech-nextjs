@@ -93,6 +93,17 @@ function bareVersion(input: UpsertBlogInput) {
   }
 }
 
+// Returns the draft version number for a content key + locale (the version a
+// fresh create produced), used because create's 201 carries no version.
+async function getDraftVersion(key: string, locale: string, token: string): Promise<string | undefined> {
+  const res = await fetch(`${API}/content/${key}/versions`, { headers: { Authorization: `Bearer ${token}` } })
+  if (!res.ok) return undefined
+  const page = (await res.json()) as { items?: Array<{ version?: string; status?: string; locale?: string }> }
+  const items = page.items ?? []
+  const draft = items.find((i) => i.status === 'draft' && i.locale === locale) ?? items.find((i) => i.status === 'draft') ?? items[0]
+  return draft?.version
+}
+
 // Creates the OT_BlogPage (CMS assigns the key) on first publish, or adds a
 // fresh draft version to the existing key on re-publish (same page/URL), then
 // merge-patches the properties onto that draft version. Returns the action, the
@@ -121,25 +132,46 @@ export async function upsertBlogPage(input: UpsertBlogInput): Promise<UpsertResu
         }),
       })
 
-  const createText = await createRes.text()
-  if (!createRes.ok) return { action, status: createRes.status, body: createText }
+  if (!createRes.ok) {
+    return { action, status: createRes.status, body: await createRes.text() }
+  }
 
-  // create → NewContentNode { key, initialVersion: { version } };
-  // new-version → ContentVersion { key, version }.
-  const created = JSON.parse(createText || '{}')
-  const cmsKey: string = input.existingKey ?? created?.key
-  const version: number | string | undefined = created?.initialVersion?.version ?? created?.version
-  if (!cmsKey || version == null) {
-    return { action, status: createRes.status, body: `created but missing key/version: ${createText}`, cmsKey }
+  // Both create and new-version return 201 with an empty body; the resource is
+  // in the Location header:
+  //   create      → .../content/{key}
+  //   new-version → .../content/{key}/versions/{version}
+  const location = createRes.headers.get('location') ?? ''
+  const m = location.match(/\/content\/([^/?]+)(?:\/versions\/([^/?]+))?/)
+  const cmsKey = input.existingKey ?? m?.[1]
+  let version = m?.[2]
+
+  if (!cmsKey) {
+    return { action, status: createRes.status, body: `created but no key in Location: ${location}` }
+  }
+  // Create gives no version in Location — look up the draft version to patch.
+  if (!version) {
+    version = await getDraftVersion(cmsKey, input.locale, token)
+  }
+  if (!version) {
+    return { action, status: createRes.status, body: `created (${cmsKey}) but no draft version found`, cmsKey }
   }
 
   // 2. Apply the content via JSON Merge Patch on the draft version. skip-validation
   // references lets the federated graph:cmp_PublicImageAsset reference be set on
   // featuredImage (a contentReference whose allowedTypes is ['_image']).
+  // The v1 API represents each property value as a PropertyData object
+  // ({ value: … }), not a bare value. Most types take the bare value; richText
+  // (body) takes an { html } object. Drop undefineds.
+  const propertyData: Record<string, { value: unknown }> = {}
+  for (const [k, v] of Object.entries(input.properties)) {
+    if (v === undefined) continue
+    propertyData[k] = { value: k === 'body' ? { html: v } : v }
+  }
+
   const patchRes = await fetch(`${API}/content/${cmsKey}/versions/${version}`, {
     method: 'PATCH',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/merge-patch+json', ...SKIP_REF_VALIDATION },
-    body: JSON.stringify({ properties: input.properties }),
+    body: JSON.stringify({ properties: propertyData }),
   })
   return { action, status: patchRes.status, body: await patchRes.text(), cmsKey }
 }

@@ -1,18 +1,22 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { putDelivery, getLatestDelivery } from '@/lib/cmpPreviewStore'
+import { mapCmpPreviewToBlog } from '@/lib/cmpBlog'
+import { cmpConfigured, acknowledgePreview, completePreview } from '@/lib/cmpApi'
 
-// CMP blog preview webhook — PHASE 1: capture & inspect.
+// CMP blog preview webhook.
 //
-// Optimizely's Content Marketing Platform fires a webhook POST here when an
-// editor requests a preview. We don't yet know the payload shape, so this route
-// simply captures whatever arrives and makes it inspectable two ways:
-//   • POST — parses the body (JSON / form / raw), logs it to the server console
-//     (Vercel → Functions logs), stashes it in memory, and echoes it back so the
-//     CMP webhook-delivery log also shows the parsed payload.
-//   • GET  — returns the most recently captured payload as JSON, so you can open
-//     this URL in a browser to read the last delivery.
+// Optimizely CMP fires a POST here when an editor requests a preview. The flow:
+//   1. Verify the inbound `callback-secret` header against CMP_CALLBACK_SECRET.
+//   2. Persist the delivery (KV) keyed by preview_id so the render page can load
+//      it later — CMP caches the completed URL and fetches it on its own clock.
+//   3. POST `acknowledge` (with content_hash) — tells CMP we can render it.
+//   4. POST `complete` with keyed_previews → our /cmp-preview render URL, which
+//      CMP embeds in its preview pane (framing allowed in next.config.mjs).
 //
-// Once we know the shape, PHASE 2 swaps the echo response for a rendered blog
-// preview (map payload → the OT_BlogPage UI components).
+// GET returns the most recently captured delivery as JSON (inspection aid).
+//
+// If CMP_* env vars are absent the route still captures + stores (so the
+// renderer works in dev), and simply skips the acknowledge/complete round-trip.
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -24,12 +28,6 @@ type CapturedMeta = {
   query: Record<string, string>
   headers: Record<string, string>
 }
-
-// Best-effort in-memory capture of the most recent delivery. This survives only
-// within a single warm serverless instance — durable enough for active analysis,
-// not a persistent store. Cleared on cold start / redeploy.
-let lastPayload: unknown = null
-let lastMeta: CapturedMeta | null = null
 
 // Reads the request body without assuming a content type: tries JSON first, then
 // form encodings, then falls back to raw text (re-parsing as JSON in case the
@@ -66,7 +64,45 @@ async function readBody(req: NextRequest): Promise<unknown> {
   }
 }
 
+// Completes the CMP preview handshake: acknowledge, then hand CMP the render URL.
+// Best-effort — logs each callback's status/body so a body-shape mismatch is
+// visible immediately. Never throws into the webhook response path.
+async function runPreviewHandshake(mapped: NonNullable<ReturnType<typeof mapCmpPreviewToBlog>>, origin: string) {
+  const { previewId, contentHash, links } = mapped
+  if (!cmpConfigured()) {
+    console.log('[cmp-preview] CMP_* not configured — skipping acknowledge/complete')
+    return
+  }
+
+  try {
+    if (links?.acknowledge && contentHash) {
+      const ack = await acknowledgePreview(links.acknowledge, contentHash)
+      console.log(`[cmp-preview] acknowledge → ${ack.status} ${ack.body}`)
+    }
+
+    if (links?.complete && previewId) {
+      const renderUrl = `${origin}/cmp-preview?id=${encodeURIComponent(previewId)}`
+      // The dictionary key is the label shown in CMP's preview dropdown; the
+      // value is the preview URL as a plain string.
+      const done = await completePreview(links.complete, { 'Web Preview': renderUrl })
+      console.log(`[cmp-preview] complete (${renderUrl}) → ${done.status} ${done.body}`)
+    }
+  } catch (err) {
+    console.error('[cmp-preview] handshake failed:', err)
+  }
+}
+
 export async function POST(req: NextRequest) {
+  // ── 1. Verify the inbound webhook secret (when configured) ──────────────────
+  const expectedSecret = process.env.CMP_CALLBACK_SECRET
+  if (expectedSecret) {
+    const provided = req.headers.get('callback-secret')
+    if (provided !== expectedSecret) {
+      console.warn('[cmp-preview] rejected webhook — callback-secret mismatch')
+      return NextResponse.json({ ok: false, error: 'invalid callback secret' }, { status: 401 })
+    }
+  }
+
   const body = await readBody(req)
 
   const meta: CapturedMeta = {
@@ -77,18 +113,25 @@ export async function POST(req: NextRequest) {
     headers: Object.fromEntries(req.headers.entries()),
   }
 
-  lastPayload = body
-  lastMeta = meta
+  const previewId = (body as { data?: { preview_id?: string } })?.data?.preview_id
 
-  // Pretty-print to the server log so the full delivery is captured even if the
-  // caller ignores the response body.
+  // ── 2. Persist (durable) so the render page can load it later ───────────────
+  await putDelivery({ receivedAt: meta.receivedAt, meta, payload: body }, previewId)
+
   console.log('[cmp-preview] webhook received:\n' + JSON.stringify({ meta, body }, null, 2))
 
-  return NextResponse.json({ ok: true, captured: meta, payload: body })
+  // ── 3 + 4. Acknowledge + complete the preview back to CMP ───────────────────
+  const mapped = mapCmpPreviewToBlog(body)
+  if (mapped) {
+    await runPreviewHandshake(mapped, req.nextUrl.origin)
+  }
+
+  return NextResponse.json({ ok: true, previewId, captured: meta })
 }
 
 export async function GET() {
-  if (!lastPayload && !lastMeta) {
+  const latest = await getLatestDelivery()
+  if (!latest) {
     return NextResponse.json({
       ok: true,
       message:
@@ -100,7 +143,7 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     message: 'Most recently captured CMP webhook delivery.',
-    captured: lastMeta,
-    payload: lastPayload,
+    captured: latest.meta,
+    payload: latest.payload,
   })
 }

@@ -88,6 +88,13 @@
   --ot-btn-clear-fg:           var(--ot-fg);
 }
 
+/* In-page anchor scrolling — offset the scroll target so it clears the sticky
+ * header (Header.tsx: `sticky top-0`, ~80px tall) instead of hiding beneath it.
+ * Applies site-wide to every `#anchor` jump, e.g. the Rich Text TOC links. */
+html {
+  scroll-padding-top: 6rem;
+}
+
 [data-surface="light"] {
   /* Text tokens — mirror the [data-theme="light"] values so all text within
    * a light-patched section (headings, body, labels, muted) is readable

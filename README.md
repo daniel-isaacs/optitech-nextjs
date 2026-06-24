@@ -136,9 +136,11 @@ Beyond preview, this app can **create the blog in the CMS** when a CMP workflow 
 **Two extra requirements beyond the preview env vars:**
 
 - **`CMP_BLOG_CONTAINER_KEY`** — the CMS content key of the container/folder the blog pages should be created under. Find it in the CMS by opening the target folder (its key appears in the content URL / Management API). This is the one new front-end variable the publish flow needs.
-- **CMS Management API credentials** — `OPTIMIZELY_CMS_CLIENT_ID` / `OPTIMIZELY_CMS_CLIENT_SECRET` (the same creds the CLI uses), which must have **content-create** permission.
+- **CMS Management API credentials** — `OPTIMIZELY_CMS_CLIENT_ID` / `OPTIMIZELY_CMS_CLIENT_SECRET`, the **Manage Content** key pair from CMS **Settings → API Keys** (the same creds the CLI uses).
 
-If either is missing the webhook still captures the delivery but skips the write — visible as `cmsWrite.status === 'skipped'` in the response and the `[cmp-publish]` Vercel logs. **GET `/api/cmp-publish`** returns the most recent delivery plus the last write outcome.
+**Grant the API key access to the target subtree.** When this app creates a blog it acts as the *"user"* writing programmatically — so the Management API key must hold content-access rights on the branch of the CMS tree where blogs are created (the `CMP_BLOG_CONTAINER_KEY` container and its descendants), exactly as you would grant a human editor. In the CMS, open that container → **Access rights**, add the API key (its **ID** from Settings → API Keys → Manage Content, the GUID-like value — *not* the Graph app key) as a principal, and grant at least **Read, Create, Change** (Delete too if re-publish should replace; Publish/Administer are not needed — items are created as draft for review). Inherited rights from a parent item work as well. Without these grants the create call fails with a 403/permission error in the `[cmp-publish]` logs even though the credentials themselves are valid.
+
+If either the container key or the creds are missing the webhook still captures the delivery but skips the write — visible as `cmsWrite.status === 'skipped'` in the response and the `[cmp-publish]` Vercel logs. **GET `/api/cmp-publish`** returns the most recent delivery plus the last write outcome.
 
 **Setup:** add a second CMP webhook (event `asset_published`, target `https://<your-deployment>/api/cmp-publish`, same callback secret), set `CMP_BLOG_CONTAINER_KEY` + the CMS creds in Vercel, and redeploy.
 

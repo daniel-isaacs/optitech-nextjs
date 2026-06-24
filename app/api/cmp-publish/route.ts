@@ -8,17 +8,18 @@ import {
 import { mapCmpPreviewToBlog } from '@/lib/cmpBlog'
 import { cmsConfigured, upsertBlogPage, type BlogPageProperties } from '@/lib/cmsApi'
 
-// CMP publish webhook — PHASE 4, STEP 1: capture & inspect.
+// CMP publish webhook — PHASE 4: capture + create/update the blog.
 //
-// When a CMP workflow completes (publish), CMP fires a webhook here. We don't
-// yet know the event name or payload shape, so this route only captures: verify
-// the inbound `callback-secret`, log the full delivery to the server console
-// (Vercel → Functions logs, prefixed [cmp-publish]), stash the latest, and echo
-// it back. GET returns the most recent delivery as JSON for browser inspection.
+// When a CMP workflow completes (publish), CMP fires an `asset_published` webhook
+// here. We verify the inbound `callback-secret`, map the payload (reusing
+// lib/cmpBlog.ts), and create/update a draft OT_BlogPage via the CMS Management
+// API — updating the same page on re-publish (content_guid → CMS key). The full
+// delivery is logged to the server console (Vercel → Functions logs, prefixed
+// [cmp-publish]) and stashed; GET returns the most recent delivery as JSON for
+// browser inspection, including the `cmsWrite` outcome of the last write.
 //
-// Once we know the shape, the next step maps the fields (reusing lib/cmpBlog.ts)
-// and CREATES a draft OT_BlogPage via the CMS Management API — updating the same
-// page on re-publish (content_guid → CMS key), per the agreed design.
+// Requires CMP_BLOG_CONTAINER_KEY (target container) + the CMS creds; without
+// them the write is skipped (visible as cmsWrite.status === 'skipped').
 //
 // Reuses CMP_CALLBACK_SECRET — set the same callback secret on the CMP publish
 // webhook as on the preview webhook (or we can split to a second var later).
@@ -47,20 +48,30 @@ function slugify(text: string): string {
     .slice(0, 80)
 }
 
+// Outcome of the CMS write, surfaced in the webhook response (and the captured
+// delivery) so the branch taken is visible without trawling Vercel logs.
+type CmsWriteOutcome =
+  | { status: 'skipped'; reason: string }
+  | { status: 'created' | 'updated'; cmsKey?: string; httpStatus: number; detail?: string }
+  | { status: 'error'; detail: string }
+
 // Creates/updates a draft OT_BlogPage from the published CMP content. Best-effort
 // and fully logged — never throws into the webhook response. Skipped unless the
-// CMS creds + target container are configured.
-async function upsertBlogFromPublish(body: unknown): Promise<void> {
+// CMS creds + target container are configured. Returns a structured outcome.
+async function upsertBlogFromPublish(body: unknown): Promise<CmsWriteOutcome> {
   const containerKey = process.env.CMP_BLOG_CONTAINER_KEY
   if (!cmsConfigured() || !containerKey) {
-    console.log('[cmp-publish] CMS not configured (creds or CMP_BLOG_CONTAINER_KEY) — skipping blog create')
-    return
+    const reason = !cmsConfigured()
+      ? 'CMS creds not set (OPTIMIZELY_CMS_CLIENT_ID / OPTIMIZELY_CMS_CLIENT_SECRET)'
+      : 'CMP_BLOG_CONTAINER_KEY not set'
+    console.log(`[cmp-publish] skipping blog create — ${reason}`)
+    return { status: 'skipped', reason }
   }
 
   const mapped = mapCmpPreviewToBlog(body)
   if (!mapped || !mapped.contentGuid) {
     console.warn('[cmp-publish] payload had no mappable blog / content_guid — skipping')
-    return
+    return { status: 'skipped', reason: 'payload had no mappable blog / content_guid' }
   }
 
   const c = mapped.content
@@ -98,8 +109,19 @@ async function upsertBlogFromPublish(body: unknown): Promise<void> {
     console.log(
       `[cmp-publish] blog ${result.action} (cms ${result.cmsKey}, guid ${mapped.contentGuid}) → ${result.status} ${result.body}`,
     )
+
+    const ok = result.status >= 200 && result.status < 300
+    if (!ok) {
+      return { status: 'error', detail: `CMS ${result.status}: ${result.body}` }
+    }
+    return {
+      status: result.action,
+      cmsKey: result.cmsKey,
+      httpStatus: result.status,
+    }
   } catch (err) {
     console.error('[cmp-publish] blog upsert failed:', err)
+    return { status: 'error', detail: err instanceof Error ? err.message : String(err) }
   }
 }
 
@@ -152,19 +174,21 @@ export async function POST(req: NextRequest) {
     headers: Object.fromEntries(req.headers.entries()),
   }
 
-  await putPublishDelivery({ receivedAt: meta.receivedAt, meta, payload: body })
-
-  console.log('[cmp-publish] webhook received:\n' + JSON.stringify({ meta, body }, null, 2))
-
   const eventName = (body as { event_name?: string })?.event_name
 
   // asset_published fires when content is published to this webhook channel —
-  // that's our cue to create/update the draft OT_BlogPage in the CMS.
+  // that's our cue to create/update the draft OT_BlogPage in the CMS. Run it
+  // before capturing so the outcome is visible on the GET inspection endpoint.
+  let cmsWrite: CmsWriteOutcome | undefined
   if (eventName === 'asset_published') {
-    await upsertBlogFromPublish(body)
+    cmsWrite = await upsertBlogFromPublish(body)
   }
 
-  return NextResponse.json({ ok: true, eventName, captured: meta })
+  await putPublishDelivery({ receivedAt: meta.receivedAt, meta: { ...meta, cmsWrite }, payload: body })
+
+  console.log('[cmp-publish] webhook received:\n' + JSON.stringify({ meta, cmsWrite, body }, null, 2))
+
+  return NextResponse.json({ ok: true, eventName, cmsWrite, captured: meta })
 }
 
 export async function GET() {

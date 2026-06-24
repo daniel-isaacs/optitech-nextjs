@@ -93,6 +93,13 @@ CMP_CALLBACK_SECRET=           # must match the "callback secret" set on the CMP
 # Vercel, since CMP fetches the completed URL later on a possibly-different instance).
 KV_REST_API_URL=               # also accepts UPSTASH_REDIS_REST_URL
 KV_REST_API_TOKEN=             # also accepts UPSTASH_REDIS_REST_TOKEN
+
+# CMP → CMS publish (see "Publishing CMP content to the CMS" below). Required
+# ONLY for the publish flow — the preview flow above does not use it.
+CMP_BLOG_CONTAINER_KEY=        # CMS content key of the container/folder under which
+                               # OT_BlogPage entries are created (e.g. the "Blog"
+                               # folder). Without it the publish webhook captures
+                               # but skips the CMS write (cmsWrite.status === 'skipped').
 ```
 
 If `CMP_*` are unset the webhook still captures and the renderer still works locally — it just skips verification and the acknowledge/complete round-trip.
@@ -121,6 +128,25 @@ If `CMP_*` are unset the webhook still captures and the renderer still works loc
 | CMP API client (token, callbacks, asset resolve) | [`lib/cmpApi.ts`](lib/cmpApi.ts) |
 | Payload → `BlogPageContent` mapping | [`lib/cmpBlog.ts`](lib/cmpBlog.ts) |
 | Durable delivery store (Upstash REST + in-memory fallback) | [`lib/cmpPreviewStore.ts`](lib/cmpPreviewStore.ts) |
+
+### Publishing CMP content to the CMS
+
+Beyond preview, this app can **create the blog in the CMS** when a CMP workflow publishes it. CMP fires an `asset_published` webhook at **`/api/cmp-publish`**; the handler verifies the `callback-secret` (reuses `CMP_CALLBACK_SECRET`), maps the payload with the same [`lib/cmpBlog.ts`](lib/cmpBlog.ts), and creates a draft `OT_BlogPage` via the CMS Management API — updating the **same** page on re-publish (it persists a `content_guid → CMS key` mapping in the durable store, since the CMS assigns its own key on create).
+
+**Two extra requirements beyond the preview env vars:**
+
+- **`CMP_BLOG_CONTAINER_KEY`** — the CMS content key of the container/folder the blog pages should be created under. Find it in the CMS by opening the target folder (its key appears in the content URL / Management API). This is the one new front-end variable the publish flow needs.
+- **CMS Management API credentials** — `OPTIMIZELY_CMS_CLIENT_ID` / `OPTIMIZELY_CMS_CLIENT_SECRET` (the same creds the CLI uses), which must have **content-create** permission.
+
+If either is missing the webhook still captures the delivery but skips the write — visible as `cmsWrite.status === 'skipped'` in the response and the `[cmp-publish]` Vercel logs. **GET `/api/cmp-publish`** returns the most recent delivery plus the last write outcome.
+
+**Setup:** add a second CMP webhook (event `asset_published`, target `https://<your-deployment>/api/cmp-publish`, same callback secret), set `CMP_BLOG_CONTAINER_KEY` + the CMS creds in Vercel, and redeploy.
+
+| Concern | Location |
+|---|---|
+| Publish webhook (verify → map → create/update) | [`app/api/cmp-publish/route.ts`](app/api/cmp-publish/route.ts) |
+| CMS Management API client (`upsertBlogPage`) | [`lib/cmsApi.ts`](lib/cmsApi.ts) |
+| `content_guid → CMS key` mapping (idempotent re-publish) | [`lib/cmpPreviewStore.ts`](lib/cmpPreviewStore.ts) |
 
 ## OptiAdmin Dashboard
 

@@ -42,7 +42,7 @@ function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolea
         className={`block w-6 h-px flex-none ${onBrand ? 'bg-fg-on-brand/40' : 'bg-accent'}`}
         aria-hidden
       />
-      <span className={`text-label uppercase tracking-label font-semibold ${onBrand ? 'text-fg-on-brand/70' : 'text-accent'}`}>
+      <span className={`text-label uppercase tracking-label font-semibold ${onBrand ? 'text-fg-on-brand/80' : 'text-accent'}`}>
         {label}
       </span>
     </div>
@@ -294,68 +294,106 @@ function AtmosphericHeader({
 }
 
 // ─── Editorial Header ─────────────────────────────────────────────────────────
-// Split layout: headline fills the wide left column, topic pill and author
-// stack in the right sidebar. Surface background with a 3px brand bar at top.
+// Committed brand masthead. The headline rides a full brand-filled panel — the
+// design system's committed-color rule, where brand is a presence (30–60% of the
+// view), not an accent. Display-scale type in light fg-on-brand; a mono folio
+// line carries the dateline; a ghost year watermark bleeds out of the bottom-
+// right corner for editorial weight; a chromatic bloom shadow lifts the panel
+// off the canvas below it. fg-on-brand tokens are mode-constant, so the masthead
+// reads identically in dark and light page themes.
 
 function EditorialHeader({
   headline, subHeadline, topic,
   authorName, authorRole, authorPhotoUrl, published, readTime, initials,
   pa,
 }: HeaderProps) {
+  const year = published ? new Date(published).getFullYear() : null
+
   return (
-    <header className="bg-surface">
-      <div className="h-0.75 bg-brand" />
+    <header className="relative isolate overflow-hidden bg-brand text-fg-on-brand shadow-[0_28px_72px_var(--ot-bloom-brand-faint)]">
+      {/* Ghost dateline watermark — large, faint, bleeding past the corner */}
+      {year && (
+        <span
+          aria-hidden
+          className="pointer-events-none select-none absolute bottom-[-0.26em] right-[-0.03em] font-display font-extrabold leading-none tracking-[-0.04em] text-fg-on-brand/8"
+          style={{ fontSize: 'clamp(9rem, 24vw, 22rem)' }}
+        >
+          {year}
+        </span>
+      )}
 
-      <div className="mx-auto max-w-6xl px-md lg:px-xl pt-xl pb-xl">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-xl items-start">
+      {/* Specular top edge — light catching the lip of the brand panel */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-fg-on-brand/25" />
 
-          {/* Headline column */}
-          <div>
-            <h1 className="text-headline leading-headline tracking-headline text-fg text-balance" {...pa?.('headline')}>
-              {headline}
-            </h1>
-            {subHeadline && (
-              <p className="mt-md text-title leading-title text-fg-muted text-pretty" {...pa?.('subHeadline')}>
-                {subHeadline}
-              </p>
-            )}
-          </div>
+      <div className="relative mx-auto max-w-6xl px-md lg:px-xl pt-2xl pb-xl">
 
-          {/* Sidebar: topic pill + author stacked */}
-          <div className="flex flex-col gap-lg lg:border-l lg:border-fg/8 lg:pl-xl">
-            {topic && (
+        {/* Folio line: topic mark + mono dateline, masthead-style */}
+        {(topic || published || readTime) && (
+          <div className="flex flex-wrap items-center justify-between gap-md pb-lg motion-safe:animate-fade-in">
+            {topic ? (
               <div {...pa?.('topic')}>
-                <TopicPill topic={topic} />
+                <TopicMark topic={topic} onBrand />
               </div>
+            ) : (
+              <span />
             )}
-
-            {(authorName || published || readTime) && (
-              <div className="flex flex-col gap-sm" {...pa?.('authorRef')}>
-                {authorName && (
-                  <div className="flex items-center gap-sm">
-                    <div className="flex-none w-8 h-8 bg-canvas overflow-hidden flex items-center justify-center">
-                      {authorPhotoUrl ? (
-                        <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
-                      ) : initials ? (
-                        <span className="text-label font-semibold text-fg-muted">{initials}</span>
-                      ) : (
-                        <div className="w-full h-full bg-fg/5" aria-hidden />
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-label font-semibold text-fg leading-tight">{authorName}</p>
-                      {authorRole && <p className="text-label text-fg-muted">{authorRole}</p>}
-                    </div>
-                  </div>
-                )}
-                <div className="flex flex-col gap-xs text-label text-fg-muted">
-                  {published && <time dateTime={published}>{formatDate(published)}</time>}
-                  {readTime && <span {...pa?.('readTime')}>{readTime}</span>}
-                </div>
+            {(published || readTime) && (
+              <div className="flex items-center gap-sm font-mono text-label uppercase tracking-label text-fg-on-brand/80">
+                {published && <time dateTime={published}>{formatDate(published)}</time>}
+                {published && readTime && <span aria-hidden>·</span>}
+                {readTime && <span {...pa?.('readTime')}>{readTime}</span>}
               </div>
             )}
           </div>
-        </div>
+        )}
+
+        {/* Display-scale headline — the committed moment */}
+        <h1
+          className="text-headline lg:text-display leading-headline lg:leading-display tracking-headline lg:tracking-display font-extrabold text-fg-on-brand text-balance max-w-[15ch] motion-safe:animate-slide-up"
+          style={{ animationDelay: '60ms' }}
+          {...pa?.('headline')}
+        >
+          {headline}
+        </h1>
+
+        {subHeadline && (
+          <p
+            className="mt-lg text-title leading-title font-normal text-fg-on-brand/85 text-pretty max-w-(--ot-measure-tight) motion-safe:animate-slide-up"
+            style={{ animationDelay: '140ms' }}
+            {...pa?.('subHeadline')}
+          >
+            {subHeadline}
+          </p>
+        )}
+
+        {/* Byline on a hairline */}
+        {(authorName || authorRole) && (
+          <div
+            className="mt-xl pt-lg border-t border-fg-on-brand/20 flex items-center gap-md flex-wrap motion-safe:animate-fade-in"
+            style={{ animationDelay: '220ms' }}
+            {...pa?.('authorRef')}
+          >
+            {authorName && (
+              <div className="flex-none w-11 h-11 overflow-hidden bg-fg-on-brand/10 flex items-center justify-center">
+                {authorPhotoUrl ? (
+                  <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
+                ) : initials ? (
+                  <span className="text-label font-semibold text-fg-on-brand">{initials}</span>
+                ) : (
+                  <div className="w-full h-full bg-fg-on-brand/5" aria-hidden />
+                )}
+              </div>
+            )}
+            <div className="flex flex-col">
+              {authorName && (
+                <p className="text-title leading-title font-semibold text-fg-on-brand">{authorName}</p>
+              )}
+              {authorRole && (
+                <p className="text-label uppercase tracking-label font-semibold text-fg-on-brand/80">{authorRole}</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   )

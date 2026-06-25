@@ -125,13 +125,23 @@ function bareVersion(input: UpsertBlogInput) {
 
 // Returns the draft version number for a content key + locale (the version a
 // fresh create produced), used because create's 201 carries no version.
+//
+// The version listing is eventually consistent: immediately after create it can
+// come back empty, in which case the caller would skip the property patch and
+// leave a title-only draft. So retry with a short backoff until the version
+// shows up (typically the first attempt, occasionally the second).
 async function getDraftVersion(key: string, locale: string, token: string): Promise<string | undefined> {
-  const res = await fetch(`${API}/content/${key}/versions`, { headers: { Authorization: `Bearer ${token}` } })
-  if (!res.ok) return undefined
-  const page = (await res.json()) as { items?: Array<{ version?: string; status?: string; locale?: string }> }
-  const items = page.items ?? []
-  const draft = items.find((i) => i.status === 'draft' && i.locale === locale) ?? items.find((i) => i.status === 'draft') ?? items[0]
-  return draft?.version
+  const delaysMs = [0, 250, 500, 1000, 2000]
+  for (const delay of delaysMs) {
+    if (delay) await new Promise((r) => setTimeout(r, delay))
+    const res = await fetch(`${API}/content/${key}/versions`, { headers: { Authorization: `Bearer ${token}` } })
+    if (!res.ok) continue
+    const page = (await res.json()) as { items?: Array<{ version?: string; status?: string; locale?: string }> }
+    const items = page.items ?? []
+    const draft = items.find((i) => i.status === 'draft' && i.locale === locale) ?? items.find((i) => i.status === 'draft') ?? items[0]
+    if (draft?.version) return draft.version
+  }
+  return undefined
 }
 
 // Creates the OT_BlogPage (CMS assigns the key) on first publish, or adds a
@@ -180,14 +190,18 @@ export async function upsertBlogPage(input: UpsertBlogInput): Promise<UpsertResu
   let version = m?.[2]
 
   if (!cmsKey) {
-    return { action, status: createRes.status, body: `created but no key in Location: ${location}` }
+    // 500: create reported success but we can't locate the item to patch.
+    return { action, status: 500, body: `created but no key in Location: ${location}` }
   }
   // Create gives no version in Location — look up the draft version to patch.
   if (!version) {
     version = await getDraftVersion(cmsKey, input.locale, token)
   }
   if (!version) {
-    return { action, status: createRes.status, body: `created (${cmsKey}) but no draft version found`, cmsKey }
+    // The draft exists (title set) but we never found a version to patch, so the
+    // properties would be skipped — surface this as an error rather than a silent
+    // 201, otherwise the caller logs a title-only draft as a successful publish.
+    return { action, status: 500, body: `created (${cmsKey}) but no draft version found — properties not applied`, cmsKey }
   }
 
   // 2. Apply the content via JSON Merge Patch on the draft version. skip-validation

@@ -106,11 +106,11 @@ async function upsertBlogFromPublish(body: unknown): Promise<CmsWriteOutcome> {
       await setMappedCmsKey(mapped.contentGuid, result.cmsKey)
     }
 
+    const ok = result.status >= 200 && result.status < 300
     console.log(
-      `[cmp-publish] blog ${result.action} (cms ${result.cmsKey}, guid ${mapped.contentGuid}) → ${result.status} ${result.body}`,
+      `[cmp-publish] blog ${ok ? result.action : `${result.action} FAILED`} (cms ${result.cmsKey}, guid ${mapped.contentGuid}) → ${result.status} ${result.body}`,
     )
 
-    const ok = result.status >= 200 && result.status < 300
     if (!ok) {
       return { status: 'error', detail: `CMS ${result.status}: ${result.body}` }
     }

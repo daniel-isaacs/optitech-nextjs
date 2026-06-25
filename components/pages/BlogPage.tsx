@@ -136,8 +136,12 @@ type HeaderProps = {
 }
 
 // ─── Impact Header ────────────────────────────────────────────────────────────
-// Canvas background with horizontal ruled texture. Exaggerated hollow Syne
-// display type with ambient brand glow. Ghost ordinal watermark in brand color.
+// Canvas "cover statement". The headline runs wide and left-set at a restrained
+// display scale, carrying the chromatic channel-split treatment (faux-CMYK print
+// misregistration — the sanctioned .ot-fx-chromatic effect: a solid fg face with
+// offset brand/accent fringes). The only ground treatment is a faint ambient
+// brand bloom; the old ruled grid is gone. Distinct from the Editorial masthead
+// and the Atmospheric media header.
 
 function ImpactHeader({
   headline, subHeadline, topic,
@@ -145,49 +149,62 @@ function ImpactHeader({
   pa,
 }: HeaderProps) {
   return (
-    <header className="bg-canvas blog-impact-ruled-bg overflow-hidden">
-      <div className="relative">
-        <div className="mx-auto max-w-6xl px-md lg:px-xl pt-xl pb-xl">
-          {topic && (
-            <div className="mb-lg" {...pa?.('topic')}>
-              <TopicMark topic={topic} />
-            </div>
-          )}
+    <header className="relative overflow-hidden bg-canvas">
+      {/* Ambient brand bloom — soft top-left light source, replaces the ruled grid */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: 'radial-gradient(58% 75% at 28% 0%, oklch(from var(--ot-brand) l c h / 0.10) 0%, transparent 68%)' }}
+      />
 
-          <h1 className="blog-impact-hollow-text text-balance max-w-[12ch]" {...pa?.('headline')}>
-            {headline}
-          </h1>
+      <div className="relative mx-auto max-w-6xl px-md lg:px-xl pt-lg lg:pt-xl pb-xl">
+        {topic && (
+          <div className="mb-md motion-safe:animate-fade-in" {...pa?.('topic')}>
+            <TopicMark topic={topic} />
+          </div>
+        )}
 
-          {subHeadline && (
-            <p className="mt-lg text-title leading-title text-fg-muted max-w-(--ot-measure-tight) text-pretty" {...pa?.('subHeadline')}>
-              {subHeadline}
-            </p>
-          )}
+        <h1
+          className="ot-fx-chromatic font-extrabold text-[clamp(2.5rem,5.5vw,4.5rem)] leading-display tracking-display text-balance max-w-[16ch] motion-safe:animate-slide-up"
+          style={{ animationDelay: '60ms' }}
+          {...pa?.('headline')}
+        >
+          {headline}
+        </h1>
 
-          {(authorName || published || readTime) && (
-            <div className="mt-xl pt-lg border-t border-fg/8">
-              <div className="flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
-                {authorName && (
-                  <div className="flex-none w-9 h-9 overflow-hidden bg-surface flex items-center justify-center">
-                    {authorPhotoUrl ? (
-                      <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
-                    ) : initials ? (
-                      <span className="text-label font-semibold text-fg-muted">{initials}</span>
-                    ) : (
-                      <div className="w-full h-full bg-fg/5" aria-hidden />
-                    )}
-                  </div>
-                )}
-                <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
-                  {authorName && <span className="text-fg font-semibold">{authorName}</span>}
-                  {authorName && authorRole && <><span aria-hidden>·</span><span>{authorRole}</span></>}
-                  {published && <><span aria-hidden>·</span><time dateTime={published}>{formatDate(published)}</time></>}
-                  {readTime && <><span aria-hidden>·</span><span {...pa?.('readTime')}>{readTime}</span></>}
+        {subHeadline && (
+          <p
+            className="mt-lg text-title leading-title text-fg-muted max-w-(--ot-measure-tight) text-pretty motion-safe:animate-slide-up"
+            style={{ animationDelay: '140ms' }}
+            {...pa?.('subHeadline')}
+          >
+            {subHeadline}
+          </p>
+        )}
+
+        {(authorName || published || readTime) && (
+          <div className="mt-xl pt-lg border-t border-fg/8">
+            <div className="flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
+              {authorName && (
+                <div className="flex-none w-9 h-9 overflow-hidden bg-surface flex items-center justify-center">
+                  {authorPhotoUrl ? (
+                    <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
+                  ) : initials ? (
+                    <span className="text-label font-semibold text-fg-muted">{initials}</span>
+                  ) : (
+                    <div className="w-full h-full bg-fg/5" aria-hidden />
+                  )}
                 </div>
+              )}
+              <div className="flex flex-wrap items-center gap-x-sm gap-y-xs text-label text-fg-muted">
+                {authorName && <span className="text-fg font-semibold">{authorName}</span>}
+                {authorName && authorRole && <><span aria-hidden>·</span><span>{authorRole}</span></>}
+                {published && <><span aria-hidden>·</span><time dateTime={published}>{formatDate(published)}</time></>}
+                {readTime && <><span aria-hidden>·</span><span {...pa?.('readTime')}>{readTime}</span></>}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </header>
   )
@@ -294,13 +311,11 @@ function AtmosphericHeader({
 }
 
 // ─── Editorial Header ─────────────────────────────────────────────────────────
-// Committed brand masthead. The headline rides a full brand-filled panel — the
-// design system's committed-color rule, where brand is a presence (30–60% of the
-// view), not an accent. A mono folio line carries topic + dateline across the
-// full width; the headline runs wide at a restrained display scale; the
+// Surface-grounded masthead. A mono folio line carries topic + dateline across
+// the full width; the headline runs wide at a restrained display scale; the
 // standfirst and byline share the bottom rule side by side so the panel uses its
-// width instead of stacking tall. fg-on-brand tokens are mode-constant, so the
-// masthead reads identically in dark and light page themes.
+// width instead of stacking tall. A brand-hued bottom shadow separates the
+// surface panel from the canvas body below.
 
 function EditorialHeader({
   headline, subHeadline, topic,
@@ -310,10 +325,7 @@ function EditorialHeader({
   const hasByline = authorName || authorRole
 
   return (
-    <header className="relative bg-brand text-fg-on-brand shadow-[0_4px_16px_var(--ot-bloom-brand-faint)]">
-      {/* Specular top edge — light catching the lip of the brand panel */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-fg-on-brand/25" />
-
+    <header className="relative bg-surface text-fg shadow-[0_4px_16px_var(--ot-bloom-brand-faint)]">
       <div className="mx-auto max-w-6xl px-md lg:px-xl pt-lg lg:pt-xl pb-lg">
 
         {/* Folio line: topic mark + mono dateline, masthead-style */}
@@ -321,13 +333,13 @@ function EditorialHeader({
           <div className="flex flex-wrap items-center justify-between gap-md pb-md motion-safe:animate-fade-in">
             {topic ? (
               <div {...pa?.('topic')}>
-                <TopicMark topic={topic} onBrand />
+                <TopicMark topic={topic} />
               </div>
             ) : (
               <span />
             )}
             {(published || readTime) && (
-              <div className="flex items-center gap-sm font-mono text-label uppercase tracking-label text-fg-on-brand/80">
+              <div className="flex items-center gap-sm font-mono text-label uppercase tracking-label text-fg-muted">
                 {published && <time dateTime={published}>{formatDate(published)}</time>}
                 {published && readTime && <span aria-hidden>·</span>}
                 {readTime && <span {...pa?.('readTime')}>{readTime}</span>}
@@ -338,7 +350,7 @@ function EditorialHeader({
 
         {/* Headline — wide and restrained-display, runs the full column width */}
         <h1
-          className="text-[clamp(2rem,4.4vw,3.5rem)] leading-headline tracking-headline font-extrabold text-fg-on-brand text-balance motion-safe:animate-slide-up"
+          className="text-[clamp(2rem,4.4vw,3.5rem)] leading-headline tracking-headline font-extrabold text-fg text-balance motion-safe:animate-slide-up"
           style={{ animationDelay: '60ms' }}
           {...pa?.('headline')}
         >
@@ -348,12 +360,12 @@ function EditorialHeader({
         {/* Standfirst + byline share the bottom rule, side by side on desktop */}
         {(subHeadline || hasByline) && (
           <div
-            className="mt-lg lg:mt-xl pt-lg border-t border-fg-on-brand/20 flex flex-col gap-lg lg:flex-row lg:items-end lg:justify-between motion-safe:animate-slide-up"
+            className="mt-lg lg:mt-xl pt-lg border-t border-fg/10 flex flex-col gap-lg lg:flex-row lg:items-end lg:justify-between motion-safe:animate-slide-up"
             style={{ animationDelay: '140ms' }}
           >
             {subHeadline ? (
               <p
-                className="text-title leading-title font-normal text-fg-on-brand/85 text-pretty max-w-(--ot-measure-tight) lg:flex-1"
+                className="text-title leading-title font-normal text-fg-muted text-pretty max-w-(--ot-measure-tight) lg:flex-1"
                 {...pa?.('subHeadline')}
               >
                 {subHeadline}
@@ -365,22 +377,22 @@ function EditorialHeader({
             {hasByline && (
               <div className="flex items-center gap-md flex-none" {...pa?.('authorRef')}>
                 {authorName && (
-                  <div className="flex-none w-11 h-11 overflow-hidden bg-fg-on-brand/10 flex items-center justify-center">
+                  <div className="flex-none w-11 h-11 overflow-hidden bg-canvas flex items-center justify-center">
                     {authorPhotoUrl ? (
                       <img src={authorPhotoUrl} alt={authorName} className="w-full h-full object-cover" />
                     ) : initials ? (
-                      <span className="text-label font-semibold text-fg-on-brand">{initials}</span>
+                      <span className="text-label font-semibold text-fg-muted">{initials}</span>
                     ) : (
-                      <div className="w-full h-full bg-fg-on-brand/5" aria-hidden />
+                      <div className="w-full h-full bg-fg/5" aria-hidden />
                     )}
                   </div>
                 )}
                 <div className="flex flex-col">
                   {authorName && (
-                    <p className="text-title leading-title font-semibold text-fg-on-brand">{authorName}</p>
+                    <p className="text-title leading-title font-semibold text-fg">{authorName}</p>
                   )}
                   {authorRole && (
-                    <p className="text-label uppercase tracking-label font-semibold text-fg-on-brand/80">{authorRole}</p>
+                    <p className="text-label uppercase tracking-label font-semibold text-fg-muted">{authorRole}</p>
                   )}
                 </div>
               </div>
@@ -388,7 +400,6 @@ function EditorialHeader({
           </div>
         )}
       </div>
-
     </header>
   )
 }

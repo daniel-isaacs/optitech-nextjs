@@ -2249,62 +2249,6 @@ body {
   }
 }
 
-/* ── Blog: Impact — hollow Syne display type, brand extrude + ambient halo ───
- * Outline-only letterforms using -webkit-text-stroke in the brand colour.
- * A hard 2-step diagonal shadow in progressively darkened brand creates a
- * retro letterpress / risograph depth effect at display scale.
- * The faint radial halo keeps the letterforms glowing on the dark canvas.
- * blog-impact-index is the ghost ordinal watermark behind the headline.
- * blog-impact-ruled-bg lays a faint horizontal rule grid over the header.
- * ─────────────────────────────────────────────────────────────────────────── */
-.blog-impact-hollow-text {
-  font-family: var(--ot-font-display); /* Syne — the fixed accent font for select areas like this Impact header */
-  font-size: clamp(4.5rem, 13vw, 11rem);
-  font-weight: 400;
-  line-height: 0.88;
-  letter-spacing: -0.04em;
-  /* Light-mode default: hollow letterforms — brand stroke visible on light canvas */
-  color: transparent;
-  -webkit-text-stroke: 2px var(--ot-brand);
-  paint-order: stroke fill;
-  text-shadow:
-    3px  3px  0    oklch(from var(--ot-brand) calc(l * 0.52) c h),
-    6px  6px  0    oklch(from var(--ot-brand) calc(l * 0.35) c h / 0.72),
-    0    0    80px oklch(from var(--ot-brand) l c h / 0.28),
-    0    0   180px oklch(from var(--ot-brand) l c h / 0.12);
-}
-
-/* Dark-mode override: solid fg fill so letterforms stay legible against a dark
-   canvas regardless of how dark the brand colour is. Brand shifts to the
-   shadow/stroke role — thin outer edge + hard extrude + ambient halo. */
-[data-theme="dark"] .blog-impact-hollow-text {
-  color: var(--ot-fg);
-  -webkit-text-stroke: 1.5px oklch(from var(--ot-brand) l c h / 0.55);
-  text-shadow:
-    3px  3px  0    var(--ot-brand),
-    5px  5px  0    oklch(from var(--ot-brand) calc(l * 0.62) c h / 0.72),
-    0    0    80px oklch(from var(--ot-brand) l c h / 0.35),
-    0    0   180px oklch(from var(--ot-brand) l c h / 0.15);
-}
-
-.blog-impact-index {
-  font-size: clamp(10rem, 25vw, 20rem);
-  font-weight: 800;
-  opacity: 0.08;
-  line-height: 1;
-  color: var(--ot-brand);
-}
-
-.blog-impact-ruled-bg {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    oklch(from var(--ot-brand) l c h / 0.05) 0px,
-    oklch(from var(--ot-brand) l c h / 0.05) 1px,
-    transparent 1px,
-    transparent 56px
-  );
-}
-
 /* ── Blog: Atmospheric — gradient overlay for image/video background header ──
  * Heavy darkening gradient ensures the glass panel text is legible regardless
  * of the image/video content behind it. Top stays relatively open to show the

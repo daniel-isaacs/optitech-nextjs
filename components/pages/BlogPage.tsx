@@ -53,10 +53,10 @@ function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolea
 // Accent fill + fg-on-accent text. Used wherever the label sits over an image or
 // busy surface, where accent-as-text would be hard to read.
 
-function TopicPill({ topic }: { topic: string }) {
+function TopicPill({ topic, brandLabel = false }: { topic: string; brandLabel?: boolean }) {
   const label = TOPIC_LABELS[topic] ?? topic
   return (
-    <span className="inline-flex items-center px-sm py-0.75 bg-accent text-fg-on-accent text-label uppercase tracking-label font-semibold">
+    <span className={`inline-flex items-center px-sm py-0.75 bg-accent text-label uppercase tracking-label font-semibold ${brandLabel ? 'text-brand' : 'text-fg-on-accent'}`}>
       {label}
     </span>
   )
@@ -136,12 +136,12 @@ type HeaderProps = {
 }
 
 // ─── Impact Header ────────────────────────────────────────────────────────────
-// Canvas "cover statement". The headline runs wide and left-set at a restrained
-// display scale, carrying the chromatic channel-split treatment (faux-CMYK print
-// misregistration — the sanctioned .ot-fx-chromatic effect: a solid fg face with
-// offset brand/accent fringes). The only ground treatment is a faint ambient
-// brand bloom; the old ruled grid is gone. Distinct from the Editorial masthead
-// and the Atmospheric media header.
+// Canvas "cover statement". A full-bleed Syne (weight 500) display headline in
+// hollow outline letterforms (the sanctioned .ot-depth-outline effect — brand
+// stroke + soft glow) runs the full header width rather than the centered
+// container. Behind it, a chromatic bloom (brand + accent radial light anchored
+// to the edges, so the centre stays legible) gives the canvas depth. Distinct
+// from the Editorial masthead and the Atmospheric media header.
 
 function ImpactHeader({
   headline, subHeadline, topic,
@@ -150,14 +150,18 @@ function ImpactHeader({
 }: HeaderProps) {
   return (
     <header className="relative overflow-hidden bg-canvas">
-      {/* Ambient brand bloom — soft top-left light source, replaces the ruled grid */}
+      {/* Chromatic bloom — brand + accent radial light anchored to opposite edges */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
-        style={{ background: 'radial-gradient(58% 75% at 28% 0%, oklch(from var(--ot-brand) l c h / 0.10) 0%, transparent 68%)' }}
+        style={{
+          background:
+            'radial-gradient(62% 85% at 10% -8%, oklch(from var(--ot-brand) l c h / 0.26) 0%, transparent 58%), ' +
+            'radial-gradient(58% 82% at 96% 110%, oklch(from var(--ot-accent) l c h / 0.22) 0%, transparent 58%)',
+        }}
       />
 
-      <div className="relative mx-auto max-w-6xl px-md lg:px-xl pt-lg lg:pt-xl pb-xl">
+      <div className="relative px-md lg:px-xl pt-lg lg:pt-xl pb-xl">
         {topic && (
           <div className="mb-md motion-safe:animate-fade-in" {...pa?.('topic')}>
             <TopicMark topic={topic} />
@@ -165,8 +169,8 @@ function ImpactHeader({
         )}
 
         <h1
-          className="ot-fx-chromatic font-extrabold text-[clamp(2.5rem,5.5vw,4.5rem)] leading-display tracking-display text-balance max-w-[16ch] motion-safe:animate-slide-up"
-          style={{ animationDelay: '60ms' }}
+          className="ot-depth-outline font-syne text-[clamp(2.75rem,8vw,7rem)] leading-[0.95] tracking-[-0.02em] text-balance motion-safe:animate-slide-up"
+          style={{ fontVariationSettings: "'wght' 500", animationDelay: '60ms' }}
           {...pa?.('headline')}
         >
           {headline}
@@ -174,7 +178,7 @@ function ImpactHeader({
 
         {subHeadline && (
           <p
-            className="mt-lg text-title leading-title text-fg-muted max-w-(--ot-measure-tight) text-pretty motion-safe:animate-slide-up"
+            className="mt-lg text-title leading-title text-fg-muted max-w-(--ot-measure) text-pretty motion-safe:animate-slide-up"
             style={{ animationDelay: '140ms' }}
             {...pa?.('subHeadline')}
           >
@@ -333,7 +337,7 @@ function EditorialHeader({
           <div className="flex flex-wrap items-center justify-between gap-md pb-md motion-safe:animate-fade-in">
             {topic ? (
               <div {...pa?.('topic')}>
-                <TopicMark topic={topic} />
+                <TopicPill topic={topic} brandLabel />
               </div>
             ) : (
               <span />

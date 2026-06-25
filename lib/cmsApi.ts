@@ -44,6 +44,36 @@ export async function getCmsAccessToken(): Promise<string> {
   return cachedToken.token
 }
 
+// Enabled CMS locales, cached. The CMS rejects content created with a locale
+// that hasn't been provisioned (e.g. CMP emits en_US → en-US, but the instance
+// only has en/fr/es enabled), so we resolve incoming tags against this set.
+let cachedLocales: { locales: string[]; expiresAt: number } | null = null
+
+async function getEnabledCmsLocales(token: string): Promise<string[]> {
+  const now = Date.now()
+  if (cachedLocales && cachedLocales.expiresAt > now) return cachedLocales.locales
+  const res = await fetch(`${API}/locales`, { headers: { Authorization: `Bearer ${token}` } })
+  if (!res.ok) return [] // resolver falls back to the original tag on failure
+  const page = (await res.json()) as { items?: Array<{ key?: string; isEnabled?: boolean }> }
+  const locales = (page.items ?? []).filter((i) => i.isEnabled && i.key).map((i) => i.key as string)
+  cachedLocales = { locales, expiresAt: now + 10 * 60_000 }
+  return locales
+}
+
+// Resolve a BCP-47 tag to a locale that actually exists & is enabled in the CMS.
+// Exact match wins; otherwise fall back to a same-language locale (en-US → en),
+// then to en, then to the first enabled locale. Returns the original tag if the
+// locale list can't be fetched (let the CMS produce its own error).
+export async function resolveCmsLocale(locale: string, token: string): Promise<string> {
+  const enabled = await getEnabledCmsLocales(token)
+  if (enabled.length === 0) return locale
+  if (enabled.includes(locale)) return locale
+  const lang = locale.split('-')[0].toLowerCase()
+  return enabled.find((l) => l.toLowerCase() === lang)
+    ?? enabled.find((l) => l.split('-')[0].toLowerCase() === lang)
+    ?? (enabled.includes('en') ? 'en' : enabled[0])
+}
+
 export type BlogPageProperties = {
   blogStyle?: string
   headline: string
@@ -113,6 +143,10 @@ export async function upsertBlogPage(input: UpsertBlogInput): Promise<UpsertResu
   const token = await getCmsAccessToken()
   const authJson = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
   const action: 'created' | 'updated' = input.existingKey ? 'updated' : 'created'
+
+  // Map the incoming tag onto a locale the instance actually has enabled
+  // (e.g. CMP's en-US → en), so create doesn't 400 on an unprovisioned locale.
+  input = { ...input, locale: await resolveCmsLocale(input.locale, token) }
 
   // 1. Create the item (empty draft, key auto-assigned) or add a new draft
   //    version to the existing item.

@@ -390,8 +390,28 @@ function EditorialHeader({
         )}
       </div>
 
-      {/* Soft bleed — the brand panel melts into the page canvas below */}
-      <div aria-hidden className="h-[clamp(40px,6vw,80px)] bg-linear-to-b from-brand to-canvas" />
+      {/* Soft bleed — the brand panel melts into the page canvas below, using the
+          DividerBlock 'bleed' technique: a linear resolve carries the full width to
+          canvas (no hard shoulders), and a center-weighted radial brand seam (the
+          divider's elliptical top-anchored mask) dissolves the boundary as a soft
+          light source rather than a flat band. */}
+      <div
+        aria-hidden
+        className="relative w-full"
+        style={{
+          height: 'clamp(48px, 6vw, 88px)',
+          background: 'linear-gradient(to bottom, var(--ot-brand), var(--ot-canvas))',
+        }}
+      >
+        <span
+          className="absolute inset-0 block"
+          style={{
+            background: 'oklch(from var(--ot-brand) l c h / 0.35)',
+            WebkitMaskImage: 'radial-gradient(ellipse 60% 100% at 50% 0%, black 0%, transparent 100%)',
+            maskImage: 'radial-gradient(ellipse 60% 100% at 50% 0%, black 0%, transparent 100%)',
+          }}
+        />
+      </div>
     </header>
   )
 }

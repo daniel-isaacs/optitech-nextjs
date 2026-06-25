@@ -136,7 +136,7 @@ type HeaderProps = {
 }
 
 // ─── Impact Header ────────────────────────────────────────────────────────────
-// Canvas "cover statement". A full-bleed Syne (weight 500) display headline runs
+// Canvas "cover statement". A full-bleed Syne (weight 600) display headline runs
 // the full header width rather than the centered container. Behind it, a
 // chromatic bloom (brand + accent radial light anchored to the edges, so the
 // centre stays legible) gives the canvas depth. Distinct from the Editorial
@@ -169,7 +169,7 @@ function ImpactHeader({
 
         <h1
           className="font-syne text-fg text-[clamp(2.75rem,8vw,7rem)] leading-[0.95] tracking-[-0.02em] text-balance motion-safe:animate-slide-up"
-          style={{ fontVariationSettings: "'wght' 500", animationDelay: '60ms' }}
+          style={{ fontVariationSettings: "'wght' 600", animationDelay: '60ms' }}
           {...pa?.('headline')}
         >
           {headline}

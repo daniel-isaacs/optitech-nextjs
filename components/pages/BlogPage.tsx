@@ -299,9 +299,8 @@ function AtmosphericHeader({
 // view), not an accent. A mono folio line carries topic + dateline across the
 // full width; the headline runs wide at a restrained display scale; the
 // standfirst and byline share the bottom rule side by side so the panel uses its
-// width instead of stacking tall. The bottom edge melts into the page canvas via
-// a brand→canvas bleed rather than a hard line. fg-on-brand tokens are mode-
-// constant, so the masthead reads identically in dark and light page themes.
+// width instead of stacking tall. fg-on-brand tokens are mode-constant, so the
+// masthead reads identically in dark and light page themes.
 
 function EditorialHeader({
   headline, subHeadline, topic,
@@ -311,7 +310,7 @@ function EditorialHeader({
   const hasByline = authorName || authorRole
 
   return (
-    <header className="relative bg-brand text-fg-on-brand">
+    <header className="relative bg-brand text-fg-on-brand shadow-[0_4px_16px_var(--ot-bloom-brand-faint)]">
       {/* Specular top edge — light catching the lip of the brand panel */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-fg-on-brand/25" />
 
@@ -390,28 +389,6 @@ function EditorialHeader({
         )}
       </div>
 
-      {/* Soft bleed — the brand panel melts into the page canvas below, using the
-          DividerBlock 'bleed' technique: a linear resolve carries the full width to
-          canvas (no hard shoulders), and a center-weighted radial brand seam (the
-          divider's elliptical top-anchored mask) dissolves the boundary as a soft
-          light source rather than a flat band. */}
-      <div
-        aria-hidden
-        className="relative w-full"
-        style={{
-          height: 'clamp(48px, 6vw, 88px)',
-          background: 'linear-gradient(to bottom, var(--ot-brand), var(--ot-canvas))',
-        }}
-      >
-        <span
-          className="absolute inset-0 block"
-          style={{
-            background: 'oklch(from var(--ot-brand) l c h / 0.35)',
-            WebkitMaskImage: 'radial-gradient(ellipse 60% 100% at 50% 0%, black 0%, transparent 100%)',
-            maskImage: 'radial-gradient(ellipse 60% 100% at 50% 0%, black 0%, transparent 100%)',
-          }}
-        />
-      </div>
     </header>
   )
 }

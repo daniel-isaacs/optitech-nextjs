@@ -2249,6 +2249,18 @@ body {
   }
 }
 
+/* ── Accent-as-text/mark on a content ground ────────────────────────────────────
+ * The signal-green accent is high-lightness, so as text or a thin mark it fails
+ * contrast on a near-white light-mode canvas. Darken it on light grounds (deeper
+ * than the header-effect gradient's l-0.30, since this is small label text that
+ * needs AA); dark mode keeps the bright accent. Token-derived, so it follows any
+ * ThemeManager accent override.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.text-accent-ground { color: var(--ot-accent); }
+.bg-accent-ground   { background-color: var(--ot-accent); }
+[data-theme="light"] .text-accent-ground { color: oklch(from var(--ot-accent) calc(l - 0.40) c h); }
+[data-theme="light"] .bg-accent-ground   { background-color: oklch(from var(--ot-accent) calc(l - 0.40) c h); }
+
 /* ── Blog: Atmospheric — gradient overlay for image/video background header ──
  * Heavy darkening gradient ensures the glass panel text is legible regardless
  * of the image/video content behind it. Top stays relatively open to show the

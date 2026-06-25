@@ -39,10 +39,10 @@ function TopicMark({ topic, onBrand = false }: { topic: string; onBrand?: boolea
   return (
     <div className="inline-flex items-center gap-sm">
       <span
-        className={`block w-6 h-px flex-none ${onBrand ? 'bg-fg-on-brand/40' : 'bg-accent'}`}
+        className={`block w-6 h-px flex-none ${onBrand ? 'bg-fg-on-brand/40' : 'bg-accent-ground'}`}
         aria-hidden
       />
-      <span className={`text-label uppercase tracking-label font-semibold ${onBrand ? 'text-fg-on-brand/80' : 'text-accent'}`}>
+      <span className={`text-label uppercase tracking-label font-semibold ${onBrand ? 'text-fg-on-brand/80' : 'text-accent-ground'}`}>
         {label}
       </span>
     </div>
@@ -68,8 +68,8 @@ function TopicTag({ topic }: { topic: string }) {
   const label = TOPIC_LABELS[topic] ?? topic
   return (
     <div className="inline-flex items-center gap-xs">
-      <span className="block w-1.5 h-1.5 bg-accent flex-none" aria-hidden />
-      <span className="text-label uppercase tracking-label text-accent font-semibold">{label}</span>
+      <span className="block w-1.5 h-1.5 bg-accent-ground flex-none" aria-hidden />
+      <span className="text-label uppercase tracking-label text-accent-ground font-semibold">{label}</span>
     </div>
   )
 }
@@ -187,7 +187,7 @@ function ImpactHeader({
         )}
 
         {(authorName || published || readTime) && (
-          <div className="mt-xl pt-lg border-t border-fg/8">
+          <div className="mt-xl">
             <div className="flex items-center gap-md flex-wrap" {...pa?.('authorRef')}>
               {authorName && (
                 <div className="flex-none w-9 h-9 overflow-hidden bg-surface flex items-center justify-center">
@@ -330,7 +330,7 @@ function EditorialHeader({
 
   return (
     <header className="relative bg-surface text-fg shadow-[0_4px_16px_var(--ot-bloom-brand-faint)]">
-      <div className="mx-auto max-w-6xl px-md lg:px-xl pt-lg lg:pt-xl pb-lg">
+      <div className="px-md lg:px-xl pt-lg lg:pt-xl pb-lg">
 
         {/* Folio line: topic mark + mono dateline, masthead-style */}
         {(topic || published || readTime) && (

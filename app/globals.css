@@ -32,6 +32,7 @@
 
   /* Line heights */
   --leading-display:  var(--ot-leading-display);
+  --leading-display-safe: var(--ot-leading-display-safe);
   --leading-headline: var(--ot-leading-headline);
   --leading-subhead:  var(--ot-leading-subhead);
   --leading-title:    var(--ot-leading-title);
@@ -68,6 +69,7 @@
   /* Motion */
   --ease-kinetic: var(--ot-ease-kinetic);
   --ease-quick:   var(--ot-ease-quick);
+  --ease-smooth:  var(--ot-ease-smooth);
 
   /* Animations — apply with motion-safe: modifier to honour prefers-reduced-motion */
   --animate-fade-in:   fadeIn   var(--ot-dur-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -257,12 +259,12 @@ html {
   to   { grid-template-rows: 0fr; }
 }
 
-/* Content settle — the answer fades + rises into place as the row expands, so it
-   arrives rather than being unveiled by the height clip alone. translate/opacity
-   only (no layout property); synced to the row's dur-base kinetic open. */
+/* Content fade — the answer's opacity rides in lockstep with the row height
+   (same duration + ease, no offset, no translate) so open/close read as one
+   fluid motion rather than a height move plus a separate settle. */
 @keyframes accordionContentIn {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 @keyframes accordionContentOut {
   from { opacity: 1; }
@@ -270,20 +272,22 @@ html {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* ease-smooth (cubic-out) replaces the expo curve — expo front-loads ~60% of the
+     height in the first 10% of the timeline, which reads as a snap; cubic-out opens
+     gently and decelerates evenly. Same curve + duration both directions for a
+     cohesive open/close pair. */
   .animate-accordion-open {
-    animation: accordionOpen var(--ot-dur-base) var(--ot-ease-kinetic) forwards;
+    animation: accordionOpen var(--ot-dur-base) var(--ot-ease-smooth) forwards;
   }
   .animate-accordion-close {
-    animation: accordionClose 0.26s var(--ot-ease-quick) forwards; /* dur-exempt: 260ms — nearest quick(200)/base(320) Δ60ms */
+    animation: accordionClose var(--ot-dur-base) var(--ot-ease-smooth) forwards;
   }
 
-  /* Answer settle — runs off the parent's open/closed state so it stays in lockstep
-     with the row expansion. A 60ms lead-in lets the panel begin opening first. */
   [data-radix-accordion-content][data-state='open'] .acc-answer-reveal {
-    animation: accordionContentIn var(--ot-dur-base) var(--ot-ease-kinetic) 60ms both;
+    animation: accordionContentIn var(--ot-dur-base) var(--ot-ease-smooth) both;
   }
   [data-radix-accordion-content][data-state='closed'] .acc-answer-reveal {
-    animation: accordionContentOut var(--ot-dur-fast) var(--ot-ease-quick) both;
+    animation: accordionContentOut var(--ot-dur-base) var(--ot-ease-smooth) both;
   }
 }
 

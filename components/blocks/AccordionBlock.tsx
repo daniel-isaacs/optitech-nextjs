@@ -141,10 +141,10 @@ const questionCva = cva(
 const iconCva = cva(
   [
     'shrink-0 mt-0.5',
-    // Rotate +45° → × when open. Kinetic ease from design system.
+    // Rotate +45° → × when open, on the same smooth curve as the row reveal.
     'transition-transform duration-300',
     'group-data-[state=open]:rotate-45',
-    '[transition-timing-function:var(--ot-ease-kinetic)]',
+    '[transition-timing-function:var(--ot-ease-smooth)]',
   ].join(' '),
   {
     variants: {

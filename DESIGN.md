@@ -148,13 +148,21 @@ Dark mode is the default. `data-theme="dark"` on `<html>` is set before first pa
 
 ## 4. Typography
 
-**Three fonts, one system:**
+**One themeable primary family + fixed-role companions.**
 
-| Variable | Font | Role |
+The **primary family** drives the entire hierarchy (display → body → label). It is **Poppins by default and swappable per vertical** through the ThemeManager "Primary Font" axis, which overrides the `--ot-font-sans` token (Tailwind `font-sans`). Every primary ships the same 300–800 weight ladder, so all type levels hold across a swap with no FOUT (`display: swap` + build-time `next/font`).
+
+| Token / axis value | Font | Role |
 |---|---|---|
-| `--font-sans` | Poppins | Everything. Display, headline, title, body, label, buttons, nav. |
-| `--font-syne` | Syne (variable) | Accent moments only. Section openers, pull quotes. Once per viewport max. |
+| `--ot-font-sans` (default) | Poppins | Primary — the whole hierarchy: display, headline, title, body, label, buttons, nav. |
+| Primary axis → `--font-primary-a` | Source Serif 4 | Primary alternate — institutional / editorial pole (medical, financial, legal). The one sanctioned serif. |
+| Primary axis → `--font-primary-b` | Sora | Primary alternate — precise / engineered pole (technical brands). |
+| Primary axis → `--font-primary-c` | Bricolage Grotesque | Primary alternate — expressive / character pole. |
+| `--font-syne` | Syne (variable) | Fixed accent/display only. Section openers, pull quotes. Once per viewport max. Not themeable. |
 | `--font-mono` | Geist Mono | Code samples, technical labels, data readouts. |
+| `--ot-font-signature` | Caveat 400 | Signature only — the QuoteBlock LaserSignature. Never general copy. |
+
+**Component authors:** reference `--ot-font-sans` (or `font-sans`) for the primary family — never a raw `--font-poppins`, which bypasses the theme axis. **Serif is permitted only** as the Source Serif primary selected through the axis; never introduce another serif or hardcode a family.
 
 ### Scale and hierarchy
 

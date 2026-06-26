@@ -1,7 +1,7 @@
 import '@/lib/optimizely'
 import '@/cms/registry'
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Caveat, Geist_Mono, Poppins, Sora, Source_Serif_4, Syne } from "next/font/google";
+import { Bricolage_Grotesque, Caveat, Geist_Mono, Monoton, Poppins, Sora, Source_Serif_4, Syne } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionObserver } from "@/components/providers/MotionObserver";
@@ -76,6 +76,17 @@ const caveat = Caveat({
   display: "swap",
 });
 
+// Neon font — Monoton 400: a multi-line ("railroad") retro display face whose
+// glyphs are drawn as parallel strokes, the foundation of the Studio-54 neon
+// look. Single weight, display-only. Used exclusively by the PrimaryText "neon"
+// header effect (same scoped pattern as Caveat for the QuoteBlock signature).
+const monoton = Monoton({
+  variable: "--font-monoton",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
+
 // Dynamic metadata from the CMS ThemeManager.
 // getSiteSettings is React cache()-wrapped so this share the same fetch
 // as the RootLayout body below — no extra round-trip per request.
@@ -134,7 +145,7 @@ export default async function RootLayout({
       // client/server diff when localStorage overrides the CMS default.
       data-default-theme={defaultMode}
       data-theme={defaultMode}
-      className={`${poppins.variable} ${geistMono.variable} ${syne.variable} ${sourceSerif.variable} ${sora.variable} ${bricolage.variable} ${caveat.variable} h-full antialiased`}
+      className={`${poppins.variable} ${geistMono.variable} ${syne.variable} ${sourceSerif.variable} ${sora.variable} ${bricolage.variable} ${caveat.variable} ${monoton.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

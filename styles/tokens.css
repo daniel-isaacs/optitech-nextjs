@@ -41,6 +41,7 @@
   --ot-font-mono:      var(--font-geist-mono), ui-monospace, monospace;
   --ot-font-syne:      var(--font-syne), system-ui, sans-serif; /* Syne variable (wght 400–800) — accent display moments */
   --ot-font-signature: var(--font-signature), cursive;          /* Caveat 400 — QuoteBlock laser signature (thin handwriting) */
+  --ot-font-neon:      var(--font-monoton), cursive;             /* Monoton 400 — PrimaryText "neon" effect only (multi-line retro tube) */
 
   /* Display / accent role font — FIXED to Syne (no longer themeable). Drives the
    * `.font-display` accent utility for select areas (e.g. the Impact blog). The
@@ -138,9 +139,10 @@
   --ot-dur-breathe: calc(9s * var(--ot-motion-scale));
   --ot-dur-liquid:  calc(8s * var(--ot-motion-scale));
 
-  /* ── Monoton display weight ──────────────────────────────────────────────
-   * Monoton is a single-weight font (Regular 400 only — no variable axis).
-   * Always renders at 400 regardless of font-weight value.
+  /* ── Accent display weight ────────────────────────────────────────────────
+   * Default weight for the Syne accent role. (Monoton, used only by the neon
+   * effect via --ot-font-neon, is likewise single-weight 400 — it always renders
+   * at 400 regardless of any font-weight set on the heading.)
    * ──────────────────────────────────────────────────────────────────────── */
   --ot-weight-syne: 400;
 

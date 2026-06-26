@@ -1016,44 +1016,50 @@ body {
   background-image: linear-gradient(120deg, var(--ot-fg-on-brand) 0%, var(--ot-accent) 100%);
 }
 
-/* NEON — retro-disco glowing-tube headline. Reference lane: 1970s disco signage
-   (Studio 54 / holiday-disco invite), deliberately NOT cold cyberpunk/Web3 neon.
-   Kept clear of that prohibited lane by: a DUAL-tone bloom drawn from the theme's
-   OWN brand+accent (re-skins per vertical, never a fixed cyber-cyan), a warm
-   white-hot tube core, soft layered halos instead of one hard ring, and a gas-
-   tube buzz flicker. Ground is the tinted dark canvas, never #000. One optional
-   headline effect, not the page identity. Best at headline scale and up. */
+/* NEON — retro multi-line tube headline. Reference lane: 1970s disco signage
+   (Studio 54), deliberately NOT cold cyberpunk/Web3 neon. The look comes from the
+   FONT: Monoton (--ot-font-neon) draws each glyph as parallel "railroad" strokes,
+   which CSS alone can't fake on Poppins. Those thin strokes are FILLED with a lit
+   tube color (brightened core via the first shadow), then bloomed with a dual-tone
+   brand+accent halo — kept off the Web3 lane because the hues are the theme's own
+   (re-skins per vertical), the ground is the tinted canvas (never #000), and a
+   gas-tube flicker buzzes it. Single optional effect, short statement headlines.
+   font-synthesis-weight:none stops the browser faux-bolding Monoton's 400-only
+   face (a heading may request 800), which would clot the parallel strokes shut. */
 .ot-fx-neon {
-  color: oklch(from var(--ot-accent) 0.97 0.04 h);            /* warm white-hot core */
+  font-family: var(--ot-font-neon);
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  color: oklch(from var(--ot-brand) 0.72 c h);                 /* lit brand tube   */
   text-shadow:
-    0 0 0.02em oklch(from var(--ot-accent) 0.97 0.04 h),        /* crisp tube edge   */
-    0 0 0.09em oklch(from var(--ot-accent) 0.97 0.04 h / 0.90), /* core bleed        */
-    0 0 0.18em oklch(from var(--ot-brand)  l c h / 0.95),       /* inner glow brand  */
-    0 0 0.42em oklch(from var(--ot-brand)  l c h / 0.68),       /* mid bloom brand   */
-    0 0 0.72em oklch(from var(--ot-accent) l c h / 0.60),       /* outer bloom accent*/
-    0 0 1.15em oklch(from var(--ot-accent) l c h / 0.42);       /* far halo accent   */
+    0 0 0.03em oklch(from var(--ot-brand) 0.97 calc(c * 0.5) h), /* hot gas core    */
+    0 0 0.10em oklch(from var(--ot-brand)  l c h / 0.95),        /* inner brand glow */
+    0 0 0.28em oklch(from var(--ot-brand)  l c h / 0.72),        /* mid brand bloom  */
+    0 0 0.60em oklch(from var(--ot-accent) l c h / 0.55),        /* outer accent halo*/
+    0 0 1.05em oklch(from var(--ot-accent) l c h / 0.40);        /* far accent halo  */
 }
 
-/* Light mode: a white-hot core disappears on white, so the FACE becomes the
-   (slightly deepened, AA-legible) brand and the dual-tone bloom softens into a
-   daylight-signage haze. Vivid and readable on canvas, not literal tube-neon. */
+/* Light mode: tube-neon can't read on white, so the multi-line Monoton strokes
+   become a deepened, AA-legible brand with a soft accent haze — a vivid retro
+   daylight sign rather than a lit tube. */
 [data-theme="light"] .ot-fx-neon {
-  color: oklch(from var(--ot-brand) calc(l * 0.82) calc(c * 1.05) h);
+  color: oklch(from var(--ot-brand) calc(l * 0.80) calc(c * 1.05) h);
   text-shadow:
-    0 0 0.04em oklch(from var(--ot-brand)  l c h / 0.35),
-    0 0 0.18em oklch(from var(--ot-accent) l c h / 0.42),
-    0 0 0.40em oklch(from var(--ot-accent) l c h / 0.26);
+    0 0 0.05em oklch(from var(--ot-accent) l c h / 0.40),
+    0 0 0.20em oklch(from var(--ot-accent) l c h / 0.28);
 }
 
-/* Brand-filled ground: a brand glow would vanish into the brand fill, so the core
-   is fg-on-brand white-hot and the whole bloom runs in accent for contrast. */
+/* Brand-filled ground: brand strokes vanish into the brand fill, so the tube runs
+   fg-on-brand white-hot with an all-accent bloom for contrast. */
 .bg-brand-fill .ot-fx-neon {
-  color: oklch(from var(--ot-fg-on-brand) 0.97 c h);
+  color: oklch(from var(--ot-fg-on-brand) 0.92 c h);
   text-shadow:
-    0 0 0.02em oklch(from var(--ot-fg-on-brand) 0.97 c h),
-    0 0 0.10em oklch(from var(--ot-accent) l c h / 0.95),
-    0 0 0.34em oklch(from var(--ot-accent) l c h / 0.70),
-    0 0 0.75em oklch(from var(--ot-accent) l c h / 0.50);
+    0 0 0.03em oklch(from var(--ot-fg-on-brand) 0.98 c h),
+    0 0 0.12em oklch(from var(--ot-accent) l c h / 0.90),
+    0 0 0.40em oklch(from var(--ot-accent) l c h / 0.60),
+    0 0 0.85em oklch(from var(--ot-accent) l c h / 0.45);
 }
 
 /* Gas-tube buzz: steady, with two quick irregular flicker bursts per loop.

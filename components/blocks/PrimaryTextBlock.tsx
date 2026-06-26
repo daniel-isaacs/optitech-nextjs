@@ -150,18 +150,10 @@ export default function PrimaryTextBlock({
   // Highlight is an inline marker swipe, so it lives on a span hugging the text;
   // every other effect applies directly to the heading element.
   const isHighlight = effect === 'highlight'
-  // Neon cycles a multi-color tube per letter (brand/accent-derived), which needs
-  // each character in its own span for nth-child coloring. The heading carries an
-  // aria-label so assistive tech reads the whole word, not the span soup.
-  const isNeon = effect === 'neon'
 
   const headingChildren = isHighlight
     ? <span className={effectClass}>{headline}</span>
-    : isNeon
-      ? Array.from(headline).map((ch, i) => (
-          <span key={i} className="neon-ch">{ch}</span>
-        ))
-      : headline
+    : headline
 
   return (
     <section className={sectionCva({ color, size })}>
@@ -177,7 +169,6 @@ export default function PrimaryTextBlock({
               isHighlight ? ' mb-sm' : effectClass ? ` ${effectClass}` : ''
             }`}
             {...(effect === 'animatedGradient' ? { 'data-pause-offscreen': '' } : {})}
-            {...(isNeon ? { 'aria-label': headline } : {})}
             {...pa('headline')}
           >
             {headingChildren}

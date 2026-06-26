@@ -2170,6 +2170,25 @@ body {
   animation: tab-panel-in var(--ot-dur-quick) ease-out forwards;
 }
 
+/* ── Tab trigger scroll strip — edge-fade overflow affordance ──────────────────
+ * The mobile trigger row scrolls horizontally with a hidden scrollbar; without a
+ * cue, off-canvas tabs are invisible. A mask-image feathers whichever edge still
+ * has hidden content — --fade-l / --fade-r are set from scroll position in JS
+ * (TabsBlock.client). When nothing overflows both are 0px and the mask is inert,
+ * so the desktop / side layouts are unaffected. Same #000/transparent alpha-mask
+ * idiom as the panel top-edge feather above.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.tab-scroller {
+  --tab-fade-size: 2.5rem;
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-scroller { scroll-behavior: auto; }
+}
+
 /* ── Signal Button — kinetic fill sweep ───────────────────────────────────────
  * ::before is the teal fill that sweeps left-to-right on hover/focus.
  * Inner content is z-10 in JSX; text color transitions via group-hover:.

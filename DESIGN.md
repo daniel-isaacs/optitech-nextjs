@@ -346,6 +346,7 @@ These global utilities reference bloom tokens and must be defined in `globals.cs
 | `.display-extrude` | Isometric extrusion — fg face + accent rim stroke + 12-layer 45° shadow stack. Max depth 0.42em. Animated via `--display-depth` on entrance. |
 | `.card-hover-tilt` | Isometric back-face visible at rest (solid 2-layer offset shadow in brand-hover). On hover: `perspective(900px) rotateX(-3deg) rotateY(5deg)` + deepened shadow. Reduced-motion: shadow only. |
 | `.logo-invert-dark` | `filter: brightness(0) invert(1)` in dark mode; removed in light mode |
+| `.tab-scroller` | Horizontal tab-trigger strip. Dynamic `mask-image` edge-feather (driven by `--fade-l`/`--fade-r` set from scroll position) signals off-canvas tabs; inert when nothing overflows. Pairs with scroll-snap + JS `scrollIntoView` keeping the active trigger in view; `scroll-behavior` is reduced-motion gated. |
 
 ### Header Effects (consolidated set)
 

@@ -75,6 +75,11 @@
   --animate-fade-in:   fadeIn   var(--ot-dur-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-slide-up:  slideUp  var(--ot-dur-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-hero-zoom: heroZoom var(--ot-dur-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Accordion row reveal. MUST be registered here so the `animate-accordion-*`
+     utilities exist and compose with the component's motion-safe: + data-[state]:
+     variants; without this the height snaps instantly and ignores motion scale. */
+  --animate-accordion-open:  accordionOpen  var(--ot-dur-accordion) var(--ot-ease-accordion) forwards;
+  --animate-accordion-close: accordionClose var(--ot-dur-accordion) var(--ot-ease-accordion) forwards;
 }
 
 /* ── Button surface context tokens ───────────────────────────────────────────
@@ -272,16 +277,10 @@ html {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* ease-accordion (ease-in-out cubic) + the slower dur-accordion give a smooth,
-     symmetric reveal: it eases in, eases out, and never snaps. Same curve +
-     duration both directions for a cohesive open/close pair. */
-  .animate-accordion-open {
-    animation: accordionOpen var(--ot-dur-accordion) var(--ot-ease-accordion) forwards;
-  }
-  .animate-accordion-close {
-    animation: accordionClose var(--ot-dur-accordion) var(--ot-ease-accordion) forwards;
-  }
-
+  /* Row reveal itself is the `animate-accordion-open/close` utilities registered in
+     @theme above (ease-accordion + the slower dur-accordion: a smooth, symmetric
+     ease that never snaps). The answer fade below rides the same duration + ease so
+     the height move and the content settle read as one motion. */
   [data-radix-accordion-content][data-state='open'] .acc-answer-reveal {
     animation: accordionContentIn var(--ot-dur-accordion) var(--ot-ease-accordion) both;
   }

@@ -122,7 +122,10 @@ const triggerCva = cva(
 )
 
 const questionCva = cva(
-  'text-title font-semibold leading-snug tracking-tight flex-1 text-balance transition-colors duration-150',
+  // Title-scale tokens (leading-title / tracking-title) match every other title in
+  // the system; the old leading-snug / tracking-tight were generic Tailwind defaults
+  // that read cramped at 20px Poppins and diverged from the type scale.
+  'text-title font-semibold leading-title tracking-title flex-1 text-balance transition-colors duration-150',
   {
     variants: {
       color: {
@@ -317,7 +320,10 @@ function AccordionItemNode({ value, item, color, borderStyle }: ItemNodeProps) {
           Inner div has min-h-0 + overflow-hidden to complete the grid-rows reveal trick. */}
       <RadixAccordion.Content className={contentClasses}>
         <div className="min-h-0 overflow-hidden">
-          <p className={answerCva({ color, borderStyle })}>
+          {/* acc-answer-reveal: content settles in (fade + rise) as the row expands,
+              so the answer arrives rather than being unveiled by the height clip alone.
+              Motion-safe; reduced-motion users see it immediately. */}
+          <p className={cn(answerCva({ color, borderStyle }), 'acc-answer-reveal')}>
             {item.answer}
           </p>
         </div>

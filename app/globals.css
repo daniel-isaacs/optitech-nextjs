@@ -249,12 +249,33 @@ html {
   to   { grid-template-rows: 0fr; }
 }
 
+/* Content settle — the answer fades + rises into place as the row expands, so it
+   arrives rather than being unveiled by the height clip alone. translate/opacity
+   only (no layout property); synced to the row's dur-base kinetic open. */
+@keyframes accordionContentIn {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes accordionContentOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .animate-accordion-open {
     animation: accordionOpen var(--ot-dur-base) var(--ot-ease-kinetic) forwards;
   }
   .animate-accordion-close {
     animation: accordionClose 0.26s var(--ot-ease-quick) forwards; /* dur-exempt: 260ms — nearest quick(200)/base(320) Δ60ms */
+  }
+
+  /* Answer settle — runs off the parent's open/closed state so it stays in lockstep
+     with the row expansion. A 60ms lead-in lets the panel begin opening first. */
+  [data-radix-accordion-content][data-state='open'] .acc-answer-reveal {
+    animation: accordionContentIn var(--ot-dur-base) var(--ot-ease-kinetic) 60ms both;
+  }
+  [data-radix-accordion-content][data-state='closed'] .acc-answer-reveal {
+    animation: accordionContentOut var(--ot-dur-fast) var(--ot-ease-quick) both;
   }
 }
 

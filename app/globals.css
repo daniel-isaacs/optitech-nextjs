@@ -1020,10 +1020,13 @@ body {
    (Studio 54), deliberately NOT cold cyberpunk/Web3 neon. The look comes from the
    FONT: Monoton (--ot-font-neon) draws each glyph as parallel "railroad" strokes,
    which CSS alone can't fake on Poppins. Those thin strokes are FILLED with a lit
-   tube color (brightened core via the first shadow), then bloomed with a dual-tone
-   brand+accent halo — kept off the Web3 lane because the hues are the theme's own
-   (re-skins per vertical), the ground is the tinted canvas (never #000), and a
-   gas-tube flicker buzzes it. Single optional effect, short statement headlines.
+   tube color, then bloomed with a matching halo — kept off the Web3 lane because
+   the hues are the theme's own (re-skins per vertical) and the ground is the
+   tinted canvas, never #000. The PrimaryText block wraps each letter in a
+   .neon-ch span so the tube color CYCLES across the word (brand + accent +
+   hue-rotated derivatives), the multi-color disco read. The rule below is the
+   single-color fallback for any plain (un-split) usage, e.g. the theme playground.
+   No flicker — steady sign. Best on short statement headlines.
    font-synthesis-weight:none stops the browser faux-bolding Monoton's 400-only
    face (a heading may request 800), which would clot the parallel strokes shut. */
 .ot-fx-neon {
@@ -1062,25 +1065,42 @@ body {
     0 0 0.85em oklch(from var(--ot-accent) l c h / 0.45);
 }
 
-/* Gas-tube buzz: steady, with two quick irregular flicker bursts per loop.
-   filter:brightness dims the face AND the glow together (one cheap animated
-   property), so it reads as the whole sign buzzing. steps(1,end) = abrupt
-   on/off, never a smooth fade. Reduced-motion users get the steady lit sign. */
-@media (prefers-reduced-motion: no-preference) {
-  .ot-fx-neon { animation: otNeonFlicker 7s steps(1, end) infinite; }
+/* Per-letter tube color. Each .neon-ch derives its fill + matching glow from a
+   single --neon-color, and the cycle assigns that color across letters: brand,
+   accent, then a hue-rotated tint of each, so a word reads as mixed-color disco
+   tubes drawn only from the theme's palette. Lightness is normalized (0.72 lit /
+   0.62 outer halo) so every hue glows at the same intensity regardless of the
+   token's own lightness. */
+.ot-fx-neon .neon-ch {
+  color: oklch(from var(--neon-color) 0.72 c h);
+  text-shadow:
+    0 0 0.03em oklch(from var(--neon-color) 0.97 calc(c * 0.5) h), /* hot gas core */
+    0 0 0.10em oklch(from var(--neon-color) 0.72 c h / 0.95),
+    0 0 0.28em oklch(from var(--neon-color) 0.72 c h / 0.72),
+    0 0 0.60em oklch(from var(--neon-color) 0.62 c h / 0.55),
+    0 0 1.05em oklch(from var(--neon-color) 0.62 c h / 0.40);
 }
-@keyframes otNeonFlicker {
-  0%, 40%, 100% { filter: brightness(1); }
-  40.5% { filter: brightness(0.50); }
-  41%   { filter: brightness(0.90); }
-  41.5% { filter: brightness(0.62); }
-  42%   { filter: brightness(1); }
-  77%   { filter: brightness(1); }
-  77.4% { filter: brightness(0.40); }
-  77.8% { filter: brightness(0.92); }
-  78.2% { filter: brightness(0.70); }
-  78.6% { filter: brightness(1); }
+.ot-fx-neon .neon-ch:nth-child(4n+1) { --neon-color: var(--ot-brand); }
+.ot-fx-neon .neon-ch:nth-child(4n+2) { --neon-color: var(--ot-accent); }
+.ot-fx-neon .neon-ch:nth-child(4n+3) { --neon-color: oklch(from var(--ot-brand)  l c calc(h + 35)); }
+.ot-fx-neon .neon-ch:nth-child(4n+4) { --neon-color: oklch(from var(--ot-accent) l c calc(h - 35)); }
+
+/* Light mode: tubes can't glow on white, so each letter deepens to an AA-legible
+   version of its cycle color with only a soft same-hue haze — multi-color retro
+   daylight signage rather than lit tubes. */
+[data-theme="light"] .ot-fx-neon .neon-ch {
+  color: oklch(from var(--neon-color) calc(l * 0.78) calc(c * 1.05) h);
+  text-shadow:
+    0 0 0.05em oklch(from var(--neon-color) l c h / 0.38),
+    0 0 0.20em oklch(from var(--neon-color) l c h / 0.26);
 }
+
+/* Brand-filled ground: the brand entry in the cycle would vanish into the brand
+   fill, so on that ground the cycle runs accent / hue-rotated accent / near-white
+   (fg-on-brand) — all of which hold contrast against the fill. */
+.bg-brand-fill .ot-fx-neon .neon-ch:nth-child(3n+1) { --neon-color: var(--ot-accent); }
+.bg-brand-fill .ot-fx-neon .neon-ch:nth-child(3n+2) { --neon-color: oklch(from var(--ot-accent) l c calc(h + 40)); }
+.bg-brand-fill .ot-fx-neon .neon-ch:nth-child(3n+3) { --neon-color: oklch(from var(--ot-fg-on-brand) 0.92 0.02 h); }
 
 /* HIGHLIGHT — accent "marker swipe" behind the text (apply to an inline span).  */
 /* Robust by construction: accent ground + fg-on-accent text is a designed AA    */

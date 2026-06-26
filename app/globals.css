@@ -796,29 +796,30 @@ body {
   }
 }
 
-/* Light mode: the face stays the TRUE brand color, kept legible against the
-   darker depth by a thin bright KEYLINE around the glyphs. A dark navy face sat
-   only ~0.08 lightness above its own first shadow step, so front and side merged
-   into mush. The keyline is near-white with a faint brand tint: where a glyph
-   edge meets the white ground it blends invisibly, but where it meets the dark
-   depth it becomes a crisp lit rim that separates the front plane from the side.
-   paint-order: stroke fill keeps the navy fill crisp on top. Depth steps stay
-   dark and full-chroma, so the side reads as saturated deep-brand shadow. */
+/* Light mode: 3D-STICKER treatment — a TRUE-brand (navy) face, a near-white
+   OUTLINE around the glyphs, and a LIGHTER-shade depth stepping down-right. This
+   is the look that previously only appeared when the text was selected: the white
+   stroke is invisible where a glyph edge meets the white page (a white outline
+   must be) but reads as a crisp rim against the lighter depth on the shadowed
+   side. The depth LIFTS the brand lightness (clamped 0.46–0.74) so it sits lighter
+   than the face — a soft colored shadow, not a dark side — which is why it reads
+   best on darker brands (where this effect is typically used). paint-order keeps
+   the fill crisp on top. */
 [data-theme="light"] .ot-depth-extrude {
   color: var(--ot-brand);
-  -webkit-text-stroke: 0.02em oklch(from var(--ot-brand) 0.95 calc(c * 0.4) h);
+  -webkit-text-stroke: 0.03em oklch(from var(--ot-brand) 0.99 0.008 h);
   paint-order: stroke fill;
   text-shadow:
     calc(var(--ot-extrude-offset) * 0.03em) calc(var(--ot-extrude-offset) * 0.03em) 0
-      oklch(from var(--ot-brand) calc(l * 0.72) c h),
+      oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.36), 0.74) c h),
     calc(var(--ot-extrude-offset) * 0.06em) calc(var(--ot-extrude-offset) * 0.06em) 0
-      oklch(from var(--ot-brand) calc(l * 0.56) c h),
+      oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.31), 0.74) c h),
     calc(var(--ot-extrude-offset) * 0.10em) calc(var(--ot-extrude-offset) * 0.10em) 0
-      oklch(from var(--ot-brand) calc(l * 0.42) c h),
+      oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.26), 0.74) c h),
     calc(var(--ot-extrude-offset) * 0.16em) calc(var(--ot-extrude-offset) * 0.16em) 0
-      oklch(from var(--ot-brand) calc(l * 0.30) c h),
+      oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.21), 0.74) c h),
     calc(var(--ot-extrude-offset) * 0.22em) calc(var(--ot-extrude-offset) * 0.22em) 0
-      oklch(from var(--ot-brand) calc(l * 0.20) c h / 0.92);
+      oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.16), 0.74) c h);
 }
 
 /* Brand background: fg-on-brand face, accent-colored shadow stack */

@@ -75,11 +75,12 @@
   --animate-fade-in:   fadeIn   var(--ot-dur-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-slide-up:  slideUp  var(--ot-dur-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-hero-zoom: heroZoom var(--ot-dur-slow) cubic-bezier(0.16, 1, 0.3, 1) both;
-  /* Accordion row reveal. MUST be registered here so the `animate-accordion-*`
-     utilities exist and compose with the component's motion-safe: + data-[state]:
-     variants; without this the height snaps instantly and ignores motion scale. */
-  --animate-accordion-open:  accordionOpen  var(--ot-dur-accordion) var(--ot-ease-accordion) forwards;
-  --animate-accordion-close: accordionClose var(--ot-dur-accordion) var(--ot-ease-accordion) forwards;
+  /* Accordion open/close (standard Radix height animation). MUST be registered
+     here so the `animate-accordion-down/up` utilities exist and compose with the
+     component's motion-safe: + data-[state]: variants. Slowed via --ot-dur-accordion
+     (motion-scale aware); no `forwards` — Radix owns the resting open/closed state. */
+  --animate-accordion-down: accordion-down var(--ot-dur-accordion) var(--ot-ease-accordion);
+  --animate-accordion-up:   accordion-up   var(--ot-dur-accordion) var(--ot-ease-accordion);
 }
 
 /* ── Button surface context tokens ───────────────────────────────────────────
@@ -249,55 +250,20 @@ html {
 }
 
 /* ── AccordionBlock ──────────────────────────────────────────────────────────
- * Uses grid-template-rows (0fr ↔ 1fr) instead of height to avoid animating
- * a layout property. Content element is a grid; inner wrapper has min-h-0.
- * Kinetic ease (expo-out) — same curve used for all block entrances.
- * The motion-safe: Tailwind modifier in the component gates these classes.
+ * Standard Radix accordion animation: height 0 ↔ --radix-accordion-content-height
+ * (the height Radix measures and exposes on the open content). Reliable across
+ * browsers, unlike the grid-template-rows fr trick. Registered as the
+ * `animate-accordion-down/up` utilities in @theme; applied via the component's
+ * motion-safe: + data-[state]: variants on an overflow-hidden content element.
+ * Duration is the slowed --ot-dur-accordion token (still motion-scale aware).
  * ─────────────────────────────────────────────────────────────────────────── */
-@keyframes accordionOpen {
-  from { grid-template-rows: 0fr; }
-  to   { grid-template-rows: 1fr; }
+@keyframes accordion-down {
+  from { height: 0; }
+  to   { height: var(--radix-accordion-content-height); }
 }
-
-@keyframes accordionClose {
-  from { grid-template-rows: 1fr; }
-  to   { grid-template-rows: 0fr; }
-}
-
-/* Content fade — the answer's opacity rides in lockstep with the row height
-   (same duration + ease, no offset, no translate) so open/close read as one
-   fluid motion rather than a height move plus a separate settle. */
-@keyframes accordionContentIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes accordionContentOut {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  /* Row reveal itself is the `animate-accordion-open/close` utilities registered in
-     @theme above (ease-accordion + the slower dur-accordion: a smooth, symmetric
-     ease that never snaps). The answer fade below rides the same duration + ease so
-     the height move and the content settle read as one motion. */
-  [data-radix-accordion-content][data-state='open'] .acc-answer-reveal {
-    animation: accordionContentIn var(--ot-dur-accordion) var(--ot-ease-accordion) both;
-  }
-  [data-radix-accordion-content][data-state='closed'] .acc-answer-reveal {
-    animation: accordionContentOut var(--ot-dur-accordion) var(--ot-ease-accordion) both;
-  }
-}
-
-/* Grid container must be declared unconditionally — the animation targets it */
-[data-radix-accordion-content] {
-  display: grid;
-}
-[data-radix-accordion-content][data-state='open'] {
-  grid-template-rows: 1fr;
-}
-[data-radix-accordion-content][data-state='closed'] {
-  grid-template-rows: 0fr;
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to   { height: 0; }
 }
 
 /* ── Grid column spans ───────────────────────────────────────────────────────

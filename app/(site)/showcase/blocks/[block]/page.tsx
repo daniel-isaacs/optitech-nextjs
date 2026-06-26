@@ -1908,7 +1908,7 @@ function CalloutShowcase() {
       </CalloutGrid>
 
       {/* ── Bar · all 6 intents ─────────────────────────────────────────── */}
-      <VariantGroup label="Bar variant · all 6 intents" note="4px left accent anchor catches the eye during scroll; faint background tint separates the bar from the page; generous padding gives it enough mass to register at a glance. Designed for system notices and site-wide announcements." />
+      <VariantGroup label="Bar variant · all 6 intents" note="Full intent-colored perimeter border + faint background tint separate the bar from the page; the colored icon carries the category; generous padding gives it enough mass to register at a glance. Designed for system notices and site-wide announcements." />
       <div className="flex flex-col px-md lg:px-lg pb-lg gap-xs">
         {CALLOUT_INTENTS.map(intent => (
           <CalloutBlock

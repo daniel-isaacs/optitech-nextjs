@@ -392,7 +392,7 @@ function CalendarView({ events, color, now }: { events: EventCardData[]; color: 
     setSelected(null)
   }, [events, cursor])
 
-  const navBtn = 'inline-flex items-center justify-center w-9 h-9 border border-fg/15 text-fg-muted hover:border-fg/30 hover:text-fg transition-colors duration-150 ease-quick focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+  const navBtn = 'inline-flex items-center justify-center w-11 h-11 border border-fg/15 text-fg-muted hover:border-fg/30 hover:text-fg transition-colors duration-150 ease-quick focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
 
   return (
     <div>
@@ -749,12 +749,12 @@ export default function EventListingClient({
 
           <div className="flex items-center gap-md">
             {showPastCtrl && (
-              <label className="inline-flex items-center gap-xs text-label uppercase tracking-label font-semibold text-fg-muted cursor-pointer select-none">
+              <label className="inline-flex items-center gap-xs min-h-[44px] text-label uppercase tracking-label font-semibold text-fg-muted cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={showPast}
                   onChange={e => setShowPast(e.target.checked)}
-                  className="accent-[var(--ot-brand)] w-3.5 h-3.5"
+                  className="accent-[var(--ot-brand)] w-4 h-4"
                 />
                 Show past events
               </label>

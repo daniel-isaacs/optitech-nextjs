@@ -98,8 +98,9 @@ const triggerCva = cva(
   [
     'group flex w-full items-start justify-between gap-md',
     'py-md text-left',
-    // Focus ring — keyboard-accessible, never show on mouse
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
+    // Focus ring — keyboard-accessible, never show on mouse. Ring color is set
+    // per surface (below) so it never lands brand-on-brand and vanishes.
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
     // Transition
     'transition-colors duration-150',
   ].join(' '),
@@ -110,8 +111,13 @@ const triggerCva = cva(
         boxed:  'px-md',
         clean:  '',
       },
+      color: {
+        canvas:  'focus-visible:ring-brand',
+        surface: 'focus-visible:ring-brand',
+        brand:   'focus-visible:ring-fg-on-brand',
+      },
     },
-    defaultVariants: { borderStyle: 'ruled' },
+    defaultVariants: { borderStyle: 'ruled', color: 'canvas' },
   },
 )
 
@@ -294,7 +300,7 @@ function AccordionItemNode({ value, item, color, borderStyle }: ItemNodeProps) {
     >
       <RadixAccordion.Header asChild>
         <h3>
-          <RadixAccordion.Trigger className={triggerCva({ borderStyle })}>
+          <RadixAccordion.Trigger className={triggerCva({ borderStyle, color })}>
             <span className={questionCva({ color })}>
               {item.question}
             </span>

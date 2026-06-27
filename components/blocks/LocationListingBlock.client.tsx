@@ -252,7 +252,7 @@ export default function LocationListingClient({ locations, styleOptions, mapboxT
       {results.length === 0 ? (
         <EmptyState message={emptyMessage} filtersActive={filtersActive} onClear={clearAll} />
       ) : view === 'map' ? (
-        <div className="grid gap-md lg:grid-cols-[22rem_1fr]" style={{ ['--map-h' as string]: `${mapPx}px` }}>
+        <div className="grid gap-md lg:grid-cols-[26rem_1fr]" style={{ ['--map-h' as string]: `${mapPx}px` }}>
           {/* Rail — below the map on mobile, beside it (scrollable, matched height) on desktop. */}
           <div
             ref={railScroll}

@@ -163,31 +163,33 @@ export default function LocationMap({ locations, selectedKey, onSelectKey, token
           <Popup
             longitude={selected.coordinates.lon}
             latitude={selected.coordinates.lat}
-            anchor="bottom"
-            offset={22}
+            offset={16}
             closeButton={false}
             closeOnClick={false}
             className="location-popup"
-            maxWidth="280px"
+            maxWidth="400px"
             onClose={() => onSelectKey(null)}
           >
-            <article className="relative w-[252px]">
+            {/* Horizontal card — image left, details right — so it reads wide and
+                short and stays inside the map. No fixed anchor: Mapbox auto-flips
+                it (above / below / beside the marker) to keep it in view. */}
+            <article className="relative flex w-90 max-w-[78vw]">
               <button
                 type="button"
                 onClick={() => onSelectKey(null)}
                 aria-label="Close"
-                className="absolute right-2 top-2 z-10 inline-flex h-8 w-8 items-center justify-center bg-canvas/70 text-fg-muted backdrop-blur-sm transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="absolute right-1.5 top-1.5 z-10 inline-flex h-7 w-7 items-center justify-center bg-canvas/70 text-fg-muted backdrop-blur-sm transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 <X size={15} strokeWidth={2} aria-hidden />
               </button>
 
               {/* Shared plate: image or the same designed brand fallback used on the
                   cards, rail, and rows, so every no-image surface reads identically. */}
-              <div className="relative aspect-[16/9] w-full bg-canvas">
+              <div className="relative w-30 flex-none self-stretch bg-canvas">
                 <LocationPlate shape="fill" src={selected.imageUrl} name={selected.locationName || 'Location'} />
               </div>
 
-              <div className="flex flex-col gap-1.5 p-3">
+              <div className="flex min-w-0 flex-1 flex-col gap-1 p-3 pr-9">
                 {selected.locationLabel && (
                   <span><LocationLabelBadge label={selected.locationLabel} tone="soft" /></span>
                 )}
@@ -203,7 +205,7 @@ export default function LocationMap({ locations, selectedKey, onSelectKey, token
                 {selected.url && (
                   <a
                     href={selected.url}
-                    className="mt-1 inline-flex items-center gap-1 text-label font-semibold uppercase tracking-label text-brand transition-colors hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                    className="mt-0.5 inline-flex items-center gap-1 text-label font-semibold uppercase tracking-label text-brand transition-colors hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                   >
                     View details
                     <ArrowUpRight size={13} strokeWidth={2.5} aria-hidden />

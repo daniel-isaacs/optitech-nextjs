@@ -50,7 +50,7 @@ export default async function LocationListingBlock({
   const token     = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? ''
 
   return (
-    <section className={`${sectionBg} px-md py-xl lg:px-lg`}>
+    <section className={`${sectionBg} px-md py-xl lg:px-xl`}>
       {/* Full-bleed within the section gutters — the map + rail and the card grid
           use the whole page width; only the heading stays at a reading measure. */}
       <div className="w-full">

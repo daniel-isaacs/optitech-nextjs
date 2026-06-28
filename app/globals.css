@@ -839,6 +839,100 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
+/* EXTRUDE — INTERACTIVE LAYERED (depth3d)                                      */
+/* Real stacked DOM layers (one duplicate <span> per depth step) instead of    */
+/* flat text-shadow, so the stack genuinely separates in 3D when the headline  */
+/* rotates toward the cursor. Rendered by PrimaryTextDepth3D.client.tsx for     */
+/* effect "depth3d" only. The fill progression mirrors the static .ot-depth-   */
+/* extrude above; on top of it, every layer carries a token-derived OUTLINE     */
+/* stroke so the steps read as stacked ridges (the optimizely.com hero look).   */
+/*                                                                              */
+/* Static by default (works with no JS — this is also the touch / reduced-      */
+/* motion resting state): a clean flat offset stack, no perspective. The client */
+/* sets data-interactive on capable devices, which turns on perspective +       */
+/* preserve-3d so the per-layer translateZ produces real parallax on rotate.    */
+/* All colors are token-derived, so theme overrides + light/dark keep working.  */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.ot-extrude3d {
+  display: inline-block;
+  /* No perspective at rest: translateZ is inert, layers sit at their flat 2D
+     offsets — identical to a clean extrude. Perspective is added only when the
+     client marks the instance interactive (capable pointer + motion allowed). */
+}
+.ot-extrude3d[data-interactive] { perspective: 1200px; }
+
+.ot-extrude3d__rot {
+  position: relative;
+  display: inline-block;
+  transform-origin: center center;
+}
+.ot-extrude3d[data-interactive] .ot-extrude3d__rot {
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+
+/* Each duplicate layer. The face (last child) is in flow and sizes the box; the
+   shadow layers overlay it (inset:0, same text → identical wrapping) and step
+   down-right + back in Z. paint-order keeps the fill crisp over the ridge stroke. */
+.ot-extrude3d__layer {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  transform: translate3d(var(--ox, 0), var(--oy, 0), var(--oz, 0));
+  will-change: transform;
+  -webkit-user-select: none;
+          user-select: none;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 0.013em var(--ot-extrude-ridge);
+}
+.ot-extrude3d__layer:last-child {
+  position: relative; /* the face: in flow, defines the box the others overlay */
+}
+
+/* Geometry — 5 receding steps + the face. Offsets mirror the static extrude
+   (0.03 → 0.22em); translateZ (≈ offset × 3) drives the parallax when rotated. */
+.ot-extrude3d__layer:nth-child(1) { --ox: 0.22em; --oy: 0.22em; --oz: -0.66em; } /* deepest */
+.ot-extrude3d__layer:nth-child(2) { --ox: 0.16em; --oy: 0.16em; --oz: -0.48em; }
+.ot-extrude3d__layer:nth-child(3) { --ox: 0.10em; --oy: 0.10em; --oz: -0.30em; }
+.ot-extrude3d__layer:nth-child(4) { --ox: 0.06em; --oy: 0.06em; --oz: -0.18em; }
+.ot-extrude3d__layer:nth-child(5) { --ox: 0.03em; --oy: 0.03em; --oz: -0.09em; }
+.ot-extrude3d__layer:nth-child(6) { --ox: 0;      --oy: 0;      --oz: 0;       } /* face */
+
+/* Dark / canvas (default): near-white face, brand fills graduating deeper, with
+   a near-black-brand ridge stroke. Mirrors the static .ot-depth-extrude fills. */
+.ot-extrude3d__layer { --ot-extrude-ridge: oklch(from var(--ot-brand) calc(l * 0.16) c h); }
+.ot-extrude3d__layer:nth-child(1) { color: oklch(from var(--ot-brand) calc(l * 0.22) calc(c * 0.80) h); }
+.ot-extrude3d__layer:nth-child(2) { color: oklch(from var(--ot-brand) calc(l * 0.42) c h); }
+.ot-extrude3d__layer:nth-child(3) { color: oklch(from var(--ot-brand) calc(l * 0.62) c h); }
+.ot-extrude3d__layer:nth-child(4) { color: oklch(from var(--ot-brand) calc(l * 0.82) c h); }
+.ot-extrude3d__layer:nth-child(5) { color: oklch(from var(--ot-brand) l c h); }
+.ot-extrude3d__layer:nth-child(6) { color: var(--ot-fg); --ot-extrude-ridge: oklch(from var(--ot-brand) calc(l * 0.32) c h); }
+
+/* Light mode: navy face with a near-white rim (the "3D sticker" look), steps
+   stepping LIGHTER (clamped) so they read as a soft colored shadow, ridge in
+   true brand. Mirrors the static [data-theme="light"] .ot-depth-extrude. */
+[data-theme="light"] .ot-extrude3d__layer { --ot-extrude-ridge: oklch(from var(--ot-brand) l c h); }
+[data-theme="light"] .ot-extrude3d__layer:nth-child(1) { color: oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.16), 0.74) c h); }
+[data-theme="light"] .ot-extrude3d__layer:nth-child(2) { color: oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.21), 0.74) c h); }
+[data-theme="light"] .ot-extrude3d__layer:nth-child(3) { color: oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.26), 0.74) c h); }
+[data-theme="light"] .ot-extrude3d__layer:nth-child(4) { color: oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.31), 0.74) c h); }
+[data-theme="light"] .ot-extrude3d__layer:nth-child(5) { color: oklch(from var(--ot-brand) clamp(0.46, calc(l + 0.36), 0.74) c h); }
+[data-theme="light"] .ot-extrude3d__layer:nth-child(6) {
+  color: var(--ot-brand);
+  -webkit-text-stroke: 0.03em oklch(from var(--ot-brand) 0.99 0.008 h);
+}
+
+/* Brand background: fg-on-brand face, accent fills graduating deeper, accent
+   ridge. Mirrors the static .bg-brand-fill .ot-depth-extrude. */
+.bg-brand-fill .ot-extrude3d__layer { --ot-extrude-ridge: oklch(from var(--ot-accent) calc(l * 0.16) c h); }
+.bg-brand-fill .ot-extrude3d__layer:nth-child(1) { color: oklch(from var(--ot-accent) calc(l * 0.22) calc(c * 0.80) h); }
+.bg-brand-fill .ot-extrude3d__layer:nth-child(2) { color: oklch(from var(--ot-accent) calc(l * 0.42) c h); }
+.bg-brand-fill .ot-extrude3d__layer:nth-child(3) { color: oklch(from var(--ot-accent) calc(l * 0.62) c h); }
+.bg-brand-fill .ot-extrude3d__layer:nth-child(4) { color: oklch(from var(--ot-accent) calc(l * 0.82) c h); }
+.bg-brand-fill .ot-extrude3d__layer:nth-child(5) { color: oklch(from var(--ot-accent) l c h); }
+.bg-brand-fill .ot-extrude3d__layer:nth-child(6) { color: var(--ot-fg-on-brand); --ot-extrude-ridge: oklch(from var(--ot-accent) calc(l * 0.30) c h); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
 /* LIQUID                                                                      */
 /* Brand → accent → brand gradient sweeps through letterforms via             */
 /* background-clip:text. Reduced motion: frozen at midpoint.                  */

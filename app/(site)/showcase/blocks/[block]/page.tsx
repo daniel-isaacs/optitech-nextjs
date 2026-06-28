@@ -207,9 +207,68 @@ function HeroShowcase() {
     },
   ]
 
+  const directions = [
+    {
+      label: 'Spotlight Bloom · Brand · image right',
+      note: 'Text leads; the visual floats as a framed object on a chromatic brand-bloom halo. Not a full-bleed backdrop (that is the Banner).',
+      content: { direction: 'spotlight', eyebrow: 'Spotlight', headline: 'A product worth the stage.', body: 'The visual reads as a lit object, not a backdrop, with the headline carrying the fold beside it.', primaryCtaLabel: 'Get started', primaryCtaUrl: { default: '#' }, secondaryCtaLabel: 'Learn more', secondaryCtaUrl: { default: '#' }, visual: HERO_IMG, visualAlt: HERO_ALT },
+      displaySettings: { layout: 'imageRight', color: 'brand', animation: 'none' },
+    },
+    {
+      label: 'Spotlight Bloom · Canvas · image left',
+      note: 'Same direction on the canvas ground, visual on the left.',
+      content: { direction: 'spotlight', eyebrow: 'Spotlight', headline: 'Lit from within.', body: 'A brand-bloom halo and chromatic shadow lift the framed visual off the ground.', primaryCtaLabel: 'See how', primaryCtaUrl: { default: '#' }, visual: HERO_IMG, visualAlt: HERO_ALT },
+      displaySettings: { layout: 'imageLeft', color: 'canvas', animation: 'none' },
+    },
+    {
+      label: 'Drenched Statement · Brand · media band',
+      note: 'A committed full-bleed color statement; any visual is a contained band below the headline, never a photo backdrop.',
+      content: { direction: 'drenched', eyebrow: 'Launch', headline: 'Commit to the color.', body: 'Scale and saturation carry the fold; the optional media sits below as a contained band.', primaryCtaLabel: 'Get started', primaryCtaUrl: { default: '#' }, secondaryCtaLabel: 'Talk to us', secondaryCtaUrl: { default: '#' }, visual: HERO_IMG, visualAlt: HERO_ALT },
+      displaySettings: { layout: 'imageRight', color: 'brand', animation: 'none' },
+    },
+    {
+      label: 'Drenched Statement · Canvas · no image',
+      note: 'Type-forward statement on the canvas ground.',
+      content: { direction: 'drenched', eyebrow: 'Manifesto', headline: 'Say it once. Say it loud.', body: 'No image needed; the statement is the hero.', primaryCtaLabel: 'Read more', primaryCtaUrl: { default: '#' } },
+      displaySettings: { layout: 'imageRight', color: 'canvas', animation: 'none' },
+    },
+    {
+      label: 'Editorial Overlap · Surface · image right',
+      note: 'A solid headline plate overlaps the contained image edge with a chromatic depth shadow and a mono index marker.',
+      content: { direction: 'overlap', eyebrow: 'Feature 01', headline: 'Layers that read as depth.', body: 'The type plate occludes the image edge, separated by a brand-hued shadow.', primaryCtaLabel: 'Explore', primaryCtaUrl: { default: '#' }, secondaryCtaLabel: 'Docs', secondaryCtaUrl: { default: '#' }, visual: HERO_IMG, visualAlt: HERO_ALT },
+      displaySettings: { layout: 'imageRight', color: 'surface', animation: 'none' },
+    },
+    {
+      label: 'Editorial Overlap · Brand · image left',
+      note: 'Plate on the brand ground overlapping a left-aligned image.',
+      content: { direction: 'overlap', eyebrow: 'Feature 02', headline: 'Composed, not stacked.', body: 'An asymmetric, magazine-style interlock of type and a contained image.', primaryCtaLabel: 'Explore', primaryCtaUrl: { default: '#' }, visual: HERO_IMG, visualAlt: HERO_ALT },
+      displaySettings: { layout: 'imageLeft', color: 'brand', animation: 'none' },
+    },
+    {
+      label: 'Poster Frame · Canvas · with media',
+      note: 'A hairline-framed specimen poster: accent corner register marks, a mono catalog label, an extruded headline, and a contained media plate with a bloom ring.',
+      content: { direction: 'poster', eyebrow: 'Edition 01', headline: 'Printed with intent.', body: 'The frame, register marks, and extruded headline read as a designed poster.', primaryCtaLabel: 'Get the kit', primaryCtaUrl: { default: '#' }, secondaryCtaLabel: 'Preview', secondaryCtaUrl: { default: '#' }, visual: HERO_IMG, visualAlt: HERO_ALT },
+      displaySettings: { layout: 'imageRight', color: 'canvas', animation: 'none' },
+    },
+    {
+      label: 'Poster Frame · Brand · no image',
+      note: 'On the brand ground the headline stays the solid on-brand face (extrude is reserved for canvas/surface).',
+      content: { direction: 'poster', eyebrow: 'Edition 02', headline: 'Big type, framed.', body: 'A drenched poster with corner register marks and a catalog label.', primaryCtaLabel: 'Get the kit', primaryCtaUrl: { default: '#' } },
+      displaySettings: { layout: 'imageRight', color: 'brand', animation: 'none' },
+    },
+  ]
+
   return (
     <>
       <BlockHeader slug="hero" />
+
+      <VariantGroup label="Design directions · content field" note="The Hero's Design Direction content field restyles the same content into four distinct compositions. Background color still applies within each. None mimic the Banner (full-bleed photo + scrim/glass overlay)." />
+      {directions.map(item => (
+        <div key={item.label} className="border-t border-fg/5">
+          <VariantLabel label={item.label} note={item.note} />
+          <OT_HeroBlock content={item.content as any} displaySettings={item.displaySettings} />
+        </div>
+      ))}
 
       <VariantGroup label="Color schemes · layout variants" />
       {colorSchemes.map(item => (

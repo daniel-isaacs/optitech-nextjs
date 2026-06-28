@@ -410,6 +410,9 @@ function OverlapHero({
   const hasVisual = !!(visual || visualSrc);
   const anim = entranceClass(animation);
   const imageLeft = layout === "imageLeft";
+  // The index marker must stay legible on a brand panel (and on custom brand
+  // colors), so it uses the on-brand token there rather than the brand-hued muted.
+  const markerColor = color === "brand" ? "text-fg-on-brand/70" : "text-fg-muted";
 
   const plate = (
     <div
@@ -418,7 +421,7 @@ function OverlapHero({
       } ${anim}`}
       data-theme={color === "brand" ? "dark" : undefined}
     >
-      <p className="mb-md flex items-center gap-sm font-mono text-label uppercase tracking-label text-fg-muted" {...pa("eyebrow")}>
+      <p className={`mb-md flex items-center gap-sm font-mono text-label uppercase tracking-label ${markerColor}`} {...pa("eyebrow")}>
         <span className="inline-block h-px w-8 flex-none" style={{ background: "var(--ot-accent)" }} aria-hidden />
         {eyebrow ? eyebrow : "Hero"}
       </p>
@@ -489,7 +492,7 @@ function DiagonalHero({
         </>
       )}
 
-      <div className="relative z-10 mx-auto flex max-w-7xl items-center px-md py-xl lg:min-h-[28rem] lg:px-lg lg:py-2xl">
+      <div className="relative z-10 mx-auto flex max-w-7xl items-center px-md py-lg lg:min-h-[22rem] lg:px-lg lg:py-xl">
         <div
           className={`flex flex-col gap-md lg:gap-lg ${anim} ${
             hasVisual ? `lg:max-w-[42%] ${side === "left" ? "lg:ml-auto" : ""}` : "max-w-(--ot-measure)"

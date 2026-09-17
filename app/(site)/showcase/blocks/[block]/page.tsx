@@ -31,6 +31,7 @@ import type { ContentRecItem }         from '@/components/blocks/ContentRecommen
 import ProductRecommendationsBlock     from '@/components/blocks/ProductRecommendationsBlock'
 import type { ProductRec }             from '@/components/blocks/ProductRecommendationsBlock'
 import OT_ComparisonTableBlock         from '@/cms/components/OT_ComparisonTableBlock'
+import OptiFormsContainerDataAdapter   from '@/cms/components/OptiFormsContainerData'
 import {
   ArrowRight, Zap, ChevronRight, Play, Download,
   Sparkles, Send, Rocket, Star, Plus,
@@ -59,6 +60,7 @@ import CalloutPlayground      from '../callout-playground'
 import ButtonPlayground       from '../button-playground'
 import TrustRailPlayground    from '../trust-rail-playground'
 import TokenManagerPlayground from '../token-manager-playground'
+import SliderPlayground       from '../slider-playground'
 
 // ─── Static params ──────────────────────────────────────────────────────────
 
@@ -71,6 +73,8 @@ const BLOCK_SLUGS = [
   'comparison-table',
   'disclosure',
   'token-manager',
+  'slider',
+  'forms',
 ] as const
 
 type BlockSlug = typeof BLOCK_SLUGS[number]
@@ -99,13 +103,15 @@ const BLOCK_META: Record<BlockSlug, { label: string; cmsKey: string; description
   'callout':          { label: 'CalloutBlock',          cmsKey: 'OT_CalloutBlock',          description: 'Compact semantic inline notification. Six intent types: neutral, info, success, warning, danger, brand. Three variants: filled, bordered, bar. Dismissible with a two-phase kinetic exit — content sweeps right and fades, then the container height collapses.' },
   'divider':          { label: 'DividerBlock',          cmsKey: 'OT_DividerBlock',          description: 'Structural section divider that opens deliberate breathing room between stacked sections. Three treatments: mark (a hairline broken by an editable label or an editorial ornament), glow (a precise luminous rule — a chromatic line of light with a soft bloom above and below), and bleed (atmospheric luminance — an elliptical light seam rising from the boundary). One Tone control spans all three — neutral, brand, accent, spectrum, aurora — plus editor-controlled spacing, weight, and an optional draw-in reveal that rides the shared scroll observer.' },
   'event-listing':    { label: 'EventListingBlock',     cmsKey: 'OT_EventListingBlock',     description: 'CMS-driven listing of Event Pages with three toggleable views: card grid, list (calendar-style date blocks), and a monthly calendar with day agenda. A segmented icon control switches views; type-filter chips and a past-events toggle refine the set. Works across technology, healthcare, legal, and financial events on both canvas and surface grounds. In production, events are fetched at render time from published Event Pages; the showcase uses static fixtures.' },
-  'practitioner-listing': { label: 'PractitionerListingBlock', cmsKey: 'OT_PractitionerListingBlock', description: 'CMS-driven, vertical-agnostic people directory pulled from Practitioner Profiles. Grid (cards) or list (rows) layout, client-side search across name / credentials / specialty, and three multi-select filters — specialty, location, and language — derived dynamically from the loaded set, never a fixed list. Values OR within a filter and AND across filters. Scope it to one vertical with the Group Tag Filter (e.g. "medical"). Squared portraits with a chromatic brand bloom and a designed initials fallback. In production, practitioners are fetched at render time; the showcase uses static fixtures spanning medical, legal, and technology verticals.' },
-  'location-listing': { label: 'LocationListingBlock', cmsKey: 'OT_LocationListingBlock', description: 'CMS-driven, vertical-agnostic location directory pulled from Location Profiles. Three toggleable views: a Mapbox dark map paired with a synchronized scrollable location rail (click a marker or rail card to fly + open its popup), an image-plate card grid, and a compact list. Client-side search across name / label / address, and a single-select label filter derived dynamically from the loaded set — never a fixed list, "All" always first. Scope it to one vertical with the Group Tag Filter (e.g. "optimedical"). Custom brand-beacon markers and fully-restyled dark-glass popups. In production, addresses are geocoded via the Mapbox API at render time (24h ISR cache); the showcase uses static fixtures with pre-resolved coordinates, so it makes no API calls.' },
+  'practitioner-listing': { label: 'PractitionerListingBlock', cmsKey: 'OT_PractitionerListingBlock', description: 'CMS-driven, vertical-agnostic people directory pulled from Practitioner Profiles. Grid (cards) or list (rows) layout, client-side search across name / credentials / specialty, and three multi-select filters — specialty, location, and language — derived dynamically from the loaded set, never a fixed list. Values OR within a filter and AND across filters. Automatically scoped to the current site via the Site Key field on each profile. Squared portraits with a chromatic brand bloom and a designed initials fallback. In production, practitioners are fetched at render time; the showcase uses static fixtures spanning medical, legal, and technology verticals.' },
+  'location-listing': { label: 'LocationListingBlock', cmsKey: 'OT_LocationListingBlock', description: 'CMS-driven, vertical-agnostic location directory pulled from Location Profiles. Three toggleable views: a Mapbox dark map paired with a synchronized scrollable location rail (click a marker or rail card to fly + open its popup), an image-plate card grid, and a compact list. Client-side search across name / label / address, and a single-select label filter derived dynamically from the loaded set — never a fixed list, "All" always first. Automatically scoped to the current site via the Site Key field on each profile. Custom brand-beacon markers and fully-restyled dark-glass popups. In production, addresses are geocoded via the Mapbox API at render time (24h ISR cache); the showcase uses static fixtures with pre-resolved coordinates, so it makes no API calls.' },
   'content-recommendations': { label: 'ContentRecommendationsBlock', cmsKey: 'OT_ContentRecommendationsBlock', description: 'Personalized content grid from Optimizely Content Recommendations (Idio). The ia.js tracker builds a per-visitor profile and the block fetches recommendations server-side at render time using the delivery key configured on the ThemeManager. Three color schemes. In production, items are personalized per visitor; the showcase uses static sample articles to demonstrate the layout.' },
   'product-recommendations': { label: 'ProductRecommendationsBlock', cmsKey: 'OT_ProductRecommendationsBlock', description: 'Live product recommendations from Optimizely Product Recommendations (Peerius). The engine returns recommendations client-side (via the peerius:recs event) for the configured widget position; the widget renders a card grid with a "Show all" expand. When the engine returns nothing it shows an empty state. In production, recs are live and personalized; the showcase uses static sample products.' },
   'comparison-table': { label: 'ComparisonTableBlock', cmsKey: 'OT_ComparisonTableBlock', description: 'Side-by-side comparison of plans, tiers, or account types. Grouped rows divide the table into named sections. Cells support a Lucide icon, short text, or both — an empty cell renders a dash. One column can be marked as featured to receive the brand-color treatment and a badge. On mobile a column-selector tab bar replaces the full grid, with swipe gesture support.' },
   'disclosure':       { label: 'DisclosureBlock',      cmsKey: 'OT_DisclosureBlock',      description: 'Legal and regulatory disclosures, rate notices, and footnotes. Items are auto-numbered (¹ ² ³ or a b c) — single-item blocks suppress the marker. Two styles: Fine Print (ultra-subtle footnote treatment) and Section (slightly elevated zone). Heading and marker style are content-type properties; no display template settings to configure.' },
   'token-manager':    { label: 'TokenManager',          cmsKey: 'OT_TokenManager',          description: 'Global text-token system. Authors define key–value pairs (e.g. product-name → Advantage Checking); any CMS field that contains {{product-name}} receives the value at render time — in the CMS preview and on published pages. Token keys are language-neutral; values can be translated per locale. Singleton shared block, like ThemeManager.' },
+  'slider':           { label: 'SliderBlock',           cmsKey: 'OT_SliderBlock',           description: 'Section-level slideshow with 2–8 slides. A Presentation Style (Cinematic, Editorial Split, Story Rail, Emerge) sets the composition and slide-to-slide transition — all four are fully implemented, though not every setting applies to every style, by design rather than by omission: Content Placement and Content Vertical Alignment are honored by Cinematic and Editorial Split but ignored by Story Rail and Emerge, whose content position is fixed; Editorial Split’s Overlay tints only its media panel, never the text panel; and Story Rail collapses Navigation’s Arrows/Dots/Both into a single gutter-control outcome, since it has no separate dot row. Full keyboard/ARIA carousel semantics, a mandatory pause control whenever Auto-Play is on, and a reduced-motion collapse for every transition.' },
+  'forms':            { label: 'OptiFormsContainerData', cmsKey: 'OptiFormsContainerData',  description: "Built-in Optimizely Forms. Authored entirely in the CMS's Forms editor — text/number/range/choice/selection/textarea/url fields, a submit action, and optional show/hide dependency rules — then dropped onto a page as a section. This demo renders a real form authored in the connected CMS instance, not static mock data." },
 }
 
 export function generateStaticParams() {
@@ -132,7 +138,7 @@ function BlockHeader({ slug }: { slug: BlockSlug }) {
   return (
     <div className="px-md pt-xl pb-lg lg:px-lg">
       <SectionLabel index={`Blocks · ${meta.cmsKey}`} title={meta.label} />
-      <p className="text-body leading-body text-fg-muted max-w-[65ch]">{meta.description}</p>
+      <p className="text-body leading-body text-fg-muted max-w-[100ch]">{meta.description}</p>
     </div>
   )
 }
@@ -2497,19 +2503,19 @@ const MOCK_PRACTITIONERS: PractitionerCardData[] = [
 ]
 
 function PractitionerListingShowcase() {
-  const medical = MOCK_PRACTITIONERS.slice(0, 3)
-  const tech    = MOCK_PRACTITIONERS.slice(6)
+  const subset1 = MOCK_PRACTITIONERS.slice(0, 3)
+  const subset2 = MOCK_PRACTITIONERS.slice(6)
   return (
     <>
       <BlockHeader slug="practitioner-listing" />
 
       <div className="px-md pb-sm lg:px-lg pt-md">
         <p className="text-label text-fg-muted/60 leading-body max-w-[65ch]">
-          In production, practitioners are fetched at render time from Practitioner Profiles, scoped to the current site via siteKey. The showcase uses static fixtures across three verticals so every filter and empty state is exercisable. Search by a name (“Vargas”) or a specialty (“tax”); the specialty, location, and language dropdowns list only values present in the loaded set, with multiple selections allowed per filter.
+          In production, practitioners are fetched at render time from Practitioner Profiles, automatically scoped to the current site via the Site Key field. The showcase uses static fixtures across three verticals so every filter and empty state is exercisable. Search by a name (“Vargas”) or a specialty (“tax”); the specialty, location, and language dropdowns list only values present in the loaded set, with multiple selections allowed per filter.
         </p>
       </div>
 
-      <VariantGroup label="Grid · 3 columns · canvas · search + filters" note="The full directory experience. All eight practitioners loaded with no group-tag scope; the specialty, location, and language dropdowns are derived from the data. Portrait-first cards: the headshot (or its branded-abstract initials plate) fills a 3:4 plate. Hover a card to lift it and slide the glass footer up, revealing a bio excerpt." />
+      <VariantGroup label="Grid · 3 columns · canvas · search + filters" note="The full directory experience. All eight practitioners loaded; the specialty, location, and language dropdowns are derived from the data. Portrait-first cards: the headshot (or its branded-abstract initials plate) fills a 3:4 plate. Hover a card to lift it and slide the glass footer up, revealing a bio excerpt." />
       <div className="border-t border-fg/5">
         <PractitionerListingBlock
           heading="Find a practitioner"
@@ -2519,11 +2525,11 @@ function PractitionerListingShowcase() {
         />
       </div>
 
-      <VariantGroup label="Grid · 4 columns · surface · no search / no filters · scoped to medical" note="The curated “Meet the Team” use case on a vertical page: Group Tag Filter restricts the set to one group and the filter UI is suppressed." />
+      <VariantGroup label="Grid · 4 columns · surface · no search / no filters · curated subset" note="The curated Meet the Team use case on a vertical page: a smaller set of practitioners and the filter UI suppressed." />
       <div className="border-t border-fg/5">
         <PractitionerListingBlock
           heading="Meet our doctors"
-          practitioners={medical}
+          practitioners={subset1}
           styleOptions={{ layout: 'grid', color: 'surface', columns: 4, showSearchFilters: false, density: 'comfortable' }}
         />
       </div>
@@ -2537,12 +2543,12 @@ function PractitionerListingShowcase() {
         />
       </div>
 
-      <VariantGroup label="Grid · 2 columns · surface · no search / no filters · scoped to technology" note="The “Leadership Team” / “Executive Bios” use case on a brand or about page. Two columns give each portrait more width, so the plate reads at its most dramatic — and the glass footer and initials gradient stay legible on the surface ground. One headshot, one initials plate." />
+      <VariantGroup label="Grid · 2 columns · surface · no search / no filters · curated subset" note="The Leadership Team / Executive Bios use case on a brand or about page. Two columns give each portrait more width, so the plate reads at its most dramatic — and the glass footer and initials gradient stay legible on the surface ground. One headshot, one initials plate." />
       <div className="border-t border-fg/5">
         <PractitionerListingBlock
           heading="Leadership team"
           subtext="The people setting product direction across the platform."
-          practitioners={tech}
+          practitioners={subset2}
           styleOptions={{ layout: 'grid', color: 'surface', columns: 2, showSearchFilters: false, density: 'comfortable' }}
         />
       </div>
@@ -2605,15 +2611,15 @@ const MOCK_LOCATIONS: LocationData[] = [
 ]
 
 function LocationListingShowcase() {
-  const medical = MOCK_LOCATIONS.slice(0, 3)
-  const offices = MOCK_LOCATIONS.slice(3)
+  const subset1 = MOCK_LOCATIONS.slice(0, 3)
+  const subset2 = MOCK_LOCATIONS.slice(3)
   return (
     <>
       <BlockHeader slug="location-listing" />
 
       <div className="px-md pb-sm lg:px-lg pt-md">
         <p className="text-label text-fg-muted/60 leading-body max-w-[65ch]">
-          In production, locations are fetched at render time from Location Profiles, scoped to the current site via siteKey, and their addresses geocoded via the Mapbox API (cached 24h). The showcase uses static fixtures with pre-resolved coordinates across two groups, so every view, filter, and empty state is exercisable with no API calls. Switch views with the segmented control; in the map view, click a marker or a rail card to fly to it and open its popup. The label chips list only the labels present in the loaded set.
+          In production, locations are fetched at render time from Location Profiles, automatically scoped to the current site via the Site Key field, and their addresses geocoded via the Mapbox API (cached 24h). The showcase uses static fixtures with pre-resolved coordinates so every view, filter, and empty state is exercisable with no API calls. Switch views with the segmented control; in the map view, click a marker or a rail card to fly to it and open its popup. The label chips list only the labels present in the loaded set.
         </p>
       </div>
 
@@ -2645,21 +2651,21 @@ function LocationListingShowcase() {
         />
       </div>
 
-      <VariantGroup label="Map · tall · surface · no controls · scoped to OptiMedical" note="The curated single-vertical use case on a brand page: the Group Tag Filter restricts the set to one group, the view toggle and controls are suppressed, and the map opens taller. Three medical locations frame to a tight bounds." />
+      <VariantGroup label="Map · tall · surface · no controls · curated subset" note="The curated single-site use case on a brand page: a focused set of locations, the view toggle and controls suppressed, and the map opens taller. Three locations frame to a tight bounds." />
       <div className="border-t border-fg/5">
         <LocationListingBlock
           heading="Where to find OptiMedical"
-          locations={medical}
+          locations={subset1}
           styleOptions={{ defaultView: 'map', showViewToggle: false, mapHeight: 'tall', color: 'surface', columns: 3, showSearch: false, showLabelFilter: false, density: 'comfortable' }}
         />
       </div>
 
-      <VariantGroup label="Grid · 2 columns · surface · compact · no controls · scoped to offices" note="The “Our offices” presentation on an about page. Two columns give each plate more width; compact density tightens the footer. One image plate, one fallback." />
+      <VariantGroup label="Grid · 2 columns · surface · compact · no controls · curated subset" note="The Our Offices presentation on an about page. Two columns give each plate more width; compact density tightens the footer. One image plate, one fallback." />
       <div className="border-t border-fg/5">
         <LocationListingBlock
           heading="Our offices"
           subtext="Visit us in Boston or New York."
-          locations={offices}
+          locations={subset2}
           styleOptions={{ defaultView: 'grid', showViewToggle: false, mapHeight: 'standard', color: 'surface', columns: 2, showSearch: false, showLabelFilter: false, density: 'compact' }}
         />
       </div>
@@ -2869,6 +2875,26 @@ function ComparisonTableShowcase() {
   )
 }
 
+// Real content authored in the connected CMS instance — not mock data, so
+// this demo actually proves the OptiForms adapter fetch/render/submit path
+// works end to end against a genuine Optimizely Forms container.
+const FORMS_DEMO_CONTENT_KEY = 'c8f200bda122468993b91aea1a19235f'
+
+function FormsShowcase() {
+  return (
+    <>
+      <BlockHeader slug="forms" />
+      <VariantGroup
+        label="Live form · Form UI Testing"
+        note="Fetched by content key from the connected CMS instance, exactly as it renders when placed on a real page."
+      />
+      <div className="px-md pb-xl lg:px-lg">
+        <OptiFormsContainerDataAdapter content={{ _metadata: { key: FORMS_DEMO_CONTENT_KEY } }} />
+      </div>
+    </>
+  )
+}
+
 export default async function ShowcaseBlockPage({ params }: Props) {
   const { block } = await params
 
@@ -2903,6 +2929,8 @@ export default async function ShowcaseBlockPage({ params }: Props) {
     case 'comparison-table':        return <ComparisonTableShowcase />
     case 'disclosure':              return <><BlockHeader slug="disclosure" /><DisclosurePlayground /></>
     case 'token-manager':           return <><BlockHeader slug="token-manager" /><TokenManagerPlayground /></>
+    case 'slider':                  return <><BlockHeader slug="slider" /><SliderPlayground /></>
+    case 'forms':                   return <FormsShowcase />
     default:                 return notFound()
   }
 }

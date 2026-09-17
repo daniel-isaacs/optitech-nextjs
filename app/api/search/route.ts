@@ -138,17 +138,19 @@ function buildBlankExperienceQuery(withDomain: boolean): string {
 
 // Practitioner search — OT_PractitionerProfile holds the searchable identity
 // (name, credentials, bio) plus the headshot + bio we want to surface. It is a
-// URL-less shared component, so it is NOT domain-scoped here; site isolation is
-// enforced on the page side (buildPractitionerPagesQuery), and only profiles
-// that map to an in-scope page are emitted. Locale is always applied.
-function buildPractitionerProfileQuery(): string {
+// URL-less shared component; when withSiteKey is true the siteKey queryable field
+// is compared against $siteKey (the site's frontEndDomain) to scope results to
+// the current site. Locale is always applied.
+function buildPractitionerProfileQuery(withSiteKey: boolean): string {
+  const skVar    = withSiteKey ? ', $siteKey: String' : ''
+  const skFilter = withSiteKey ? '\n          siteKey: { eq: $siteKey }' : ''
   return `
-    query SearchPractitioners($query: String!, $limit: Int!, $locale: String!) {
+    query SearchPractitioners($query: String!, $limit: Int!, $locale: String!${skVar}) {
       OT_PractitionerProfile(
         orderBy: { _ranking: RELEVANCE }
         where: {
           _fulltext: { match: $query, fuzzy: true, synonyms: ONE }
-          _metadata: { locale: { eq: $locale } }
+          _metadata: { locale: { eq: $locale } }${skFilter}
         }
         limit: $limit
         tracking: { phrase: $query, source: "/search" }
@@ -298,6 +300,36 @@ const SETTINGS_TYPES = new Set([
   'OT_FooterLink',
 ])
 
+function buildLocationQuery(semantic: boolean, withSiteKey: boolean): string {
+  const ranking  = semantic
+    ? 'orderBy: { _ranking: SEMANTIC, _semanticWeight: 0.8 }'
+    : 'orderBy: { _ranking: RELEVANCE }'
+  const skVar    = withSiteKey ? ', $siteKey: String' : ''
+  const skFilter = withSiteKey ? '\n          siteKey: { eq: $siteKey }' : ''
+  return `
+    query SearchLocations($query: String!, $limit: Int!, $locale: String!${skVar}) {
+      OT_LocationProfile(
+        ${ranking}
+        where: {
+          ${fulltextClause(semantic)}
+          _metadata: { locale: { eq: $locale } }${skFilter}
+        }
+        limit: $limit
+        tracking: { phrase: $query, source: "/search" }
+      ) {
+        items {
+          _track
+          _metadata { key }
+          locationName
+          locationLabel
+          address
+          image { url { default } }
+        }
+      }
+    }
+  `
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const q        = (searchParams.get('q') ?? '').trim()
@@ -319,14 +351,21 @@ export async function GET(req: NextRequest) {
   // based ThemeManager lookup (SiteSearch in the navbar, direct API calls).
   const domainParam = searchParams.get('domain')?.trim() || null
 
-  let allSites   = false
-  let filterBase: string | null = null
+  let allSites      = false
+  let filterBase:   string | null = null
+  let siteKey:      string | null = null
+  let domainResolved = false  // true when we have a definitive site identity
 
   if (domainParam && !domainParam.startsWith('localhost')) {
-    // Explicit non-localhost domain supplied — use it directly.
-    filterBase = `https://${domainParam}`
-  } else if (!domainParam) {
-    // No domain supplied — fall back to request host → ThemeManager lookup.
+    // Explicit non-localhost domain supplied by the caller (e.g. Topic Hub
+    // adapter passing getSiteKey()). Use it directly — no ThemeManager lookup
+    // needed.
+    filterBase     = `https://${domainParam}`
+    siteKey        = domainParam
+    domainResolved = true
+  } else {
+    // No domain supplied, OR domain is localhost (not unique across sites) —
+    // fall back to request host → ThemeManager lookup.
     const host = req.nextUrl.host
     try {
       const scopeData  = await getClient().request(SCOPE_QUERY, {})
@@ -336,20 +375,32 @@ export async function GET(req: NextRequest) {
       // domain restriction rather than filtering to the wrong site's content.
       const matched = themeItems.find((i: any) => i.frontEndDomain === host) ?? null
       if (matched) {
+        domainResolved = true
         allSites = matched.searchScope === 'allSites'
         const domain = (matched.frontEndDomain as string | undefined) ?? ''
         // Skip localhost — it is not unique across sites; multiple teams'
-        // local dev instances share url.base = 'http://localhost:3000'.
+        // local dev instances share url.base = 'http://localhost:3000'. A
+        // localhost match still counts as resolved so dev searches work.
         if (domain && !domain.startsWith('localhost')) {
           filterBase = `https://${domain}`
+          if (!allSites) siteKey = domain
         }
       }
     } catch {
-      // scope unavailable — proceed without domain restriction
+      // scope unavailable — domainResolved stays false
     }
   }
   // When domainParam is a localhost value: filterBase stays null → no domain
   // filter in local dev, which is the safe default for a non-unique host.
+
+  // Safety valve: if we cannot identify which site this request belongs to,
+  // return nothing. This prevents content from every site on the shared CMS
+  // instance leaking through when the host doesn't match any ThemeManager
+  // (e.g. a CMS preview proxy URL, an unregistered staging environment, or
+  // a misconfigured deployment). Returning [] is always safer than returning
+  // results from the wrong sites. Local dev and explicitly-configured allSites
+  // ThemeManagers both reach this point with domainResolved=true.
+  if (!domainResolved) return NextResponse.json([])
 
   // Domain filter is applied in the GraphQL WHERE clause (not post-filtered)
   // so Content Graph handles site isolation natively.
@@ -444,8 +495,8 @@ export async function GET(req: NextRequest) {
   // fallback would otherwise re-emit it as a bare Page without the headshot.
   if (type === 'all' || type === 'Practitioner') {
     try {
-      const profileVars = { query: q, limit, locale }
-      const profileData = await getClient().request(buildPractitionerProfileQuery(), profileVars)
+      const profileVars = { query: q, limit, locale, ...(siteKey ? { siteKey } : {}) }
+      const profileData = await getClient().request(buildPractitionerProfileQuery(siteKey !== null), profileVars)
       const profiles: any[] = (profileData as any)?.OT_PractitionerProfile?.items ?? []
 
       if (profiles.length > 0) {
@@ -563,6 +614,9 @@ export async function GET(req: NextRequest) {
 
     // ── Generic page fallback (_Content) ────────────────────────────────────
     // Catches _page-typed content not covered by the typed query above.
+    // Skip when called with explicit type=Experience — caller only wants BlankExperience.
+    if (type === 'Experience') return NextResponse.json(results)
+
     try {
       const contentQuery = buildContentQuery(withDomain)
       const data = await getClient().request(contentQuery, baseVars)
@@ -586,6 +640,35 @@ export async function GET(req: NextRequest) {
       }
     } catch (err) {
       console.error('[search] content query failed:', err)
+    }
+  }
+
+  // ── Location results ─────────────────────────────────────────────────────
+  // OT_LocationProfile is a _component with no URL of its own. Results are
+  // informational-only (no navigation link). Locale-scoped but not domain-scoped
+  // since locations are shared across an org rather than owned by one site.
+  if (type === 'Location') {
+    try {
+      const locVars = { query: q, limit, locale, ...(siteKey ? { siteKey } : {}) }
+      const locData = await getClient().request(buildLocationQuery(semantic, siteKey !== null), locVars)
+      const items: any[] = (locData as any)?.OT_LocationProfile?.items ?? []
+      for (const item of items) {
+        const key = item._metadata?.key as string | undefined
+        if (!key || seen.has(key)) continue
+        seen.add(key)
+        results.push({
+          id:            key,
+          title:         (item.locationName as string | undefined) ?? 'Location',
+          url:           '',
+          type:          'Location',
+          address:       (item.address as string | undefined) || undefined,
+          locationBadge: (item.locationLabel as string | undefined) || undefined,
+          imageUrl:      item.image?.url?.default || undefined,
+          _track:        withTrackAuth(item._track),
+        })
+      }
+    } catch (err) {
+      console.error('[search] location query failed:', err)
     }
   }
 

@@ -2817,8 +2817,8 @@ body {
  * frost on light. This satisfies DESIGN.md's "never light-frosted on light
  * backgrounds" rule automatically, in both directions, without a second variant.
  *
- * (This is distinct from .banner-glass, which is a heavier OPAQUE canvas-75%
- * treatment — a different material, intentionally not unified with this one.)
+ * (This is distinct from .banner-glass, which uses a similar low-alpha approach
+ * but with color-specific backdrops; see the banner-glass section below.)
  *
  * background: oklch(from var(--ot-fg) l c h / 0.07) — low-alpha tint lets the
  *   backdrop-filter do the work; a higher-alpha/opaque fill would occlude the blur.
@@ -3598,6 +3598,83 @@ body {
   pointer-events: none;
 }
 
+/* ── Slider overlays (OT_SliderBlock) ──────────────────────────────────────────
+ * Per-slide tints over a background image/video, shared by every Presentation
+ * Style. `--slider-tint` is set inline per slide from the slide's own
+ * Background Color token (defaults to canvas), so one class covers all five
+ * colors instead of a color × treatment matrix.
+ */
+.slider-overlay-evenTint {
+  background: oklch(from var(--slider-tint, var(--ot-canvas)) l c h / 0.45);
+  pointer-events: none;
+}
+.slider-overlay-leftFade {
+  background: linear-gradient(
+    to right,
+    oklch(from var(--slider-tint, var(--ot-canvas)) l c h / 0.7) 0%,
+    oklch(from var(--slider-tint, var(--ot-canvas)) l c h / 0.2) 45%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.slider-overlay-rightFade {
+  background: linear-gradient(
+    to left,
+    oklch(from var(--slider-tint, var(--ot-canvas)) l c h / 0.7) 0%,
+    oklch(from var(--slider-tint, var(--ot-canvas)) l c h / 0.2) 45%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.slider-overlay-bottomFade {
+  background: linear-gradient(
+    to top,
+    oklch(from var(--slider-tint, var(--ot-canvas)) l c h / 0.75) 0%,
+    oklch(from var(--slider-tint, var(--ot-canvas)) l c h / 0.25) 40%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.slider-overlay-brandWash {
+  background: linear-gradient(
+    135deg,
+    oklch(from var(--ot-brand) l c h / 0.6) 0%,
+    oklch(from var(--ot-brand) l c h / 0.18) 55%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Editorial Split's media panel when a slide has no Background Image/Video
+   (requirements §5.2): a deeper shade of the slide's own Background Color, so
+   the panel still reads as intentional rather than a blank gap. `--slider-tint`
+   is set inline the same way `.slider-overlay-*` reads it above. */
+.slider-media-fallback {
+  background: oklch(from var(--slider-tint, var(--ot-canvas)) calc(l * 0.7) c h);
+}
+
+/* Legibility safety net for slide text over a photo/video background: a soft
+   dark halo plus a tighter contact shadow, so text stays readable even when
+   the editor's chosen Overlay is "None" or doesn't fully cover the text's
+   corner of the frame. Uses relative-color syntax reading from a token
+   (zeroing l/c/h) rather than a literal black, per the token-derived-color rule. */
+.slider-text-shadow {
+  text-shadow:
+    0 2px 20px oklch(from var(--ot-canvas) 0 0 0 / 0.55),
+    0 1px 4px oklch(from var(--ot-canvas) 0 0 0 / 0.65);
+}
+
+/* Cinematic pagination dot, in Auto-Play-on mode: fills left-to-right over the
+   slide's dwell time. Reuses the tab-progress width keyframe (generic 0%→100%). */
+.slider-dot-progress {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: tab-progress var(--slider-dot-dur, 5s) linear forwards;
+  animation-play-state: var(--slider-dot-play, running);
+  pointer-events: none;
+}
+
 /* ── No-image glass backdrops ─────────────────────────────────────────────────
  *
  * backdrop-filter is invisible against a flat color. These gradient backdrops
@@ -3692,7 +3769,17 @@ body {
       oklch(from var(--ot-accent) calc(l * 1.08) c h) 100%);
 }
 
-/* ── Glass panels ──────────────────────────────────────────────────────────── */
+/* ── Glass panels ─────────────────────────────────────────────────────────────
+ *
+ * Vs the old 75%-opaque implementation:
+ *   1. Lower panel alpha (40–48%) — more see-through = genuinely glass-like
+ *   2. Higher blur (28–34px) — a thicker frost layer
+ *   3. saturate() boosted — pops backdrop color through the panel
+ *   4. Inset top-edge highlight — "the glass edge catches light" (the Apple tell)
+ *
+ * canvas / surface panels stay near-neutral frosted; color identity comes from
+ * the backdrop gradient, not the panel fill.
+ */
 
 .banner-glass {
   border-radius: var(--ot-radius-surface);
@@ -3705,7 +3792,8 @@ body {
     inset 0 1px 0 oklch(from var(--ot-canvas) l c h / 0.75);
 }
 
-/* Surface glass: more opaque + stronger shadow than canvas */
+/* Surface glass: notably more opaque + stronger shadow than canvas — ensures
+   the two modes are clearly distinguishable even when backdrop colors are similar */
 .banner-glass-surface {
   border-radius: var(--ot-radius-surface);
   background: oklch(from var(--ot-surface) l c h / 0.64);

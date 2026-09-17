@@ -12,7 +12,6 @@ export type StatItemBlockProps = {
   effect?:       StatEffect
 }
 
-// Standalone panel treatment — a stat sitting alone in a column needs its own
 // visible boundary (unlike the section's continuous divided row). The shadow
 // pair reads as a soft raised panel: a faint inner top highlight (the "light
 // catching the near edge" cue) plus the standard brand-hued resting bloom

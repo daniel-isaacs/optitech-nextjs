@@ -89,13 +89,10 @@ work under `cms/` or `components/blocks/`; it supersedes the generic `optimizely
 - `references/showcase-sync.md` — the four showcase-page edits + the one nav edit.
 - `references/push-checklist.md` — preflight, push-before-build, instance-decided-by-creds, Graph
   re-index lag, and the atomic-rollback symptom decoder.
-- `references/cms-composition-updates.md` — updating BlankExperience page compositions via MCP:
-  full-replacement semantics, HTML angle-bracket XML hazard, payload size limit (~6–7 KB), required
-  node fields per type, and the section/row/column/component nesting template.
-- `references/demo-site-workflow.md` — **start here for any multi-page demo site build**: two-phase
-  create pattern (shells first, then compose by ContentKey), hardcoded composition JSON, failure modes
-  (nodeType null = delete+recreate, duplicate pages = workflow resumed without ContentKey), workflow
-  script template, block display template reference, and time estimates.
+- `references/demo-site-workflow.md` — **start here for any multi-page demo site build**: one-step
+  create pattern (full composition in the initial `POST`, never shell-then-compose — that's broken by
+  design and needs delete+recreate to fix), hardcoded composition JSON, failure modes, workflow script
+  template, block display template reference, and time estimates.
 
 ### Adding a CMS-driven page route
 

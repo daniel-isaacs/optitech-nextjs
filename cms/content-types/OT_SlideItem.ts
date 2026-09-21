@@ -80,7 +80,7 @@ export const OT_SlideItem = contentType({
     },
     contentPlacement: {
       type: 'string', format: 'selectOne', displayName: 'Content Placement',
-      description: 'Where this slide’s content sits. In Editorial Split, the media panel takes the opposite side; Center falls back to Left in that style. Not used by Story Rail or Emerge (their content position is fixed by design).',
+      description: 'Where this slide’s content sits. In Editorial Split, the media panel takes the opposite side; Center falls back to Left in that style. Not used by Story Rail (its content position is fixed by design).',
       enum: [
         { value: 'left',   displayName: 'Left (Default)' },
         { value: 'center', displayName: 'Center' },

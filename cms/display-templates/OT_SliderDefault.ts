@@ -4,10 +4,13 @@ import { displayTemplate } from '@optimizely/cms-sdk'
 // (only content-type properties can) — it fails `config push` with an
 // InvalidModel error. Guidance that would otherwise live in a setting's
 // description is folded into its `displayName` or documented here instead:
-//   - contentVerticalAlign: applies to Cinematic and Editorial Split only;
-//     ignored by Story Rail and Emerge (their content position is fixed).
+//   - contentVerticalAlign: applies to Cinematic, Editorial Split, and
+//     Emerge; ignored by Story Rail (its content position is fixed).
 //   - navigation: resolves differently per Presentation Style — see
-//     OT_SliderBlock-requirements.md §5 for the per-style mapping.
+//     OT_SliderBlock-requirements.md §5 for the per-style mapping. Emerge's
+//     own dock: `arrows`/`both` show the chevron pair, `dots` has no
+//     separate meaning (the card row is always the pagination), and `none`
+//     keeps the dock visible but makes its cards non-interactive.
 //   - headingLevel: applies to every slide's headline. Use H1 only when this
 //     slider replaces the page's hero.
 //   - entranceAnimation: plays once on first scroll into view, independent of
@@ -36,7 +39,7 @@ export const OT_SliderDefault = displayTemplate({
       },
     },
     contentVerticalAlign: {
-      displayName: 'Content Vertical Alignment (Cinematic / Editorial Split)', editor: 'select', sortOrder: 30,
+      displayName: 'Content Vertical Alignment (Cinematic / Editorial Split / Emerge)', editor: 'select', sortOrder: 30,
       choices: {
         top:    { displayName: 'Top',            sortOrder: 10 },
         center: { displayName: 'Center (Default)', sortOrder: 20 },

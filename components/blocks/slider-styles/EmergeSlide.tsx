@@ -1,168 +1,63 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronUp, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import Button from '@/components/ui/Button'
-import { RichText } from '@optimizely/cms-sdk/react/richText'
-import type { SlideData } from '@/components/blocks/SliderBlock'
 import {
   type SlideStyleComponentProps,
-  forcedThemeFor, textRoleClass, ctaVariant, needsLightSurface, hasMediaFor, glassClassFor,
-  headingClassForHeight, SlideVisual, SlideOverlayLayer, resolveRadiusPx,
+  SlideContent, SlideVisual, SlideOverlayLayer,
 } from './shared'
 
 export type { SlideStyleComponentProps }
 
-// ─── Emerge — requirements §5.4 ─────────────────────────────────────────────
+// ─── Emerge ──────────────────────────────────────────────────────────────────
 //
-// Full-bleed background like Cinematic, but content splits into two fixed
-// zones (body pinned top-left, headline pinned bottom-left) instead of one
-// movable block — Content Placement / Content Vertical Alignment are ignored
-// by design. The signature move is the reveal panel: a preview of the
-// *incoming* slide peeks in from the right edge; advancing grows it to
-// "swallow" the frame, then the content zones swap on their own delayed beat.
+// A dark nav "dock" sits below the hero visual — vertical prev/next chevrons
+// and a slide counter on the left, then one clickable card per slide
+// (headline + eyebrow) divided by hairlines. The dock's height is carved out
+// of the block's own Height budget (SliderBlock.client.tsx's
+// `resolveHeightClass` falls Fit Content back to Standard here, since this
+// style's visual zone has no in-flow content of its own to size against).
+// The hero visual above the dock never carries its own arrows/dots — the
+// dock fully replaces them.
 //
-// The peek panel is a real, full-resolution copy of the slide's own
-// background (same <Image>/<video>, same `sizes` hint) with a `clip-path:
-// inset(...)` masking most of it away — growing the reveal is just animating
-// that inset toward 0, never a CSS `scale()` transform. A tiny fixed-size
-// thumbnail scaled up via `transform` would need to stretch a low-resolution
-// source across the whole viewport (visibly blurry); clipping a full-size
-// image never touches its resolution, so it stays sharp start to finish, and
-// the swap to the real background at the end is genuinely seamless.
+// The signature move is the reveal: advancing to any slide — forward,
+// backward, via a card, or an autoplay tick, always identically — uncovers
+// the incoming slide's background from the bottom edge upward, matching the
+// style's own name. `--reveal` (0%→100%, animated on `.emerge-reveal-mask` in
+// globals.css) drives both the hard cut and its soft feather off one value,
+// so nothing needs to stay measured/synced. There's no "resting preview" of
+// a single fixed "next" slide the way a directional peek panel would need —
+// once any card can jump to any index there's no well-defined "next" to keep
+// previewing, so the reveal layer only exists for the ~900ms a transition is
+// actually in flight.
 //
-// Two independently-timed beats (only for forward advances — see NOTE below):
-//   Beat 1 (~850ms, accelerating ease): the peek panel's clip-path opens from
-//     its resting window to full coverage; its rounded corners flatten to 0
-//     in step. The instant it fully covers, the real background swaps
-//     underneath — invisible, since the panel already shows the same image.
-//   Beat 2 (starts ~180ms after beat 1 resolves): old body/headline zones
-//     fade out (~200ms), new zones fade + rise in (~300ms), and a *new* peek
-//     panel — previewing the slide after that — fades in.
-//
-// NOTE (disclosed implementation call, mirrors the Story Rail "back
-// affordance" open item in the requirements doc): the reveal theater is
-// specified only for forward advances, driven by the peek panel. A backward
-// move (keyboard Left, swipe-back, or a bounce reversal) has no described
-// choreography, so it falls back to a plain crossfade of background +
-// content — still legible and immediate, just not the signature "swallow."
+// Content (headline/body/CTAs — shared.tsx's `SlideContent`, the same
+// placement/alignment-aware block Cinematic uses) hides the instant a
+// transition starts, for the whole sweep, and rises back in on its own beat
+// shortly after the reveal completes — reads as one continuous "emerging"
+// motion rather than a background cut plus an unrelated content swap.
 
-const GROW_MS  = 850
-const PAUSE_MS = 180
-const OUT_MS   = 200
+const REVEAL_MS = 900
+const REVEAL_EASE = [0.22, 1, 0.36, 1] as const
+const CONTENT_GAP_MS = 90
 
-// Rest window: a panel peeking in from the right edge, vertically centered —
-// ~20% of the viewport wide, ~38% tall. Percentages (not measured pixels) so
-// the clip stays correct across resizes with no ResizeObserver bookkeeping.
-const REST_INSET = { top: 31, right: 0, bottom: 31, left: 80 }
-
-function clipPath(radiusPx: number) {
-  return `inset(${REST_INSET.top}% ${REST_INSET.right}% ${REST_INSET.bottom}% ${REST_INSET.left}% round ${radiusPx}px)`
-}
-const CLIP_FULL = 'inset(0% 0% 0% 0% round 0px)'
-
-function wrap(n: number, count: number) {
-  return ((n % count) + count) % count
-}
-
-// ─── Peek / reveal panel ────────────────────────────────────────────────────
-
-type PanelMode = 'rest' | 'growing'
-
-function RevealPanel({
-  slide, mode, interactive, disabled, reducedMotion, restRadiusPx, onActivate, onGrowComplete,
-}: {
-  slide: SlideData
-  mode: PanelMode
-  interactive: boolean
-  disabled: boolean
-  reducedMotion: boolean
-  restRadiusPx: number
-  onActivate: () => void
-  onGrowComplete: () => void
-}) {
-  const restClip = clipPath(restRadiusPx)
-
-  return (
-    <motion.div
-      initial={{ opacity: mode === 'growing' ? 1 : 0, clipPath: restClip }}
-      animate={
-        mode === 'growing'
-          ? { opacity: 1, clipPath: CLIP_FULL, transition: { duration: reducedMotion ? 0.15 : GROW_MS / 1000, ease: [0.6, 0, 0.3, 1] as const } }
-          : { opacity: 1, clipPath: restClip, transition: { duration: 0.3 } }
-      }
-      onAnimationComplete={() => { if (mode === 'growing') onGrowComplete() }}
-      className="absolute inset-0 z-20"
-      style={{ willChange: 'clip-path' }}
-    >
-      <SlideVisual slide={slide} />
-      {/* Decorative frame + click target — a normally-boxed sibling (not
-          clip-path'd) so its ring/shadow/radius render as a clean card
-          outline around the visible window instead of being clipped away
-          along with everything outside it. Rest-only: mid-grow there's
-          nothing left to click, and the frame would just be in the way. */}
-      {mode === 'rest' && (
-        <>
-          <div
-            aria-hidden="true"
-            className="absolute ring-1 ring-white/25 shadow-hover-lift pointer-events-none"
-            style={{ top: `${REST_INSET.top}%`, bottom: `${REST_INSET.bottom}%`, left: `${REST_INSET.left}%`, right: `${REST_INSET.right}%`, borderRadius: restRadiusPx }}
-          />
-          <button
-            type="button"
-            onClick={onActivate}
-            disabled={disabled}
-            aria-hidden={!interactive}
-            tabIndex={interactive ? 0 : -1}
-            aria-label="Next slide"
-            className={cn('absolute', interactive && !disabled ? 'cursor-pointer' : 'pointer-events-none', disabled && 'opacity-40')}
-            style={{ top: `${REST_INSET.top}%`, bottom: `${REST_INSET.bottom}%`, left: `${REST_INSET.left}%`, right: `${REST_INSET.right}%`, borderRadius: restRadiusPx }}
-          />
-        </>
-      )}
-    </motion.div>
-  )
-}
-
-// ─── EmergeSlide ────────────────────────────────────────────────────────────
-
-const ZONE_VARIANTS = {
-  enter:  { opacity: 0, y: 12 },
-  center: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.65, 0, 0.35, 1] as const } },
-  exit:   { opacity: 0, y: -8, transition: { duration: OUT_MS / 1000, ease: [0.65, 0, 0.35, 1] as const } },
-}
-const ZONE_VARIANTS_REDUCED = {
-  enter:  { opacity: 0 },
-  center: { opacity: 1, transition: { duration: 0.15 } },
-  exit:   { opacity: 0, transition: { duration: 0.15 } },
+const CONTENT_VARIANTS = {
+  enter:  { opacity: 0, y: 20 },
+  center: { opacity: 1, y: 0, transition: { duration: 0.4, ease: REVEAL_EASE } },
+  exit:   { opacity: 0, transition: { duration: 0.12 } },
 }
 
 export default function EmergeSlide({ slides, styleOptions, engine }: SlideStyleComponentProps) {
-  const { activeIndex, slideCount, canPrev, canNext, prev, next, reducedMotion, viewportRef } = engine
+  const { activeIndex, slideCount, canPrev, canNext, prev, next, goTo, showPlayToggle, reducedMotion, viewportRef } = engine
   const prevActiveRef = useRef(activeIndex)
   const timersRef = useRef<number[]>([])
 
-  const [bgIndex, setBgIndex]           = useState(activeIndex)
+  const [bgIndex, setBgIndex]         = useState(activeIndex)
+  const [revealIndex, setRevealIndex] = useState<number | null>(null)
   const [contentIndex, setContentIndex] = useState(activeIndex)
-  // Decoupled from `contentIndex` so the zones can hide the instant a forward
-  // advance starts, well before `contentIndex` itself changes — see NOTE in
-  // the header comment: content stays hidden for the whole reveal sweep, not
-  // just the tail end of it.
   const [contentShown, setContentShown] = useState(true)
-  const [growThumb, setGrowThumb]       = useState<number | null>(null)
-  const [restThumbIndex, setRestThumbIndex] = useState(wrap(activeIndex + 1, slideCount))
-  const [restThumbKey, setRestThumbKey] = useState(0)
-
-  // Resolve the theme's surface-radius token to a real px number once, so the
-  // clip-path's `round` can interpolate it toward 0 (a raw `var(--radius-...)`
-  // string can't be tweened by Framer Motion — it needs a resolved number).
-  // Floored at 20px so the peek panel still reads as a deliberate rounded
-  // card even in a theme (like the current default) whose surface radius is 0
-  // — an editorial flourish, not a themed control, so this floor is by design.
-  const [restRadiusPx] = useState(() => resolveRadiusPx('--ot-radius-surface', 20))
 
   function clearTimers() {
     timersRef.current.forEach(id => clearTimeout(id))
@@ -173,45 +68,34 @@ export default function EmergeSlide({ slides, styleOptions, engine }: SlideStyle
   }
   useEffect(() => () => clearTimers(), [])
 
-  function handleGrowComplete(finishedIndex: number) {
-    setBgIndex(finishedIndex)
-    setGrowThumb(null)
+  function handleRevealComplete(index: number) {
+    setBgIndex(index)
+    setRevealIndex(null)
     schedule(() => {
-      setContentIndex(finishedIndex)
+      setContentIndex(index)
       setContentShown(true)
-    }, PAUSE_MS)
-    schedule(() => {
-      setRestThumbIndex(wrap(finishedIndex + 1, slideCount))
-      setRestThumbKey(k => k + 1)
-    }, PAUSE_MS + OUT_MS)
+    }, CONTENT_GAP_MS)
   }
 
   useEffect(() => {
     const prevIndex = prevActiveRef.current
     prevActiveRef.current = activeIndex
     if (prevIndex === activeIndex) return
-    const isForward = activeIndex === wrap(prevIndex + 1, slideCount)
-
     clearTimers()
 
-    if (reducedMotion || !isForward) {
-      // Reduced motion, or a backward move — see NOTE above. Instant/plain
-      // crossfade: both layers just jump to the new index together.
-      setGrowThumb(null)
+    if (reducedMotion) {
+      setRevealIndex(null)
       setBgIndex(activeIndex)
       setContentIndex(activeIndex)
       setContentShown(true)
-      setRestThumbIndex(wrap(activeIndex + 1, slideCount))
-      setRestThumbKey(k => k + 1)
       return
     }
 
-    // Forward: hide the content zones immediately — they stay hidden for the
-    // whole ~850ms reveal sweep, not just its tail end — then kick off Beat 1.
-    // The resting panel already previews `activeIndex` (it always shows
-    // "next"), so it grows in place.
+    // Hide content for the whole sweep, not just its tail, then kick off the
+    // reveal toward whichever index we just navigated to — forward, backward,
+    // or a direct card jump, all identically (see header comment).
     setContentShown(false)
-    setGrowThumb(activeIndex)
+    setRevealIndex(activeIndex)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndex])
 
@@ -219,204 +103,166 @@ export default function EmergeSlide({ slides, styleOptions, engine }: SlideStyle
   const contentSlide = slides[contentIndex]
   if (!bgSlide || !contentSlide) return null
 
-  const contentHasMedia = hasMediaFor(contentSlide)
-  const forcedTheme = forcedThemeFor(contentSlide.backgroundColor, contentHasMedia)
-  const lightSurface = needsLightSurface(contentSlide.backgroundColor, contentHasMedia)
-  const shadowClass  = contentHasMedia ? 'slider-text-shadow' : undefined
-  // The "Frosted Panel" Overlay choice gives the headline zone its own glass
-  // card — same treatment Cinematic uses, just applied per-zone here since
-  // Emerge has two independently-pinned zones instead of one content block.
-  // Not gated on media: a solid-color slide (e.g. a light canvas/surface
-  // fill) should still get the glass treatment when this overlay is picked.
-  const isFrosted = contentSlide.overlay === 'frostedPanel'
-  // The body zone's small label-sized text is the one thing users kept
-  // flagging as hard to read over arbitrary imagery — it always gets a
-  // background, on media or a solid fill alike, regardless of Overlay.
-  const bodyPaneled = true
-  const glassProps = { 'data-media': contentSlide.backgroundVideoSrc ? ('video' as const) : undefined }
-  const glassClass = cn('banner-glass', glassClassFor(contentSlide.backgroundColor))
-  // Match the peek panel's rounding rather than the theme's (possibly 0)
-  // surface-radius token, so every rounded-corner element in this style reads
-  // as one consistent shape language.
-  const glassRadius = { borderRadius: restRadiusPx }
-  // Thin brand-colored edge on the body panel's two "open" sides (right/
-  // bottom) — the top/left sides are flush against the viewport corner, so a
-  // border there would just look like a stray line at the frame's edge.
-  const bodyEdgeStyle = {
-    borderRadius: `0 0 ${restRadiusPx}px 0`,
-    border: 'none',
-    borderRight:  '1px solid oklch(from var(--ot-brand) l c h / 0.5)',
-    borderBottom: '1px solid oklch(from var(--ot-brand) l c h / 0.5)',
-  }
-
-  const showDots   = styleOptions.navigation === 'both' || styleOptions.navigation === 'dots'
-  const arrowsOn   = styleOptions.navigation === 'both' || styleOptions.navigation === 'arrows'
-  // Requirements §5.4: Navigation `none` keeps the panel visible (core to
-  // the look) but non-interactive — swipe/keyboard remain the only advance
-  // methods in that case.
-  const panelInteractive = arrowsOn && slideCount > 1
-
-  const variants = reducedMotion ? ZONE_VARIANTS_REDUCED : ZONE_VARIANTS
-  const zoneTheme = { 'data-theme': forcedTheme, 'data-surface': lightSurface ? ('light' as const) : undefined }
-
-  // An editorial pull-quote treatment — larger, thin-weight — rather than
-  // plain small label text, now that the corner-anchored panel has room for
-  // it to be a deliberate typographic moment instead of a caption.
-  // line-clamp-1 bounds it to a fixed height regardless of copy length or
-  // column width — without it, a long quote wrapping to 2+ lines in the
-  // narrower column Compact height leaves available can grow tall enough to
-  // run into the headline zone pinned below it (both are independently
-  // absolute-positioned, so neither naturally yields room to the other).
-  const body = contentSlide.body ? (
-    <div data-rich-text="" data-color={forcedTheme === 'dark' ? 'brand' : undefined} className={cn('text-title font-light leading-title tracking-title text-pretty line-clamp-1', textRoleClass('body', contentSlide.backgroundColor, contentHasMedia), !bodyPaneled && shadowClass)}>
-      {typeof contentSlide.body === 'string' ? <p>{contentSlide.body}</p> : <RichText content={contentSlide.body} />}
-    </div>
-  ) : null
-
-  const ctas = (contentSlide.buttonLabel && contentSlide.buttonUrl) || (contentSlide.secondaryLabel && contentSlide.secondaryUrl) ? (
-    <div className="flex flex-wrap items-center gap-lg mt-sm">
-      {contentSlide.buttonLabel && contentSlide.buttonUrl && (
-        <Button variant={ctaVariant(contentSlide.backgroundColor)} href={contentSlide.buttonUrl}>{contentSlide.buttonLabel}</Button>
-      )}
-      {contentSlide.secondaryLabel && contentSlide.secondaryUrl && (
-        <Link
-          href={contentSlide.secondaryUrl}
-          className={cn('text-label font-semibold tracking-label uppercase underline underline-offset-4 decoration-1 hover:opacity-70 transition-opacity', textRoleClass('heading', contentSlide.backgroundColor, contentHasMedia), !isFrosted && shadowClass)}
-        >
-          {contentSlide.secondaryLabel}
-        </Link>
-      )}
-    </div>
-  ) : null
+  const arrowsOn         = styleOptions.navigation === 'both' || styleOptions.navigation === 'arrows'
+  // Requirements parity with the rest of this style family: Navigation
+  // `none` keeps the dock visible (it's core chrome, not just a control) but
+  // makes the cards non-interactive — swipe/keyboard remain the only advance.
+  const cardsInteractive = styleOptions.navigation !== 'none'
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
-      {/* Invisible drag surface — Embla still owns index/swipe/loop/autoplay
-          state here exactly as in every other style; Emerge just doesn't use
-          its translated track as the visible background. */}
-      <div ref={viewportRef} className="absolute inset-0 overflow-hidden opacity-0" aria-hidden="true">
-        <div className="flex h-full">
-          {slides.map((slide, i) => <div key={slide.key || i} className="relative flex-[0_0_100%] h-full" />)}
+    <div className="relative h-full w-full flex flex-col overflow-hidden">
+      {/* Hero visual zone */}
+      <div className="relative flex-1 min-h-0 overflow-hidden">
+        {/* Invisible drag surface — Embla still owns index/swipe/loop/autoplay
+            state here exactly as in every other style; Emerge just doesn't use
+            its translated track as the visible background. */}
+        <div ref={viewportRef} className="absolute inset-0 overflow-hidden opacity-0" aria-hidden="true">
+          <div className="flex h-full">
+            {slides.map((slide, i) => <div key={slide.key || i} className="relative flex-[0_0_100%] h-full" />)}
+          </div>
         </div>
-      </div>
 
-      {/* Background — swapped only once Beat 1's reveal panel fully covers
-          the frame, so the swap itself is never visible. */}
-      <div className="absolute inset-0" aria-hidden="true">
-        <SlideVisual slide={bgSlide} priority={styleOptions.headingLevel === 'h1' && bgIndex === 0} />
-        <SlideOverlayLayer slide={bgSlide} />
-      </div>
+        {/* Real background — swapped only once the reveal fully covers the
+            frame, so the swap itself is never visible. */}
+        <div className="absolute inset-0" aria-hidden="true">
+          <SlideVisual slide={bgSlide} priority={styleOptions.headingLevel === 'h1' && bgIndex === 0} />
+          <SlideOverlayLayer slide={bgSlide} />
+        </div>
 
-      {/* Body zone — flush against the top-left corner rather than inset from
-          it, so the panel reads as a block growing out of the edge (rounded,
-          brand-edged only on its two open sides, to match). Always paneled —
-          this text has no other reliable way to stay legible across every
-          Background Color / Overlay combination, media or not. */}
-      {/* Capped to 74% of the viewport (not just a flat rem value) because the
-          reveal panel below rests at a fixed 80%-from-left position at every
-          viewport size — on a narrow phone the rem cap alone doesn't kick in
-          until the panel is already sitting on top of the text. min() keeps
-          the original 34rem ceiling at desktop widths, where it was already
-          clear of the panel, and only tightens things below that. */}
-      <div className="absolute z-10 top-0 left-0 max-w-[min(34rem,74%)] pointer-events-none">
-        <AnimatePresence mode="wait" initial={false}>
-          {contentShown && body && (
-            <motion.div key={contentIndex} {...zoneTheme} variants={variants} initial="enter" animate="center" exit="exit" className="pointer-events-auto">
-              <div {...glassProps} style={bodyEdgeStyle} className={cn(glassClass, 'pt-sm pl-sm pr-md pb-sm lg:pt-md lg:pl-md lg:pr-lg lg:pb-md')}>
-                {body}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Headline zone — pinned bottom-left, with the numbered progress index
-          just above it. Bottom offset is padded a bit extra so the CTA row
-          never collides with the mandatory autoplay pause control, which
-          also lives in this corner (SliderBlock.client.tsx). */}
-      {/* Same min() reasoning as the body zone above — this zone also starts
-          at a left offset (left-lg/left-xl), so its budget is a bit tighter
-          than the body zone's to leave the same clearance from the panel. */}
-      <div className="absolute z-10 left-lg lg:left-xl bottom-18 lg:bottom-20 max-w-[min(38rem,66%)] flex flex-col gap-sm">
-        {showDots && slideCount > 1 && (
+        {/* Reveal layer — mounted only while a transition is in flight. */}
+        {revealIndex !== null && (
           <motion.div
-            {...zoneTheme}
-            animate={{ opacity: contentShown ? 1 : 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex items-center gap-sm"
+            key={`reveal-${revealIndex}`}
+            className="absolute inset-0 emerge-reveal-mask"
+            style={{ '--reveal': '0%' } as React.CSSProperties}
+            animate={{ '--reveal': '100%' } as Record<string, string>}
+            transition={{ duration: REVEAL_MS / 1000, ease: REVEAL_EASE }}
+            onAnimationComplete={() => handleRevealComplete(revealIndex)}
             aria-hidden="true"
           >
-            {slides.map((_, i) => (
-              <span
-                key={i}
-                className={cn(
-                  'text-label font-semibold tracking-label tabular-nums transition-opacity duration-200',
-                  i === contentIndex ? cn('opacity-100', textRoleClass('heading', contentSlide.backgroundColor, contentHasMedia)) : cn('opacity-40', textRoleClass('body', contentSlide.backgroundColor, contentHasMedia)),
-                )}
-              >
-                {String(i + 1).padStart(2, '0')}
-              </span>
-            ))}
+            <SlideVisual slide={slides[revealIndex]} />
+            <SlideOverlayLayer slide={slides[revealIndex]} />
+            {/* Boundary glow — reads the same `--reveal` value the mask
+                itself does, so it rides the moving edge for free with no
+                separate measurement or sync. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 h-6 pointer-events-none"
+              style={{
+                bottom: 'var(--reveal)',
+                transform: 'translateY(50%)',
+                background: 'linear-gradient(to top, oklch(from var(--ot-brand) l c h / 0.35), transparent)',
+              }}
+            />
           </motion.div>
         )}
 
-        <AnimatePresence mode="wait" initial={false}>
-          {contentShown && (
-            <motion.div key={contentIndex} {...zoneTheme} variants={variants} initial="enter" animate="center" exit="exit" className="flex flex-col">
-              <div {...(isFrosted ? glassProps : {})} style={isFrosted ? glassRadius : undefined} className={cn('flex flex-col', isFrosted && [glassClass, 'px-sm py-xs lg:px-md lg:py-sm'])}>
-                {contentSlide.eyebrow && (
-                  <p className={cn('text-label font-semibold tracking-label uppercase', textRoleClass('eyebrow', contentSlide.backgroundColor, contentHasMedia), !isFrosted && shadowClass)}>{contentSlide.eyebrow}</p>
-                )}
-                {contentSlide.headline && (
-                  <h2 className={cn(headingClassForHeight(styleOptions.height), 'font-extrabold text-balance mt-xs max-w-[24ch]', textRoleClass('heading', contentSlide.backgroundColor, contentHasMedia), !isFrosted && shadowClass)}>
-                    {contentSlide.headline}
-                  </h2>
-                )}
-                {ctas}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Content — same placement/alignment-aware block Cinematic uses. */}
+        <div className="relative z-10 h-full flex items-center py-lg lg:py-xl">
+          <AnimatePresence mode="wait" initial={false}>
+            {contentShown && (
+              <SlideContent
+                key={contentIndex}
+                slide={contentSlide}
+                headingLevel={styleOptions.headingLevel}
+                verticalAlign={styleOptions.contentVerticalAlign}
+                height={styleOptions.height}
+                index={contentIndex}
+                count={slideCount}
+                reducedMotion={reducedMotion}
+                variants={CONTENT_VARIANTS}
+              />
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Navigation arrows — bottom-center, clear of the bottom-left headline
-          zone / pause control and the right-side reveal panel. */}
-      {arrowsOn && slideCount > 1 && (
-        <div className="absolute z-20 bottom-md left-1/2 -translate-x-1/2 flex items-center gap-sm">
-          <button
-            onClick={prev}
-            disabled={!canPrev}
-            aria-label="Previous slide"
-            className="flex items-center justify-center w-11 h-11 rounded-full border border-white/25 bg-black/20 text-white backdrop-blur-sm hover:bg-black/35 disabled:opacity-25 transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5" strokeWidth={1.75} aria-hidden />
-          </button>
-          <button
-            onClick={next}
-            disabled={!canNext}
-            aria-label="Next slide"
-            className="flex items-center justify-center w-11 h-11 rounded-full border border-white/25 bg-black/20 text-white backdrop-blur-sm hover:bg-black/35 disabled:opacity-25 transition-colors"
-          >
-            <ChevronRight className="w-5 h-5" strokeWidth={1.75} aria-hidden />
-          </button>
-        </div>
-      )}
+      {/* Dock — a component panel (`bg-surface`, not `bg-canvas`: this is
+          chrome sitting ON the page, not the page ground itself), following
+          the ambient page theme rather than forcing dark, so it reads as a
+          light panel in light mode instead of a jarring black bar. */}
+      <div className="relative z-10 shrink-0 h-20 lg:h-24 flex bg-surface border-t border-fg/10">
+        {/* The shared autoplay toggle chip (SliderBlock.client.tsx) is
+            hardcoded white-on-black — correct everywhere else, where it
+            always floats over media that's now guaranteed dark (see
+            SlideOverlayLayer). Here it floats over this theme-adaptive panel
+            instead, which is light in light mode — so, same idiom
+            EditorialSplitSlide uses for its own unpredictable corner, force
+            just that corner dark behind it rather than reworking the shared
+            chip's colors (which every *other* style still depends on). */}
+        {showPlayToggle && (
+          <div
+            aria-hidden="true"
+            className="absolute z-0 bottom-md left-md w-9 h-9 rounded-full pointer-events-none"
+            style={{ background: 'oklch(from var(--ot-fg) 0 0 0 / 0.7)' }}
+          />
+        )}
 
-      {/* Reveal panel — the resting preview of "next", or actively growing to
-          swallow the frame on a forward advance. */}
-      {slideCount > 1 && (
-        <RevealPanel
-          key={growThumb !== null ? `grow-${growThumb}` : `rest-${restThumbKey}`}
-          slide={slides[growThumb ?? restThumbIndex]}
-          mode={growThumb !== null ? 'growing' : 'rest'}
-          interactive={panelInteractive}
-          disabled={!canNext}
-          reducedMotion={reducedMotion}
-          restRadiusPx={restRadiusPx}
-          onActivate={next}
-          onGrowComplete={() => handleGrowComplete(growThumb!)}
-        />
-      )}
+        {/* Chevrons + counter. `showPlayToggle` reserves a left gutter so the
+            shared toggle chip — anchored bottom-md/left-md of the whole
+            region, which now lands in this corner — doesn't overlap the
+            chevrons. */}
+        <div className={cn('relative z-10 shrink-0 flex items-center gap-sm lg:gap-md px-sm lg:px-md', showPlayToggle && 'pl-14 lg:pl-16')}>
+          {arrowsOn && slideCount > 1 && (
+            <div className="flex flex-col gap-0.5">
+              <button
+                onClick={prev}
+                disabled={!canPrev}
+                aria-label="Previous slide"
+                className="flex items-center justify-center w-7 h-7 rounded-full text-fg-muted hover:text-fg disabled:opacity-30 transition-colors"
+              >
+                <ChevronUp className="w-4 h-4" strokeWidth={1.75} aria-hidden />
+              </button>
+              <button
+                onClick={next}
+                disabled={!canNext}
+                aria-label="Next slide"
+                className="flex items-center justify-center w-7 h-7 rounded-full text-fg-muted hover:text-fg disabled:opacity-30 transition-colors"
+              >
+                <ChevronDown className="w-4 h-4" strokeWidth={1.75} aria-hidden />
+              </button>
+            </div>
+          )}
+          <span className="text-label font-semibold tabular-nums text-fg-muted" aria-hidden="true">
+            {String(activeIndex + 1).padStart(2, '0')} / {String(slideCount).padStart(2, '0')}
+          </span>
+        </div>
+
+        {/* Card row — one clickable card per slide. `flex-1` + a min-width
+            divides the row evenly at low slide counts; once min-widths
+            exceed the row's width (toward the 8-slide ceiling) it degrades
+            to horizontal scroll, with no runtime measurement either way. */}
+        <div className="flex-1 flex overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {slides.map((slide, i) => {
+            const isActive = i === activeIndex
+            return (
+              <button
+                key={slide.key || i}
+                type="button"
+                onClick={() => goTo(i)}
+                disabled={!cardsInteractive}
+                tabIndex={cardsInteractive ? 0 : -1}
+                aria-current={isActive ? 'true' : undefined}
+                aria-label={`Go to slide ${i + 1}${slide.headline ? `: ${slide.headline}` : ''}`}
+                className={cn(
+                  'relative flex-1 min-w-30 lg:min-w-40 shrink-0 text-left px-sm lg:px-md py-sm lg:py-md',
+                  'border-l border-fg/10 first:border-l-0 transition-colors',
+                  isActive ? 'bg-fg/6 shadow-hover-lift' : 'card-hover-lift hover:bg-fg/4',
+                  !cardsInteractive && 'cursor-default',
+                )}
+              >
+                {isActive && <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-0.5 bg-brand" />}
+                {slide.headline && <p className="text-body font-semibold text-fg line-clamp-1">{slide.headline}</p>}
+                {slide.eyebrow && (
+                  <p className="mt-0.5 text-label font-semibold tracking-label uppercase emerge-card-eyebrow line-clamp-1">
+                    {slide.eyebrow}
+                  </p>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </div>
     </div>
   )
 }

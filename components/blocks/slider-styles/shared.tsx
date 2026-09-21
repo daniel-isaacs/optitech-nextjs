@@ -1,5 +1,10 @@
 import Image from 'next/image'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import type { Variants } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import Button from '@/components/ui/Button'
+import { RichText } from '@optimizely/cms-sdk/react/richText'
 import { OT_COLOR_FILL_CLASS, OT_COLOR_VAR } from '@/lib/colorTokens'
 import BannerBackgroundVideo from '@/components/blocks/BannerBackgroundVideo'
 import type { SlideData, SlideColor, SlideOverlay } from '@/components/blocks/SliderBlock'
@@ -140,6 +145,13 @@ export function SlideOverlayLayer({ slide }: { slide: SlideData }) {
   return (
     <div
       aria-hidden="true"
+      // Forced dark (independent of the ambient page theme, mirroring
+      // `forcedThemeFor`'s own hasMedia → dark rule) so Canvas/Surface — the
+      // two color tokens that flip to near-white in light mode — still read
+      // as a darkening tint over the image instead of a near-invisible white
+      // wash. Brand/Brand Deep/Accent are unaffected: those tokens don't
+      // change between themes.
+      data-theme="dark"
       className={cn('absolute inset-0', cls)}
       style={{ '--slider-tint': OT_COLOR_VAR[slide.backgroundColor] } as React.CSSProperties}
     />
@@ -178,4 +190,114 @@ export function resolveRadiusPx(varName: string, floor: number): number {
   const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
   const n = parseFloat(v)
   return Math.max(Number.isNaN(n) ? 0 : n, floor)
+}
+
+// ─── Content block — honors per-slide Content Placement and the block-wide
+// Content Vertical Alignment setting. Originally Cinematic-only; Emerge
+// reuses it verbatim (as a third consumer, alongside Cinematic's background
+// and Story Rail's cards, of this file's shared rendering pieces) so both
+// styles resolve placement/alignment identically rather than maintaining two
+// copies of the same left/center/right + top/center/bottom mapping. Only the
+// `variants` (timing/easing of the fade+rise) differ per style. ────────────
+
+export function SlideContent({
+  slide, headingLevel, verticalAlign, height, index, count, reducedMotion, variants,
+}: {
+  slide: SlideData
+  headingLevel: 'h1' | 'h2'
+  verticalAlign: SliderStyleOptions['contentVerticalAlign']
+  height: SliderStyleOptions['height']
+  index: number
+  count: number
+  reducedMotion: boolean
+  variants: Variants
+}) {
+  const Heading  = headingLevel
+  const hasMedia = hasMediaFor(slide)
+  const forcedTheme = forcedThemeFor(slide.backgroundColor, hasMedia)
+  const isFrosted = slide.overlay === 'frostedPanel' && hasMedia
+  // Accent's solid fill (no media) is the one case where the CTA's ghost
+  // button needs to flip to dark: Button's ghost variant defaults to a light
+  // fg/border (tuned for sitting on brand/media dark grounds) and only reads
+  // dark from `data-surface="light"`, a separate signal from `data-theme`
+  // (see Button.tsx / globals.css [data-surface="light"]).
+  const lightSurface = needsLightSurface(slide.backgroundColor, hasMedia)
+
+  // Center falls back to left only in Editorial Split; every other consumer
+  // of this component honors Center directly, so this is a plain 1:1 mapping.
+  const placement = slide.contentPlacement ?? 'left'
+
+  // Belt-and-suspenders legibility: over media, an always-on soft text shadow
+  // so contrast doesn't depend entirely on getting Overlay + Content Placement
+  // to agree (e.g. a Left Fade overlay with content placed on the right).
+  // Skipped under the frosted-panel treatment, whose glass backdrop already
+  // guarantees contrast on its own.
+  const shadowClass = hasMedia && !isFrosted ? 'slider-text-shadow' : undefined
+
+  const body = slide.body ? (
+    <div data-rich-text="" data-color={forcedTheme === 'dark' ? 'brand' : undefined} className={cn('text-body leading-body text-pretty max-w-[60ch]', textRoleClass('body', slide.backgroundColor, hasMedia), shadowClass)}>
+      {typeof slide.body === 'string' ? <p>{slide.body}</p> : <RichText content={slide.body} />}
+    </div>
+  ) : null
+
+  const ctas = (slide.buttonLabel && slide.buttonUrl) || (slide.secondaryLabel && slide.secondaryUrl) ? (
+    <div className="flex flex-wrap items-center gap-lg mt-sm">
+      {slide.buttonLabel && slide.buttonUrl && (
+        <Button variant={ctaVariant(slide.backgroundColor)} href={slide.buttonUrl}>{slide.buttonLabel}</Button>
+      )}
+      {slide.secondaryLabel && slide.secondaryUrl && (
+        <Link
+          href={slide.secondaryUrl}
+          className={cn('text-label font-semibold tracking-label uppercase underline underline-offset-4 decoration-1 hover:opacity-70 transition-opacity', textRoleClass('heading', slide.backgroundColor, hasMedia), shadowClass)}
+        >
+          {slide.secondaryLabel}
+        </Link>
+      )}
+    </div>
+  ) : null
+
+  const inner = (
+    <>
+      {slide.eyebrow && <p className={cn('text-label font-semibold tracking-label uppercase', textRoleClass('eyebrow', slide.backgroundColor, hasMedia), shadowClass)}>{slide.eyebrow}</p>}
+      {slide.headline && <Heading className={cn(headingClassForHeight(height), 'font-extrabold text-balance mt-xs', textRoleClass('heading', slide.backgroundColor, hasMedia), shadowClass)}>{slide.headline}</Heading>}
+      {body && <div className="mt-sm">{body}</div>}
+      {ctas}
+    </>
+  )
+
+  return (
+    <motion.div
+      key={index}
+      data-theme={forcedTheme}
+      data-surface={lightSurface ? 'light' : undefined}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={`Slide ${index + 1} of ${count}`}
+      variants={reducedMotion ? { enter: { opacity: 0 }, center: { opacity: 1, transition: { duration: 0.15 } }, exit: { opacity: 0, transition: { duration: 0.15 } } } : variants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      className={cn(
+        'flex flex-col',
+        contentMaxWidthClass(height),
+        // Left/right placements sit near the arrow controls, so they get a
+        // deliberately larger inline gutter than center's plain px — mx-auto
+        // already gives center its own breathing room via the max-width cap.
+        placement === 'center' && 'items-center text-center mx-auto px-md lg:px-xl',
+        placement === 'right'  && 'items-end text-right ml-auto pl-md lg:pl-lg pr-lg lg:pr-2xl',
+        placement === 'left'   && 'items-start text-left pr-md lg:pr-lg pl-lg lg:pl-2xl',
+        isFrosted && 'banner-glass px-lg py-lg lg:px-xl lg:py-xl',
+        isFrosted && (slide.backgroundColor === 'brand' ? 'banner-glass-brand'
+          : slide.backgroundColor === 'brandDeep' ? 'banner-glass-brandDeep'
+          : slide.backgroundColor === 'accent'    ? 'banner-glass-accent'
+          : slide.backgroundColor === 'surface'   ? 'banner-glass-surface'
+          : ''),
+      )}
+      style={{
+        alignSelf: verticalAlign === 'top' ? 'flex-start' : verticalAlign === 'bottom' ? 'flex-end' : 'center',
+      }}
+    >
+      {inner}
+    </motion.div>
+  )
 }

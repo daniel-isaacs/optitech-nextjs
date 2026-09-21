@@ -3675,6 +3675,35 @@ body {
   pointer-events: none;
 }
 
+/* Emerge's bottom-up reveal: `--reveal` (0%→100%, animated by Framer Motion on
+   the element itself) is how much of the layer, measured up from the bottom,
+   is opaque. The feather band is calc()'d off that same variable, so it rides
+   the moving boundary automatically — no second element to keep in sync. */
+.emerge-reveal-mask {
+  --ot-emerge-feather: 28px;
+  mask-image: linear-gradient(
+    to top,
+    #000 0%, #000 var(--reveal, 0%),
+    transparent calc(var(--reveal, 0%) + var(--ot-emerge-feather)), transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 0%, #000 var(--reveal, 0%),
+    transparent calc(var(--reveal, 0%) + var(--ot-emerge-feather)), transparent 100%
+  );
+}
+
+/* Emerge dock card eyebrow: signal green reads fine on the dark-mode surface
+   panel, but at 82% lightness it's low-contrast against the light-mode
+   surface panel — swap to brand (dark-mode-constant, so still legible)
+   there. Same idiom as `.logo-invert-dark` above: one light-mode override. */
+.emerge-card-eyebrow {
+  color: var(--ot-accent);
+}
+[data-theme="light"] .emerge-card-eyebrow {
+  color: var(--ot-brand);
+}
+
 /* ── No-image glass backdrops ─────────────────────────────────────────────────
  *
  * backdrop-filter is invisible against a flat color. These gradient backdrops

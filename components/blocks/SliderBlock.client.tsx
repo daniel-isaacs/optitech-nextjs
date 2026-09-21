@@ -22,6 +22,18 @@ const HEIGHT_CLASS: Record<string, string> = {
   fitContent: '',
 }
 
+// `fitContent`'s empty class relies on an unconstrained ancestor letting the
+// style component's own `h-full` resolve to auto (see the comment above) —
+// which in turn requires some non-absolutely-positioned descendant to supply
+// real intrinsic height. Emerge's dock band splits the region into a flex
+// column whose visual zone has ONLY absolutely-positioned layers, so it has
+// nothing to hand up; it falls back to the Standard footprint instead of
+// collapsing toward zero.
+function resolveHeightClass(style: SliderBlockProps['presentationStyle'], height: SliderBlockProps['styleOptions']['height']) {
+  if (style === 'emerge' && height === 'fitContent') return HEIGHT_CLASS.standard
+  return HEIGHT_CLASS[height]
+}
+
 // All four Presentation Styles are implemented — see
 // OT_SliderBlock-requirements.md §5 for each style's dedicated spec.
 const STYLE_COMPONENT = {
@@ -62,7 +74,7 @@ export default function SliderBlockClient({ presentationStyle, slides, styleOpti
     <div className={cn('mb-lg', isContained && 'max-w-[80rem] mx-auto px-md lg:px-lg')}>
       <div
         {...engine.regionProps}
-        className={cn('relative w-full outline-none', HEIGHT_CLASS[styleOptions.height])}
+        className={cn('relative w-full outline-none', resolveHeightClass(presentationStyle, styleOptions.height))}
       >
         {/* Manual-navigation-only announcement (WCAG carousel guidance: never
             announce autoplay ticks, only user-initiated slide changes). */}
